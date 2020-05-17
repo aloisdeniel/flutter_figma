@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/widgets/node.dart';
+import 'package:flutter_figma/src/widgets/vector.dart';
 import 'package:flutter_figma/widgets.dart';
 
 import 'base.dart' as base;
@@ -19,9 +20,35 @@ class FigmaNodeParser {
         return _rectangle(json, isRoot);
       case 'FRAME':
         return _frame(json, isRoot);
+      case 'VECTOR':
+      case 'REGULAR_POLYGON':
+      case 'ELLIPSE':
+      case 'STAR':
+        return _vector(json, isRoot);
       default:
         return null;
     }
+  }
+
+  static FigmaVector _vector(dynamic json, bool isRoot) {
+    return FigmaVector(
+      isRoot: isRoot,
+      id: json['id'],
+      name: json['name'],
+      fillGeometry: base.path(json['fillGeometry']),
+      fills: base.paintList(json['fills']),
+      strokes: base.paintList(json['strokes']),
+      effects: base.effectList(json['effects']),
+      strokeWeight: base.number(json['strokeWeight']),
+      strokeAlign: base.strokeAlign(json['strokeAlign']),
+      layoutAlign: base.layoutAlign(json['layoutAlign']),
+      preserveRatio: json['preserveRatio'],
+      opacity: base.number(json['opacity']) ?? 1.0,
+      size: base.sizeFromVector(json['size']),
+      relativeTransform: base.relativeTransform(json),
+      constraints: base.layoutConstraints(json),
+      rectangleCornerRadii: base.cornerRadii(json),
+    );
   }
 
   static FigmaFrame _frame(dynamic json, bool isRoot) {

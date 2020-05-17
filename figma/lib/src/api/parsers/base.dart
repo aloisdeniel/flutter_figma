@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter_figma/src/base/base.dart';
+import 'package:path_drawing/path_drawing.dart';
 
 double number(dynamic json) {
   if (json == null) return null;
@@ -46,6 +47,17 @@ Offset vector(dynamic json) {
 
 List<Offset> vectorList(dynamic json) {
   return json?.map<Offset>(vector)?.toList();
+}
+
+Path path(dynamic json) {
+  if (json == null) return null;
+  final result = Path();
+  for (var item in json) {
+    final data = parseSvgPathData(item['path']);
+    final windingRule = item['windingRule'];
+    result.addPath(data, Offset.zero);
+  }
+  return result;
 }
 
 Size sizeFromSize(dynamic json) {
@@ -230,5 +242,31 @@ FigmaStrokeAlign strokeAlign(dynamic json) {
       return FigmaStrokeAlign.outside;
     default:
       return FigmaStrokeAlign.center;
+  }
+}
+
+FigmaStrokeJoin strokeJoin(dynamic json) {
+  switch (json) {
+    case 'BEVEL':
+      return FigmaStrokeJoin.bevel;
+    case 'ROUND':
+      return FigmaStrokeJoin.round;
+    default:
+      return FigmaStrokeJoin.miter;
+  }
+}
+
+FigmaStrokeCap strokeCap(dynamic json) {
+  switch (json) {
+    case 'TRIANGLE_ARROW':
+      return FigmaStrokeCap.triangleArrow;
+    case 'LINE_ARROW':
+      return FigmaStrokeCap.lineArrow;
+    case 'SQUARE':
+      return FigmaStrokeCap.square;
+    case 'ROUND':
+      return FigmaStrokeCap.round;
+    default:
+      return FigmaStrokeCap.none;
   }
 }

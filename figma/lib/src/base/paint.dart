@@ -97,7 +97,25 @@ class FigmaBoxPaintShape extends FigmaPaintShape {
   }
 }
 
-class FigmaPathPaintShape extends FigmaPaintShape {}
+class FigmaPathPaintShape extends FigmaPaintShape {
+  final Path fillGeometry;
+
+  const FigmaPathPaintShape({
+    @required this.fillGeometry,
+  });
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other.runtimeType != runtimeType) return false;
+    return other is FigmaPathPaintShape && fillGeometry != other.fillGeometry;
+  }
+
+  @override
+  int get hashCode {
+    return fillGeometry?.hashCode ?? 0;
+  }
+}
 
 class FigmaPaintDecoration extends Decoration {
   final FigmaPaintShape shape;
@@ -138,6 +156,19 @@ class FigmaPaintDecoration extends Decoration {
             bottomLeft: Radius.circular(shape.rectangleCornerRadii.bottomLeft),
           ),
         );
+    } else if (shape is FigmaPathPaintShape) {
+      final bounds = shape.fillGeometry.getBounds();
+      final transform = Matrix4.translationValues(
+            rect.left,
+            rect.top,
+            0,
+          ) *
+          (Matrix4.identity()
+            ..scale(
+              rect.width / (bounds.left + bounds.width),
+              rect.height / (bounds.top + bounds.height),
+            ));
+      clipPath = shape.fillGeometry.transform(transform.storage);
     } else {
       clipPath = Path();
     }
