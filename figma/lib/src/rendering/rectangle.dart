@@ -3,78 +3,21 @@ import 'package:flutter_figma/src/base/base.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_figma/src/rendering/mixins.dart';
 import 'package:vector_math/vector_math_64.dart';
 
-import 'frame.dart';
-
-class RenderFigmaRectangle extends RenderBox {
+class RenderFigmaRectangle extends RenderBox with RenderNodeMixin {
   RenderFigmaRectangle({
     Size designSize,
     FigmaTransform designTransform,
     ImageConfiguration configuration,
-    FigmaLayoutAlign layoutAlign,
-    double opacity,
-    FigmaLayoutConstraints designConstraints,
     FigmaPaintDecoration decoration,
-  })  : _designSize = designSize,
-        _configuration = configuration,
-        _opacity = opacity ?? 1.0,
-        _designConstraints = designConstraints,
-        _designLayoutAlign = layoutAlign,
-        _designTransform = designTransform,
+  })  : _configuration = configuration,
         _decoration = decoration {
-    _updateParentData();
-  }
-
-  void _updateParentData() {
-    parentData ??= FigmaLayoutParentData();
-    final data = parentData as FigmaLayoutParentData;
-    data.constraints = _designConstraints;
-    data.layoutAlign = _designLayoutAlign;
-    data.transform = _designTransform;
-  }
-
-  Size get designSize => _designSize;
-  Size _designSize;
-  set designSize(Size value) {
-    assert(value != null);
-    if (_designSize != value) {
-      _designSize = value;
-      markNeedsLayout();
-    }
-  }
-
-  FigmaTransform get designTransform => _designTransform;
-  FigmaTransform _designTransform;
-  set designTransform(FigmaTransform value) {
-    assert(value != null);
-    if (_designTransform != value) {
-      _designTransform = value;
-      _updateParentData();
-      markNeedsLayout();
-    }
-  }
-
-  FigmaLayoutConstraints get designConstraints => _designConstraints;
-  FigmaLayoutConstraints _designConstraints;
-  set designConstraints(FigmaLayoutConstraints value) {
-    assert(value != null);
-    if (_designConstraints != value) {
-      _designConstraints = value;
-      _updateParentData();
-      markNeedsLayout();
-    }
-  }
-
-  FigmaLayoutAlign get designLayoutAlign => _designLayoutAlign;
-  FigmaLayoutAlign _designLayoutAlign;
-  set designLayoutAlign(FigmaLayoutAlign value) {
-    assert(value != null);
-    if (_designLayoutAlign != value) {
-      _designLayoutAlign = value;
-      _updateParentData();
-      markNeedsLayout();
-    }
+    initRenderNodeMixin(
+      designSize: designSize,
+      designTransform: designTransform,
+    );
   }
 
   BoxPainter _painter;
@@ -87,16 +30,6 @@ class RenderFigmaRectangle extends RenderBox {
       _painter?.dispose();
       _painter = null;
       _decoration = value;
-      markNeedsPaint();
-    }
-  }
-
-  double get opacity => _opacity;
-  double _opacity;
-  set opacity(double value) {
-    assert(value != null);
-    if (_opacity != value) {
-      _opacity = value;
       markNeedsPaint();
     }
   }
@@ -158,7 +91,7 @@ class RenderFigmaRectangle extends RenderBox {
     );
   }
 
-  void _transformedPaint(
+  void _paintWithTransform(
       PaintingContext context, Offset offset, bool hasTransform) {
     assert(size.width != null);
     assert(size.height != null);
@@ -196,31 +129,27 @@ class RenderFigmaRectangle extends RenderBox {
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    if (designTransform.hasRotationOrScale) {
-      // Applying transform
-      final originalSize = designSize;
+    // Applying transform
+    final originalSize = designSize;
 
-      var transform = Matrix4.translationValues(
-            (size.width / 2),
-            (size.height / 2),
-            0,
-          ) *
-          designTransform.matrixWithoutTranslate *
-          Matrix4.translationValues(
-            -(originalSize.width / 2),
-            -(originalSize.height / 2),
-            0,
-          );
+    var transform = Matrix4.translationValues(
+          (size.width / 2),
+          (size.height / 2),
+          0,
+        ) *
+        designTransform.matrixWithoutTranslate *
+        Matrix4.translationValues(
+          -(originalSize.width / 2),
+          -(originalSize.height / 2),
+          0,
+        );
 
-      layer = context.pushTransform(
-        needsCompositing,
-        offset,
-        transform,
-        (c, o) => _transformedPaint(c, o, true),
-        oldLayer: layer as TransformLayer,
-      );
-    } else {
-      _transformedPaint(context, offset, false);
-    }
+    layer = context.pushTransform(
+      needsCompositing,
+      offset,
+      transform,
+      (c, o) => _paintWithTransform(c, o, true),
+      oldLayer: layer,
+    );
   }
 }

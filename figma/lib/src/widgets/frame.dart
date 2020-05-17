@@ -1,10 +1,11 @@
 import 'package:flutter_figma/src/base/base.dart';
 import 'package:flutter_figma/src/rendering/frame.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_figma/src/rendering/layout.dart';
 
 import 'node.dart';
 
-class FigmaFrame extends MultiChildRenderObjectWidget implements FigmaNode {
+class FigmaFrame extends StatelessWidget implements FigmaNode {
   final String id;
   final String name;
   final bool preserveRatio;
@@ -26,11 +27,13 @@ class FigmaFrame extends MultiChildRenderObjectWidget implements FigmaNode {
   final FigmaCounterAxisSizingMode counterAxisSizingMode;
   final double opacity;
   final bool clipsContent;
+  final bool isRoot;
 
   FigmaFrame({
     Key key,
     this.id,
     this.name,
+    this.isRoot = false,
     this.layoutAlign = FigmaLayoutAlign.min,
     this.size = Size.zero,
     bool preserveRatio,
@@ -54,33 +57,54 @@ class FigmaFrame extends MultiChildRenderObjectWidget implements FigmaNode {
         this.preserveRatio = preserveRatio ?? false,
         super(
           key: key ?? (id != null ? Key(id) : null),
-          children: children,
         );
 
-  factory FigmaFrame.fromJson(dynamic json) {
-    return FigmaFrame();
+  @override
+  Widget build(BuildContext context) {
+    final child = Opacity(
+      opacity: opacity,
+      child: _FigmaFrame(this),
+    );
+
+    if (isRoot) {
+      return child;
+    }
+
+    return FigmaLayout(
+      transform: relativeTransform,
+      constraints: constraints,
+      layoutAlign: layoutAlign,
+      child: child,
+    );
   }
+}
+
+class _FigmaFrame extends MultiChildRenderObjectWidget {
+  final FigmaFrame frame;
+
+  _FigmaFrame(this.frame)
+      : super(
+          children: frame.children,
+        );
 
   @override
   RenderObject createRenderObject(BuildContext context) {
     return RenderFigmaFrame(
-      opacity: opacity,
-      layoutMode: layoutMode,
-      designConstraints: constraints,
-      designTransform: relativeTransform,
-      designSize: size,
+      layoutMode: frame.layoutMode,
+      designTransform: frame.relativeTransform,
+      designSize: frame.size,
       configuration: createLocalImageConfiguration(context),
-      horizontalPadding: horizontalPadding,
-      layoutAlign: layoutAlign,
-      verticalPadding: verticalPadding,
-      counterAxisSizingMode: counterAxisSizingMode,
-      itemSpacing: itemSpacing,
+      horizontalPadding: frame.horizontalPadding,
+      verticalPadding: frame.verticalPadding,
+      counterAxisSizingMode: frame.counterAxisSizingMode,
+      itemSpacing: frame.itemSpacing,
       decoration: FigmaPaintDecoration(
-        fills: fills,
-        strokes: strokes,
-        effects: effects,
+        fills: frame.fills,
+        strokes: frame.strokes,
+        strokeWeight: frame.strokeWeight,
+        effects: frame.effects,
         shape: FigmaBoxPaintShape(
-          rectangleCornerRadii: rectangleCornerRadii,
+          rectangleCornerRadii: frame.rectangleCornerRadii,
         ),
       ),
     );
@@ -90,22 +114,21 @@ class FigmaFrame extends MultiChildRenderObjectWidget implements FigmaNode {
   void updateRenderObject(
       BuildContext context, covariant RenderFigmaFrame renderObject) {
     renderObject
-      ..opacity = opacity
       ..configuration = createLocalImageConfiguration(context)
-      ..layoutMode = layoutMode
-      ..designConstraints = constraints
-      ..designTransform = relativeTransform
-      ..designSize = size
-      ..designLayoutAlign = layoutAlign
-      ..horizontalPadding = horizontalPadding
-      ..verticalPadding = verticalPadding
-      ..counterAxisSizingMode = counterAxisSizingMode
-      ..itemSpacing = itemSpacing
+      ..layoutMode = frame.layoutMode
+      ..designTransform = frame.relativeTransform
+      ..designSize = frame.size
+      ..horizontalPadding = frame.horizontalPadding
+      ..verticalPadding = frame.verticalPadding
+      ..counterAxisSizingMode = frame.counterAxisSizingMode
+      ..itemSpacing = frame.itemSpacing
       ..decoration = FigmaPaintDecoration(
-        fills: fills,
-        strokes: strokes,
+        fills: frame.fills,
+        strokes: frame.strokes,
+        strokeWeight: frame.strokeWeight,
+        effects: frame.effects,
         shape: FigmaBoxPaintShape(
-          rectangleCornerRadii: rectangleCornerRadii,
+          rectangleCornerRadii: frame.rectangleCornerRadii,
         ),
       );
   }

@@ -4,17 +4,12 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-class FigmaLayoutParentData extends ContainerBoxParentData<RenderBox> {
-  FigmaLayoutConstraints constraints;
-  FigmaTransform transform;
-  FigmaLayoutAlign layoutAlign;
-  @override
-  String toString() =>
-      '${super.toString()}; transform=$transform, layoutAlign=$layoutAlign, constraints=$constraints';
-}
+import 'layout.dart';
+import 'mixins.dart';
 
 class RenderFigmaFrame extends RenderBox
     with
+        RenderNodeMixin,
         ContainerRenderObjectMixin<RenderBox, FigmaLayoutParentData>,
         RenderBoxContainerDefaultsMixin<RenderBox, FigmaLayoutParentData>,
         DebugOverflowIndicatorMixin {
@@ -25,82 +20,23 @@ class RenderFigmaFrame extends RenderBox
     FigmaTransform designTransform,
     Size designSize,
     ImageConfiguration configuration,
-    FigmaLayoutAlign layoutAlign,
-    double opacity,
     FigmaCounterAxisSizingMode counterAxisSizingMode,
     double itemSpacing,
-    FigmaLayoutConstraints designConstraints,
     FigmaPaintDecoration decoration,
     FigmaLayoutMode layoutMode = FigmaLayoutMode.none,
   })  : assert(layoutMode != null),
         _layoutMode = layoutMode,
-        _designTransform = designTransform,
-        _designSize = designSize,
         _configuration = configuration,
-        _opacity = opacity ?? 1.0,
-        _alpha = Color.getAlphaFromOpacity(opacity),
-        _designConstraints = designConstraints,
-        _designLayoutAlign = layoutAlign,
         _counterAxisSizingMode = counterAxisSizingMode,
         _horizontalPadding = horizontalPadding,
         _verticalPadding = verticalPadding,
         _itemSpacing = itemSpacing,
         _decoration = decoration {
     addAll(children);
-    _updateParentData();
-  }
-  @override
-  bool get alwaysNeedsCompositing => _alpha != 0 && _alpha != 255;
-
-  void _updateParentData() {
-    parentData ??= FigmaLayoutParentData();
-    final data = parentData as FigmaLayoutParentData;
-    data.constraints = _designConstraints;
-    data.layoutAlign = _designLayoutAlign;
-    data.transform = _designTransform;
-  }
-
-  Size get designSize => _designSize;
-  Size _designSize;
-  set designSize(Size value) {
-    assert(value != null);
-    if (_designSize != value) {
-      _designSize = value;
-      markNeedsLayout();
-    }
-  }
-
-  FigmaLayoutAlign get designLayoutAlign => _designLayoutAlign;
-  FigmaLayoutAlign _designLayoutAlign;
-  set designLayoutAlign(FigmaLayoutAlign value) {
-    assert(value != null);
-    if (_designLayoutAlign != value) {
-      _designLayoutAlign = value;
-      _updateParentData();
-      markNeedsLayout();
-    }
-  }
-
-  FigmaTransform get designTransform => _designTransform;
-  FigmaTransform _designTransform;
-  set designTransform(FigmaTransform value) {
-    assert(value != null);
-    if (_designTransform != value) {
-      _designTransform = value;
-      _updateParentData();
-      markNeedsLayout();
-    }
-  }
-
-  FigmaLayoutConstraints get designConstraints => _designConstraints;
-  FigmaLayoutConstraints _designConstraints;
-  set designConstraints(FigmaLayoutConstraints value) {
-    assert(value != null);
-    if (_designConstraints != value) {
-      _designConstraints = value;
-      _updateParentData();
-      markNeedsLayout();
-    }
+    initRenderNodeMixin(
+      designSize: designSize,
+      designTransform: designTransform,
+    );
   }
 
   FigmaCounterAxisSizingMode get counterAxisSizingMode =>
@@ -136,21 +72,6 @@ class RenderFigmaFrame extends RenderBox
       _decoration = value;
       markNeedsLayout();
     }
-  }
-
-  int _alpha;
-  double get opacity => _opacity;
-  double _opacity;
-  set opacity(double value) {
-    assert(value != null);
-    assert(value >= 0.0 && value <= 1.0);
-    if (_opacity == value) return;
-    final bool didNeedCompositing = alwaysNeedsCompositing;
-    _opacity = value;
-    _alpha = Color.getAlphaFromOpacity(_opacity);
-    if (didNeedCompositing != alwaysNeedsCompositing)
-      markNeedsCompositingBitsUpdate();
-    markNeedsPaint();
   }
 
   double get horizontalPadding => _horizontalPadding;
@@ -528,26 +449,32 @@ class RenderFigmaFrame extends RenderBox
 
   @override
   void paint(PaintingContext context, Offset offset) {
-    if (_alpha == 0) {
-      layer = null;
-      return;
-    }
-    if (_alpha == 255) {
-      // No need to keep the layer. We'll create a new one if necessary.
-      layer = null;
-      _paintWithOpacity(context, offset);
-      return;
-    } else {
-      layer = context.pushOpacity(
-        offset,
-        _alpha,
-        _paintWithOpacity,
-        oldLayer: layer as OpacityLayer,
-      );
-    }
+    // Applying transform
+    final originalSize = designSize;
+
+    var transform = Matrix4.translationValues(
+          (size.width / 2),
+          (size.height / 2),
+          0,
+        ) *
+        designTransform.matrixWithoutTranslate *
+        Matrix4.translationValues(
+          -(originalSize.width / 2),
+          -(originalSize.height / 2),
+          0,
+        );
+
+    layer = context.pushTransform(
+      needsCompositing,
+      offset,
+      transform,
+      (c, o) => _paintWithTransform(c, o, true),
+      oldLayer: layer,
+    );
   }
 
-  void _paintWithOpacity(PaintingContext context, Offset offset) {
+  void _paintWithTransform(
+      PaintingContext context, Offset offset, bool hasTransform) {
     assert(size.width != null);
     assert(size.height != null);
     _painter ??= _decoration.createBoxPainter(markNeedsPaint);

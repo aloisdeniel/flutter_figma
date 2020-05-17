@@ -1,10 +1,11 @@
 import 'package:flutter_figma/src/base/base.dart';
+import 'package:flutter_figma/src/rendering/layout.dart';
 import 'package:flutter_figma/src/rendering/rectangle.dart';
 import 'package:flutter/widgets.dart';
 
 import 'node.dart';
 
-class FigmaRectangle extends LeafRenderObjectWidget implements FigmaNode {
+class FigmaRectangle extends StatelessWidget implements FigmaNode {
   final String id;
   final String name;
   final double strokeWeight;
@@ -19,10 +20,12 @@ class FigmaRectangle extends LeafRenderObjectWidget implements FigmaNode {
   final Size size;
   final FigmaTransform relativeTransform;
   final double opacity;
+  final bool isRoot;
 
   FigmaRectangle({
     Key key,
     this.id,
+    this.isRoot = false,
     this.name,
     this.size = Size.zero,
     this.layoutAlign = FigmaLayoutAlign.min,
@@ -40,25 +43,42 @@ class FigmaRectangle extends LeafRenderObjectWidget implements FigmaNode {
         this.preserveRatio = preserveRatio ?? false,
         super(key: key ?? (id != null ? Key(id) : null));
 
-  factory FigmaRectangle.fromJson(dynamic json) {
-    return FigmaRectangle();
+  @override
+  Widget build(BuildContext context) {
+    final child = Opacity(
+      opacity: opacity,
+      child: _FigmaRectangle(this),
+    );
+
+    if (isRoot) return child;
+
+    return FigmaLayout(
+      transform: relativeTransform,
+      constraints: constraints,
+      layoutAlign: layoutAlign,
+      child: child,
+    );
   }
+}
+
+class _FigmaRectangle extends LeafRenderObjectWidget {
+  final FigmaRectangle rectangle;
+
+  _FigmaRectangle(this.rectangle);
 
   @override
   RenderObject createRenderObject(BuildContext context) {
     return RenderFigmaRectangle(
       configuration: createLocalImageConfiguration(context),
-      designConstraints: constraints,
-      designTransform: relativeTransform,
-      layoutAlign: layoutAlign,
-      opacity: opacity,
-      designSize: size,
+      designTransform: rectangle.relativeTransform,
+      designSize: rectangle.size,
       decoration: FigmaPaintDecoration(
-        fills: fills,
-        strokes: strokes,
-        effects: effects,
+        fills: rectangle.fills,
+        strokes: rectangle.strokes,
+        effects: rectangle.effects,
+        strokeWeight: rectangle.strokeWeight,
         shape: FigmaBoxPaintShape(
-          rectangleCornerRadii: rectangleCornerRadii,
+          rectangleCornerRadii: rectangle.rectangleCornerRadii,
         ),
       ),
     );
@@ -69,16 +89,15 @@ class FigmaRectangle extends LeafRenderObjectWidget implements FigmaNode {
       BuildContext context, covariant RenderFigmaRectangle renderObject) {
     renderObject
       ..configuration = createLocalImageConfiguration(context)
-      ..designConstraints = constraints
-      ..designSize = size
-      ..opacity = opacity
-      ..designTransform = relativeTransform
-      ..designLayoutAlign = layoutAlign
+      ..designSize = rectangle.size
+      ..designTransform = rectangle.relativeTransform
       ..decoration = FigmaPaintDecoration(
-        fills: fills,
-        strokes: strokes,
+        fills: rectangle.fills,
+        strokeWeight: rectangle.strokeWeight,
+        strokes: rectangle.strokes,
+        effects: rectangle.effects,
         shape: FigmaBoxPaintShape(
-          rectangleCornerRadii: rectangleCornerRadii,
+          rectangleCornerRadii: rectangle.rectangleCornerRadii,
         ),
       );
   }

@@ -101,11 +101,13 @@ class FigmaPathPaintShape extends FigmaPaintShape {}
 
 class FigmaPaintDecoration extends Decoration {
   final FigmaPaintShape shape;
+  final double strokeWeight;
   final List<FigmaEffect> effects;
   final List<FigmaPaint> fills;
   final List<FigmaPaint> strokes;
 
   const FigmaPaintDecoration({
+    this.strokeWeight = 1.0,
     this.effects = const <FigmaEffect>[],
     this.shape = const FigmaBoxPaintShape(),
     this.fills = const <FigmaPaint>[],
@@ -150,6 +152,7 @@ class FigmaPaintDecoration extends Decoration {
     final equality = const ListEquality().equals;
     return other is FigmaPaintDecoration &&
         other.shape == shape &&
+        other.strokeWeight == strokeWeight &&
         equality(other.fills, fills) &&
         equality(other.strokes, strokes) &&
         equality(other.effects, effects);
@@ -159,6 +162,7 @@ class FigmaPaintDecoration extends Decoration {
   int get hashCode {
     return hashValues(
       shape,
+      strokeWeight,
       hashList(fills),
       hashList(strokes),
       hashList(effects),
@@ -195,7 +199,9 @@ class _FigmaPaintDecoration extends BoxPainter {
 
   // TODO caching of paints
   Paint _paint(PaintingStyle style, FigmaPaint paint, Rect frame) {
-    final result = Paint()..style = style;
+    final result = Paint()
+      ..style = style
+      ..strokeWidth = _decoration.strokeWeight;
 
     if (paint is FigmaColorPaint) {
       result.color = paint.color;

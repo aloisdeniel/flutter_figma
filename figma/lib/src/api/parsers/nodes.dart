@@ -10,22 +10,23 @@ class FigmaNodeParser {
   const FigmaNodeParser();
 
   FigmaNode parse(dynamic json) {
-    return _node(json);
+    return _node(json, true);
   }
 
-  static FigmaNode _node(dynamic json) {
+  static FigmaNode _node(dynamic json, bool isRoot) {
     switch (json['type']) {
       case 'RECTANGLE':
-        return _rectangle(json);
+        return _rectangle(json, isRoot);
       case 'FRAME':
-        return _frame(json);
+        return _frame(json, isRoot);
       default:
         return null;
     }
   }
 
-  static FigmaFrame _frame(dynamic json) {
+  static FigmaFrame _frame(dynamic json, bool isRoot) {
     return FigmaFrame(
+      isRoot: isRoot,
       id: json['id'],
       name: json['name'],
       fills: base.paintList(json['fills']),
@@ -47,12 +48,13 @@ class FigmaNodeParser {
       relativeTransform: base.relativeTransform(json),
       constraints: base.layoutConstraints(json),
       rectangleCornerRadii: base.cornerRadii(json),
-      children: json['children']?.map<Widget>((x) => _node(x))?.toList(),
+      children: json['children']?.map<Widget>((x) => _node(x, false))?.toList(),
     );
   }
 
-  static FigmaRectangle _rectangle(dynamic json) {
+  static FigmaRectangle _rectangle(dynamic json, bool isRoot) {
     return FigmaRectangle(
+      isRoot: isRoot,
       id: json['id'],
       name: json['name'],
       fills: base.paintList(json['fills']),
