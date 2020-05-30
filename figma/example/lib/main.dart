@@ -84,13 +84,15 @@ class HomePage extends StatelessWidget {
 class DesignHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Figma(
-      token: figmaApiToken,
-      child: FigmaDesignFile(
-        fileId: figmaFileId,
-        child: FittedBox(
-          child: FigmaDesignNode(
-            id: figmaNodeId,
+    return SafeArea(
+      child: Figma(
+        token: figmaApiToken,
+        child: FigmaDesignFile(
+          fileId: figmaFileId,
+          child: SingleChildScrollView(
+            child: FigmaDesignNode(
+              id: figmaNodeId,
+            ),
           ),
         ),
       ),

@@ -9,7 +9,7 @@ import 'parsers/file.dart';
 import 'package:http/http.dart' as http;
 
 class FigmaApi {
-  static const _fileParser = const FigmaFileParser();
+  static const _fileParser = FigmaFileParser();
 
   static const host = 'https://api.figma.com';
 

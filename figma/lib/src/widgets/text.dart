@@ -1,11 +1,10 @@
 import 'package:flutter_figma/src/base/base.dart';
 import 'package:flutter_figma/src/rendering/layout.dart';
-import 'package:flutter_figma/src/rendering/rectangle.dart';
 import 'package:flutter/widgets.dart';
 
 import 'node.dart';
 
-class FigmaRectangle extends StatelessWidget implements FigmaNode {
+class FigmaText extends StatelessWidget implements FigmaNode {
   @override
   final String id;
   @override
@@ -15,7 +14,6 @@ class FigmaRectangle extends StatelessWidget implements FigmaNode {
   final FigmaLayoutAlign layoutAlign;
   final FigmaLayoutConstraints constraints;
   final FigmaStrokeAlign strokeAlign;
-  final FigmaCornerRadii rectangleCornerRadii;
   final List<FigmaPaint> fills;
   final List<FigmaPaint> strokes;
   final List<FigmaEffect> effects;
@@ -23,8 +21,12 @@ class FigmaRectangle extends StatelessWidget implements FigmaNode {
   final FigmaTransform relativeTransform;
   final double opacity;
   final bool isRoot;
+  final String characters;
+  final FigmaTypeStyle style;
+  final List<int> characterStyleOverrides;
+  final Map<String, FigmaTypeStyle> styleOverrideTable;
 
-  FigmaRectangle({
+  FigmaText({
     Key key,
     this.id,
     this.isRoot = false,
@@ -36,7 +38,10 @@ class FigmaRectangle extends StatelessWidget implements FigmaNode {
     this.strokeWeight = 1.0,
     this.opacity = 1.0,
     this.constraints = const FigmaLayoutConstraints(),
-    this.rectangleCornerRadii = FigmaCornerRadii.zero,
+    this.characters = '',
+    this.style,
+    this.characterStyleOverrides = const <int>[],
+    this.styleOverrideTable,
     this.strokeAlign = FigmaStrokeAlign.center,
     this.fills = const <FigmaPaint>[],
     this.strokes = const <FigmaPaint>[],
@@ -47,9 +52,41 @@ class FigmaRectangle extends StatelessWidget implements FigmaNode {
 
   @override
   Widget build(BuildContext context) {
+    final style = this.style != null ? this.style.withFills(fills) : null;
+
+    Widget textWidget;
+
+    if (characterStyleOverrides != null && characterStyleOverrides.isNotEmpty) {
+      final spans = <TextSpan>[];
+      var styleId = '0';
+      var spanStyle = style;
+      var slice = '';
+      for (var i = 0; i < characters.length; i++) {
+        var newStyleId = i < characterStyleOverrides.length
+            ? characterStyleOverrides[i].toString()
+            : '0';
+
+        if (newStyleId != styleId) {
+          if (slice.isNotEmpty) {
+            spans.add(spanStyle.toTextSpan(slice));
+          }
+          styleId = newStyleId.toString();
+          spanStyle = styleId == '0' ? style : styleOverrideTable[styleId];
+          slice = '';
+        }
+        slice += characters[i];
+      }
+      if (slice.isNotEmpty) {
+        spans.add(spanStyle.toTextSpan(slice));
+      }
+      textWidget = style.toRichText(spans);
+    } else {
+      textWidget = style.toText(characters);
+    }
+
     final child = Opacity(
       opacity: opacity,
-      child: _FigmaRectangle(this),
+      child: textWidget,
     );
 
     if (isRoot) return child;
@@ -61,47 +98,5 @@ class FigmaRectangle extends StatelessWidget implements FigmaNode {
       layoutAlign: layoutAlign,
       child: child,
     );
-  }
-}
-
-class _FigmaRectangle extends LeafRenderObjectWidget {
-  final FigmaRectangle rectangle;
-
-  _FigmaRectangle(this.rectangle);
-
-  @override
-  RenderObject createRenderObject(BuildContext context) {
-    return RenderFigmaRectangle(
-      configuration: createLocalImageConfiguration(context),
-      designTransform: rectangle.relativeTransform,
-      designSize: rectangle.size,
-      decoration: FigmaPaintDecoration(
-        fills: rectangle.fills,
-        strokes: rectangle.strokes,
-        effects: rectangle.effects,
-        strokeWeight: rectangle.strokeWeight,
-        shape: FigmaBoxPaintShape(
-          rectangleCornerRadii: rectangle.rectangleCornerRadii,
-        ),
-      ),
-    );
-  }
-
-  @override
-  void updateRenderObject(
-      BuildContext context, covariant RenderFigmaRectangle renderObject) {
-    renderObject
-      ..configuration = createLocalImageConfiguration(context)
-      ..designSize = rectangle.size
-      ..designTransform = rectangle.relativeTransform
-      ..decoration = FigmaPaintDecoration(
-        fills: rectangle.fills,
-        strokeWeight: rectangle.strokeWeight,
-        strokes: rectangle.strokes,
-        effects: rectangle.effects,
-        shape: FigmaBoxPaintShape(
-          rectangleCornerRadii: rectangle.rectangleCornerRadii,
-        ),
-      );
   }
 }

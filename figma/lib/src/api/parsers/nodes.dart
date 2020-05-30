@@ -1,5 +1,3 @@
-import 'dart:ui';
-
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/widgets/node.dart';
 import 'package:flutter_figma/src/widgets/vector.dart';
@@ -20,6 +18,8 @@ class FigmaNodeParser {
         return _rectangle(json, isRoot);
       case 'FRAME':
         return _frame(json, isRoot);
+      case 'TEXT':
+        return _text(json, isRoot);
       case 'VECTOR':
       case 'REGULAR_POLYGON':
       case 'ELLIPSE':
@@ -96,6 +96,33 @@ class FigmaNodeParser {
       relativeTransform: base.relativeTransform(json),
       constraints: base.layoutConstraints(json),
       rectangleCornerRadii: base.cornerRadii(json),
+    );
+  }
+
+  static FigmaText _text(dynamic json, bool isRoot) {
+    return FigmaText(
+      isRoot: isRoot,
+      id: json['id'],
+      name: json['name'],
+      fills: base.paintList(json['fills']),
+      strokes: base.paintList(json['strokes']),
+      effects: base.effectList(json['effects']),
+      strokeWeight: base.number(json['strokeWeight']),
+      strokeAlign: base.strokeAlign(json['strokeAlign']),
+      layoutAlign: base.layoutAlign(json['layoutAlign']),
+      preserveRatio: json['preserveRatio'],
+      opacity: base.number(json['opacity']) ?? 1.0,
+      size: base.sizeFromVector(json['size']),
+      relativeTransform: base.relativeTransform(json),
+      constraints: base.layoutConstraints(json),
+      characters: json['characters'],
+      style: base.typeStyle(json['style']),
+      characterStyleOverrides: json['characterStyleOverrides']
+          .map<int>((x) => x?.toInt() as int)
+          .toList(),
+      styleOverrideTable: json['styleOverrideTable']
+          ?.map<String, FigmaTypeStyle>(
+              (i, x) => MapEntry<String, FigmaTypeStyle>(i, base.typeStyle(x))),
     );
   }
 }

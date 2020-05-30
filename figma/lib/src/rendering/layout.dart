@@ -6,30 +6,33 @@ import 'package:flutter_figma/widgets.dart';
 class FigmaLayoutParentData extends ContainerBoxParentData<RenderBox> {
   FigmaLayoutConstraints constraints;
   FigmaTransform transform;
+  Size designSize;
   FigmaLayoutAlign layoutAlign;
   @override
   String toString() =>
-      '${super.toString()}; transform=$transform, layoutAlign=$layoutAlign, constraints=$constraints';
+      '${super.toString()}; transform=$transform, size=$designSize layoutAlign=$layoutAlign, constraints=$constraints';
 }
 
 class FigmaLayout extends ParentDataWidget<FigmaLayoutParentData> {
   const FigmaLayout({
     Key key,
-    this.constraints,
-    this.transform,
-    this.layoutAlign,
+    @required this.constraints,
+    @required this.transform,
+    @required this.layoutAlign,
+    @required this.designSize,
     @required Widget child,
   }) : super(key: key, child: child);
 
   final FigmaLayoutConstraints constraints;
   final FigmaTransform transform;
   final FigmaLayoutAlign layoutAlign;
+  final Size designSize;
 
   @override
   void applyParentData(RenderObject renderObject) {
     assert(renderObject.parentData is FigmaLayoutParentData);
     final parentData = renderObject.parentData as FigmaLayoutParentData;
-    bool needsLayout = false;
+    var needsLayout = false;
 
     if (parentData.constraints != constraints) {
       parentData.constraints = constraints;
@@ -46,8 +49,13 @@ class FigmaLayout extends ParentDataWidget<FigmaLayoutParentData> {
       needsLayout = true;
     }
 
+    if (parentData.designSize != designSize) {
+      parentData.designSize = designSize;
+      needsLayout = true;
+    }
+
     if (needsLayout) {
-      final AbstractNode targetParent = renderObject.parent;
+      final targetParent = renderObject.parent;
       if (targetParent is RenderObject) targetParent.markNeedsLayout();
     }
   }

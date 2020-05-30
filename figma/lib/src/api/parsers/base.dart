@@ -10,6 +10,12 @@ double number(dynamic json) {
   throw Exception('Failed to parse number "$json"');
 }
 
+bool boolean(dynamic json) {
+  if (json == null) return null;
+  if (json == true) return true;
+  return false;
+}
+
 List<double> numberList(dynamic json) {
   return json?.map<double>(number)?.toList();
 }
@@ -54,7 +60,7 @@ Path path(dynamic json) {
   final result = Path();
   for (var item in json) {
     final data = parseSvgPathData(item['path']);
-    final windingRule = item['windingRule'];
+    //final windingRule = item['windingRule'];
     result.addPath(data, Offset.zero);
   }
   return result;
@@ -79,6 +85,8 @@ FigmaPaint paint(dynamic json) {
       return linearGradientPaint(json);
     case 'GRADIENT_RADIAL':
       return radialGradientPaint(json);
+    case 'IMAGE':
+      return imagePaint(json);
     default:
       return null;
   }
@@ -112,6 +120,18 @@ FigmaColorPaint colorPaint(dynamic json) {
   );
 }
 
+FigmaImagePaint imagePaint(dynamic json) {
+  return FigmaImagePaint(
+    opacity: number(json['opacity']),
+    imageRef: json['imageRef'],
+    scaleMode: scaleMode(json['scaleMode']),
+    scalingFactor: number(json['scalingFactor']) ?? 1.0,
+    imageTransform: transform(
+      json['imageTransform'],
+    ),
+  );
+}
+
 FigmaGradientLinearPaint linearGradientPaint(dynamic json) {
   return FigmaGradientLinearPaint(
       opacity: number(json['opacity']),
@@ -133,6 +153,30 @@ Color color(dynamic json) {
     _colorComponent(json['r'], 0),
     _colorComponent(json['g'], 0),
     _colorComponent(json['b'], 0),
+  );
+}
+
+FigmaTypeStyle typeStyle(dynamic json) {
+  if (json == null) return null;
+  return FigmaTypeStyle(
+    fills: paintList(json['fills']),
+    fontFamily: json['fontFamily'],
+    fontPostScriptName: json['fontPostScriptName'],
+    fontSize: number(json['fontSize']),
+    fontWeight: number(json['fontWeight'])?.toInt(),
+    italic: boolean(json['italic']),
+    letterSpacing: number(json['letterSpacing']),
+    lineHeightPercent: number(json['lineHeightPercent']),
+    lineHeightPx: number(json['lineHeightPx']),
+    lineHeightPercentFontSize: number(json['lineHeightPercentFontSize']),
+    paragraphIndent: number(json['paragraphIndent']),
+    paragraphSpacing: number(json['paragraphSpacing']),
+    textAlignHorizontal: textAlignHorizontal(json['textAlignHorizontal']),
+    textAlignVertical: textAlignVertical(json['textAlignVertical']),
+    textCase: textCase(json['textCase']),
+    lineHeightUnit: lineHeightUnit(json['lineHeightUnit']),
+    textAutoResize: textAutoResize(json['textAutoResize']),
+    textDecoration: textDecoration(json['textDecoration']),
   );
 }
 
@@ -194,10 +238,14 @@ FigmaHorizontalLayoutConstraint horizontalLayoutConstraints(String json) {
 
 FigmaTransform relativeTransform(dynamic json) {
   final value = json['relativeTransform'];
-  if (value == null) return FigmaTransform.identity;
+  return transform(value);
+}
+
+FigmaTransform transform(dynamic json) {
+  if (json == null) return FigmaTransform.identity;
   return FigmaTransform(
-    row0: numberList(value[0]),
-    row1: numberList(value[1]),
+    row0: numberList(json[0]),
+    row1: numberList(json[1]),
   );
 }
 
@@ -268,5 +316,92 @@ FigmaStrokeCap strokeCap(dynamic json) {
       return FigmaStrokeCap.round;
     default:
       return FigmaStrokeCap.none;
+  }
+}
+
+FigmaScaleMode scaleMode(dynamic json) {
+  switch (json) {
+    case 'TILE':
+      return FigmaScaleMode.tile;
+    case 'STRETCH':
+      return FigmaScaleMode.stretch;
+    case 'FIT':
+      return FigmaScaleMode.fit;
+    default:
+      return FigmaScaleMode.fill;
+  }
+}
+
+FigmaTextCase textCase(dynamic json) {
+  switch (json) {
+    case 'LOWER':
+      return FigmaTextCase.lower;
+    case 'UPPER':
+      return FigmaTextCase.upper;
+    case 'SMALL_CAPS':
+      return FigmaTextCase.smallCaps;
+    case 'SMALL_CAPS_FORCED':
+      return FigmaTextCase.smallCapsForced;
+    case 'TITLE':
+      return FigmaTextCase.title;
+    default:
+      return FigmaTextCase.original;
+  }
+}
+
+FigmaTextAlignHorizontal textAlignHorizontal(dynamic json) {
+  switch (json) {
+    case 'RIGHT':
+      return FigmaTextAlignHorizontal.right;
+    case 'JUSTIFIED':
+      return FigmaTextAlignHorizontal.justified;
+    case 'CENTER':
+      return FigmaTextAlignHorizontal.center;
+    default:
+      return FigmaTextAlignHorizontal.left;
+  }
+}
+
+FigmaTextAlignVertical textAlignVertical(dynamic json) {
+  switch (json) {
+    case 'BOTTOM':
+      return FigmaTextAlignVertical.bottom;
+    case 'CENTER':
+      return FigmaTextAlignVertical.center;
+    default:
+      return FigmaTextAlignVertical.top;
+  }
+}
+
+FigmaLineHeightUnit lineHeightUnit(dynamic json) {
+  switch (json) {
+    case 'INTRINSIC_%':
+      return FigmaLineHeightUnit.intrinsicPercent;
+    case 'FONT_SIZE_%':
+      return FigmaLineHeightUnit.fontSizePercent;
+    default:
+      return FigmaLineHeightUnit.pixels;
+  }
+}
+
+FigmaTextAutoResize textAutoResize(dynamic json) {
+  switch (json) {
+    case 'WIDTH_AND_HEIGHT':
+      return FigmaTextAutoResize.widthAndHeight;
+    case 'HEIGHT':
+      return FigmaTextAutoResize.height;
+    default:
+      return FigmaTextAutoResize.none;
+  }
+}
+
+FigmaTextDecoration textDecoration(dynamic json) {
+  switch (json) {
+    case 'UNDERLINE':
+      return FigmaTextDecoration.underline;
+    case 'STRIKETHROUGH':
+      return FigmaTextDecoration.strikethrough;
+    default:
+      return FigmaTextDecoration.none;
   }
 }

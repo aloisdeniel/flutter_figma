@@ -19,7 +19,7 @@ class FigmaFileParser {
   }
 }
 
-const _nodeParser = const FigmaNodeParser();
+const _nodeParser = FigmaNodeParser();
 
 FigmaApiDocument _document(dynamic json) {
   return FigmaApiDocument(

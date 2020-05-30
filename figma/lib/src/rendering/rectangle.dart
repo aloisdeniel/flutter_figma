@@ -1,10 +1,8 @@
-import 'dart:math' as math;
 import 'package:flutter_figma/src/base/base.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_figma/src/rendering/mixins.dart';
-import 'package:vector_math/vector_math_64.dart';
 
 class RenderFigmaRectangle extends RenderBox with RenderNodeMixin {
   RenderFigmaRectangle({
@@ -41,6 +39,15 @@ class RenderFigmaRectangle extends RenderBox with RenderNodeMixin {
     if (value == _configuration) return;
     _configuration = value;
     markNeedsPaint();
+  }
+
+  Size get clampedDesignSize {
+    final biggest = constraints.biggest;
+    final smallest = constraints.smallest;
+    return Size(
+      designSize.width.clamp(smallest.width, biggest.width),
+      designSize.height.clamp(smallest.height, biggest.height),
+    );
   }
 
   @override
@@ -82,9 +89,9 @@ class RenderFigmaRectangle extends RenderBox with RenderNodeMixin {
 
   @override
   void performLayout() {
-    final bounds = designTransform.calculateBounds(designSize);
     final biggest = constraints.biggest;
     final smallest = constraints.smallest;
+    final bounds = designTransform.calculateBounds(clampedDesignSize);
     size = Size(
       bounds.width.clamp(smallest.width, biggest.width),
       bounds.height.clamp(smallest.height, biggest.height),
@@ -96,8 +103,11 @@ class RenderFigmaRectangle extends RenderBox with RenderNodeMixin {
     assert(size.width != null);
     assert(size.height != null);
     _painter ??= _decoration.createBoxPainter(markNeedsPaint);
+
     final filledConfiguration = configuration.copyWith(
-      size: hasTransform ? designSize : size, // TODO Replace with bounds invert
+      size: hasTransform
+          ? clampedDesignSize
+          : size, // TODO Replace with bounds invert
     );
 
     // Painting background decoration
@@ -130,26 +140,18 @@ class RenderFigmaRectangle extends RenderBox with RenderNodeMixin {
   @override
   void paint(PaintingContext context, Offset offset) {
     // Applying transform
-    final originalSize = designSize;
+    if (designTransform.hasRotationOrScale) {
+      var transform = designTransform.matrixWithoutTranslate;
 
-    var transform = Matrix4.translationValues(
-          (size.width / 2),
-          (size.height / 2),
-          0,
-        ) *
-        designTransform.matrixWithoutTranslate *
-        Matrix4.translationValues(
-          -(originalSize.width / 2),
-          -(originalSize.height / 2),
-          0,
-        );
-
-    layer = context.pushTransform(
-      needsCompositing,
-      offset,
-      transform,
-      (c, o) => _paintWithTransform(c, o, true),
-      oldLayer: layer,
-    );
+      layer = context.pushTransform(
+        needsCompositing,
+        offset,
+        transform,
+        (c, o) => _paintWithTransform(c, o, true),
+        oldLayer: layer,
+      );
+    } else {
+      _paintWithTransform(context, offset, false);
+    }
   }
 }

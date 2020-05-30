@@ -6,9 +6,12 @@ import 'package:flutter_figma/src/rendering/layout.dart';
 import 'node.dart';
 
 class FigmaFrame extends StatelessWidget implements FigmaNode {
+  @override
   final String id;
+  @override
   final String name;
   final bool preserveRatio;
+  final bool clipsContent;
   final FigmaLayoutAlign layoutAlign;
   final FigmaLayoutMode layoutMode;
   final List<Widget> children;
@@ -26,7 +29,6 @@ class FigmaFrame extends StatelessWidget implements FigmaNode {
   final FigmaTransform relativeTransform;
   final FigmaCounterAxisSizingMode counterAxisSizingMode;
   final double opacity;
-  final bool clipsContent;
   final bool isRoot;
 
   FigmaFrame({
@@ -53,24 +55,37 @@ class FigmaFrame extends StatelessWidget implements FigmaNode {
     this.strokes = const <FigmaPaint>[],
     this.effects = const <FigmaEffect>[],
     this.layoutMode = FigmaLayoutMode.none,
-  })  : this.relativeTransform = relativeTransform ?? FigmaTransform(),
-        this.preserveRatio = preserveRatio ?? false,
+  })  : relativeTransform = relativeTransform ?? FigmaTransform(),
+        preserveRatio = preserveRatio ?? false,
         super(
           key: key ?? (id != null ? Key(id) : null),
         );
 
   @override
   Widget build(BuildContext context) {
-    final child = Opacity(
+    Widget child = Opacity(
       opacity: opacity,
       child: _FigmaFrame(this),
     );
+
+    if (clipsContent) {
+      child = ClipRRect(
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(rectangleCornerRadii.topLeft),
+          topRight: Radius.circular(rectangleCornerRadii.topRight),
+          bottomLeft: Radius.circular(rectangleCornerRadii.bottomLeft),
+          bottomRight: Radius.circular(rectangleCornerRadii.bottomRight),
+        ),
+        child: child,
+      );
+    }
 
     if (isRoot) {
       return child;
     }
 
     return FigmaLayout(
+      designSize: size,
       transform: relativeTransform,
       constraints: constraints,
       layoutAlign: layoutAlign,
@@ -118,10 +133,10 @@ class _FigmaFrame extends MultiChildRenderObjectWidget {
       ..layoutMode = frame.layoutMode
       ..designTransform = frame.relativeTransform
       ..designSize = frame.size
-      ..horizontalPadding = frame.horizontalPadding
-      ..verticalPadding = frame.verticalPadding
+      ..horizontalPadding = frame.horizontalPadding ?? 0.0
+      ..verticalPadding = frame.verticalPadding ?? 0.0
       ..counterAxisSizingMode = frame.counterAxisSizingMode
-      ..itemSpacing = frame.itemSpacing
+      ..itemSpacing = frame.itemSpacing ?? 0.0
       ..decoration = FigmaPaintDecoration(
         fills: frame.fills,
         strokes: frame.strokes,

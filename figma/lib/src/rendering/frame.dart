@@ -77,7 +77,6 @@ class RenderFigmaFrame extends RenderBox
   double get horizontalPadding => _horizontalPadding;
   double _horizontalPadding;
   set horizontalPadding(double value) {
-    assert(value != null);
     if (_horizontalPadding != value) {
       _horizontalPadding = value;
       markNeedsLayout();
@@ -150,13 +149,12 @@ class RenderFigmaFrame extends RenderBox
       if (counterAxisSizingMode == FigmaCounterAxisSizingMode.fixed) {
         return designSize.width;
       }
-      double size = horizontalPadding * 2;
-      RenderBox child = firstChild;
+      var size = horizontalPadding * 2;
+      var child = firstChild;
       while (child != null) {
         final mainSize = child.getMinIntrinsicWidth(height);
         size = math.max(size, mainSize);
-        final FigmaLayoutParentData childParentData =
-            child.parentData as FigmaLayoutParentData;
+        final childParentData = child.parentData as FigmaLayoutParentData;
         child = childParentData.nextSibling;
       }
       return size;
@@ -164,14 +162,13 @@ class RenderFigmaFrame extends RenderBox
 
     // We should add all children widths
     if (layoutMode == FigmaLayoutMode.horizontal) {
-      double size = horizontalPadding * 2;
-      RenderBox child = firstChild;
+      var size = horizontalPadding * 2.0;
+      var child = firstChild;
       while (child != null) {
         final mainSize = minChild
             ? child.getMinIntrinsicWidth(double.infinity)
             : child.getMaxIntrinsicWidth(double.infinity);
-        final FigmaLayoutParentData childParentData =
-            child.parentData as FigmaLayoutParentData;
+        final childParentData = child.parentData as FigmaLayoutParentData;
         size += mainSize;
         child = childParentData.nextSibling;
         if (child != null) size += itemSpacing;
@@ -180,11 +177,10 @@ class RenderFigmaFrame extends RenderBox
     }
 
     // Absolute positions
-    double size = 0;
-    RenderBox child = firstChild;
+    var size = 0.0;
+    var child = firstChild;
     while (child != null) {
-      final FigmaLayoutParentData childParentData =
-          child.parentData as FigmaLayoutParentData;
+      final childParentData = child.parentData as FigmaLayoutParentData;
       final position = childParentData.transform.position;
       final mainSize = minChild
           ? child.getMinIntrinsicWidth(
@@ -204,13 +200,12 @@ class RenderFigmaFrame extends RenderBox
       if (counterAxisSizingMode == FigmaCounterAxisSizingMode.fixed) {
         return designSize.height;
       }
-      double size = verticalPadding * 2;
-      RenderBox child = firstChild;
+      var size = verticalPadding * 2;
+      var child = firstChild;
       while (child != null) {
         final mainSize = child.getMinIntrinsicHeight(width);
         size = math.max(size, mainSize);
-        final FigmaLayoutParentData childParentData =
-            child.parentData as FigmaLayoutParentData;
+        final childParentData = child.parentData as FigmaLayoutParentData;
         child = childParentData.nextSibling;
       }
       return size;
@@ -218,14 +213,13 @@ class RenderFigmaFrame extends RenderBox
 
     // We should add all children heights
     if (layoutMode == FigmaLayoutMode.vertical) {
-      double size = verticalPadding * 2;
-      RenderBox child = firstChild;
+      var size = verticalPadding * 2;
+      var child = firstChild;
       while (child != null) {
         final mainSize = minChild
             ? child.getMinIntrinsicHeight(double.infinity)
             : child.getMaxIntrinsicHeight(double.infinity);
-        final FigmaLayoutParentData childParentData =
-            child.parentData as FigmaLayoutParentData;
+        final childParentData = child.parentData as FigmaLayoutParentData;
         size += mainSize;
         child = childParentData.nextSibling;
         if (child != null) size += itemSpacing;
@@ -234,11 +228,10 @@ class RenderFigmaFrame extends RenderBox
     }
 
     // Absolute positions
-    double size = 0;
-    RenderBox child = firstChild;
+    var size = 0.0;
+    var child = firstChild;
     while (child != null) {
-      final FigmaLayoutParentData childParentData =
-          child.parentData as FigmaLayoutParentData;
+      final childParentData = child.parentData as FigmaLayoutParentData;
       final position = childParentData.transform.position;
       final mainSize = minChild
           ? child.getMinIntrinsicHeight(
@@ -271,48 +264,68 @@ class RenderFigmaFrame extends RenderBox
   void _performStackLayout() {
     double designCross;
     double constraintsMaxCross;
+    double constraintsMinCross;
+    double constraintsMaxMain;
+    double constraintsMinMain;
     double crossPadding;
     double mainPadding;
 
     final isHorizontal = layoutMode == FigmaLayoutMode.horizontal;
     final isCrossFixed =
         counterAxisSizingMode == FigmaCounterAxisSizingMode.fixed;
-    final constraints = this.constraints;
+
     if (isHorizontal) {
       designCross = designSize.height;
+      constraintsMinCross = constraints.minHeight;
       constraintsMaxCross = constraints.maxHeight;
-      crossPadding = verticalPadding;
-      mainPadding = horizontalPadding;
+      constraintsMinMain = constraints.minWidth;
+      constraintsMaxMain = constraints.maxWidth;
+      crossPadding = verticalPadding ?? 0.0;
+      mainPadding = horizontalPadding ?? 0.0;
     } else {
       designCross = designSize.width;
+      constraintsMinCross = constraints.minWidth;
       constraintsMaxCross = constraints.maxWidth;
-      crossPadding = horizontalPadding;
-      mainPadding = verticalPadding;
+      constraintsMinMain = constraints.minHeight;
+      constraintsMaxMain = constraints.maxHeight;
+      crossPadding = horizontalPadding ?? 0.0;
+      mainPadding = verticalPadding ?? 0.0;
     }
 
-    final maxCross = isCrossFixed ? designCross : constraintsMaxCross;
+    final clampedDesignCross =
+        designCross.clamp(constraintsMinCross, constraintsMaxCross);
+    final minCross = isCrossFixed ? clampedDesignCross : constraintsMaxCross;
+    final maxCross = isCrossFixed ? clampedDesignCross : constraintsMaxCross;
 
     var child = firstChild;
 
-    // 1. we calculate children sizes
+    // Children stretched along the cross axis
     final stretchedChildren = <RenderBox>[];
-    double cross = isCrossFixed ? designSize.width : 2 * crossPadding;
+
+    // 1. we calculate children sizes and cross size
+    double cross = isCrossFixed ? clampedDesignCross : 2 * crossPadding;
+
+    // TODO use rotation
+    final maxChildCross = maxCross.isInfinite
+        ? maxCross
+        : math.max(maxCross - 2 * crossPadding, 0.0);
 
     while (child != null) {
       final childParentData = child.parentData as FigmaLayoutParentData;
       if (childParentData.layoutAlign == FigmaLayoutAlign.stretch) {
         stretchedChildren.add(child);
       } else {
-        final innerConstraints = isHorizontal
+        final childConstraints = isHorizontal
             ? BoxConstraints(
-                maxHeight: maxCross - 2 * crossPadding,
+                maxHeight: maxChildCross,
                 maxWidth: double.infinity,
               )
             : BoxConstraints(
                 maxHeight: double.infinity,
-                maxWidth: maxCross - 2 * crossPadding,
+                maxWidth: maxChildCross,
               );
-        child.layout(innerConstraints, parentUsesSize: true);
+
+        child.layout(childConstraints, parentUsesSize: true);
 
         if (!isCrossFixed) {
           final childCross =
@@ -326,8 +339,6 @@ class RenderFigmaFrame extends RenderBox
 
     // 2. Layout of stretched items
     for (var child in stretchedChildren) {
-      // TODO use rotation
-      final maxChildCross = cross - 2 * crossPadding;
       final innerConstraints = isHorizontal
           ? BoxConstraints(
               minHeight: maxChildCross,
@@ -342,7 +353,7 @@ class RenderFigmaFrame extends RenderBox
       child.layout(innerConstraints, parentUsesSize: true);
     }
 
-    // 2. we update children offset
+    // 2. we update children position along the main axis
     child = firstChild;
     var main = mainPadding;
     while (child != null) {
@@ -381,51 +392,102 @@ class RenderFigmaFrame extends RenderBox
 
     if (!isHorizontal) {
       size = Size(
-        math.min(
-          cross,
-          constraints.biggest.width,
-        ),
-        math.min(
-          main,
+        cross,
+        main.clamp(
+          constraints.smallest.height,
           constraints.biggest.height,
         ),
       );
     } else {
       size = Size(
-        math.min(
-          main,
+        main.clamp(
+          constraints.smallest.width,
           constraints.biggest.width,
         ),
-        math.min(
-          cross,
-          constraints.biggest.height,
-        ),
+        cross,
       );
     }
   }
 
   void _performAbsoluteLayout() {
     var child = firstChild;
+    final biggest = constraints.biggest;
+    final smallest = constraints.smallest;
+
+    final size = Size(
+      designSize.width.clamp(smallest.width, biggest.width),
+      designSize.height.clamp(smallest.height, biggest.height),
+    );
+
     while (child != null) {
       final childParentData = child.parentData as FigmaLayoutParentData;
       final position = childParentData.transform.position;
+      final isStretchHorizontal = childParentData.constraints.horizontal ==
+          FigmaHorizontalLayoutConstraint.left_right;
+      final isStretchVertical = childParentData.constraints.vertical ==
+          FigmaVerticalLayoutConstraint.top_bottom;
+
+      double minWidth, maxWidth, minHeight, maxHeight;
+
+      if (isStretchHorizontal) {
+        final width = size.width -
+            (position.dx) -
+            (designSize.width -
+                (position.dx + childParentData.designSize.width));
+        minWidth = width;
+        maxWidth = width;
+      } else {
+        minWidth = 0.0;
+        maxWidth = double.infinity;
+      }
+
+      if (isStretchVertical) {
+        final height = size.height -
+            (position.dy) -
+            (designSize.height -
+                (position.dy + childParentData.designSize.height));
+        minHeight = height;
+        maxHeight = height;
+      } else {
+        minHeight = 0.0;
+        maxHeight = double.infinity;
+      }
+
       final innerConstraints = BoxConstraints(
-        maxWidth: constraints.maxWidth - position.dx,
-        maxHeight: constraints.maxHeight - position.dy,
+        minWidth: minWidth,
+        maxWidth: maxWidth,
+        minHeight: minHeight,
+        maxHeight: maxHeight,
       );
       child.layout(innerConstraints);
-      childParentData.offset = position;
+
+      double x, y;
+      switch (childParentData.constraints.horizontal) {
+        case FigmaHorizontalLayoutConstraint.right:
+          x = size.width - (designSize.width - position.dx);
+          break;
+        case FigmaHorizontalLayoutConstraint.center:
+          x = size.width / 2 - (designSize.width / 2 - position.dx);
+          break;
+
+        default:
+          x = position.dx;
+      }
+
+      switch (childParentData.constraints.vertical) {
+        case FigmaVerticalLayoutConstraint.bottom:
+          y = size.height - (designSize.height - position.dy);
+          break;
+        default:
+          y = position.dy;
+      }
+
+      childParentData.offset = Offset(x, y);
+
       child = childParentData.nextSibling;
     }
 
-    final biggest = constraints.biggest;
-    size = Size(
-      math.min(designSize.width, biggest.width),
-      math.min(
-        designSize.height,
-        biggest.height,
-      ),
-    );
+    this.size = size;
   }
 
   @override
@@ -450,8 +512,6 @@ class RenderFigmaFrame extends RenderBox
   @override
   void paint(PaintingContext context, Offset offset) {
     // Applying transform
-    final originalSize = designSize;
-
     var transform = Matrix4.translationValues(
           (size.width / 2),
           (size.height / 2),
@@ -459,8 +519,8 @@ class RenderFigmaFrame extends RenderBox
         ) *
         designTransform.matrixWithoutTranslate *
         Matrix4.translationValues(
-          -(originalSize.width / 2),
-          -(originalSize.height / 2),
+          -(size.width / 2),
+          -(size.height / 2),
           0,
         );
 
@@ -516,14 +576,10 @@ class RenderFigmaFrame extends RenderBox
     // There's no point in drawing the children if we're empty.
     if (size.isEmpty) return;
 
-    // We have overflow. Clip it.
-    context.pushClipRect(
-        needsCompositing, offset, Offset.zero & size, defaultPaint);
-
     assert(() {
       // Only set this if it's null to save work. It gets reset to null if the
       // _direction changes.
-      final List<DiagnosticsNode> debugOverflowHints = <DiagnosticsNode>[
+      final debugOverflowHints = <DiagnosticsNode>[
         ErrorDescription(
             'The overflowing $runtimeType has a layout mode of $_layoutMode.'),
         ErrorDescription(
@@ -551,12 +607,8 @@ class RenderFigmaFrame extends RenderBox
   }
 
   @override
-  Rect describeApproximatePaintClip(RenderObject child) =>
-      _hasOverflow ? Offset.zero & size : null;
-
-  @override
   String toStringShort() {
-    String header = super.toStringShort();
+    var header = super.toStringShort();
     if (_overflow is double && _hasOverflow) header += ' OVERFLOWING';
     return header;
   }

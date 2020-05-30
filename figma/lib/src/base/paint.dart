@@ -72,6 +72,20 @@ class FigmaGradientRadialPaint extends FigmaPaint {
   }) : super(opacity: opacity);
 }
 
+class FigmaImagePaint extends FigmaPaint {
+  final String imageRef;
+  final double scalingFactor;
+  final FigmaTransform imageTransform;
+  final FigmaScaleMode scaleMode;
+  const FigmaImagePaint(
+      {double opacity,
+      @required this.imageRef,
+      @required this.scaleMode,
+      this.imageTransform,
+      this.scalingFactor = 1.0})
+      : super(opacity: opacity);
+}
+
 abstract class FigmaPaintShape {
   const FigmaPaintShape();
 }

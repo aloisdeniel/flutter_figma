@@ -71,9 +71,9 @@ class FigmaTransform {
     );
   }
 
-  Size calculateBounds(Size size) {
+  Rect calculateBounds(Size size) {
     if (!hasRotationOrScale) {
-      return size;
+      return Offset.zero & size;
     }
 
     final matrix = matrixWithoutTranslate;
@@ -105,7 +105,7 @@ class FigmaTransform {
       results[0],
       results[1],
     );
-    return rect.size;
+    return rect;
   }
 
   Size fromBounds(Size size) {

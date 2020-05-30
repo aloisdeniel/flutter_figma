@@ -6,7 +6,9 @@ import 'package:flutter/widgets.dart';
 import 'node.dart';
 
 class FigmaVector extends StatelessWidget implements FigmaNode {
+  @override
   final String id;
+  @override
   final String name;
   final double strokeWeight;
   final FigmaStrokeJoin strokeJoin;
@@ -45,8 +47,8 @@ class FigmaVector extends StatelessWidget implements FigmaNode {
     this.fills = const <FigmaPaint>[],
     this.strokes = const <FigmaPaint>[],
     this.effects = const <FigmaEffect>[],
-  })  : this.relativeTransform = relativeTransform ?? FigmaTransform(),
-        this.preserveRatio = preserveRatio ?? false,
+  })  : relativeTransform = relativeTransform ?? FigmaTransform(),
+        preserveRatio = preserveRatio ?? false,
         super(key: key ?? (id != null ? Key(id) : null));
 
   @override
@@ -59,6 +61,7 @@ class FigmaVector extends StatelessWidget implements FigmaNode {
     if (isRoot) return child;
 
     return FigmaLayout(
+      designSize: size,
       transform: relativeTransform,
       constraints: constraints,
       layoutAlign: layoutAlign,
