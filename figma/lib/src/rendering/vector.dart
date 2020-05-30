@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_figma/src/rendering/mixins.dart';
 
-class RenderFigmaRectangle extends RenderBox with RenderNodeMixin {
-  RenderFigmaRectangle({
+import 'frame.dart';
+
+class RenderFigmaVector extends RenderBox with RenderNodeMixin {
+  RenderFigmaVector({
     Size designSize,
     FigmaTransform designTransform,
     ImageConfiguration configuration,
@@ -137,11 +139,35 @@ class RenderFigmaRectangle extends RenderBox with RenderNodeMixin {
     if (decoration.isComplex) context.setIsComplexHint();
   }
 
+  bool get shouldTransformFromCenter {
+    var parent = this.parent;
+    if (parent is RenderOpacity) {
+      parent = parent.parent;
+    }
+
+    return parent is RenderFigmaFrame &&
+        parent.layoutMode != FigmaLayoutMode.none;
+  }
+
   @override
   void paint(PaintingContext context, Offset offset) {
     // Applying transform
     if (designTransform.hasRotationOrScale) {
       var transform = designTransform.matrixWithoutTranslate;
+
+      if (shouldTransformFromCenter) {
+        transform = Matrix4.translationValues(
+              (size.width / 2),
+              (size.height / 2),
+              0,
+            ) *
+            transform *
+            Matrix4.translationValues(
+              -(size.width / 2),
+              -(size.height / 2),
+              0,
+            );
+      }
 
       layer = context.pushTransform(
         needsCompositing,

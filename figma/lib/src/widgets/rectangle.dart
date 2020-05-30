@@ -1,6 +1,6 @@
 import 'package:flutter_figma/src/base/base.dart';
 import 'package:flutter_figma/src/rendering/layout.dart';
-import 'package:flutter_figma/src/rendering/rectangle.dart';
+import 'package:flutter_figma/src/rendering/vector.dart';
 import 'package:flutter/widgets.dart';
 
 import 'node.dart';
@@ -71,7 +71,7 @@ class _FigmaRectangle extends LeafRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderFigmaRectangle(
+    return RenderFigmaVector(
       configuration: createLocalImageConfiguration(context),
       designTransform: rectangle.relativeTransform,
       designSize: rectangle.size,
@@ -89,7 +89,7 @@ class _FigmaRectangle extends LeafRenderObjectWidget {
 
   @override
   void updateRenderObject(
-      BuildContext context, covariant RenderFigmaRectangle renderObject) {
+      BuildContext context, covariant RenderFigmaVector renderObject) {
     renderObject
       ..configuration = createLocalImageConfiguration(context)
       ..designSize = rectangle.size
