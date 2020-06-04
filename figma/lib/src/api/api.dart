@@ -38,20 +38,27 @@ class FigmaApiFile {
   final String version;
   final String lastModified;
   final FigmaApiDocument document;
+  final Map<String, FigmaFileStyle> styles;
+  final Map<String, FigmaFileComponent> components;
 
   const FigmaApiFile({
+    @required this.styles,
     @required this.name,
     @required this.role,
     @required this.version,
     @required this.lastModified,
     @required this.document,
+    @required this.components,
   });
 
-  FigmaNode findNode(String id) {
+  FigmaNode findNode({String id, String name}) {
+    assert(id != null || name != null);
     if (document?.pages == null) return null;
     for (var page in document.pages) {
       for (var child in page.children) {
-        final found = _findNode(child, id);
+        final found = id != null
+            ? _findNodeById(child, id)
+            : _findNodeByName(child, name);
         if (found != null) {
           return found;
         }
@@ -59,14 +66,38 @@ class FigmaApiFile {
     }
     return null;
   }
+
+  FigmaNode findComponent(String name) {
+    if (components == null) return null;
+    final node = components.entries.firstWhere(
+      (e) => e.value.name == name,
+      orElse: () => null,
+    );
+    if (node == null) return null;
+    return findNode(id: node.key);
+  }
 }
 
-FigmaNode _findNode(FigmaNode node, String id) {
+FigmaNode _findNodeById(FigmaNode node, String id) {
   if (node == null) return null;
   if (node.id == id) return node;
   if (node is FigmaFrame) {
     for (var child in node.children) {
-      final found = _findNode(child, id);
+      final found = _findNodeById(child, id);
+      if (found != null) {
+        return found;
+      }
+    }
+  }
+  return null;
+}
+
+FigmaNode _findNodeByName(FigmaNode node, String name) {
+  if (node == null) return null;
+  if (node.name == name) return node;
+  if (node is FigmaFrame) {
+    for (var child in node.children) {
+      final found = _findNodeByName(child, name);
       if (found != null) {
         return found;
       }
@@ -93,5 +124,38 @@ class FigmaApiCanvas {
     @required this.name,
     @required this.backgroundColor,
     @required this.children,
+  });
+}
+
+class FigmaFileStyle {
+  final String key;
+  final String name;
+  final FigmaFileStyleType type;
+  final String description;
+
+  const FigmaFileStyle({
+    @required this.key,
+    @required this.name,
+    @required this.type,
+    @required this.description,
+  });
+}
+
+enum FigmaFileStyleType {
+  fill,
+  text,
+  grid,
+  effect,
+}
+
+class FigmaFileComponent {
+  final String key;
+  final String name;
+  final String description;
+
+  const FigmaFileComponent({
+    @required this.key,
+    @required this.name,
+    @required this.description,
   });
 }

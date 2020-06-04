@@ -9,30 +9,31 @@ class FigmaNodeParser {
   const FigmaNodeParser();
 
   FigmaNode parse(dynamic json) {
-    return _node(json, true);
+    return _node(json);
   }
 
-  static FigmaNode _node(dynamic json, bool isRoot) {
+  static FigmaNode _node(dynamic json) {
     switch (json['type']) {
       case 'RECTANGLE':
-        return _rectangle(json, isRoot);
+        return _rectangle(json);
+      case 'INSTANCE':
+      case 'COMPONENT':
       case 'FRAME':
-        return _frame(json, isRoot);
+        return _frame(json);
       case 'TEXT':
-        return _text(json, isRoot);
+        return _text(json);
       case 'VECTOR':
       case 'REGULAR_POLYGON':
       case 'ELLIPSE':
       case 'STAR':
-        return _vector(json, isRoot);
+        return _vector(json);
       default:
         return null;
     }
   }
 
-  static FigmaVector _vector(dynamic json, bool isRoot) {
+  static FigmaVector _vector(dynamic json) {
     return FigmaVector(
-      isRoot: isRoot,
       id: json['id'],
       name: json['name'],
       fillGeometry: base.path(json['fillGeometry']),
@@ -51,9 +52,8 @@ class FigmaNodeParser {
     );
   }
 
-  static FigmaFrame _frame(dynamic json, bool isRoot) {
+  static FigmaFrame _frame(dynamic json) {
     return FigmaFrame(
-      isRoot: isRoot,
       id: json['id'],
       name: json['name'],
       fills: base.paintList(json['fills']),
@@ -75,13 +75,12 @@ class FigmaNodeParser {
       relativeTransform: base.relativeTransform(json),
       constraints: base.layoutConstraints(json),
       rectangleCornerRadii: base.cornerRadii(json),
-      children: json['children']?.map<Widget>((x) => _node(x, false))?.toList(),
+      children: json['children']?.map<Widget>((x) => _node(x))?.toList(),
     );
   }
 
-  static FigmaRectangle _rectangle(dynamic json, bool isRoot) {
+  static FigmaRectangle _rectangle(dynamic json) {
     return FigmaRectangle(
-      isRoot: isRoot,
       id: json['id'],
       name: json['name'],
       fills: base.paintList(json['fills']),
@@ -99,9 +98,8 @@ class FigmaNodeParser {
     );
   }
 
-  static FigmaText _text(dynamic json, bool isRoot) {
+  static FigmaText _text(dynamic json) {
     return FigmaText(
-      isRoot: isRoot,
       id: json['id'],
       name: json['name'],
       fills: base.paintList(json['fills']),

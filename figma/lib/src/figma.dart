@@ -9,7 +9,7 @@ class Figma extends InheritedWidget {
     @required Widget child,
     @required String token,
   })  : assert(token != null),
-        this.api = FigmaApi(token),
+        api = FigmaApi(token),
         super(
           key: key,
           child: child,

@@ -3,6 +3,7 @@ import 'package:flutter_figma/src/rendering/layout.dart';
 import 'package:flutter_figma/src/rendering/vector.dart';
 import 'package:flutter/widgets.dart';
 
+import '../data.dart';
 import 'node.dart';
 
 class FigmaRectangle extends StatelessWidget implements FigmaNode {
@@ -22,12 +23,10 @@ class FigmaRectangle extends StatelessWidget implements FigmaNode {
   final Size size;
   final FigmaTransform relativeTransform;
   final double opacity;
-  final bool isRoot;
 
   FigmaRectangle({
     Key key,
     this.id,
-    this.isRoot = false,
     this.name,
     this.size = Size.zero,
     this.layoutAlign = FigmaLayoutAlign.min,
@@ -43,16 +42,31 @@ class FigmaRectangle extends StatelessWidget implements FigmaNode {
     this.effects = const <FigmaEffect>[],
   })  : relativeTransform = relativeTransform ?? FigmaTransform(),
         preserveRatio = preserveRatio ?? false,
-        super(key: key ?? (id != null ? Key(id) : null));
+        super(
+          key: key ?? (id != null ? Key(id) : null),
+        );
 
   @override
   Widget build(BuildContext context) {
-    final child = Opacity(
-      opacity: opacity,
-      child: _FigmaRectangle(this),
-    );
+    final data = FigmaData.of(context, name);
 
-    if (isRoot) return child;
+    Widget child;
+    if (data?.builder != null) {
+      child = data.builder(context);
+    } else {
+      child = Opacity(
+        opacity: data?.opacity ?? opacity,
+        child: _FigmaRectangle(this),
+      );
+    }
+
+    if (data?.decoratorBuilder != null) {
+      child = data.decoratorBuilder(context, child);
+    }
+
+    child = FigmaRootNode.child(child: child);
+
+    if (FigmaRootNode.of(context)) return child;
 
     return FigmaLayout(
       designSize: size,
@@ -71,17 +85,25 @@ class _FigmaRectangle extends LeafRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
+    final data = FigmaData.of(context, rectangle.name);
+
+    final fills = data?.fills ?? rectangle.fills;
+    final strokes = data?.strokes ?? rectangle.strokes;
+    final effects = data?.effects ?? rectangle.effects;
+    final strokeWeight = data?.strokeWeight ?? rectangle.strokeWeight;
+    final rectangleCornerRadii =
+        data?.rectangleCornerRadii ?? rectangle.rectangleCornerRadii;
     return RenderFigmaVector(
       configuration: createLocalImageConfiguration(context),
       designTransform: rectangle.relativeTransform,
       designSize: rectangle.size,
       decoration: FigmaPaintDecoration(
-        fills: rectangle.fills,
-        strokes: rectangle.strokes,
-        effects: rectangle.effects,
-        strokeWeight: rectangle.strokeWeight,
+        fills: fills,
+        strokes: strokes,
+        effects: effects,
+        strokeWeight: strokeWeight,
         shape: FigmaBoxPaintShape(
-          rectangleCornerRadii: rectangle.rectangleCornerRadii,
+          rectangleCornerRadii: rectangleCornerRadii,
         ),
       ),
     );
@@ -90,17 +112,24 @@ class _FigmaRectangle extends LeafRenderObjectWidget {
   @override
   void updateRenderObject(
       BuildContext context, covariant RenderFigmaVector renderObject) {
+    final data = FigmaData.of(context, rectangle.name);
+    final fills = data?.fills ?? rectangle.fills;
+    final strokes = data?.strokes ?? rectangle.strokes;
+    final effects = data?.effects ?? rectangle.effects;
+    final strokeWeight = data?.strokeWeight ?? rectangle.strokeWeight;
+    final rectangleCornerRadii =
+        data?.rectangleCornerRadii ?? rectangle.rectangleCornerRadii;
     renderObject
       ..configuration = createLocalImageConfiguration(context)
       ..designSize = rectangle.size
       ..designTransform = rectangle.relativeTransform
       ..decoration = FigmaPaintDecoration(
-        fills: rectangle.fills,
-        strokeWeight: rectangle.strokeWeight,
-        strokes: rectangle.strokes,
-        effects: rectangle.effects,
+        fills: fills,
+        strokeWeight: strokeWeight,
+        strokes: strokes,
+        effects: effects,
         shape: FigmaBoxPaintShape(
-          rectangleCornerRadii: rectangle.rectangleCornerRadii,
+          rectangleCornerRadii: rectangleCornerRadii,
         ),
       );
   }

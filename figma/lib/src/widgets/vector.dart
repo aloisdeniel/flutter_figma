@@ -3,6 +3,7 @@ import 'package:flutter_figma/src/rendering/layout.dart';
 import 'package:flutter_figma/src/rendering/vector.dart';
 import 'package:flutter/widgets.dart';
 
+import '../data.dart';
 import 'node.dart';
 
 class FigmaVector extends StatelessWidget implements FigmaNode {
@@ -25,12 +26,10 @@ class FigmaVector extends StatelessWidget implements FigmaNode {
   final Size size;
   final FigmaTransform relativeTransform;
   final double opacity;
-  final bool isRoot;
 
   FigmaVector({
     Key key,
     this.id,
-    this.isRoot = false,
     this.name,
     this.fillGeometry,
     this.strokeJoin = FigmaStrokeJoin.miter,
@@ -53,12 +52,25 @@ class FigmaVector extends StatelessWidget implements FigmaNode {
 
   @override
   Widget build(BuildContext context) {
-    final child = Opacity(
-      opacity: opacity,
-      child: _FigmaVector(this),
-    );
+    final data = FigmaData.of(context, name);
 
-    if (isRoot) return child;
+    Widget child;
+    if (data?.builder != null) {
+      child = data.builder(context);
+    } else {
+      child = Opacity(
+        opacity: data?.opacity ?? opacity,
+        child: _FigmaVector(this),
+      );
+    }
+
+    if (data?.decoratorBuilder != null) {
+      child = data.decoratorBuilder(context, child);
+    }
+
+    child = FigmaRootNode.child(child: child);
+
+    if (FigmaRootNode.of(context)) return child;
 
     return FigmaLayout(
       designSize: size,
@@ -77,15 +89,20 @@ class _FigmaVector extends LeafRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
+    final data = FigmaData.of(context, vector.name);
+    final fills = data?.fills ?? vector.fills;
+    final strokes = data?.strokes ?? vector.strokes;
+    final effects = data?.effects ?? vector.effects;
+    final strokeWeight = data?.strokeWeight ?? vector.strokeWeight;
     return RenderFigmaVector(
       configuration: createLocalImageConfiguration(context),
       designTransform: vector.relativeTransform,
       designSize: vector.size,
       decoration: FigmaPaintDecoration(
-        fills: vector.fills,
-        strokes: vector.strokes,
-        effects: vector.effects,
-        strokeWeight: vector.strokeWeight,
+        fills: fills,
+        strokes: strokes,
+        effects: effects,
+        strokeWeight: strokeWeight,
         shape: FigmaPathPaintShape(
           fillGeometry: vector.fillGeometry,
         ),
@@ -96,15 +113,21 @@ class _FigmaVector extends LeafRenderObjectWidget {
   @override
   void updateRenderObject(
       BuildContext context, covariant RenderFigmaVector renderObject) {
+    final data = FigmaData.of(context, vector.name);
+    final fills = data?.fills ?? vector.fills;
+    final strokes = data?.strokes ?? vector.strokes;
+    final effects = data?.effects ?? vector.effects;
+    final strokeWeight = data?.strokeWeight ?? vector.strokeWeight;
+
     renderObject
       ..configuration = createLocalImageConfiguration(context)
       ..designSize = vector.size
       ..designTransform = vector.relativeTransform
       ..decoration = FigmaPaintDecoration(
-        fills: vector.fills,
-        strokeWeight: vector.strokeWeight,
-        strokes: vector.strokes,
-        effects: vector.effects,
+        fills: fills,
+        strokeWeight: strokeWeight,
+        strokes: strokes,
+        effects: effects,
         shape: FigmaPathPaintShape(
           fillGeometry: vector.fillGeometry,
         ),

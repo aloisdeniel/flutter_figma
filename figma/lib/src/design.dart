@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/api/api.dart';
 import 'package:flutter_figma/src/figma.dart';
+import 'package:flutter_figma/src/widgets/node.dart';
 
 class FigmaDesignFile extends StatefulWidget {
   final String fileId;
@@ -68,17 +69,30 @@ class _InheritedDesignState extends InheritedWidget {
 }
 
 class FigmaDesignNode extends StatelessWidget {
-  final String id;
-  const FigmaDesignNode({
-    @required this.id,
-  });
+  final String name;
+  final String componentName;
+  const FigmaDesignNode.component({
+    @required String name,
+  })  : assert(name != null),
+        name = null,
+        componentName = name;
+
+  const FigmaDesignNode.node({
+    @required String name,
+  })  : assert(name != null),
+        name = name,
+        componentName = null;
 
   @override
   Widget build(BuildContext context) {
     final designState =
         context.dependOnInheritedWidgetOfExactType<_InheritedDesignState>();
     if (designState.file == null) return CircularProgressIndicator();
-    final node = designState.file.findNode(id);
-    return node;
+    final node = componentName != null
+        ? designState.file.findComponent(componentName)
+        : designState.file.findNode(name: name);
+    return FigmaRootNode.root(
+      child: node,
+    );
   }
 }

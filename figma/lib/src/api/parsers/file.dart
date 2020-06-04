@@ -14,6 +14,8 @@ class FigmaFileParser {
       lastModified: json['lastModified'],
       role: json['role'],
       version: json['version'],
+      styles: _fileStyleMap(json['styles']),
+      components: _fileComponentMap(json['components']),
       document: _document(json['document']),
     );
   }
@@ -36,4 +38,54 @@ FigmaApiCanvas _canvas(dynamic json) {
     children: json['children']?.map<FigmaNode>(_nodeParser.parse)?.toList() ??
         const <FigmaApiCanvas>[],
   );
+}
+
+Map<String, FigmaFileComponent> _fileComponentMap(dynamic json) {
+  final map = json as Map;
+  return map.map(
+    (key, value) => MapEntry<String, FigmaFileComponent>(
+      key,
+      _fileComponent(value),
+    ),
+  );
+}
+
+FigmaFileComponent _fileComponent(dynamic json) {
+  return FigmaFileComponent(
+    key: json['key'],
+    name: json['name'],
+    description: json['description'],
+  );
+}
+
+Map<String, FigmaFileStyle> _fileStyleMap(dynamic json) {
+  final map = json as Map;
+  return map.map(
+    (key, value) => MapEntry<String, FigmaFileStyle>(
+      key,
+      _fileStyle(value),
+    ),
+  );
+}
+
+FigmaFileStyle _fileStyle(dynamic json) {
+  return FigmaFileStyle(
+    key: json['key'],
+    name: json['name'],
+    description: json['description'],
+    type: _fileStyleType(json['type']),
+  );
+}
+
+FigmaFileStyleType _fileStyleType(dynamic json) {
+  switch (json) {
+    case 'TEXT':
+      return FigmaFileStyleType.text;
+    case 'EFFECT':
+      return FigmaFileStyleType.effect;
+    case 'GRID':
+      return FigmaFileStyleType.grid;
+    default:
+      return FigmaFileStyleType.fill;
+  }
 }

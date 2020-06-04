@@ -3,6 +3,7 @@ import 'package:flutter_figma/src/rendering/frame.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/rendering/layout.dart';
 
+import '../data.dart';
 import 'node.dart';
 
 class FigmaFrame extends StatelessWidget implements FigmaNode {
@@ -29,13 +30,11 @@ class FigmaFrame extends StatelessWidget implements FigmaNode {
   final FigmaTransform relativeTransform;
   final FigmaCounterAxisSizingMode counterAxisSizingMode;
   final double opacity;
-  final bool isRoot;
 
   FigmaFrame({
     Key key,
     this.id,
     this.name,
-    this.isRoot = false,
     this.layoutAlign = FigmaLayoutAlign.min,
     this.size = Size.zero,
     bool preserveRatio,
@@ -63,24 +62,37 @@ class FigmaFrame extends StatelessWidget implements FigmaNode {
 
   @override
   Widget build(BuildContext context) {
-    Widget child = Opacity(
-      opacity: opacity,
-      child: _FigmaFrame(this),
-    );
+    final data = FigmaData.of(context, name);
 
-    if (clipsContent) {
-      child = ClipRRect(
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(rectangleCornerRadii.topLeft),
-          topRight: Radius.circular(rectangleCornerRadii.topRight),
-          bottomLeft: Radius.circular(rectangleCornerRadii.bottomLeft),
-          bottomRight: Radius.circular(rectangleCornerRadii.bottomRight),
-        ),
-        child: child,
+    Widget child;
+    if (data?.builder != null) {
+      child = data.builder(context);
+    } else {
+      child = Opacity(
+        opacity: data?.opacity ?? opacity,
+        child: _FigmaFrame(this),
       );
+
+      if (clipsContent) {
+        child = ClipRRect(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(rectangleCornerRadii.topLeft),
+            topRight: Radius.circular(rectangleCornerRadii.topRight),
+            bottomLeft: Radius.circular(rectangleCornerRadii.bottomLeft),
+            bottomRight: Radius.circular(rectangleCornerRadii.bottomRight),
+          ),
+          child: child,
+        );
+      }
     }
 
-    if (isRoot) {
+    if (data?.decoratorBuilder != null) {
+      child = data.decoratorBuilder(context, child);
+    }
+
+    child = FigmaRootNode.child(child: child);
+
+    if (FigmaRootNode.of(context)) {
       return child;
     }
 
@@ -104,6 +116,13 @@ class _FigmaFrame extends MultiChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
+    final data = FigmaData.of(context, frame.name);
+    final fills = data?.fills ?? frame.fills;
+    final strokes = data?.strokes ?? frame.strokes;
+    final effects = data?.effects ?? frame.effects;
+    final strokeWeight = data?.strokeWeight ?? frame.strokeWeight;
+    final rectangleCornerRadii =
+        data?.rectangleCornerRadii ?? frame.rectangleCornerRadii;
     return RenderFigmaFrame(
       layoutMode: frame.layoutMode,
       designTransform: frame.relativeTransform,
@@ -114,12 +133,12 @@ class _FigmaFrame extends MultiChildRenderObjectWidget {
       counterAxisSizingMode: frame.counterAxisSizingMode,
       itemSpacing: frame.itemSpacing,
       decoration: FigmaPaintDecoration(
-        fills: frame.fills,
-        strokes: frame.strokes,
-        strokeWeight: frame.strokeWeight,
-        effects: frame.effects,
+        fills: fills,
+        strokes: strokes,
+        strokeWeight: strokeWeight,
+        effects: effects,
         shape: FigmaBoxPaintShape(
-          rectangleCornerRadii: frame.rectangleCornerRadii,
+          rectangleCornerRadii: rectangleCornerRadii,
         ),
       ),
     );
@@ -128,6 +147,13 @@ class _FigmaFrame extends MultiChildRenderObjectWidget {
   @override
   void updateRenderObject(
       BuildContext context, covariant RenderFigmaFrame renderObject) {
+    final data = FigmaData.of(context, frame.name);
+    final fills = data?.fills ?? frame.fills;
+    final strokes = data?.strokes ?? frame.strokes;
+    final effects = data?.effects ?? frame.effects;
+    final strokeWeight = data?.strokeWeight ?? frame.strokeWeight;
+    final rectangleCornerRadii =
+        data?.rectangleCornerRadii ?? frame.rectangleCornerRadii;
     renderObject
       ..configuration = createLocalImageConfiguration(context)
       ..layoutMode = frame.layoutMode
@@ -138,12 +164,12 @@ class _FigmaFrame extends MultiChildRenderObjectWidget {
       ..counterAxisSizingMode = frame.counterAxisSizingMode
       ..itemSpacing = frame.itemSpacing ?? 0.0
       ..decoration = FigmaPaintDecoration(
-        fills: frame.fills,
-        strokes: frame.strokes,
-        strokeWeight: frame.strokeWeight,
-        effects: frame.effects,
+        fills: fills,
+        strokes: strokes,
+        strokeWeight: strokeWeight,
+        effects: effects,
         shape: FigmaBoxPaintShape(
-          rectangleCornerRadii: frame.rectangleCornerRadii,
+          rectangleCornerRadii: rectangleCornerRadii,
         ),
       );
   }

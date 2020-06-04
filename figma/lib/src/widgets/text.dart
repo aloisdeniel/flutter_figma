@@ -1,4 +1,5 @@
 import 'package:flutter_figma/src/base/base.dart';
+import 'package:flutter_figma/src/data.dart';
 import 'package:flutter_figma/src/rendering/layout.dart';
 import 'package:flutter/widgets.dart';
 
@@ -20,7 +21,6 @@ class FigmaText extends StatelessWidget implements FigmaNode {
   final Size size;
   final FigmaTransform relativeTransform;
   final double opacity;
-  final bool isRoot;
   final String characters;
   final FigmaTypeStyle style;
   final List<int> characterStyleOverrides;
@@ -29,7 +29,6 @@ class FigmaText extends StatelessWidget implements FigmaNode {
   FigmaText({
     Key key,
     this.id,
-    this.isRoot = false,
     this.name,
     this.size = Size.zero,
     this.layoutAlign = FigmaLayoutAlign.min,
@@ -52,44 +51,63 @@ class FigmaText extends StatelessWidget implements FigmaNode {
 
   @override
   Widget build(BuildContext context) {
-    final style = this.style != null ? this.style.withFills(fills) : null;
+    final data = FigmaData.of(context, name);
 
-    Widget textWidget;
-
-    if (characterStyleOverrides != null && characterStyleOverrides.isNotEmpty) {
-      final spans = <TextSpan>[];
-      var styleId = '0';
-      var spanStyle = style;
-      var slice = '';
-      for (var i = 0; i < characters.length; i++) {
-        var newStyleId = i < characterStyleOverrides.length
-            ? characterStyleOverrides[i].toString()
-            : '0';
-
-        if (newStyleId != styleId) {
-          if (slice.isNotEmpty) {
-            spans.add(spanStyle.toTextSpan(slice));
-          }
-          styleId = newStyleId.toString();
-          spanStyle = styleId == '0' ? style : styleOverrideTable[styleId];
-          slice = '';
-        }
-        slice += characters[i];
-      }
-      if (slice.isNotEmpty) {
-        spans.add(spanStyle.toTextSpan(slice));
-      }
-      textWidget = style.toRichText(spans);
+    Widget child;
+    if (data?.builder != null) {
+      child = data.builder(context);
     } else {
-      textWidget = style.toText(characters);
+      final fills = data?.fills ?? this.fills;
+
+      var style = data?.textStyle;
+      style = this.style != null ? this.style.withFills(fills) : null;
+
+      Widget textWidget;
+      if (data?.richText != null) {
+        textWidget = style.toRichText(data.richText);
+      } else if (data?.text == null &&
+          characterStyleOverrides != null &&
+          characterStyleOverrides.isNotEmpty) {
+        final spans = <TextSpan>[];
+        var styleId = '0';
+        var spanStyle = style;
+        var slice = '';
+        for (var i = 0; i < characters.length; i++) {
+          var newStyleId = i < characterStyleOverrides.length
+              ? characterStyleOverrides[i].toString()
+              : '0';
+
+          if (newStyleId != styleId) {
+            if (slice.isNotEmpty) {
+              spans.add(spanStyle.toTextSpan(slice));
+            }
+            styleId = newStyleId.toString();
+            spanStyle = styleId == '0' ? style : styleOverrideTable[styleId];
+            slice = '';
+          }
+          slice += characters[i];
+        }
+        if (slice.isNotEmpty) {
+          spans.add(spanStyle.toTextSpan(slice));
+        }
+        textWidget = style.toRichText(spans);
+      } else {
+        textWidget = style.toText(data?.text ?? characters);
+      }
+
+      child = Opacity(
+        opacity: data?.opacity ?? opacity,
+        child: textWidget,
+      );
     }
 
-    final child = Opacity(
-      opacity: opacity,
-      child: textWidget,
-    );
+    if (data?.decoratorBuilder != null) {
+      child = data.decoratorBuilder(context, child);
+    }
 
-    if (isRoot) return child;
+    child = FigmaRootNode.child(child: child);
+
+    if (FigmaRootNode.of(context)) return child;
 
     return FigmaLayout(
       designSize: size,
