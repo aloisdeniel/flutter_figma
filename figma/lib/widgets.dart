@@ -1,2 +1,3 @@
+library flutter_figma_widgets;
+
 export 'src/base/base.dart';
-export 'src/widgets/widgets.dart';
