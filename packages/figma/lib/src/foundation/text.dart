@@ -77,7 +77,7 @@ enum LetterSpacingUnit {
   percent,
 }
 
-abstract class LineHeight {
+sealed class LineHeight {
   const LineHeight();
 }
 

@@ -1,12 +1,16 @@
-import 'dart:math' as math;
 import 'dart:ui' as ui;
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/foundation/foundation.dart';
 import 'package:flutter_figma/src/widgets/base_node.dart';
 import 'package:flutter_figma/src/widgets/frame.dart';
+import 'package:flutter_figma/src/widgets/layout_element_mixin.dart';
+import 'layout_mixin.dart';
 
-class FigmaFrameElement extends RenderObjectElement {
+class FigmaFrameParentData extends ContainerBoxParentData<RenderBox> {}
+
+class FigmaFrameElement extends RenderObjectElement
+    with FigmaLayoutElementMixin {
   FigmaFrameElement(FigmaFrame super.widget);
 
   @override
@@ -15,108 +19,18 @@ class FigmaFrameElement extends RenderObjectElement {
   @override
   RenderFigmaFrame get renderObject => super.renderObject as RenderFigmaFrame;
 
-  final List<Element> _children = [];
+  @override
+  List<Widget> get widgetChildren => widget.children;
 
   @override
-  void mount(Element? parent, Object? newSlot) {
-    super.mount(parent, newSlot);
-    _children.addAll(widget.children.map((child) {
-      final element = inflateWidget(child, null);
-      return element;
-    }));
-
-    for (var i = 0; i < _children.length; i++) {
-      final childRenderObject = _children[i].renderObject;
-      if (childRenderObject is RenderBox) {
-        renderObject.insert(childRenderObject,
-            after: i > 0 ? _children[i - 1].renderObject as RenderBox? : null);
-      }
-    }
-  }
-
-  @override
-  void update(RenderObjectWidget newWidget) {
-    super.update(newWidget);
-    _updateChildren();
-  }
-
-  void _updateChildren() {
-    final newChildren = widget.children;
-    var oldChildrenTop = 0;
-    var newChildrenTop = 0;
-
-    while (newChildrenTop < newChildren.length &&
-        oldChildrenTop < _children.length) {
-      final newChild = newChildren[newChildrenTop];
-      final oldChild = _children[oldChildrenTop];
-
-      if (Widget.canUpdate(newChild, oldChild.widget)) {
-        final updated = updateChild(oldChild, newChild, newChildrenTop);
-        _children[oldChildrenTop] = updated!;
-        newChildrenTop++;
-        oldChildrenTop++;
-      } else {
-        break;
-      }
-    }
-
-    while (oldChildrenTop < _children.length) {
-      deactivateChild(_children.removeLast());
-    }
-
-    while (newChildrenTop < newChildren.length) {
-      final newChild =
-          inflateWidget(newChildren[newChildrenTop], newChildrenTop);
-      _children.add(newChild);
-      final childRenderObject = newChild.renderObject;
-      if (childRenderObject is RenderBox) {
-        renderObject.insert(childRenderObject,
-            after: newChildrenTop > 0
-                ? _children[newChildrenTop - 1].renderObject as RenderBox?
-                : null);
-      }
-      newChildrenTop++;
-    }
-  }
-
-  @override
-  void insertRenderObjectChild(RenderObject child, Object? slot) {
-    if (child is RenderBox) {
-      renderObject.insert(child, after: slot as RenderBox?);
-    }
-  }
-
-  @override
-  void moveRenderObjectChild(
-      RenderObject child, Object? oldSlot, Object? newSlot) {
-    if (child is RenderBox) {
-      renderObject.move(child, after: newSlot as RenderBox?);
-    }
-  }
-
-  @override
-  void removeRenderObjectChild(RenderObject child, Object? slot) {
-    if (child is RenderBox) {
-      renderObject.remove(child);
-    }
-  }
-
-  @override
-  void visitChildren(ElementVisitor visitor) {
-    for (final child in _children) {
-      visitor(child);
-    }
-  }
-
-  @override
-  void forgetChild(Element child) {
-    _children.remove(child);
-    super.forgetChild(child);
-  }
+  ContainerRenderObjectMixin<RenderBox, ContainerBoxParentData<RenderBox>>
+      get containerRenderObject => renderObject;
 }
 
 class RenderFigmaFrame extends RenderBox
-    with ContainerRenderObjectMixin<RenderBox, BoxParentData> {
+    with
+        ContainerRenderObjectMixin<RenderBox, FigmaFrameParentData>,
+        FigmaLayoutMixin {
   RenderFigmaFrame({
     required double x,
     required double y,
@@ -208,6 +122,16 @@ class RenderFigmaFrame extends RenderBox
     _height = value;
     markNeedsLayout();
   }
+
+  @override
+  double get layoutWidth => _width;
+  @override
+  set layoutWidth(double value) => _width = value;
+
+  @override
+  double get layoutHeight => _height;
+  @override
+  set layoutHeight(double value) => _height = value;
 
   List<FigmaPaint> _fills;
   List<FigmaPaint> get fills => _fills;
@@ -409,149 +333,16 @@ class RenderFigmaFrame extends RenderBox
     markNeedsPaint();
   }
 
-  void insert(RenderBox child, {RenderBox? after}) {
-    adoptChild(child);
-    if (after == null) {
-      if (firstChild == null) {
-        firstChild = child;
-        lastChild = child;
-      } else {
-        final oldFirst = firstChild;
-        firstChild = child;
-        child.parentData = BoxParentData();
-        if (oldFirst != null) {
-          (child.parentData! as BoxParentData).nextSibling = oldFirst;
-        }
-      }
-    } else {
-      final afterParentData = after.parentData! as BoxParentData;
-      child.parentData = BoxParentData()
-        ..nextSibling = afterParentData.nextSibling;
-      afterParentData.nextSibling = child;
-      if (after == lastChild) {
-        lastChild = child;
-      }
-    }
-  }
-
-  void remove(RenderBox child) {
-    dropChild(child);
-    if (child == firstChild && child == lastChild) {
-      firstChild = null;
-      lastChild = null;
-    } else if (child == firstChild) {
-      firstChild = (child.parentData! as BoxParentData).nextSibling;
-    } else if (child == lastChild) {
-      var prev = firstChild;
-      while (prev != null &&
-          (prev.parentData! as BoxParentData).nextSibling != child) {
-        prev = (prev.parentData! as BoxParentData).nextSibling;
-      }
-      if (prev != null) {
-        (prev.parentData! as BoxParentData).nextSibling = null;
-        lastChild = prev;
-      }
-    } else {
-      var prev = firstChild;
-      while (prev != null &&
-          (prev.parentData! as BoxParentData).nextSibling != child) {
-        prev = (prev.parentData! as BoxParentData).nextSibling;
-      }
-      if (prev != null) {
-        (prev.parentData! as BoxParentData).nextSibling =
-            (child.parentData! as BoxParentData).nextSibling;
-      }
-    }
-  }
-
-  void move(RenderBox child, {RenderBox? after}) {
-    remove(child);
-    insert(child, after: after);
-  }
-
   @override
   void setupParentData(RenderBox child) {
-    if (child.parentData is! BoxParentData) {
-      child.parentData = BoxParentData();
+    if (child.parentData is! FigmaFrameParentData) {
+      child.parentData = FigmaFrameParentData();
     }
   }
 
   @override
   void performLayout() {
-    if (_layoutMode == LayoutMode.none) {
-      size = Size(_width, _height);
-
-      var child = firstChild;
-      while (child != null) {
-        child.layout(BoxConstraints.loose(size), parentUsesSize: false);
-        child = (child.parentData! as BoxParentData).nextSibling;
-      }
-    } else if (_layoutMode == LayoutMode.horizontal ||
-        _layoutMode == LayoutMode.vertical) {
-      _performFlexLayout();
-    } else {
-      size = Size(_width, _height);
-    }
-  }
-
-  void _performFlexLayout() {
-    final isHorizontal = _layoutMode == LayoutMode.horizontal;
-    final contentWidth = _width - _paddingLeft - _paddingRight;
-    final contentHeight = _height - _paddingTop - _paddingBottom;
-
-    var child = firstChild;
-    final children = <RenderBox>[];
-    while (child != null) {
-      children.add(child);
-      child = (child.parentData! as BoxParentData).nextSibling;
-    }
-
-    if (children.isEmpty) {
-      size = Size(_width, _height);
-      return;
-    }
-
-    if (isHorizontal) {
-      var currentX = _paddingLeft;
-      var maxHeight = 0.0;
-
-      for (final child in children) {
-        child.layout(BoxConstraints.loose(Size(contentWidth, contentHeight)),
-            parentUsesSize: true);
-        final childParentData = child.parentData! as BoxParentData;
-        childParentData.offset = Offset(currentX, _paddingTop);
-        currentX += child.size.width + _itemSpacing;
-        maxHeight = math.max(maxHeight, child.size.height);
-      }
-
-      if (_primaryAxisSizingMode == PrimaryAxisSizingMode.auto) {
-        _width = currentX - _itemSpacing + _paddingRight;
-      }
-      if (_counterAxisSizingMode == CounterAxisSizingMode.auto) {
-        _height = maxHeight + _paddingTop + _paddingBottom;
-      }
-    } else {
-      var currentY = _paddingTop;
-      var maxWidth = 0.0;
-
-      for (final child in children) {
-        child.layout(BoxConstraints.loose(Size(contentWidth, contentHeight)),
-            parentUsesSize: true);
-        final childParentData = child.parentData! as BoxParentData;
-        childParentData.offset = Offset(_paddingLeft, currentY);
-        currentY += child.size.height + _itemSpacing;
-        maxWidth = math.max(maxWidth, child.size.width);
-      }
-
-      if (_primaryAxisSizingMode == PrimaryAxisSizingMode.auto) {
-        _height = currentY - _itemSpacing + _paddingBottom;
-      }
-      if (_counterAxisSizingMode == CounterAxisSizingMode.auto) {
-        _width = maxWidth + _paddingLeft + _paddingRight;
-      }
-    }
-
-    size = Size(_width, _height);
+    size = performFigmaLayout();
   }
 
   @override
@@ -605,7 +396,8 @@ class RenderFigmaFrame extends RenderBox
 
     var child = firstChild;
     while (child != null) {
-      final childParentData = child.parentData! as BoxParentData;
+      final childParentData =
+          child.parentData! as ContainerBoxParentData<RenderBox>;
       context.paintChild(child, offset + childParentData.offset);
       child = childParentData.nextSibling;
     }
@@ -658,17 +450,17 @@ class RenderFigmaFrame extends RenderBox
   bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
     var child = lastChild;
     while (child != null) {
-      final childParentData = child.parentData! as BoxParentData;
-      if (result.addWithPaintOffset(
+      final childParentData =
+          child.parentData! as ContainerBoxParentData<RenderBox>;
+      final isHit = result.addWithPaintOffset(
         offset: childParentData.offset,
         position: position,
         hitTest: (BoxHitTestResult result, Offset transformed) {
           return child!.hitTest(result, position: transformed);
         },
-      )) {
-        return true;
-      }
-      child = childParentData.nextSibling;
+      );
+      if (isHit) return true;
+      child = childParentData.previousSibling;
     }
     return false;
   }

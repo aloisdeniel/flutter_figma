@@ -1,4 +1,4 @@
-# figma
+# flutter_figma
 
 A new Flutter package project.
 

@@ -1,8 +1,6 @@
 import 'dart:ui' as ui;
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/foundation/foundation.dart';
-import 'package:flutter_figma/src/widgets/base_node.dart';
 import 'package:flutter_figma/src/widgets/text.dart';
 
 class FigmaTextElement extends RenderObjectElement {
@@ -272,7 +270,7 @@ class RenderFigmaText extends RenderBox {
     if (_textPainter != null) return _textPainter!;
 
     final processedText = _applyTextCase(_characters);
-    
+
     ui.Color? textColor;
     if (_fills.isNotEmpty) {
       final fill = _fills.first;
@@ -297,17 +295,20 @@ class RenderFigmaText extends RenderBox {
     double? heightValue;
     if (_lineHeight != null) {
       heightValue = switch (_lineHeight!) {
-        LineHeightPixels() => (_lineHeight! as LineHeightPixels).value / _fontSize,
+        LineHeightPixels() =>
+          (_lineHeight! as LineHeightPixels).value / _fontSize,
         LineHeightPercent() => (_lineHeight! as LineHeightPercent).value / 100,
         LineHeightAuto() => null,
       };
     }
 
-    final textStyle = ui.TextStyle(
+    final textStyle = TextStyle(
       color: textColor ?? const ui.Color(0xFF000000),
       fontSize: _fontSize,
       fontWeight: _convertFontWeight(_fontWeight),
-      fontStyle: _fontStyle == FontStyle.italic ? ui.FontStyle.italic : ui.FontStyle.normal,
+      fontStyle: _fontStyle == FontStyle.italic
+          ? ui.FontStyle.italic
+          : ui.FontStyle.normal,
       letterSpacing: letterSpacingValue,
       height: heightValue,
       fontFamily: _fontName.family,
@@ -336,7 +337,7 @@ class RenderFigmaText extends RenderBox {
 
     final canvas = context.canvas;
     canvas.save();
-    
+
     if (_opacity < 1.0) {
       canvas.saveLayer(
         offset & size,
@@ -345,7 +346,7 @@ class RenderFigmaText extends RenderBox {
     }
 
     final textPainter = _createTextPainter();
-    
+
     final verticalOffset = switch (_textAlignVertical) {
       FigmaTextAlignVertical.top => 0.0,
       FigmaTextAlignVertical.center => (_height - textPainter.height) / 2,
