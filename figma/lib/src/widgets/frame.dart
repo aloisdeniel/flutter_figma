@@ -1,8 +1,4 @@
-import 'dart:math' as math;
-import 'dart:ui' as ui;
-import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_figma/src/foundation/foundation.dart';
 import 'package:flutter_figma/src/rendering/frame.dart';
 import 'base_node.dart';
 
@@ -92,5 +88,40 @@ class FigmaFrame extends FigmaFrameNode {
       opacity: opacity,
       blendMode: blendMode,
     );
+  }
+
+  @override
+  void updateRenderObject(
+      BuildContext context, covariant RenderFigmaFrame renderObject) {
+    renderObject
+      ..x = x
+      ..y = y
+      ..width = width
+      ..height = height
+      ..fills = fills
+      ..strokes = strokes
+      ..strokeWeight = strokeWeight
+      ..strokeAlign = strokeAlign
+      ..cornerRadius = cornerRadius
+      ..topLeftRadius = topLeftRadius
+      ..topRightRadius = topRightRadius
+      ..bottomLeftRadius = bottomLeftRadius
+      ..bottomRightRadius = bottomRightRadius
+      ..clipsContent = clipsContent
+      ..layoutMode = layoutMode
+      ..primaryAxisSizingMode = primaryAxisSizingMode
+      ..counterAxisSizingMode = counterAxisSizingMode
+      ..paddingLeft = paddingLeft
+      ..paddingRight = paddingRight
+      ..paddingTop = paddingTop
+      ..paddingBottom = paddingBottom
+      ..itemSpacing = itemSpacing
+      ..counterAxisSpacing = counterAxisSpacing
+      ..primaryAxisAlignItems = primaryAxisAlignItems
+      ..counterAxisAlignItems = counterAxisAlignItems
+      ..layoutWrap = layoutWrap
+      ..visible = visible
+      ..opacity = opacity
+      ..blendMode = blendMode;
   }
 }
