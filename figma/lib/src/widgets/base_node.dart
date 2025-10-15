@@ -1,7 +1,7 @@
-import 'package:flutter/widgets.dart' show Widget;
+import 'package:flutter/widgets.dart' show Widget, RenderObjectWidget;
 import 'package:flutter_figma/src/foundation/foundation.dart';
 
-abstract class FigmaNode extends Widget {
+abstract class FigmaNode extends RenderObjectWidget {
   const FigmaNode({
     this.visible = true,
   });

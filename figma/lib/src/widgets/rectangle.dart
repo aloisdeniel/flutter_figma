@@ -1,5 +1,6 @@
-import 'package:flutter/widgets.dart' show Element;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/foundation/foundation.dart';
+import 'package:flutter_figma/src/rendering/rectangle.dart';
 import 'base_node.dart';
 
 class FigmaRectangle extends FigmaGeometryNode {
@@ -43,7 +44,29 @@ class FigmaRectangle extends FigmaGeometryNode {
   final double? bottomRightRadius;
 
   @override
-  Element createElement() {
+  RenderObjectElement createElement() {
     return FigmaRectangleElement(this);
+  }
+
+  @override
+  RenderObject createRenderObject(BuildContext context) {
+    return RenderFigmaRectangle(
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      fills: fills,
+      strokes: strokes,
+      strokeWeight: strokeWeight,
+      strokeAlign: strokeAlign,
+      cornerRadius: cornerRadius,
+      topLeftRadius: topLeftRadius,
+      topRightRadius: topRightRadius,
+      bottomLeftRadius: bottomLeftRadius,
+      bottomRightRadius: bottomRightRadius,
+      visible: visible,
+      opacity: opacity,
+      blendMode: blendMode,
+    );
   }
 }

@@ -1,6 +1,7 @@
-import 'package:flutter/widgets.dart' show Element;
-
+import 'dart:ui' as ui;
+import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/foundation/foundation.dart';
+import 'package:flutter_figma/src/rendering/ellipse.dart';
 import 'base_node.dart';
 
 class FigmaEllipse extends FigmaGeometryNode {
@@ -36,7 +37,43 @@ class FigmaEllipse extends FigmaGeometryNode {
   final ArcData? arcData;
 
   @override
-  Element createElement() {
-    return FigmaEllipse(this);
+  RenderObjectElement createElement() {
+    return FigmaEllipseElement(this);
+  }
+
+  @override
+  RenderObject createRenderObject(BuildContext context) {
+    return RenderFigmaEllipse(
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      fills: fills,
+      strokes: strokes,
+      strokeWeight: strokeWeight,
+      strokeAlign: strokeAlign,
+      arcData: arcData,
+      visible: visible,
+      opacity: opacity,
+      blendMode: blendMode,
+    );
+  }
+
+  @override
+  void updateRenderObject(
+      BuildContext context, covariant RenderFigmaEllipse renderObject) {
+    renderObject
+      ..x = x
+      ..y = y
+      ..width = width
+      ..height = height
+      ..fills = fills
+      ..strokes = strokes
+      ..strokeWeight = strokeWeight
+      ..strokeAlign = strokeAlign
+      ..arcData = arcData
+      ..visible = visible
+      ..opacity = opacity
+      ..blendMode = blendMode;
   }
 }
