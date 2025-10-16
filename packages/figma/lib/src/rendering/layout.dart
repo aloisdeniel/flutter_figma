@@ -1,8 +1,20 @@
 import 'dart:math' as math;
 
 import 'package:flutter/rendering.dart';
+import 'package:flutter_figma/src/foundation/enums.dart';
 
-class FigmaAutoLayoutParentData extends ContainerBoxParentData<RenderBox> {}
+class FigmaLayoutParentData extends ContainerBoxParentData<RenderBox> {
+  double x = 0;
+  double y = 0;
+  double width = 0;
+  double height = 0;
+  ConstraintType horizontalConstraint = ConstraintType.min;
+  ConstraintType verticalConstraint = ConstraintType.min;
+  ChildSizingMode? primaryAxisSizing;
+  ChildSizingMode? counterAxisSizing;
+}
+
+class FigmaAutoLayoutParentData extends FigmaLayoutParentData {}
 
 class RenderFigmaAutoLayout extends RenderBox
     with
@@ -206,9 +218,37 @@ class RenderFigmaAutoLayout extends RenderBox
     final List<Size> childSizes = [];
     RenderBox? child = firstChild;
     while (child != null) {
-      child.layout(const BoxConstraints(), parentUsesSize: true);
-      childSizes.add(child.size);
       final childParentData = child.parentData! as FigmaAutoLayoutParentData;
+      final primarySizing = childParentData.primaryAxisSizing;
+      final counterSizing = childParentData.counterAxisSizing;
+
+      BoxConstraints childConstraints;
+      if (_direction == Axis.horizontal) {
+        final minWidth = primarySizing == ChildSizingMode.fixed ? childParentData.width : 0.0;
+        final maxWidth = primarySizing == ChildSizingMode.fixed ? childParentData.width : double.infinity;
+        final minHeight = counterSizing == ChildSizingMode.fixed ? childParentData.height : 0.0;
+        final maxHeight = counterSizing == ChildSizingMode.fixed ? childParentData.height : double.infinity;
+        childConstraints = BoxConstraints(
+          minWidth: minWidth,
+          maxWidth: maxWidth,
+          minHeight: minHeight,
+          maxHeight: maxHeight,
+        );
+      } else {
+        final minWidth = counterSizing == ChildSizingMode.fixed ? childParentData.width : 0.0;
+        final maxWidth = counterSizing == ChildSizingMode.fixed ? childParentData.width : double.infinity;
+        final minHeight = primarySizing == ChildSizingMode.fixed ? childParentData.height : 0.0;
+        final maxHeight = primarySizing == ChildSizingMode.fixed ? childParentData.height : double.infinity;
+        childConstraints = BoxConstraints(
+          minWidth: minWidth,
+          maxWidth: maxWidth,
+          minHeight: minHeight,
+          maxHeight: maxHeight,
+        );
+      }
+
+      child.layout(childConstraints, parentUsesSize: true);
+      childSizes.add(child.size);
       child = childParentData.nextSibling;
     }
 
@@ -417,6 +457,151 @@ class RenderFigmaAutoLayout extends RenderBox
   }
 }
 
+class RenderFigmaAbsoluteLayout extends RenderBox
+    with
+        ContainerRenderObjectMixin<RenderBox, FigmaLayoutParentData>,
+        RenderBoxContainerDefaultsMixin<RenderBox, FigmaLayoutParentData> {
+  RenderFigmaAbsoluteLayout({
+    double width = 0,
+    double height = 0,
+  })  : _width = width,
+        _height = height;
+
+  double _width;
+  double get width => _width;
+  set width(double value) {
+    if (_width != value) {
+      final oldWidth = _width;
+      _width = value;
+      _updateChildConstraints(oldWidth, _height, _width, _height);
+      markNeedsLayout();
+    }
+  }
+
+  double _height;
+  double get height => _height;
+  set height(double value) {
+    if (_height != value) {
+      final oldHeight = _height;
+      _height = value;
+      _updateChildConstraints(_width, oldHeight, _width, _height);
+      markNeedsLayout();
+    }
+  }
+
+  @override
+  void setupParentData(RenderBox child) {
+    if (child.parentData is! FigmaLayoutParentData) {
+      child.parentData = FigmaLayoutParentData();
+    }
+  }
+
+  void _updateChildConstraints(double w0, double h0, double w1, double h1) {
+    if (w0 == w1 && h0 == h1) return;
+
+    RenderBox? child = firstChild;
+    while (child != null) {
+      final childParentData = child.parentData! as FigmaLayoutParentData;
+      final x0 = childParentData.x;
+      final y0 = childParentData.y;
+      final cw0 = childParentData.width;
+      final ch0 = childParentData.height;
+
+      double x1 = x0;
+      double y1 = y0;
+      double cw1 = cw0;
+      double ch1 = ch0;
+
+      switch (childParentData.horizontalConstraint) {
+        case ConstraintType.min:
+          break;
+        case ConstraintType.max:
+          x1 = x0 + (w1 - w0);
+          break;
+        case ConstraintType.stretch:
+          cw1 = cw0 + (w1 - w0);
+          break;
+        case ConstraintType.center:
+          x1 = x0 + (w1 - w0) / 2;
+          break;
+        case ConstraintType.scale:
+          if (w0 > 0) {
+            final ratio = w1 / w0;
+            x1 = x0 * ratio;
+            cw1 = cw0 * ratio;
+          }
+          break;
+      }
+
+      switch (childParentData.verticalConstraint) {
+        case ConstraintType.min:
+          break;
+        case ConstraintType.max:
+          y1 = y0 + (h1 - h0);
+          break;
+        case ConstraintType.stretch:
+          ch1 = ch0 + (h1 - h0);
+          break;
+        case ConstraintType.center:
+          y1 = y0 + (h1 - h0) / 2;
+          break;
+        case ConstraintType.scale:
+          if (h0 > 0) {
+            final ratio = h1 / h0;
+            y1 = y0 * ratio;
+            ch1 = ch0 * ratio;
+          }
+          break;
+      }
+
+      childParentData.x = x1;
+      childParentData.y = y1;
+      childParentData.width = cw1;
+      childParentData.height = ch1;
+
+      child = childParentData.nextSibling;
+    }
+  }
+
+  @override
+  void performLayout() {
+    size = Size(_width, _height);
+
+    RenderBox? child = firstChild;
+    while (child != null) {
+      final childParentData = child.parentData! as FigmaLayoutParentData;
+
+      final childWidth = childParentData.width;
+      final childHeight = childParentData.height;
+
+      child.layout(
+        BoxConstraints.tight(Size(childWidth, childHeight)),
+        parentUsesSize: true,
+      );
+
+      childParentData.offset = Offset(childParentData.x, childParentData.y);
+      child = childParentData.nextSibling;
+    }
+  }
+
+  @override
+  bool hitTestChildren(BoxHitTestResult result, {required Offset position}) {
+    return defaultHitTestChildren(result, position: position);
+  }
+
+  @override
+  void paint(PaintingContext context, Offset offset) {
+    defaultPaint(context, offset);
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(DoubleProperty('width', width));
+    properties.add(DoubleProperty('height', height));
+  }
+}
+
 class _Line {
   List<int> items = [];
   double sumP = 0;
@@ -445,4 +630,9 @@ enum LayoutAlign {
   max,
   stretch,
   spaceBetween,
+}
+
+enum ChildSizingMode {
+  fixed,
+  hug,
 }

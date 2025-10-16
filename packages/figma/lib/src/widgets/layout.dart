@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:flutter_figma/src/foundation/enums.dart';
 import 'package:flutter_figma/src/rendering/layout.dart';
 
 sealed class FigmaLayoutProperties {
@@ -18,10 +19,21 @@ sealed class FigmaLayoutProperties {
     double itemSpacing,
     double counterAxisSpacing,
   }) = FigmaAutoLayoutProperties;
+
+  const factory FigmaLayoutProperties.absolute({
+    double width,
+    double height,
+  }) = FigmaAbsoluteLayoutProperties;
 }
 
 class FigmaAbsoluteLayoutProperties extends FigmaLayoutProperties {
-  const FigmaAbsoluteLayoutProperties();
+  const FigmaAbsoluteLayoutProperties({
+    this.width = 0,
+    this.height = 0,
+  });
+
+  final double width;
+  final double height;
 }
 
 class FigmaAutoLayoutProperties extends FigmaLayoutProperties {
@@ -98,4 +110,154 @@ class FigmaAutoLayout extends MultiChildRenderObjectWidget {
       ..itemSpacing = layout.itemSpacing
       ..counterAxisSpacing = layout.counterAxisSpacing;
   }
+}
+
+class FigmaAbsoluteLayout extends MultiChildRenderObjectWidget {
+  const FigmaAbsoluteLayout({
+    super.key,
+    required super.children,
+    this.layout = const FigmaAbsoluteLayoutProperties(),
+  });
+
+  final FigmaAbsoluteLayoutProperties layout;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) {
+    return RenderFigmaAbsoluteLayout(
+      width: layout.width,
+      height: layout.height,
+    );
+  }
+
+  @override
+  void updateRenderObject(
+      BuildContext context, RenderFigmaAbsoluteLayout renderObject) {
+    renderObject
+      ..width = layout.width
+      ..height = layout.height;
+  }
+}
+
+class FigmaPositioned extends ParentDataWidget<FigmaLayoutParentData> {
+  const FigmaPositioned({
+    super.key,
+    required super.child,
+    this.x = 0,
+    this.y = 0,
+    this.width = 0,
+    this.height = 0,
+    this.horizontalConstraint = ConstraintType.min,
+    this.verticalConstraint = ConstraintType.min,
+    this.primaryAxisSizing,
+    this.counterAxisSizing,
+  });
+
+  final double x;
+  final double y;
+  final double width;
+  final double height;
+  final ConstraintType horizontalConstraint;
+  final ConstraintType verticalConstraint;
+  final ChildSizingMode? primaryAxisSizing;
+  final ChildSizingMode? counterAxisSizing;
+
+  @override
+  void applyParentData(RenderObject renderObject) {
+    assert(renderObject.parentData is FigmaLayoutParentData);
+    final parentData = renderObject.parentData! as FigmaLayoutParentData;
+    bool needsLayout = false;
+
+    if (parentData.x != x) {
+      parentData.x = x;
+      needsLayout = true;
+    }
+    if (parentData.y != y) {
+      parentData.y = y;
+      needsLayout = true;
+    }
+    if (parentData.width != width) {
+      parentData.width = width;
+      needsLayout = true;
+    }
+    if (parentData.height != height) {
+      parentData.height = height;
+      needsLayout = true;
+    }
+    if (parentData.horizontalConstraint != horizontalConstraint) {
+      parentData.horizontalConstraint = horizontalConstraint;
+      needsLayout = true;
+    }
+    if (parentData.verticalConstraint != verticalConstraint) {
+      parentData.verticalConstraint = verticalConstraint;
+      needsLayout = true;
+    }
+    if (parentData.primaryAxisSizing != primaryAxisSizing) {
+      parentData.primaryAxisSizing = primaryAxisSizing;
+      needsLayout = true;
+    }
+    if (parentData.counterAxisSizing != counterAxisSizing) {
+      parentData.counterAxisSizing = counterAxisSizing;
+      needsLayout = true;
+    }
+
+    if (needsLayout) {
+      final targetParent = renderObject.parent;
+      if (targetParent is RenderObject) {
+        targetParent.markNeedsLayout();
+      }
+    }
+  }
+
+  @override
+  Type get debugTypicalAncestorWidgetClass => FigmaAbsoluteLayout;
+}
+
+class FigmaChildSize extends ParentDataWidget<FigmaLayoutParentData> {
+  const FigmaChildSize({
+    super.key,
+    required super.child,
+    this.width = 0,
+    this.height = 0,
+    this.primaryAxisSizing,
+    this.counterAxisSizing,
+  });
+
+  final double width;
+  final double height;
+  final ChildSizingMode? primaryAxisSizing;
+  final ChildSizingMode? counterAxisSizing;
+
+  @override
+  void applyParentData(RenderObject renderObject) {
+    assert(renderObject.parentData is FigmaLayoutParentData);
+    final parentData = renderObject.parentData! as FigmaLayoutParentData;
+    bool needsLayout = false;
+
+    if (parentData.width != width) {
+      parentData.width = width;
+      needsLayout = true;
+    }
+    if (parentData.height != height) {
+      parentData.height = height;
+      needsLayout = true;
+    }
+    if (parentData.primaryAxisSizing != primaryAxisSizing) {
+      parentData.primaryAxisSizing = primaryAxisSizing;
+      needsLayout = true;
+    }
+    if (parentData.counterAxisSizing != counterAxisSizing) {
+      parentData.counterAxisSizing = counterAxisSizing;
+      needsLayout = true;
+    }
+
+    if (needsLayout) {
+      final targetParent = renderObject.parent;
+      if (targetParent is RenderObject) {
+        targetParent.markNeedsLayout();
+      }
+    }
+  }
+
+  @override
+  Type get debugTypicalAncestorWidgetClass => FigmaAutoLayout;
 }
