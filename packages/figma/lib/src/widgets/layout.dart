@@ -1,112 +1,101 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_figma/src/foundation/foundation.dart';
+import 'package:flutter_figma/src/rendering/layout.dart';
 
-enum LayoutMode {
-  none,
-  horizontal,
-  vertical,
-  grid,
+sealed class FigmaLayoutProperties {
+  const FigmaLayoutProperties();
+
+  const factory FigmaLayoutProperties.auto({
+    Axis direction,
+    PrimaryAxisSizingMode primaryAxisSizingMode,
+    CounterAxisSizingMode counterAxisSizingMode,
+    LayoutAlign primaryAxisAlignItems,
+    LayoutAlign counterAxisAlignItems,
+    LayoutWrap layoutWrap,
+    double paddingLeft,
+    double paddingRight,
+    double paddingTop,
+    double paddingBottom,
+    double itemSpacing,
+    double counterAxisSpacing,
+  }) = FigmaAutoLayoutProperties;
 }
 
-enum PrimaryAxisSizingMode {
-  fixed,
-  auto,
+class FigmaAbsoluteLayoutProperties extends FigmaLayoutProperties {
+  const FigmaAbsoluteLayoutProperties();
 }
 
-enum CounterAxisSizingMode {
-  fixed,
-  auto,
-}
-
-enum LayoutWrap {
-  noWrap,
-  wrap,
-}
-
-enum LayoutAlign {
-  min,
-  center,
-  max,
-  stretch,
-  spaceBetween,
-}
-
-enum LayoutSizing {
-  fixed,
-  hug,
-  fill,
-}
-
-class Constraints {
-  const Constraints({
-    required this.horizontal,
-    required this.vertical,
-  });
-
-  final ConstraintType horizontal;
-  final ConstraintType vertical;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is Constraints &&
-          runtimeType == other.runtimeType &&
-          horizontal == other.horizontal &&
-          vertical == other.vertical;
-
-  @override
-  int get hashCode => Object.hash(horizontal, vertical);
-
-  @override
-  String toString() =>
-      'Constraints(horizontal: $horizontal, vertical: $vertical)';
-}
-
-class FigmaLayout extends Widget {
-  const FigmaLayout({
-    required this.children,
-    this.x = 0,
-    this.y = 0,
-    this.width = 0,
-    this.height = 0,
-    this.constraints,
-    this.relativeTransform,
-    this.layoutMode = LayoutMode.none,
+class FigmaAutoLayoutProperties extends FigmaLayoutProperties {
+  const FigmaAutoLayoutProperties({
+    this.direction = Axis.horizontal,
     this.primaryAxisSizingMode = PrimaryAxisSizingMode.fixed,
     this.counterAxisSizingMode = CounterAxisSizingMode.fixed,
+    this.primaryAxisAlignItems = LayoutAlign.min,
+    this.counterAxisAlignItems = LayoutAlign.min,
+    this.layoutWrap = LayoutWrap.noWrap,
     this.paddingLeft = 0,
     this.paddingRight = 0,
     this.paddingTop = 0,
     this.paddingBottom = 0,
     this.itemSpacing = 0,
     this.counterAxisSpacing = 0,
-    this.primaryAxisAlignItems = LayoutAlign.min,
-    this.counterAxisAlignItems = LayoutAlign.min,
-    this.layoutWrap = LayoutWrap.noWrap,
   });
 
-  final double x;
-  final double y;
-  final double width;
-  final double height;
-  final Constraints? constraints;
-  final FigmaTransform? relativeTransform;
-  final LayoutMode layoutMode;
+  final Axis direction;
   final PrimaryAxisSizingMode primaryAxisSizingMode;
   final CounterAxisSizingMode counterAxisSizingMode;
+  final LayoutAlign primaryAxisAlignItems;
+  final LayoutAlign counterAxisAlignItems;
+  final LayoutWrap layoutWrap;
   final double paddingLeft;
   final double paddingRight;
   final double paddingTop;
   final double paddingBottom;
   final double itemSpacing;
   final double counterAxisSpacing;
-  final LayoutAlign primaryAxisAlignItems;
-  final LayoutAlign counterAxisAlignItems;
-  final LayoutWrap layoutWrap;
-  final List<Widget> children;
+}
+
+class FigmaAutoLayout extends MultiChildRenderObjectWidget {
+  const FigmaAutoLayout({
+    super.key,
+    required super.children,
+    this.layout = const FigmaAutoLayoutProperties(),
+  });
+
+  final FigmaAutoLayoutProperties layout;
 
   @override
-  Element createElement() {
-    return FigmaLayoutElement(this);
+  RenderObject createRenderObject(BuildContext context) {
+    return RenderFigmaAutoLayout(
+      direction: layout.direction,
+      primaryAxisSizingMode: layout.primaryAxisSizingMode,
+      counterAxisSizingMode: layout.counterAxisSizingMode,
+      primaryAxisAlignItems: layout.primaryAxisAlignItems,
+      counterAxisAlignItems: layout.counterAxisAlignItems,
+      layoutWrap: layout.layoutWrap,
+      paddingLeft: layout.paddingLeft,
+      paddingRight: layout.paddingRight,
+      paddingTop: layout.paddingTop,
+      paddingBottom: layout.paddingBottom,
+      itemSpacing: layout.itemSpacing,
+      counterAxisSpacing: layout.counterAxisSpacing,
+    );
+  }
+
+  @override
+  void updateRenderObject(
+      BuildContext context, RenderFigmaAutoLayout renderObject) {
+    renderObject
+      ..direction = layout.direction
+      ..primaryAxisSizingMode = layout.primaryAxisSizingMode
+      ..counterAxisSizingMode = layout.counterAxisSizingMode
+      ..primaryAxisAlignItems = layout.primaryAxisAlignItems
+      ..counterAxisAlignItems = layout.counterAxisAlignItems
+      ..layoutWrap = layout.layoutWrap
+      ..paddingLeft = layout.paddingLeft
+      ..paddingRight = layout.paddingRight
+      ..paddingTop = layout.paddingTop
+      ..paddingBottom = layout.paddingBottom
+      ..itemSpacing = layout.itemSpacing
+      ..counterAxisSpacing = layout.counterAxisSpacing;
   }
 }
