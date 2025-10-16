@@ -1,0 +1,24 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_figma/src/foundation/decoration.dart';
+import 'package:flutter_figma/src/rendering/decorated.dart';
+
+class FigmaDecorated extends SingleChildRenderObjectWidget {
+  const FigmaDecorated({
+    super.key,
+    required this.decoration,
+    super.child,
+  });
+
+  final FigmaDecoration decoration;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) {
+    return RenderFigmaDecorated(decoration: decoration);
+  }
+
+  @override
+  void updateRenderObject(
+      BuildContext context, RenderFigmaDecorated renderObject) {
+    renderObject.decoration = decoration;
+  }
+}
