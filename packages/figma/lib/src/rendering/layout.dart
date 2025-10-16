@@ -294,10 +294,12 @@ class RenderFigmaAutoLayout extends RenderBox
               _counterAxisSpacing * math.max(0, lines.length - 1);
     }
 
-    size = switch (_direction) {
-      Axis.horizontal => Size(innerP + padSumP, innerC + padSumC),
-      Axis.vertical => Size(innerC + padSumC, innerP + padSumP),
-    };
+    size = constraints.constrain(
+      switch (_direction) {
+        Axis.horizontal => Size(innerP + padSumP, innerC + padSumC),
+        Axis.vertical => Size(innerC + padSumC, innerP + padSumP),
+      },
+    );
 
     _positionChildren(lines, childSizes, innerP, innerC);
   }
@@ -565,7 +567,7 @@ class RenderFigmaAbsoluteLayout extends RenderBox
 
   @override
   void performLayout() {
-    size = Size(_width, _height);
+    size = constraints.constrain(Size(_width, _height));
 
     RenderBox? child = firstChild;
     while (child != null) {
@@ -575,8 +577,13 @@ class RenderFigmaAbsoluteLayout extends RenderBox
       final childHeight = childParentData.height;
 
       child.layout(
-        BoxConstraints.tight(Size(childWidth, childHeight)),
-        parentUsesSize: true,
+        BoxConstraints(
+          minWidth: childWidth,
+          maxWidth: childWidth,
+          minHeight: childHeight,
+          maxHeight: childHeight,
+        ),
+        parentUsesSize: false,
       );
 
       childParentData.offset = Offset(childParentData.x, childParentData.y);
