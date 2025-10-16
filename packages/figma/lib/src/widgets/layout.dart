@@ -138,6 +138,88 @@ class FigmaAbsoluteLayout extends MultiChildRenderObjectWidget {
   }
 }
 
+class FigmaLayout extends MultiChildRenderObjectWidget {
+  const FigmaLayout({
+    super.key,
+    required super.children,
+    this.layout = const FigmaAutoLayoutProperties(),
+  });
+
+  final FigmaLayoutProperties layout;
+
+  @override
+  RenderObject createRenderObject(BuildContext context) {
+    return switch (layout) {
+      FigmaAutoLayoutProperties(:final direction,
+                                :final primaryAxisSizingMode,
+                                :final counterAxisSizingMode,
+                                :final primaryAxisAlignItems,
+                                :final counterAxisAlignItems,
+                                :final layoutWrap,
+                                :final paddingLeft,
+                                :final paddingRight,
+                                :final paddingTop,
+                                :final paddingBottom,
+                                :final itemSpacing,
+                                :final counterAxisSpacing) =>
+        RenderFigmaLayout(
+          direction: direction,
+          primaryAxisSizingMode: primaryAxisSizingMode,
+          counterAxisSizingMode: counterAxisSizingMode,
+          primaryAxisAlignItems: primaryAxisAlignItems,
+          counterAxisAlignItems: counterAxisAlignItems,
+          layoutWrap: layoutWrap,
+          paddingLeft: paddingLeft,
+          paddingRight: paddingRight,
+          paddingTop: paddingTop,
+          paddingBottom: paddingBottom,
+          itemSpacing: itemSpacing,
+          counterAxisSpacing: counterAxisSpacing,
+        ),
+      FigmaAbsoluteLayoutProperties(:final width, :final height) =>
+        RenderFigmaLayout(
+          width: width,
+          height: height,
+        ),
+    };
+  }
+
+  @override
+  void updateRenderObject(BuildContext context, RenderFigmaLayout renderObject) {
+    switch (layout) {
+      case FigmaAutoLayoutProperties(:final direction,
+                                     :final primaryAxisSizingMode,
+                                     :final counterAxisSizingMode,
+                                     :final primaryAxisAlignItems,
+                                     :final counterAxisAlignItems,
+                                     :final layoutWrap,
+                                     :final paddingLeft,
+                                     :final paddingRight,
+                                     :final paddingTop,
+                                     :final paddingBottom,
+                                     :final itemSpacing,
+                                     :final counterAxisSpacing):
+        renderObject
+          ..direction = direction
+          ..primaryAxisSizingMode = primaryAxisSizingMode
+          ..counterAxisSizingMode = counterAxisSizingMode
+          ..primaryAxisAlignItems = primaryAxisAlignItems
+          ..counterAxisAlignItems = counterAxisAlignItems
+          ..layoutWrap = layoutWrap
+          ..paddingLeft = paddingLeft
+          ..paddingRight = paddingRight
+          ..paddingTop = paddingTop
+          ..paddingBottom = paddingBottom
+          ..itemSpacing = itemSpacing
+          ..counterAxisSpacing = counterAxisSpacing;
+      case FigmaAbsoluteLayoutProperties(:final width, :final height):
+        renderObject
+          ..width = width
+          ..height = height;
+    }
+  }
+}
+
 class FigmaPositioned extends ParentDataWidget<FigmaLayoutParentData> {
   const FigmaPositioned({
     super.key,
@@ -209,7 +291,7 @@ class FigmaPositioned extends ParentDataWidget<FigmaLayoutParentData> {
   }
 
   @override
-  Type get debugTypicalAncestorWidgetClass => FigmaAbsoluteLayout;
+  Type get debugTypicalAncestorWidgetClass => FigmaLayout;
 }
 
 class FigmaChildSize extends ParentDataWidget<FigmaLayoutParentData> {
@@ -259,5 +341,5 @@ class FigmaChildSize extends ParentDataWidget<FigmaLayoutParentData> {
   }
 
   @override
-  Type get debugTypicalAncestorWidgetClass => FigmaAutoLayout;
+  Type get debugTypicalAncestorWidgetClass => FigmaLayout;
 }

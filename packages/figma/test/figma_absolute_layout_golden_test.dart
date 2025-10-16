@@ -5,14 +5,14 @@ import 'package:flutter_figma/src/widgets/layout.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('FigmaAbsoluteLayout - basic absolute positioning',
+  testWidgets('FigmaLayout - basic absolute positioning',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: FigmaAbsoluteLayout(
+            child: FigmaLayout(
               layout: const FigmaAbsoluteLayoutProperties(
                 width: 300,
                 height: 200,
@@ -52,14 +52,14 @@ void main() {
     );
   });
 
-  testWidgets('FigmaAbsoluteLayout - constraint type MIN (left/top pinned)',
+  testWidgets('FigmaLayout - constraint type MIN (left/top pinned)',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: FigmaAbsoluteLayout(
+            child: FigmaLayout(
               layout: const FigmaAbsoluteLayoutProperties(
                 width: 300,
                 height: 200,
@@ -112,14 +112,14 @@ void main() {
     );
   });
 
-  testWidgets('FigmaAbsoluteLayout - constraint type MAX (right/bottom pinned)',
+  testWidgets('FigmaLayout - constraint type MAX (right/bottom pinned)',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: FigmaAbsoluteLayout(
+            child: FigmaLayout(
               layout: const FigmaAbsoluteLayoutProperties(
                 width: 300,
                 height: 200,
@@ -172,14 +172,14 @@ void main() {
     );
   });
 
-  testWidgets('FigmaAbsoluteLayout - constraint type CENTER',
+  testWidgets('FigmaLayout - constraint type CENTER',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: FigmaAbsoluteLayout(
+            child: FigmaLayout(
               layout: const FigmaAbsoluteLayoutProperties(
                 width: 300,
                 height: 200,
@@ -232,14 +232,14 @@ void main() {
     );
   });
 
-  testWidgets('FigmaAbsoluteLayout - constraint type STRETCH',
+  testWidgets('FigmaLayout - constraint type STRETCH',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: FigmaAbsoluteLayout(
+            child: FigmaLayout(
               layout: const FigmaAbsoluteLayoutProperties(
                 width: 300,
                 height: 200,
@@ -293,14 +293,14 @@ void main() {
     );
   });
 
-  testWidgets('FigmaAbsoluteLayout - constraint type SCALE',
+  testWidgets('FigmaLayout - constraint type SCALE',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: FigmaAbsoluteLayout(
+            child: FigmaLayout(
               layout: const FigmaAbsoluteLayoutProperties(
                 width: 300,
                 height: 200,
@@ -353,7 +353,7 @@ void main() {
     );
   });
 
-  testWidgets('FigmaAbsoluteLayout - all constraint types together',
+  testWidgets('FigmaLayout - all constraint types together',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
@@ -364,7 +364,7 @@ void main() {
               decoration: BoxDecoration(
                 border: Border.all(color: Colors.black, width: 2),
               ),
-              child: FigmaAbsoluteLayout(
+              child: FigmaLayout(
                 layout: const FigmaAbsoluteLayoutProperties(
                   width: 400,
                   height: 300,
@@ -468,14 +468,14 @@ void main() {
     );
   });
 
-  testWidgets('FigmaAbsoluteLayout - overlapping elements',
+  testWidgets('FigmaLayout - overlapping elements',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: FigmaAbsoluteLayout(
+            child: FigmaLayout(
               layout: const FigmaAbsoluteLayoutProperties(
                 width: 300,
                 height: 200,
@@ -528,7 +528,7 @@ void main() {
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: FigmaAbsoluteLayout(
+            child: FigmaLayout(
               layout: const FigmaAbsoluteLayoutProperties(
                 width: 400,
                 height: 300,
@@ -618,7 +618,7 @@ void main() {
                   color: Colors.grey[300],
                   child: const Center(child: Text('Header')),
                 ),
-                FigmaAbsoluteLayout(
+                FigmaLayout(
                   layout: const FigmaAbsoluteLayoutProperties(
                     width: 300,
                     height: 200,
@@ -673,7 +673,7 @@ void main() {
         home: Scaffold(
           backgroundColor: Colors.grey[100],
           body: Center(
-            child: FigmaAbsoluteLayout(
+            child: FigmaLayout(
               layout: const FigmaAbsoluteLayoutProperties(
                 width: 500,
                 height: 400,
@@ -975,6 +975,86 @@ void main() {
     await expectLater(
       find.byType(Scaffold),
       matchesGoldenFile('goldens/child_sizing_all_hug.png'),
+    );
+  });
+
+  testWidgets('FigmaLayout - mixed absolute and auto positioned children',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          backgroundColor: Colors.grey[100],
+          body: Center(
+            child: FigmaLayout(
+              layout: const FigmaAutoLayoutProperties(
+                direction: Axis.horizontal,
+                itemSpacing: 10,
+                paddingLeft: 20,
+                paddingRight: 20,
+                paddingTop: 20,
+                paddingBottom: 20,
+                primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
+                counterAxisSizingMode: CounterAxisSizingMode.auto,
+              ),
+              children: [
+                Container(
+                  width: 80,
+                  height: 80,
+                  color: Colors.blue,
+                  child: const Center(
+                    child: Text('Auto 1', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                Container(
+                  width: 80,
+                  height: 80,
+                  color: Colors.green,
+                  child: const Center(
+                    child: Text('Auto 2', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                FigmaPositioned(
+                  x: 10,
+                  y: 10,
+                  width: 60,
+                  height: 60,
+                  child: Container(
+                    color: Colors.red.withOpacity(0.9),
+                    child: const Center(
+                      child: Text('Abs', style: TextStyle(color: Colors.white, fontSize: 12)),
+                    ),
+                  ),
+                ),
+                Container(
+                  width: 80,
+                  height: 80,
+                  color: Colors.orange,
+                  child: const Center(
+                    child: Text('Auto 3', style: TextStyle(color: Colors.white)),
+                  ),
+                ),
+                FigmaPositioned(
+                  x: 150,
+                  y: 50,
+                  width: 70,
+                  height: 40,
+                  child: Container(
+                    color: Colors.purple.withOpacity(0.9),
+                    child: const Center(
+                      child: Text('Absolute', style: TextStyle(color: Colors.white, fontSize: 10)),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+
+    await expectLater(
+      find.byType(Scaffold),
+      matchesGoldenFile('goldens/mixed_absolute_and_auto.png'),
     );
   });
 }

@@ -4,12 +4,12 @@ import 'package:flutter_figma/src/widgets/layout.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('FigmaAutoLayout - horizontal layout with spacing',
+  testWidgets('FigmaLayout - horizontal layout with spacing',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: FigmaAutoLayout(
+          body: FigmaLayout(
             layout: const FigmaAutoLayoutProperties(
               direction: Axis.horizontal,
               itemSpacing: 8,
@@ -29,17 +29,17 @@ void main() {
     );
 
     await expectLater(
-      find.byType(FigmaAutoLayout),
+      find.byType(FigmaLayout),
       matchesGoldenFile('goldens/horizontal_with_spacing.png'),
     );
   });
 
-  testWidgets('FigmaAutoLayout - vertical layout with spacing',
+  testWidgets('FigmaLayout - vertical layout with spacing',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
-          body: FigmaAutoLayout(
+          body: FigmaLayout(
             layout: const FigmaAutoLayoutProperties(
               direction: Axis.vertical,
               itemSpacing: 12,
@@ -59,12 +59,12 @@ void main() {
     );
 
     await expectLater(
-      find.byType(FigmaAutoLayout),
+      find.byType(FigmaLayout),
       matchesGoldenFile('goldens/vertical_with_spacing.png'),
     );
   });
 
-  testWidgets('FigmaAutoLayout - horizontal with center alignment',
+  testWidgets('FigmaLayout - horizontal with center alignment',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
@@ -73,7 +73,7 @@ void main() {
             child: SizedBox(
               width: 300,
               height: 200,
-              child: FigmaAutoLayout(
+              child: FigmaLayout(
                 layout: const FigmaAutoLayoutProperties(
                   direction: Axis.horizontal,
                   primaryAxisAlignItems: LayoutAlign.center,
@@ -102,7 +102,7 @@ void main() {
     );
   });
 
-  testWidgets('FigmaAutoLayout - wrap layout', (WidgetTester tester) async {
+  testWidgets('FigmaLayout - wrap layout', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -110,7 +110,7 @@ void main() {
             child: SizedBox(
               width: 200,
               height: 300,
-              child: FigmaAutoLayout(
+              child: FigmaLayout(
                 layout: const FigmaAutoLayoutProperties(
                   direction: Axis.horizontal,
                   layoutWrap: LayoutWrap.wrap,
@@ -143,7 +143,7 @@ void main() {
     );
   });
 
-  testWidgets('FigmaAutoLayout - space between alignment',
+  testWidgets('FigmaLayout - space between alignment',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
@@ -152,7 +152,7 @@ void main() {
             child: SizedBox(
               width: 300,
               height: 100,
-              child: FigmaAutoLayout(
+              child: FigmaLayout(
                 layout: const FigmaAutoLayoutProperties(
                   direction: Axis.horizontal,
                   primaryAxisSizingMode: PrimaryAxisSizingMode.fixed,
@@ -181,14 +181,14 @@ void main() {
     );
   });
 
-  testWidgets('FigmaAutoLayout - various colors and sizes',
+  testWidgets('FigmaLayout - various colors and sizes',
       (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: FigmaAutoLayout(
+            child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
                 direction: Axis.vertical,
                 primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
@@ -200,7 +200,7 @@ void main() {
                 paddingBottom: 24,
               ),
               children: [
-                FigmaAutoLayout(
+                FigmaLayout(
                   layout: const FigmaAutoLayoutProperties(
                     direction: Axis.horizontal,
                     primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
@@ -213,7 +213,7 @@ void main() {
                     Container(width: 70, height: 60, color: Colors.deepOrange),
                   ],
                 ),
-                FigmaAutoLayout(
+                FigmaLayout(
                   layout: const FigmaAutoLayoutProperties(
                     direction: Axis.horizontal,
                     primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
@@ -226,7 +226,7 @@ void main() {
                     Container(width: 60, height: 50, color: Colors.lightBlue),
                   ],
                 ),
-                FigmaAutoLayout(
+                FigmaLayout(
                   layout: const FigmaAutoLayoutProperties(
                     direction: Axis.horizontal,
                     primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
