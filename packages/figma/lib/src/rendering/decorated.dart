@@ -62,14 +62,13 @@ class RenderFigmaDecorated extends RenderProxyBox {
   void _applyPaint(Paint paint, Rect rect, FigmaPaint figmaPaint) {
     switch (figmaPaint) {
       case SolidPaint(:final color, :final opacity):
-        paint.color = color.toColor(opacity: opacity);
+        paint.color = color.withValues(alpha: opacity);
       case LinearGradientPaint(
           :final gradientStops,
           :final gradientTransform,
           :final opacity
         ):
-        final colors =
-            gradientStops.map((stop) => stop.color.toColor()).toList();
+        final colors = gradientStops.map((stop) => stop.color).toList();
         final stops = gradientStops.map((stop) => stop.position).toList();
 
         final matrix = _transformToMatrix4(gradientTransform, rect);
@@ -88,8 +87,7 @@ class RenderFigmaDecorated extends RenderProxyBox {
           :final gradientTransform,
           :final opacity
         ):
-        final colors =
-            gradientStops.map((stop) => stop.color.toColor()).toList();
+        final colors = gradientStops.map((stop) => stop.color).toList();
         final stops = gradientStops.map((stop) => stop.position).toList();
 
         final matrix = _transformToMatrix4(gradientTransform, rect);
@@ -109,8 +107,7 @@ class RenderFigmaDecorated extends RenderProxyBox {
           :final gradientTransform,
           :final opacity
         ):
-        final colors =
-            gradientStops.map((stop) => stop.color.toColor()).toList();
+        final colors = gradientStops.map((stop) => stop.color).toList();
         final stops = gradientStops.map((stop) => stop.position).toList();
 
         final matrix = _transformToMatrix4(gradientTransform, rect);

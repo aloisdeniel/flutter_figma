@@ -1,5 +1,6 @@
+import 'package:flutter/widgets.dart';
+
 import 'enums.dart';
-import 'geometry.dart';
 import 'paint.dart';
 
 class VectorVertex {
@@ -50,8 +51,8 @@ class VectorSegment {
 
   final int start;
   final int end;
-  final FigmaVector? tangentStart;
-  final FigmaVector? tangentEnd;
+  final Offset? tangentStart;
+  final Offset? tangentEnd;
 
   @override
   bool operator ==(Object other) =>

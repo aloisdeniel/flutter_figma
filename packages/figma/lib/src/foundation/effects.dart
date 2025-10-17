@@ -1,6 +1,6 @@
-import 'color.dart';
+import 'package:flutter/widgets.dart';
+
 import 'enums.dart';
-import 'geometry.dart';
 
 abstract class FigmaEffect {
   const FigmaEffect({
@@ -21,8 +21,8 @@ class DropShadowEffect extends FigmaEffect {
     this.showShadowBehindNode = false,
   });
 
-  final FigmaRGBA color;
-  final FigmaVector offset;
+  final Color color;
+  final Offset offset;
   final double radius;
   final double? spread;
   final BlendMode blendMode;
@@ -60,8 +60,8 @@ class InnerShadowEffect extends FigmaEffect {
     required this.blendMode,
   });
 
-  final FigmaRGBA color;
-  final FigmaVector offset;
+  final Color color;
+  final Offset offset;
   final double radius;
   final double? spread;
   final BlendMode blendMode;
@@ -150,8 +150,8 @@ class ProgressiveBlurEffect extends FigmaEffect {
 
   final double radius;
   final double startRadius;
-  final FigmaVector startOffset;
-  final FigmaVector endOffset;
+  final Offset startOffset;
+  final Offset endOffset;
 
   @override
   bool operator ==(Object other) =>
@@ -182,7 +182,7 @@ abstract class NoiseEffect extends FigmaEffect {
     required this.density,
   });
 
-  final FigmaRGBA color;
+  final Color color;
   final BlendMode blendMode;
   final double noiseSize;
   final double density;
@@ -227,7 +227,7 @@ class DuotoneNoiseEffect extends NoiseEffect {
     required super.density,
   });
 
-  final FigmaRGBA secondaryColor;
+  final Color secondaryColor;
 
   @override
   bool operator ==(Object other) =>

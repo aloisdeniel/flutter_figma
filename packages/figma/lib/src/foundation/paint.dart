@@ -1,6 +1,6 @@
+import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/foundation/layout.dart';
 
-import 'color.dart';
 import 'enums.dart';
 import 'geometry.dart';
 
@@ -24,7 +24,7 @@ class SolidPaint extends FigmaPaint {
     super.blendMode,
   });
 
-  final FigmaRGB color;
+  final Color color;
 
   @override
   bool operator ==(Object other) =>
@@ -51,7 +51,7 @@ class ColorStop {
   });
 
   final double position;
-  final FigmaRGBA color;
+  final Color color;
 
   @override
   bool operator ==(Object other) =>
@@ -341,7 +341,7 @@ class PatternPaint extends FigmaPaint {
   final String sourceNodeId;
   final PatternTileType tileType;
   final double scalingFactor;
-  final FigmaVector spacing;
+  final Offset spacing;
   final PatternHorizontalAlignment horizontalAlignment;
 
   @override

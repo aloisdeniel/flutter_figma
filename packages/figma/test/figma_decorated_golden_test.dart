@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_figma/src/foundation/color.dart';
 import 'package:flutter_figma/src/foundation/decoration.dart';
-import 'package:flutter_figma/src/foundation/enums.dart' as figma;
 import 'package:flutter_figma/src/foundation/geometry.dart';
 import 'package:flutter_figma/src/foundation/paint.dart';
 import 'package:flutter_figma/src/widgets/decoration.dart';
@@ -21,7 +19,7 @@ void main() {
                 decoration: const FigmaDecoration(
                   fills: [
                     SolidPaint(
-                      color: FigmaRGB(r: 0.2, g: 0.6, b: 0.9),
+                      color: Color.fromRGBO(51, 153, 230, 1.0),
                       opacity: 1.0,
                     ),
                   ],
@@ -53,7 +51,7 @@ void main() {
                 decoration: const FigmaDecoration(
                   fills: [
                     SolidPaint(
-                      color: FigmaRGB(r: 0.9, g: 0.3, b: 0.3),
+                      color: Color.fromRGBO(230, 77, 77, 1.0),
                       opacity: 1.0,
                     ),
                   ],
@@ -90,7 +88,7 @@ void main() {
                 decoration: const FigmaDecoration(
                   fills: [
                     SolidPaint(
-                      color: FigmaRGB(r: 0.4, g: 0.8, b: 0.4),
+                      color: Color.fromRGBO(102, 204, 102, 1.0),
                       opacity: 1.0,
                     ),
                   ],
@@ -114,8 +112,7 @@ void main() {
     );
   });
 
-  testWidgets('FigmaDecorated - corner smoothing',
-      (WidgetTester tester) async {
+  testWidgets('FigmaDecorated - corner smoothing', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -130,7 +127,7 @@ void main() {
                     decoration: const FigmaDecoration(
                       fills: [
                         SolidPaint(
-                          color: FigmaRGB(r: 0.5, g: 0.5, b: 0.9),
+                          color: Color.fromRGBO(128, 128, 230, 1.0),
                           opacity: 1.0,
                         ),
                       ],
@@ -151,7 +148,7 @@ void main() {
                     decoration: const FigmaDecoration(
                       fills: [
                         SolidPaint(
-                          color: FigmaRGB(r: 0.9, g: 0.5, b: 0.5),
+                          color: Color.fromRGBO(230, 128, 128, 1.0),
                           opacity: 1.0,
                         ),
                       ],
@@ -191,13 +188,13 @@ void main() {
                 decoration: const FigmaDecoration(
                   fills: [
                     SolidPaint(
-                      color: FigmaRGB(r: 1.0, g: 0.9, b: 0.6),
+                      color: Color.fromRGBO(255, 230, 153, 1.0),
                       opacity: 1.0,
                     ),
                   ],
                   strokes: [
                     SolidPaint(
-                      color: FigmaRGB(r: 0.2, g: 0.2, b: 0.8),
+                      color: Color.fromRGBO(51, 51, 204, 1.0),
                       opacity: 1.0,
                     ),
                   ],
@@ -221,8 +218,7 @@ void main() {
     );
   });
 
-  testWidgets('FigmaDecorated - linear gradient',
-      (WidgetTester tester) async {
+  testWidgets('FigmaDecorated - linear gradient', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -238,11 +234,11 @@ void main() {
                       gradientStops: [
                         ColorStop(
                           position: 0.0,
-                          color: FigmaRGBA(r: 1.0, g: 0.3, b: 0.3, a: 1.0),
+                          color: Color.fromRGBO(255, 77, 77, 1.0),
                         ),
                         ColorStop(
                           position: 1.0,
-                          color: FigmaRGBA(r: 0.3, g: 0.3, b: 1.0, a: 1.0),
+                          color: Color.fromRGBO(77, 77, 255, 1.0),
                         ),
                       ],
                       opacity: 1.0,
@@ -268,8 +264,7 @@ void main() {
     );
   });
 
-  testWidgets('FigmaDecorated - radial gradient',
-      (WidgetTester tester) async {
+  testWidgets('FigmaDecorated - radial gradient', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -285,11 +280,11 @@ void main() {
                       gradientStops: [
                         ColorStop(
                           position: 0.0,
-                          color: FigmaRGBA(r: 1.0, g: 1.0, b: 0.3, a: 1.0),
+                          color: Color.fromRGBO(255, 255, 77, 1.0),
                         ),
                         ColorStop(
                           position: 1.0,
-                          color: FigmaRGBA(r: 1.0, g: 0.5, b: 0.0, a: 1.0),
+                          color: Color.fromRGBO(255, 128, 0, 1.0),
                         ),
                       ],
                       opacity: 1.0,
@@ -310,8 +305,7 @@ void main() {
     );
   });
 
-  testWidgets('FigmaDecorated - angular gradient',
-      (WidgetTester tester) async {
+  testWidgets('FigmaDecorated - angular gradient', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -327,19 +321,19 @@ void main() {
                       gradientStops: [
                         ColorStop(
                           position: 0.0,
-                          color: FigmaRGBA(r: 1.0, g: 0.0, b: 0.0, a: 1.0),
+                          color: Color.fromRGBO(255, 0, 0, 1.0),
                         ),
                         ColorStop(
                           position: 0.33,
-                          color: FigmaRGBA(r: 0.0, g: 1.0, b: 0.0, a: 1.0),
+                          color: Color.fromRGBO(0, 255, 0, 1.0),
                         ),
                         ColorStop(
                           position: 0.66,
-                          color: FigmaRGBA(r: 0.0, g: 0.0, b: 1.0, a: 1.0),
+                          color: Color.fromRGBO(0, 0, 255, 1.0),
                         ),
                         ColorStop(
                           position: 1.0,
-                          color: FigmaRGBA(r: 1.0, g: 0.0, b: 0.0, a: 1.0),
+                          color: Color.fromRGBO(255, 0, 0, 1.0),
                         ),
                       ],
                       opacity: 1.0,
@@ -365,8 +359,7 @@ void main() {
     );
   });
 
-  testWidgets('FigmaDecorated - multiple fills',
-      (WidgetTester tester) async {
+  testWidgets('FigmaDecorated - multiple fills', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
@@ -378,11 +371,11 @@ void main() {
                 decoration: const FigmaDecoration(
                   fills: [
                     SolidPaint(
-                      color: FigmaRGB(r: 0.2, g: 0.6, b: 0.9),
+                      color: Color.fromRGBO(51, 153, 230, 1.0),
                       opacity: 1.0,
                     ),
                     SolidPaint(
-                      color: FigmaRGB(r: 1.0, g: 1.0, b: 1.0),
+                      color: Color.fromRGBO(255, 255, 255, 1.0),
                       opacity: 0.3,
                     ),
                   ],
@@ -423,7 +416,7 @@ void main() {
                     decoration: const FigmaDecoration(
                       fills: [
                         SolidPaint(
-                          color: FigmaRGB(r: 1.0, g: 0.0, b: 0.0),
+                          color: Color.fromRGBO(255, 0, 0, 1.0),
                           opacity: 1.0,
                         ),
                       ],
@@ -443,7 +436,7 @@ void main() {
                     decoration: const FigmaDecoration(
                       fills: [
                         SolidPaint(
-                          color: FigmaRGB(r: 1.0, g: 0.0, b: 0.0),
+                          color: Color.fromRGBO(255, 0, 0, 1.0),
                           opacity: 0.6,
                         ),
                       ],
@@ -463,7 +456,7 @@ void main() {
                     decoration: const FigmaDecoration(
                       fills: [
                         SolidPaint(
-                          color: FigmaRGB(r: 1.0, g: 0.0, b: 0.0),
+                          color: Color.fromRGBO(255, 0, 0, 1.0),
                           opacity: 0.3,
                         ),
                       ],
@@ -506,11 +499,11 @@ void main() {
                       gradientStops: [
                         ColorStop(
                           position: 0.0,
-                          color: FigmaRGBA(r: 0.6, g: 0.3, b: 0.9, a: 1.0),
+                          color: Color.fromRGBO(153, 77, 230, 1.0),
                         ),
                         ColorStop(
                           position: 1.0,
-                          color: FigmaRGBA(r: 0.3, g: 0.6, b: 0.9, a: 1.0),
+                          color: Color.fromRGBO(77, 153, 230, 1.0),
                         ),
                       ],
                       opacity: 1.0,
@@ -518,7 +511,7 @@ void main() {
                   ],
                   strokes: [
                     SolidPaint(
-                      color: FigmaRGB(r: 1.0, g: 1.0, b: 1.0),
+                      color: Color.fromRGBO(255, 255, 255, 1.0),
                       opacity: 0.5,
                     ),
                   ],
