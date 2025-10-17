@@ -24,6 +24,60 @@ enum FontStyle {
   italic,
 }
 
+class FigmaTextStyle {
+  const FigmaTextStyle({
+    required this.fontName,
+    required this.fontSize,
+    required this.letterSpacing,
+    required this.lineHeight,
+  });
+
+  final FontName fontName;
+  final double fontSize;
+  final LetterSpacing letterSpacing;
+  final LineHeight lineHeight;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FigmaTextStyle &&
+          runtimeType == other.runtimeType &&
+          fontName == other.fontName &&
+          fontSize == other.fontSize &&
+          letterSpacing == other.letterSpacing &&
+          lineHeight == other.lineHeight;
+
+  @override
+  int get hashCode =>
+      Object.hash(fontName, fontSize, letterSpacing, lineHeight);
+
+  @override
+  String toString() {
+    return 'FigmaTextStyle(fontName: $fontName, fontSize: $fontSize, letterSpacing: $letterSpacing, lineHeight: $lineHeight)';
+  }
+}
+
+class FigmaTextSpan {
+  const FigmaTextSpan({
+    required this.text,
+    this.style,
+  });
+
+  final String text;
+  final FigmaTextStyle? style;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is FigmaTextSpan &&
+          runtimeType == other.runtimeType &&
+          text == other.text &&
+          style == other.style;
+
+  @override
+  int get hashCode => Object.hash(text, style);
+}
+
 class FontName {
   const FontName({
     required this.family,
