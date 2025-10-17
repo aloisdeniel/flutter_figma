@@ -1,2 +1,2 @@
-export 'decoration.dart';
+export 'decorated.dart';
 export 'layout.dart';

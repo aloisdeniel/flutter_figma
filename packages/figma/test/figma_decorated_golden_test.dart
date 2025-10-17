@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_figma/src/foundation/decoration.dart';
 import 'package:flutter_figma/src/foundation/geometry.dart';
 import 'package:flutter_figma/src/foundation/paint.dart';
-import 'package:flutter_figma/src/widgets/decoration.dart';
+import 'package:flutter_figma/src/widgets/decorated.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
