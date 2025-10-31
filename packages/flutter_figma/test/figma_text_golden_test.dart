@@ -13,9 +13,10 @@ void main() {
           body: Center(
             child: FigmaText(
               style: FigmaTextStyle(
-                fontName: FontName(family: 'Roboto', style: 'Regular'),
+                fontName: FontName(family: 'Roboto'),
                 fontSize: 24,
-                letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                letterSpacing:
+                    LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                 lineHeight: LineHeightAuto(),
               ),
               characters: [
@@ -39,17 +40,17 @@ void main() {
     );
   });
 
-  testWidgets('FigmaText - colored text',
-      (WidgetTester tester) async {
+  testWidgets('FigmaText - colored text', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
           body: Center(
             child: FigmaText(
               style: FigmaTextStyle(
-                fontName: FontName(family: 'Roboto', style: 'Regular'),
+                fontName: FontName(family: 'Roboto'),
                 fontSize: 32,
-                letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                letterSpacing:
+                    LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                 lineHeight: LineHeightAuto(),
               ),
               characters: [
@@ -73,17 +74,17 @@ void main() {
     );
   });
 
-  testWidgets('FigmaText - bold text',
-      (WidgetTester tester) async {
+  testWidgets('FigmaText - bold text', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
           body: Center(
             child: FigmaText(
               style: FigmaTextStyle(
-                fontName: FontName(family: 'Roboto', style: 'Bold'),
+                fontName: FontName(family: 'Roboto'),
                 fontSize: 28,
-                letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                letterSpacing:
+                    LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                 lineHeight: LineHeightAuto(),
               ),
               characters: [
@@ -107,17 +108,17 @@ void main() {
     );
   });
 
-  testWidgets('FigmaText - italic text',
-      (WidgetTester tester) async {
+  testWidgets('FigmaText - italic text', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
           body: Center(
             child: FigmaText(
               style: FigmaTextStyle(
-                fontName: FontName(family: 'Roboto', style: 'Italic'),
+                fontName: FontName(family: 'Roboto'),
                 fontSize: 28,
-                letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                letterSpacing:
+                    LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                 lineHeight: LineHeightAuto(),
               ),
               characters: [
@@ -149,9 +150,10 @@ void main() {
           body: Center(
             child: FigmaText(
               style: FigmaTextStyle(
-                fontName: FontName(family: 'Roboto', style: 'Regular'),
+                fontName: FontName(family: 'Roboto'),
                 fontSize: 24,
-                letterSpacing: LetterSpacing(value: 5, unit: LetterSpacingUnit.pixels),
+                letterSpacing:
+                    LetterSpacing(value: 5, unit: LetterSpacingUnit.pixels),
                 lineHeight: LineHeightAuto(),
               ),
               characters: [
@@ -183,9 +185,10 @@ void main() {
           body: Center(
             child: FigmaText(
               style: FigmaTextStyle(
-                fontName: FontName(family: 'Roboto', style: 'Regular'),
+                fontName: FontName(family: 'Roboto'),
                 fontSize: 24,
-                letterSpacing: LetterSpacing(value: 10, unit: LetterSpacingUnit.percent),
+                letterSpacing:
+                    LetterSpacing(value: 10, unit: LetterSpacingUnit.percent),
                 lineHeight: LineHeightAuto(),
               ),
               characters: [
@@ -219,9 +222,10 @@ void main() {
               width: 200,
               child: FigmaText(
                 style: FigmaTextStyle(
-                  fontName: FontName(family: 'Roboto', style: 'Regular'),
+                  fontName: FontName(family: 'Roboto'),
                   fontSize: 20,
-                  letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                  letterSpacing:
+                      LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                   lineHeight: LineHeightPixels(40),
                 ),
                 characters: [
@@ -256,9 +260,10 @@ void main() {
               width: 200,
               child: FigmaText(
                 style: FigmaTextStyle(
-                  fontName: FontName(family: 'Roboto', style: 'Regular'),
+                  fontName: FontName(family: 'Roboto'),
                   fontSize: 20,
-                  letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                  letterSpacing:
+                      LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                   lineHeight: LineHeightPercent(150),
                 ),
                 characters: [
@@ -283,17 +288,17 @@ void main() {
     );
   });
 
-  testWidgets('FigmaText - mixed text spans',
-      (WidgetTester tester) async {
+  testWidgets('FigmaText - mixed text spans', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
           body: Center(
             child: FigmaText(
               style: FigmaTextStyle(
-                fontName: FontName(family: 'Roboto', style: 'Regular'),
+                fontName: FontName(family: 'Roboto'),
                 fontSize: 24,
-                letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                letterSpacing:
+                    LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                 lineHeight: LineHeightAuto(),
               ),
               characters: [
@@ -301,18 +306,20 @@ void main() {
                 FigmaTextSpan(
                   text: 'Bold ',
                   style: FigmaTextStyle(
-                    fontName: FontName(family: 'Roboto', style: 'Bold'),
+                    fontName: FontName(family: 'Roboto'),
                     fontSize: 24,
-                    letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                    letterSpacing:
+                        LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                     lineHeight: LineHeightAuto(),
                   ),
                 ),
                 FigmaTextSpan(
                   text: 'Italic',
                   style: FigmaTextStyle(
-                    fontName: FontName(family: 'Roboto', style: 'Italic'),
+                    fontName: FontName(family: 'Roboto'),
                     fontSize: 24,
-                    letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                    letterSpacing:
+                        LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                     lineHeight: LineHeightAuto(),
                   ),
                 ),
@@ -335,17 +342,17 @@ void main() {
     );
   });
 
-  testWidgets('FigmaText - opacity variation',
-      (WidgetTester tester) async {
+  testWidgets('FigmaText - opacity variation', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
           body: Center(
             child: FigmaText(
               style: FigmaTextStyle(
-                fontName: FontName(family: 'Roboto', style: 'Regular'),
+                fontName: FontName(family: 'Roboto'),
                 fontSize: 28,
-                letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                letterSpacing:
+                    LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                 lineHeight: LineHeightAuto(),
               ),
               characters: [
@@ -369,8 +376,7 @@ void main() {
     );
   });
 
-  testWidgets('FigmaText - different font sizes',
-      (WidgetTester tester) async {
+  testWidgets('FigmaText - different font sizes', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
@@ -380,9 +386,10 @@ void main() {
               children: [
                 FigmaText(
                   style: FigmaTextStyle(
-                    fontName: FontName(family: 'Roboto', style: 'Regular'),
+                    fontName: FontName(family: 'Roboto'),
                     fontSize: 16,
-                    letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                    letterSpacing:
+                        LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                     lineHeight: LineHeightAuto(),
                   ),
                   characters: [
@@ -398,9 +405,10 @@ void main() {
                 SizedBox(height: 10),
                 FigmaText(
                   style: FigmaTextStyle(
-                    fontName: FontName(family: 'Roboto', style: 'Regular'),
+                    fontName: FontName(family: 'Roboto'),
                     fontSize: 24,
-                    letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                    letterSpacing:
+                        LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                     lineHeight: LineHeightAuto(),
                   ),
                   characters: [
@@ -416,9 +424,10 @@ void main() {
                 SizedBox(height: 10),
                 FigmaText(
                   style: FigmaTextStyle(
-                    fontName: FontName(family: 'Roboto', style: 'Regular'),
+                    fontName: FontName(family: 'Roboto'),
                     fontSize: 32,
-                    letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                    letterSpacing:
+                        LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                     lineHeight: LineHeightAuto(),
                   ),
                   characters: [
@@ -444,8 +453,7 @@ void main() {
     );
   });
 
-  testWidgets('FigmaText - multiline text',
-      (WidgetTester tester) async {
+  testWidgets('FigmaText - multiline text', (WidgetTester tester) async {
     await tester.pumpWidget(
       const MaterialApp(
         home: Scaffold(
@@ -454,14 +462,16 @@ void main() {
               width: 300,
               child: FigmaText(
                 style: FigmaTextStyle(
-                  fontName: FontName(family: 'Roboto', style: 'Regular'),
+                  fontName: FontName(family: 'Roboto'),
                   fontSize: 20,
-                  letterSpacing: LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
+                  letterSpacing:
+                      LetterSpacing(value: 0, unit: LetterSpacingUnit.pixels),
                   lineHeight: LineHeightAuto(),
                 ),
                 characters: [
                   FigmaTextSpan(
-                    text: 'This is a longer text that should wrap across multiple lines to demonstrate how FigmaText handles multiline content.',
+                    text:
+                        'This is a longer text that should wrap across multiple lines to demonstrate how FigmaText handles multiline content.',
                   ),
                 ],
                 fills: [

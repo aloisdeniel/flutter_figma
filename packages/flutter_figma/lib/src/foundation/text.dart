@@ -1,4 +1,6 @@
-enum TextCase {
+import 'dart:ui';
+
+enum FigmaTextCase {
   original,
   upper,
   lower,
@@ -7,19 +9,19 @@ enum TextCase {
   smallCapsForced,
 }
 
-enum TextDecoration {
+enum FigmaTextDecoration {
   none,
   underline,
   strikethrough,
 }
 
-enum TextDecorationStyle {
+enum FigmaTextDecorationStyle {
   solid,
   wavy,
   dotted,
 }
 
-enum FontStyle {
+enum FigmaFontStyle {
   regular,
   italic,
 }
@@ -81,11 +83,13 @@ class FigmaTextSpan {
 class FontName {
   const FontName({
     required this.family,
-    required this.style,
+    this.style = FigmaFontStyle.italic,
+    this.weight = FontWeight.normal,
   });
 
   final String family;
-  final String style;
+  final FigmaFontStyle style;
+  final FontWeight weight;
 
   @override
   bool operator ==(Object other) =>
@@ -93,13 +97,15 @@ class FontName {
       other is FontName &&
           runtimeType == other.runtimeType &&
           family == other.family &&
+          weight == other.weight &&
           style == other.style;
 
   @override
-  int get hashCode => Object.hash(family, style);
+  int get hashCode => Object.hash(family, style, weight);
 
   @override
-  String toString() => 'FontName(family: $family, style: $style)';
+  String toString() =>
+      'FontName(family: $family, style: $style, weight: $weight)';
 }
 
 class LetterSpacing {

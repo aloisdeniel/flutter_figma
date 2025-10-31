@@ -16,7 +16,11 @@ class DefaultFigmaTextStyle extends InheritedWidget {
   final List<FigmaPaint> strokes;
 
   static FigmaTextStyle fallbackStyle = FigmaTextStyle(
-    fontName: FontName(family: 'system', style: 'regular'),
+    fontName: FontName(
+      family: 'system',
+      style: FigmaFontStyle.regular,
+      weight: FontWeight.normal,
+    ),
     fontSize: 12,
     letterSpacing: LetterSpacing(
       value: 0,

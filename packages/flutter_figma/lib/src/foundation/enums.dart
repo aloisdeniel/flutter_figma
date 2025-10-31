@@ -62,20 +62,6 @@ enum WindingRule {
   evenodd,
 }
 
-enum Navigation {
-  navigate,
-  swap,
-  overlay,
-  scrollTo,
-  changeTo,
-}
-
-enum PublishStatus {
-  unpublished,
-  current,
-  changed,
-}
-
 enum ConnectorMagnet {
   none,
   auto,
@@ -93,37 +79,4 @@ enum ConnectorStrokeCap {
   triangleFilled,
   diamondFilled,
   circleFilled,
-}
-
-enum NodeType {
-  document,
-  page,
-  frame,
-  group,
-  vector,
-  boolean,
-  star,
-  line,
-  ellipse,
-  regularPolygon,
-  rectangle,
-  text,
-  slice,
-  component,
-  componentSet,
-  instance,
-  connector,
-  shapewithtext,
-  sticky,
-  widget,
-  table,
-  tableCell,
-  media,
-  highlight,
-  stamp,
-  section,
-  embed,
-  linkUnfurl,
-  washi,
-  codeBlock,
 }

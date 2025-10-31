@@ -56,15 +56,22 @@ class RenderFigmaText extends RenderProxyBox {
     final spans = <InlineSpan>[];
     for (final span in _characters) {
       final spanStyle = span.style ?? _style;
-      spans.add(TextSpan(
-        text: span.text,
-        style: _convertTextStyle(spanStyle),
-      ));
+      spans.add(
+        TextSpan(
+          text: span.text,
+          style: _convertTextStyle(spanStyle),
+        ),
+      );
     }
 
     _textPainter = TextPainter(
       text: TextSpan(children: spans),
       textDirection: TextDirection.ltr,
+      textHeightBehavior: TextHeightBehavior(
+        applyHeightToFirstAscent: false,
+        applyHeightToLastDescent: false,
+        leadingDistribution: TextLeadingDistribution.even,
+      ),
     );
 
     return _textPainter!;
@@ -72,10 +79,10 @@ class RenderFigmaText extends RenderProxyBox {
 
   TextStyle _convertTextStyle(FigmaTextStyle figmaStyle) {
     final fontFamily = figmaStyle.fontName.family;
-    final fontStyle = figmaStyle.fontName.style.toLowerCase().contains('italic')
+    final fontStyle = figmaStyle.fontName.style == FigmaFontStyle.italic
         ? ui.FontStyle.italic
         : ui.FontStyle.normal;
-    final fontWeight = _parseFontWeight(figmaStyle.fontName.style);
+    final fontWeight = figmaStyle.fontName.weight;
 
     final letterSpacing =
         figmaStyle.letterSpacing.unit == LetterSpacingUnit.pixels
@@ -97,31 +104,6 @@ class RenderFigmaText extends RenderProxyBox {
       height: height,
       color: _getPrimaryColor(),
     );
-  }
-
-  FontWeight _parseFontWeight(String style) {
-    final lower = style.toLowerCase();
-    if (lower.contains('thin')) return FontWeight.w100;
-    if (lower.contains('extralight') || lower.contains('ultra light')) {
-      return FontWeight.w200;
-    }
-    if (lower.contains('light')) return FontWeight.w300;
-    if (lower.contains('medium')) return FontWeight.w500;
-    if (lower.contains('semibold') || lower.contains('demibold')) {
-      return FontWeight.w600;
-    }
-    if (lower.contains('bold') &&
-        !lower.contains('extra') &&
-        !lower.contains('ultra')) {
-      return FontWeight.w700;
-    }
-    if (lower.contains('extrabold') || lower.contains('ultra bold')) {
-      return FontWeight.w800;
-    }
-    if (lower.contains('black') || lower.contains('heavy')) {
-      return FontWeight.w900;
-    }
-    return FontWeight.w400;
   }
 
   ui.Color _getPrimaryColor() {
