@@ -380,7 +380,9 @@ void main() {
                     child: Container(
                       color: Colors.red,
                       child: const Center(
-                        child: Text('MIN', style: TextStyle(color: Colors.white, fontSize: 10)),
+                        child: Text('MIN',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 10)),
                       ),
                     ),
                   ),
@@ -394,7 +396,9 @@ void main() {
                     child: Container(
                       color: Colors.orange,
                       child: const Center(
-                        child: Text('MAX', style: TextStyle(color: Colors.white, fontSize: 10)),
+                        child: Text('MAX',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 10)),
                       ),
                     ),
                   ),
@@ -408,7 +412,9 @@ void main() {
                     child: Container(
                       color: Colors.teal,
                       child: const Center(
-                        child: Text('CTR', style: TextStyle(color: Colors.white, fontSize: 10)),
+                        child: Text('CTR',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 10)),
                       ),
                     ),
                   ),
@@ -422,7 +428,9 @@ void main() {
                     child: Container(
                       color: Colors.indigo.withOpacity(0.7),
                       child: const Center(
-                        child: Text('STRETCH H', style: TextStyle(color: Colors.white, fontSize: 10)),
+                        child: Text('STRETCH H',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 10)),
                       ),
                     ),
                   ),
@@ -436,7 +444,9 @@ void main() {
                     child: Container(
                       color: Colors.amber.withOpacity(0.8),
                       child: const Center(
-                        child: Text('SCALE', style: TextStyle(color: Colors.black, fontSize: 10)),
+                        child: Text('SCALE',
+                            style:
+                                TextStyle(color: Colors.black, fontSize: 10)),
                       ),
                     ),
                   ),
@@ -450,7 +460,9 @@ void main() {
                     child: Container(
                       color: Colors.purple,
                       child: const Center(
-                        child: Text('MIN V', style: TextStyle(color: Colors.white, fontSize: 10)),
+                        child: Text('MIN V',
+                            style:
+                                TextStyle(color: Colors.white, fontSize: 10)),
                       ),
                     ),
                   ),
@@ -539,9 +551,9 @@ void main() {
                   y: 20,
                   width: 150,
                   height: 120,
-                  child: FigmaAutoLayout(
+                  child: FigmaLayout(
                     layout: const FigmaAutoLayoutProperties(
-                      direction: Axis.vertical,
+                      mode: AutoLayoutMode.vertical,
                       itemSpacing: 8,
                       paddingLeft: 10,
                       paddingRight: 10,
@@ -562,9 +574,9 @@ void main() {
                   y: 100,
                   width: 180,
                   height: 80,
-                  child: FigmaAutoLayout(
+                  child: FigmaLayout(
                     layout: const FigmaAutoLayoutProperties(
-                      direction: Axis.horizontal,
+                      mode: AutoLayoutMode.horizontal,
                       itemSpacing: 10,
                       paddingLeft: 12,
                       paddingRight: 12,
@@ -600,9 +612,9 @@ void main() {
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: FigmaAutoLayout(
+            child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                direction: Axis.vertical,
+                mode: AutoLayoutMode.vertical,
                 itemSpacing: 20,
                 paddingLeft: 20,
                 paddingRight: 20,
@@ -686,9 +698,9 @@ void main() {
                   height: 360,
                   horizontalConstraint: ConstraintType.min,
                   verticalConstraint: ConstraintType.stretch,
-                  child: FigmaAutoLayout(
+                  child: FigmaLayout(
                     layout: const FigmaAutoLayoutProperties(
-                      direction: Axis.vertical,
+                      mode: AutoLayoutMode.vertical,
                       itemSpacing: 12,
                       paddingLeft: 15,
                       paddingRight: 15,
@@ -703,7 +715,8 @@ void main() {
                         height: 80,
                         color: Colors.indigo,
                         child: const Center(
-                          child: Text('Item 1', style: TextStyle(color: Colors.white)),
+                          child: Text('Item 1',
+                              style: TextStyle(color: Colors.white)),
                         ),
                       ),
                       Container(
@@ -711,7 +724,8 @@ void main() {
                         height: 80,
                         color: Colors.deepPurple,
                         child: const Center(
-                          child: Text('Item 2', style: TextStyle(color: Colors.white)),
+                          child: Text('Item 2',
+                              style: TextStyle(color: Colors.white)),
                         ),
                       ),
                       Container(
@@ -719,7 +733,8 @@ void main() {
                         height: 80,
                         color: Colors.purple,
                         child: const Center(
-                          child: Text('Item 3', style: TextStyle(color: Colors.white)),
+                          child: Text('Item 3',
+                              style: TextStyle(color: Colors.white)),
                         ),
                       ),
                     ],
@@ -735,7 +750,8 @@ void main() {
                   child: Container(
                     color: Colors.orange[300],
                     child: const Center(
-                      child: Text('Pinned Right', style: TextStyle(fontSize: 16)),
+                      child:
+                          Text('Pinned Right', style: TextStyle(fontSize: 16)),
                     ),
                   ),
                 ),
@@ -746,9 +762,9 @@ void main() {
                   height: 180,
                   horizontalConstraint: ConstraintType.max,
                   verticalConstraint: ConstraintType.max,
-                  child: FigmaAutoLayout(
+                  child: FigmaLayout(
                     layout: const FigmaAutoLayoutProperties(
-                      direction: Axis.horizontal,
+                      mode: AutoLayoutMode.horizontal,
                       layoutWrap: LayoutWrap.wrap,
                       itemSpacing: 8,
                       counterAxisSpacing: 8,
@@ -788,9 +804,9 @@ void main() {
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: FigmaAutoLayout(
+            child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                direction: Axis.horizontal,
+                mode: AutoLayoutMode.horizontal,
                 itemSpacing: 16,
                 paddingLeft: 20,
                 paddingRight: 20,
@@ -808,7 +824,8 @@ void main() {
                   child: Container(
                     color: Colors.red,
                     child: const Center(
-                      child: Text('FIXED', style: TextStyle(color: Colors.white)),
+                      child:
+                          Text('FIXED', style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 ),
@@ -833,7 +850,8 @@ void main() {
                   child: Container(
                     color: Colors.green,
                     child: const Center(
-                      child: Text('FIXED', style: TextStyle(color: Colors.white)),
+                      child:
+                          Text('FIXED', style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 ),
@@ -857,9 +875,9 @@ void main() {
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: FigmaAutoLayout(
+            child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                direction: Axis.vertical,
+                mode: AutoLayoutMode.vertical,
                 itemSpacing: 12,
                 paddingLeft: 20,
                 paddingRight: 20,
@@ -877,7 +895,8 @@ void main() {
                   child: Container(
                     color: Colors.purple,
                     child: const Center(
-                      child: Text('Fixed 200x60', style: TextStyle(color: Colors.white)),
+                      child: Text('Fixed 200x60',
+                          style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 ),
@@ -890,7 +909,8 @@ void main() {
                     color: Colors.teal,
                     padding: const EdgeInsets.symmetric(vertical: 20),
                     child: const Center(
-                      child: Text('Hug Height', style: TextStyle(color: Colors.white)),
+                      child: Text('Hug Height',
+                          style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 ),
@@ -902,7 +922,8 @@ void main() {
                   child: Container(
                     color: Colors.orange,
                     child: const Center(
-                      child: Text('Fixed 200x80', style: TextStyle(color: Colors.white)),
+                      child: Text('Fixed 200x80',
+                          style: TextStyle(color: Colors.white)),
                     ),
                   ),
                 ),
@@ -919,16 +940,15 @@ void main() {
     );
   });
 
-  testWidgets('Child Sizing - All hug content',
-      (WidgetTester tester) async {
+  testWidgets('Child Sizing - All hug content', (WidgetTester tester) async {
     await tester.pumpWidget(
       MaterialApp(
         home: Scaffold(
           backgroundColor: Colors.white,
           body: Center(
-            child: FigmaAutoLayout(
+            child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                direction: Axis.horizontal,
+                mode: AutoLayoutMode.horizontal,
                 itemSpacing: 10,
                 paddingLeft: 15,
                 paddingRight: 15,
@@ -944,7 +964,8 @@ void main() {
                   child: Container(
                     color: Colors.red,
                     padding: const EdgeInsets.all(15),
-                    child: const Text('Short', style: TextStyle(color: Colors.white)),
+                    child: const Text('Short',
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ),
                 FigmaChildSize(
@@ -953,7 +974,8 @@ void main() {
                   child: Container(
                     color: Colors.blue,
                     padding: const EdgeInsets.all(15),
-                    child: const Text('Medium Text', style: TextStyle(color: Colors.white)),
+                    child: const Text('Medium Text',
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ),
                 FigmaChildSize(
@@ -962,7 +984,8 @@ void main() {
                   child: Container(
                     color: Colors.green,
                     padding: const EdgeInsets.all(15),
-                    child: const Text('Longer Text Here', style: TextStyle(color: Colors.white)),
+                    child: const Text('Longer Text Here',
+                        style: TextStyle(color: Colors.white)),
                   ),
                 ),
               ],
@@ -987,7 +1010,7 @@ void main() {
           body: Center(
             child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                direction: Axis.horizontal,
+                mode: AutoLayoutMode.horizontal,
                 itemSpacing: 10,
                 paddingLeft: 20,
                 paddingRight: 20,
@@ -1002,7 +1025,8 @@ void main() {
                   height: 80,
                   color: Colors.blue,
                   child: const Center(
-                    child: Text('Auto 1', style: TextStyle(color: Colors.white)),
+                    child:
+                        Text('Auto 1', style: TextStyle(color: Colors.white)),
                   ),
                 ),
                 Container(
@@ -1010,7 +1034,8 @@ void main() {
                   height: 80,
                   color: Colors.green,
                   child: const Center(
-                    child: Text('Auto 2', style: TextStyle(color: Colors.white)),
+                    child:
+                        Text('Auto 2', style: TextStyle(color: Colors.white)),
                   ),
                 ),
                 FigmaPositioned(
@@ -1021,7 +1046,8 @@ void main() {
                   child: Container(
                     color: Colors.red.withOpacity(0.9),
                     child: const Center(
-                      child: Text('Abs', style: TextStyle(color: Colors.white, fontSize: 12)),
+                      child: Text('Abs',
+                          style: TextStyle(color: Colors.white, fontSize: 12)),
                     ),
                   ),
                 ),
@@ -1030,7 +1056,8 @@ void main() {
                   height: 80,
                   color: Colors.orange,
                   child: const Center(
-                    child: Text('Auto 3', style: TextStyle(color: Colors.white)),
+                    child:
+                        Text('Auto 3', style: TextStyle(color: Colors.white)),
                   ),
                 ),
                 FigmaPositioned(
@@ -1041,7 +1068,8 @@ void main() {
                   child: Container(
                     color: Colors.purple.withOpacity(0.9),
                     child: const Center(
-                      child: Text('Absolute', style: TextStyle(color: Colors.white, fontSize: 10)),
+                      child: Text('Absolute',
+                          style: TextStyle(color: Colors.white, fontSize: 10)),
                     ),
                   ),
                 ),

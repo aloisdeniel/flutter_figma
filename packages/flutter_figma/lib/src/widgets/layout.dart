@@ -6,7 +6,7 @@ sealed class FigmaLayoutProperties {
   const FigmaLayoutProperties();
 
   const factory FigmaLayoutProperties.auto({
-    Axis direction,
+    AutoLayoutMode mode,
     PrimaryAxisSizingMode primaryAxisSizingMode,
     CounterAxisSizingMode counterAxisSizingMode,
     LayoutAlign primaryAxisAlignItems,
@@ -38,7 +38,7 @@ class FigmaAbsoluteLayoutProperties extends FigmaLayoutProperties {
 
 class FigmaAutoLayoutProperties extends FigmaLayoutProperties {
   const FigmaAutoLayoutProperties({
-    this.direction = Axis.horizontal,
+    this.mode = AutoLayoutMode.horizontal,
     this.primaryAxisSizingMode = PrimaryAxisSizingMode.fixed,
     this.counterAxisSizingMode = CounterAxisSizingMode.fixed,
     this.primaryAxisAlignItems = LayoutAlign.min,
@@ -52,7 +52,7 @@ class FigmaAutoLayoutProperties extends FigmaLayoutProperties {
     this.counterAxisSpacing = 0,
   });
 
-  final Axis direction;
+  final AutoLayoutMode mode;
   final PrimaryAxisSizingMode primaryAxisSizingMode;
   final CounterAxisSizingMode counterAxisSizingMode;
   final LayoutAlign primaryAxisAlignItems;
@@ -64,78 +64,6 @@ class FigmaAutoLayoutProperties extends FigmaLayoutProperties {
   final double paddingBottom;
   final double itemSpacing;
   final double counterAxisSpacing;
-}
-
-class FigmaAutoLayout extends MultiChildRenderObjectWidget {
-  const FigmaAutoLayout({
-    super.key,
-    required super.children,
-    this.layout = const FigmaAutoLayoutProperties(),
-  });
-
-  final FigmaAutoLayoutProperties layout;
-
-  @override
-  RenderObject createRenderObject(BuildContext context) {
-    return RenderFigmaAutoLayout(
-      direction: layout.direction,
-      primaryAxisSizingMode: layout.primaryAxisSizingMode,
-      counterAxisSizingMode: layout.counterAxisSizingMode,
-      primaryAxisAlignItems: layout.primaryAxisAlignItems,
-      counterAxisAlignItems: layout.counterAxisAlignItems,
-      layoutWrap: layout.layoutWrap,
-      paddingLeft: layout.paddingLeft,
-      paddingRight: layout.paddingRight,
-      paddingTop: layout.paddingTop,
-      paddingBottom: layout.paddingBottom,
-      itemSpacing: layout.itemSpacing,
-      counterAxisSpacing: layout.counterAxisSpacing,
-    );
-  }
-
-  @override
-  void updateRenderObject(
-      BuildContext context, RenderFigmaAutoLayout renderObject) {
-    renderObject
-      ..direction = layout.direction
-      ..primaryAxisSizingMode = layout.primaryAxisSizingMode
-      ..counterAxisSizingMode = layout.counterAxisSizingMode
-      ..primaryAxisAlignItems = layout.primaryAxisAlignItems
-      ..counterAxisAlignItems = layout.counterAxisAlignItems
-      ..layoutWrap = layout.layoutWrap
-      ..paddingLeft = layout.paddingLeft
-      ..paddingRight = layout.paddingRight
-      ..paddingTop = layout.paddingTop
-      ..paddingBottom = layout.paddingBottom
-      ..itemSpacing = layout.itemSpacing
-      ..counterAxisSpacing = layout.counterAxisSpacing;
-  }
-}
-
-class FigmaAbsoluteLayout extends MultiChildRenderObjectWidget {
-  const FigmaAbsoluteLayout({
-    super.key,
-    required super.children,
-    this.layout = const FigmaAbsoluteLayoutProperties(),
-  });
-
-  final FigmaAbsoluteLayoutProperties layout;
-
-  @override
-  RenderObject createRenderObject(BuildContext context) {
-    return RenderFigmaAbsoluteLayout(
-      width: layout.width,
-      height: layout.height,
-    );
-  }
-
-  @override
-  void updateRenderObject(
-      BuildContext context, RenderFigmaAbsoluteLayout renderObject) {
-    renderObject
-      ..width = layout.width
-      ..height = layout.height;
-  }
 }
 
 class FigmaLayout extends MultiChildRenderObjectWidget {
@@ -150,20 +78,22 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
   @override
   RenderObject createRenderObject(BuildContext context) {
     return switch (layout) {
-      FigmaAutoLayoutProperties(:final direction,
-                                :final primaryAxisSizingMode,
-                                :final counterAxisSizingMode,
-                                :final primaryAxisAlignItems,
-                                :final counterAxisAlignItems,
-                                :final layoutWrap,
-                                :final paddingLeft,
-                                :final paddingRight,
-                                :final paddingTop,
-                                :final paddingBottom,
-                                :final itemSpacing,
-                                :final counterAxisSpacing) =>
+      FigmaAutoLayoutProperties(
+        :final mode,
+        :final primaryAxisSizingMode,
+        :final counterAxisSizingMode,
+        :final primaryAxisAlignItems,
+        :final counterAxisAlignItems,
+        :final layoutWrap,
+        :final paddingLeft,
+        :final paddingRight,
+        :final paddingTop,
+        :final paddingBottom,
+        :final itemSpacing,
+        :final counterAxisSpacing
+      ) =>
         RenderFigmaLayout(
-          direction: direction,
+          mode: mode,
           primaryAxisSizingMode: primaryAxisSizingMode,
           counterAxisSizingMode: counterAxisSizingMode,
           primaryAxisAlignItems: primaryAxisAlignItems,
@@ -185,22 +115,25 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
   }
 
   @override
-  void updateRenderObject(BuildContext context, RenderFigmaLayout renderObject) {
+  void updateRenderObject(
+      BuildContext context, RenderFigmaLayout renderObject) {
     switch (layout) {
-      case FigmaAutoLayoutProperties(:final direction,
-                                     :final primaryAxisSizingMode,
-                                     :final counterAxisSizingMode,
-                                     :final primaryAxisAlignItems,
-                                     :final counterAxisAlignItems,
-                                     :final layoutWrap,
-                                     :final paddingLeft,
-                                     :final paddingRight,
-                                     :final paddingTop,
-                                     :final paddingBottom,
-                                     :final itemSpacing,
-                                     :final counterAxisSpacing):
+      case FigmaAutoLayoutProperties(
+          :final mode,
+          :final primaryAxisSizingMode,
+          :final counterAxisSizingMode,
+          :final primaryAxisAlignItems,
+          :final counterAxisAlignItems,
+          :final layoutWrap,
+          :final paddingLeft,
+          :final paddingRight,
+          :final paddingTop,
+          :final paddingBottom,
+          :final itemSpacing,
+          :final counterAxisSpacing
+        ):
         renderObject
-          ..direction = direction
+          ..mode = mode
           ..primaryAxisSizingMode = primaryAxisSizingMode
           ..counterAxisSizingMode = counterAxisSizingMode
           ..primaryAxisAlignItems = primaryAxisAlignItems

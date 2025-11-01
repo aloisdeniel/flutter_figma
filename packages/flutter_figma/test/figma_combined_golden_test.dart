@@ -3,7 +3,6 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_figma/src/foundation/decoration.dart';
 import 'package:flutter_figma/src/foundation/geometry.dart';
-import 'package:flutter_figma/src/foundation/layout.dart';
 import 'package:flutter_figma/src/foundation/paint.dart';
 import 'package:flutter_figma/src/rendering/layout.dart';
 import 'package:flutter_figma/src/widgets/decorated.dart';
@@ -21,7 +20,7 @@ void main() {
           body: Center(
             child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                direction: Axis.horizontal,
+                mode: AutoLayoutMode.horizontal,
                 itemSpacing: 12,
                 paddingLeft: 20,
                 paddingRight: 20,
@@ -193,7 +192,7 @@ void main() {
           body: Center(
             child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                direction: Axis.horizontal,
+                mode: AutoLayoutMode.horizontal,
                 itemSpacing: 30,
                 paddingLeft: 40,
                 paddingRight: 40,
@@ -253,7 +252,7 @@ void main() {
           body: Center(
             child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                direction: Axis.vertical,
+                mode: AutoLayoutMode.vertical,
                 primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                 counterAxisSizingMode: CounterAxisSizingMode.auto,
                 itemSpacing: 20,
@@ -265,7 +264,7 @@ void main() {
               children: [
                 FigmaLayout(
                   layout: const FigmaAutoLayoutProperties(
-                    direction: Axis.horizontal,
+                    mode: AutoLayoutMode.horizontal,
                     primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                     counterAxisSizingMode: CounterAxisSizingMode.auto,
                     itemSpacing: 15,
@@ -419,7 +418,7 @@ void main() {
                 height: 280,
                 child: FigmaLayout(
                   layout: const FigmaAutoLayoutProperties(
-                    direction: Axis.vertical,
+                    mode: AutoLayoutMode.vertical,
                     itemSpacing: 15,
                     paddingLeft: 25,
                     paddingRight: 25,
@@ -468,7 +467,7 @@ void main() {
                     ),
                     FigmaLayout(
                       layout: const FigmaAutoLayoutProperties(
-                        direction: Axis.horizontal,
+                        mode: AutoLayoutMode.horizontal,
                         primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                         counterAxisSizingMode: CounterAxisSizingMode.auto,
                         itemSpacing: 12,
@@ -652,7 +651,7 @@ void main() {
                   height: 200,
                   child: FigmaLayout(
                     layout: const FigmaAutoLayoutProperties(
-                      direction: Axis.vertical,
+                      mode: AutoLayoutMode.vertical,
                       itemSpacing: 16,
                       paddingLeft: 20,
                       paddingRight: 20,
@@ -662,7 +661,7 @@ void main() {
                     children: [
                       FigmaLayout(
                         layout: const FigmaAutoLayoutProperties(
-                          direction: Axis.horizontal,
+                          mode: AutoLayoutMode.horizontal,
                           primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                           counterAxisSizingMode: CounterAxisSizingMode.auto,
                           itemSpacing: 12,
@@ -679,53 +678,53 @@ void main() {
                                       position: 0.0,
                                       color: Color.fromRGBO(102, 153, 255, 1.0),
                                     ),
-                                     ColorStop(
-                                       position: 1.0,
-                                       color: Color.fromRGBO(153, 102, 255, 1.0),
-                                     ),
-                                   ],
-                                   opacity: 1.0,
-                                 ),
-                               ],
-                               shape: FigmaRectangleShape(
-                                 topLeftRadius: 25,
-                                 topRightRadius: 25,
-                                 bottomLeftRadius: 25,
-                                 bottomRightRadius: 25,
-                               ),
-                             ),
-                             child: const SizedBox(width: 50, height: 50),
-                           ),
-                           const SizedBox(
-                             width: 180,
-                             child: Column(
-                               crossAxisAlignment: CrossAxisAlignment.start,
-                               mainAxisSize: MainAxisSize.min,
-                               children: [
-                                 Text(
-                                   'Figma Components',
-                                   style: TextStyle(
-                                     fontSize: 16,
-                                     fontWeight: FontWeight.bold,
-                                     color: Color.fromRGBO(30, 30, 30, 1.0),
-                                   ),
-                                 ),
-                                 SizedBox(height: 4),
-                                 Text(
-                                   'Combined widgets',
-                                   style: TextStyle(
-                                     fontSize: 12,
-                                     color: Color.fromRGBO(120, 120, 130, 1.0),
-                                   ),
-                                 ),
-                               ],
-                             ),
-                           ),
+                                    ColorStop(
+                                      position: 1.0,
+                                      color: Color.fromRGBO(153, 102, 255, 1.0),
+                                    ),
+                                  ],
+                                  opacity: 1.0,
+                                ),
+                              ],
+                              shape: FigmaRectangleShape(
+                                topLeftRadius: 25,
+                                topRightRadius: 25,
+                                bottomLeftRadius: 25,
+                                bottomRightRadius: 25,
+                              ),
+                            ),
+                            child: const SizedBox(width: 50, height: 50),
+                          ),
+                          const SizedBox(
+                            width: 180,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Figma Components',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Color.fromRGBO(30, 30, 30, 1.0),
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Combined widgets',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Color.fromRGBO(120, 120, 130, 1.0),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
                       FigmaLayout(
                         layout: const FigmaAutoLayoutProperties(
-                          direction: Axis.horizontal,
+                          mode: AutoLayoutMode.horizontal,
                           primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                           counterAxisSizingMode: CounterAxisSizingMode.auto,
                           itemSpacing: 8,

@@ -11,7 +11,7 @@ void main() {
         home: Scaffold(
           body: FigmaLayout(
             layout: const FigmaAutoLayoutProperties(
-              direction: Axis.horizontal,
+              mode: AutoLayoutMode.horizontal,
               itemSpacing: 8,
               paddingLeft: 16,
               paddingRight: 16,
@@ -41,7 +41,7 @@ void main() {
         home: Scaffold(
           body: FigmaLayout(
             layout: const FigmaAutoLayoutProperties(
-              direction: Axis.vertical,
+              mode: AutoLayoutMode.vertical,
               itemSpacing: 12,
               paddingLeft: 20,
               paddingRight: 20,
@@ -75,7 +75,7 @@ void main() {
               height: 200,
               child: FigmaLayout(
                 layout: const FigmaAutoLayoutProperties(
-                  direction: Axis.horizontal,
+                  mode: AutoLayoutMode.horizontal,
                   primaryAxisAlignItems: LayoutAlign.center,
                   counterAxisAlignItems: LayoutAlign.center,
                   itemSpacing: 10,
@@ -112,7 +112,7 @@ void main() {
               height: 300,
               child: FigmaLayout(
                 layout: const FigmaAutoLayoutProperties(
-                  direction: Axis.horizontal,
+                  mode: AutoLayoutMode.horizontal,
                   layoutWrap: LayoutWrap.wrap,
                   primaryAxisSizingMode: PrimaryAxisSizingMode.fixed,
                   itemSpacing: 8,
@@ -154,7 +154,7 @@ void main() {
               height: 100,
               child: FigmaLayout(
                 layout: const FigmaAutoLayoutProperties(
-                  direction: Axis.horizontal,
+                  mode: AutoLayoutMode.horizontal,
                   primaryAxisSizingMode: PrimaryAxisSizingMode.fixed,
                   primaryAxisAlignItems: LayoutAlign.spaceBetween,
                   counterAxisAlignItems: LayoutAlign.center,
@@ -190,7 +190,7 @@ void main() {
           body: Center(
             child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                direction: Axis.vertical,
+                mode: AutoLayoutMode.vertical,
                 primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                 counterAxisSizingMode: CounterAxisSizingMode.auto,
                 itemSpacing: 16,
@@ -202,7 +202,7 @@ void main() {
               children: [
                 FigmaLayout(
                   layout: const FigmaAutoLayoutProperties(
-                    direction: Axis.horizontal,
+                    mode: AutoLayoutMode.horizontal,
                     primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                     counterAxisSizingMode: CounterAxisSizingMode.auto,
                     itemSpacing: 8,
@@ -215,7 +215,7 @@ void main() {
                 ),
                 FigmaLayout(
                   layout: const FigmaAutoLayoutProperties(
-                    direction: Axis.horizontal,
+                    mode: AutoLayoutMode.horizontal,
                     primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                     counterAxisSizingMode: CounterAxisSizingMode.auto,
                     itemSpacing: 12,
@@ -228,7 +228,7 @@ void main() {
                 ),
                 FigmaLayout(
                   layout: const FigmaAutoLayoutProperties(
-                    direction: Axis.horizontal,
+                    mode: AutoLayoutMode.horizontal,
                     primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                     counterAxisSizingMode: CounterAxisSizingMode.auto,
                     itemSpacing: 10,
