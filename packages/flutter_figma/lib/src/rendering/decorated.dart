@@ -1,4 +1,3 @@
-import 'dart:math' as math;
 import 'dart:ui' as ui;
 
 import 'package:flutter/rendering.dart';
@@ -205,122 +204,29 @@ class RenderFigmaDecorated extends RenderProxyBox {
             bottomRightRadius == 0) {
           path.addRect(rect);
         } else if (smoothing > 0) {
-          _addSmoothRoundedRect(
-            path,
-            rect,
-            topLeftRadius,
-            topRightRadius,
-            bottomRightRadius,
-            bottomLeftRadius,
-            smoothing,
+          // FIXME Smoothing isn't dynamic for performance reason
+          path.addRSuperellipse(
+            RSuperellipse.fromRectAndCorners(
+              rect,
+              topLeft: Radius.circular(topLeftRadius),
+              topRight: Radius.circular(topRightRadius),
+              bottomRight: Radius.circular(bottomRightRadius),
+              bottomLeft: Radius.circular(bottomLeftRadius),
+            ),
           );
         } else {
-          path.addRRect(RRect.fromRectAndCorners(
-            rect,
-            topLeft: Radius.circular(topLeftRadius),
-            topRight: Radius.circular(topRightRadius),
-            bottomRight: Radius.circular(bottomRightRadius),
-            bottomLeft: Radius.circular(bottomLeftRadius),
-          ));
+          path.addRRect(
+            RRect.fromRectAndCorners(
+              rect,
+              topLeft: Radius.circular(topLeftRadius),
+              topRight: Radius.circular(topRightRadius),
+              bottomRight: Radius.circular(bottomRightRadius),
+              bottomLeft: Radius.circular(bottomLeftRadius),
+            ),
+          );
         }
     }
 
     return path;
-  }
-
-  void _addSmoothRoundedRect(
-    ui.Path path,
-    Rect rect,
-    double topLeft,
-    double topRight,
-    double bottomRight,
-    double bottomLeft,
-    double smoothing,
-  ) {
-    final left = rect.left;
-    final top = rect.top;
-    final right = rect.right;
-    final bottom = rect.bottom;
-
-    final p = (1 + smoothing) * 0.5;
-
-    path.moveTo(left + topLeft, top);
-    path.lineTo(right - topRight, top);
-
-    if (topRight > 0) {
-      _addSmoothCorner(
-        path,
-        right - topRight,
-        top,
-        right,
-        top + topRight,
-        topRight,
-        p,
-      );
-    }
-
-    path.lineTo(right, bottom - bottomRight);
-
-    if (bottomRight > 0) {
-      _addSmoothCorner(
-        path,
-        right,
-        bottom - bottomRight,
-        right - bottomRight,
-        bottom,
-        bottomRight,
-        p,
-      );
-    }
-
-    path.lineTo(left + bottomLeft, bottom);
-
-    if (bottomLeft > 0) {
-      _addSmoothCorner(
-        path,
-        left + bottomLeft,
-        bottom,
-        left,
-        bottom - bottomLeft,
-        bottomLeft,
-        p,
-      );
-    }
-
-    path.lineTo(left, top + topLeft);
-
-    if (topLeft > 0) {
-      _addSmoothCorner(
-        path,
-        left,
-        top + topLeft,
-        left + topLeft,
-        top,
-        topLeft,
-        p,
-      );
-    }
-
-    path.close();
-  }
-
-  void _addSmoothCorner(
-    ui.Path path,
-    double x1,
-    double y1,
-    double x2,
-    double y2,
-    double radius,
-    double p,
-  ) {
-    final angle = math.atan2(y2 - y1, x2 - x1);
-    final distance = math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-
-    final controlDistance = distance * p;
-
-    final cx = x1 + math.cos(angle) * controlDistance;
-    final cy = y1 + math.sin(angle) * controlDistance;
-
-    path.quadraticBezierTo(cx, cy, x2, y2);
   }
 }
