@@ -37,7 +37,7 @@
       const msg = event.data.pluginMessage;
       if (msg.type === 'code-generated') {
         document.getElementById('code_container').innerHTML = 
-        '<pre>' + escapeHtml(code) + '</pre>';
+        '<pre>' + escapeHtml(msg.code) + '</pre>';
       }
     };
 
