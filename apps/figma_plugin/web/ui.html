@@ -2,44 +2,239 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>Figpub Plugin</title>
+  <title>Flutter Figma Code Generator</title>
   <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+      color: #333;
+    }
+
+    .header {
+      padding: 12px 16px;
+      border-bottom: 1px solid #e5e5e5;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #f8f8f8;
+    }
+
+    .header h1 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    button {
+      padding: 6px 12px;
+      border: 1px solid #d1d1d1;
+      border-radius: 4px;
+      background: white;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 500;
+      color: #333;
+      transition: all 0.15s ease;
+    }
+
+    button:hover {
+      background: #f0f0f0;
+      border-color: #b8b8b8;
+    }
+
+    button:active {
+      background: #e8e8e8;
+    }
+
     .code-container {
       flex: 1;
       overflow: auto;
       padding: 16px;
+      background: #fafafa;
     }
 
     pre {
       margin: 0;
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+      font-family: 'SF Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
       font-size: 11px;
-      line-height: 1.5;
+      line-height: 1.6;
       white-space: pre-wrap;
       word-wrap: break-word;
+      background: white;
+      padding: 16px;
+      border-radius: 6px;
+      border: 1px solid #e5e5e5;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
     }
 
+    .placeholder {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      color: #999;
+      font-size: 13px;
+      text-align: center;
+      padding: 32px;
+    }
+
+    .placeholder-content {
+      max-width: 300px;
+    }
+
+    .placeholder-icon {
+      font-size: 48px;
+      margin-bottom: 16px;
+      opacity: 0.3;
+    }
+
+    .copy-notification {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      background: #18a0fb;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+      pointer-events: none;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .copy-notification.show {
+      opacity: 1;
+    }
+
+    .status-indicator {
+      font-size: 11px;
+      color: #666;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #18a0fb;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
   </style>
 </head>
 <body>
-  <div id="code_container">
-    <div class="placeholder">Generating code...</div>
+  <div class="header">
+    <h1>Flutter Figma Code</h1>
+    <div class="header-actions">
+      <div class="status-indicator" id="status">
+        <span class="status-dot"></span>
+        <span id="status-text">Listening for selection...</span>
+      </div>
+      <button id="copy-btn" style="display: none;">Copy Code</button>
+    </div>
   </div>
 
+  <div class="code-container" id="code_container">
+    <div class="placeholder">
+      <div class="placeholder-content">
+        <div class="placeholder-icon">🎨</div>
+        <div>Select one or more layers in Figma to generate Flutter code</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="copy-notification" id="copy-notification">Code copied to clipboard!</div>
+
   <script>
-      parent.postMessage({ 
-        pluginMessage: { 
-          type: 'generate'
-        } 
-      }, '*');
+    let currentCode = '';
 
     window.onmessage = (event) => {
       const msg = event.data.pluginMessage;
+      
       if (msg.type === 'code-generated') {
+        currentCode = msg.code;
         document.getElementById('code_container').innerHTML = 
-        '<pre>' + escapeHtml(msg.code) + '</pre>';
+          '<pre>' + escapeHtml(msg.code) + '</pre>';
+        document.getElementById('copy-btn').style.display = 'block';
+        updateStatus('Code generated', true);
+      } else if (msg.type === 'no-selection') {
+        currentCode = '';
+        document.getElementById('code_container').innerHTML = 
+          `<div class="placeholder">
+            <div class="placeholder-content">
+              <div class="placeholder-icon">🎨</div>
+              <div>${escapeHtml(msg.message)}</div>
+            </div>
+          </div>`;
+        document.getElementById('copy-btn').style.display = 'none';
+        updateStatus('Waiting for selection', false);
       }
     };
+
+    document.getElementById('copy-btn').addEventListener('click', () => {
+      if (currentCode) {
+        navigator.clipboard.writeText(currentCode).then(() => {
+          showCopyNotification();
+        }).catch(err => {
+          console.error('Failed to copy:', err);
+          // Fallback for older browsers
+          const textArea = document.createElement('textarea');
+          textArea.value = currentCode;
+          textArea.style.position = 'fixed';
+          textArea.style.opacity = '0';
+          document.body.appendChild(textArea);
+          textArea.select();
+          try {
+            document.execCommand('copy');
+            showCopyNotification();
+          } catch (err) {
+            console.error('Fallback copy failed:', err);
+          }
+          document.body.removeChild(textArea);
+        });
+      }
+    });
+
+    function showCopyNotification() {
+      const notification = document.getElementById('copy-notification');
+      notification.classList.add('show');
+      setTimeout(() => {
+        notification.classList.remove('show');
+      }, 2000);
+    }
+
+    function updateStatus(text, hasCode) {
+      const statusText = document.getElementById('status-text');
+      const statusDot = document.querySelector('.status-dot');
+      statusText.textContent = text;
+      if (hasCode) {
+        statusDot.style.background = '#0ac97f';
+      } else {
+        statusDot.style.background = '#18a0fb';
+      }
+    }
 
     function escapeHtml(text) {
       const div = document.createElement('div');

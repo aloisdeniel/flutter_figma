@@ -1,10 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
-import 'package:flutter_figma/src/foundation/decoration.dart';
-import 'package:flutter_figma/src/foundation/geometry.dart';
-import 'package:flutter_figma/src/foundation/paint.dart';
-import 'package:flutter_figma/src/rendering/layout.dart';
+import 'package:flutter_figma/src/foundation/foundation.dart';
 import 'package:flutter_figma/src/widgets/decorated.dart';
 import 'package:flutter_figma/src/widgets/layout.dart';
 import 'package:flutter_figma/src/widgets/transformed.dart';

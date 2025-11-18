@@ -1,7 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:flutter/rendering.dart';
-import 'package:flutter_figma/src/foundation/enums.dart';
+import 'package:flutter_figma/src/foundation/foundation.dart';
 
 class FigmaLayoutParentData extends ContainerBoxParentData<RenderBox> {
   double x = 0;
@@ -565,38 +565,4 @@ class _Line {
   double sumP = 0;
   double maxC = 0;
   double offsetC = 0;
-}
-
-enum AutoLayoutMode {
-  horizontal,
-  vertical,
-  //grid, //TODO
-}
-
-enum PrimaryAxisSizingMode {
-  fixed,
-  auto,
-}
-
-enum CounterAxisSizingMode {
-  fixed,
-  auto,
-}
-
-enum LayoutWrap {
-  noWrap,
-  wrap,
-}
-
-enum LayoutAlign {
-  min,
-  center,
-  max,
-  stretch,
-  spaceBetween,
-}
-
-enum ChildSizingMode {
-  fixed,
-  hug,
 }

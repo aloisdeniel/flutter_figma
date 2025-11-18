@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:js_interop';
 
 import 'package:figma_plugin/src/figma.dart';
@@ -14,22 +13,46 @@ extension type MessageData._(JSObject _) implements JSObject {
 void main() {
   figma.showUI(htmlContent, ShowUIOptions(width: 800, height: 600));
 
+  // Generate code on initial load
+  _generateCode();
+
+  // Listen for selection changes
+  figma.on('selectionchange', (() {
+    _generateCode();
+  }.toJS));
+
+  // Handle messages from UI
   figma.ui.onmessage = ((MessageData msg) {
     if (msg.type == 'generate') {
       _generateCode();
       return;
     }
-    figma.closePlugin();
+    if (msg.type == 'close') {
+      figma.closePlugin();
+      return;
+    }
   }.toJS);
 }
 
-Future<void> _generateCode() async {
-  print('Importing from Figma...');
+void _generateCode() {
+  print('Generating code from selection...');
+
+  final selection = figma.currentPage.selection.toDart;
+  
+  if (selection.isEmpty) {
+    print('No selection - showing placeholder');
+    final message = {
+      'type': 'no-selection',
+      'message': 'Select one or more layers to generate code'
+    }.jsify()!;
+    figma.ui.postMessage(message);
+    return;
+  }
 
   final generator = FlutterCodeGenerator();
-  final code = generator.generate(figma.currentPage.selection.toDart);
+  final code = generator.generate(selection);
 
-  print('Code successfuly generated!');
+  print('Code successfully generated!');
 
   final message = {'type': 'code-generated', 'code': code}.jsify()!;
 

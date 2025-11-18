@@ -22,3 +22,37 @@ enum OverlayPositionType {
   bottomRight,
   manual,
 }
+
+enum AutoLayoutMode {
+  horizontal,
+  vertical,
+  //grid, //TODO
+}
+
+enum PrimaryAxisSizingMode {
+  fixed,
+  auto,
+}
+
+enum CounterAxisSizingMode {
+  fixed,
+  auto,
+}
+
+enum LayoutWrap {
+  noWrap,
+  wrap,
+}
+
+enum LayoutAlign {
+  min,
+  center,
+  max,
+  stretch,
+  spaceBetween,
+}
+
+enum ChildSizingMode {
+  fixed,
+  hug,
+}

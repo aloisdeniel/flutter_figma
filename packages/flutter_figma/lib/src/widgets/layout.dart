@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_figma/src/foundation/enums.dart';
+import 'package:flutter_figma/src/foundation/foundation.dart';
 import 'package:flutter_figma/src/rendering/layout.dart';
 
 sealed class FigmaLayoutProperties {

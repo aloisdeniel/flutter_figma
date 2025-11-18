@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_figma/src/rendering/layout.dart';
+import 'package:flutter_figma/src/foundation/foundation.dart';
 import 'package:flutter_figma/src/widgets/layout.dart';
 import 'package:flutter_test/flutter_test.dart';
 
