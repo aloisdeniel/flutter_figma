@@ -58,18 +58,27 @@ class DefaultFigmaTextStyle extends InheritedWidget {
 }
 
 class FigmaText extends LeafRenderObjectWidget {
-  const FigmaText({
+  const FigmaText(
+    String this.text, {
     super.key,
-    required this.characters,
     this.style,
     this.fills = const [],
     this.strokes = const [],
-  });
+  }) : characters = null;
+
+  const FigmaText.rich({
+    super.key,
+    required List<FigmaTextSpan> this.characters,
+    this.style,
+    this.fills = const [],
+    this.strokes = const [],
+  }) : text = null;
 
   final FigmaTextStyle? style;
   final List<FigmaPaint>? fills;
   final List<FigmaPaint>? strokes;
-  final List<FigmaTextSpan> characters;
+  final String? text;
+  final List<FigmaTextSpan>? characters;
 
   @override
   RenderObject createRenderObject(BuildContext context) {
@@ -83,7 +92,7 @@ class FigmaText extends LeafRenderObjectWidget {
     final strokes = this.strokes ?? defaultStyle?.strokes ?? const [];
     return RenderFigmaText(
       style: style,
-      characters: characters,
+      characters: characters ?? [FigmaTextSpan(text: text!)],
       fills: fills,
       strokes: strokes,
     );
@@ -101,7 +110,7 @@ class FigmaText extends LeafRenderObjectWidget {
     final strokes = this.strokes ?? defaultStyle?.strokes ?? const [];
     renderObject
       ..style = style
-      ..characters = characters
+      ..characters = characters ?? [FigmaTextSpan(text: text!)]
       ..fills = fills
       ..strokes = strokes;
   }

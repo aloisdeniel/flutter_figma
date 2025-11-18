@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_figma/src/foundation/enums.dart';
 import 'package:flutter_figma/src/foundation/foundation.dart';
-import 'package:flutter_figma/src/rendering/layout.dart';
 import 'package:flutter_figma/src/widgets/layout.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -817,11 +815,13 @@ void main() {
                 counterAxisSizingMode: CounterAxisSizingMode.auto,
               ),
               children: [
-                FigmaChildSize(
-                  width: 100,
-                  height: 80,
-                  primaryAxisSizing: ChildSizingMode.fixed,
-                  counterAxisSizing: ChildSizingMode.fixed,
+                FigmaSized(
+                  size: ChildSize(
+                    width: 100,
+                    height: 80,
+                    primaryAxisSizing: ChildSizingMode.fixed,
+                    counterAxisSizing: ChildSizingMode.fixed,
+                  ),
                   child: Container(
                     color: Colors.red,
                     child: const Center(
@@ -830,11 +830,13 @@ void main() {
                     ),
                   ),
                 ),
-                FigmaChildSize(
-                  width: 0,
-                  height: 80,
-                  primaryAxisSizing: ChildSizingMode.hug,
-                  counterAxisSizing: ChildSizingMode.fixed,
+                FigmaSized(
+                  size: ChildSize(
+                    width: 0,
+                    height: 80,
+                    primaryAxisSizing: ChildSizingMode.hug,
+                    counterAxisSizing: ChildSizingMode.fixed,
+                  ),
                   child: Container(
                     color: Colors.blue,
                     padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -843,11 +845,13 @@ void main() {
                     ),
                   ),
                 ),
-                FigmaChildSize(
-                  width: 120,
-                  height: 80,
-                  primaryAxisSizing: ChildSizingMode.fixed,
-                  counterAxisSizing: ChildSizingMode.fixed,
+                FigmaSized(
+                  size: ChildSize(
+                    width: 120,
+                    height: 80,
+                    primaryAxisSizing: ChildSizingMode.fixed,
+                    counterAxisSizing: ChildSizingMode.fixed,
+                  ),
                   child: Container(
                     color: Colors.green,
                     child: const Center(
@@ -888,11 +892,13 @@ void main() {
                 counterAxisSizingMode: CounterAxisSizingMode.auto,
               ),
               children: [
-                FigmaChildSize(
-                  width: 200,
-                  height: 60,
-                  primaryAxisSizing: ChildSizingMode.fixed,
-                  counterAxisSizing: ChildSizingMode.fixed,
+                FigmaSized(
+                  size: ChildSize(
+                    width: 200,
+                    height: 60,
+                    primaryAxisSizing: ChildSizingMode.fixed,
+                    counterAxisSizing: ChildSizingMode.fixed,
+                  ),
                   child: Container(
                     color: Colors.purple,
                     child: const Center(
@@ -901,11 +907,13 @@ void main() {
                     ),
                   ),
                 ),
-                FigmaChildSize(
-                  width: 200,
-                  height: 0,
-                  primaryAxisSizing: ChildSizingMode.hug,
-                  counterAxisSizing: ChildSizingMode.fixed,
+                FigmaSized(
+                  size: ChildSize(
+                    width: 200,
+                    height: 0,
+                    primaryAxisSizing: ChildSizingMode.hug,
+                    counterAxisSizing: ChildSizingMode.fixed,
+                  ),
                   child: Container(
                     color: Colors.teal,
                     padding: const EdgeInsets.symmetric(vertical: 20),
@@ -915,11 +923,13 @@ void main() {
                     ),
                   ),
                 ),
-                FigmaChildSize(
-                  width: 200,
-                  height: 80,
-                  primaryAxisSizing: ChildSizingMode.fixed,
-                  counterAxisSizing: ChildSizingMode.fixed,
+                FigmaSized(
+                  size: ChildSize(
+                    width: 200,
+                    height: 80,
+                    primaryAxisSizing: ChildSizingMode.fixed,
+                    counterAxisSizing: ChildSizingMode.fixed,
+                  ),
                   child: Container(
                     color: Colors.orange,
                     child: const Center(
@@ -959,9 +969,13 @@ void main() {
                 counterAxisSizingMode: CounterAxisSizingMode.auto,
               ),
               children: [
-                FigmaChildSize(
-                  primaryAxisSizing: ChildSizingMode.hug,
-                  counterAxisSizing: ChildSizingMode.hug,
+                FigmaSized(
+                  size: ChildSize(
+                    width: 0,
+                    height: 0,
+                    primaryAxisSizing: ChildSizingMode.hug,
+                    counterAxisSizing: ChildSizingMode.hug,
+                  ),
                   child: Container(
                     color: Colors.red,
                     padding: const EdgeInsets.all(15),
@@ -969,9 +983,13 @@ void main() {
                         style: TextStyle(color: Colors.white)),
                   ),
                 ),
-                FigmaChildSize(
-                  primaryAxisSizing: ChildSizingMode.hug,
-                  counterAxisSizing: ChildSizingMode.hug,
+                FigmaSized(
+                  size: ChildSize(
+                    width: 0,
+                    height: 0,
+                    primaryAxisSizing: ChildSizingMode.hug,
+                    counterAxisSizing: ChildSizingMode.hug,
+                  ),
                   child: Container(
                     color: Colors.blue,
                     padding: const EdgeInsets.all(15),
@@ -979,9 +997,13 @@ void main() {
                         style: TextStyle(color: Colors.white)),
                   ),
                 ),
-                FigmaChildSize(
-                  primaryAxisSizing: ChildSizingMode.hug,
-                  counterAxisSizing: ChildSizingMode.hug,
+                FigmaSized(
+                  size: ChildSize(
+                    width: 0,
+                    height: 0,
+                    primaryAxisSizing: ChildSizingMode.hug,
+                    counterAxisSizing: ChildSizingMode.hug,
+                  ),
                   child: Container(
                     color: Colors.green,
                     padding: const EdgeInsets.all(15),

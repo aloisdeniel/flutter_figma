@@ -11,7 +11,7 @@ void main() {
       const MaterialApp(
         home: Scaffold(
           body: Center(
-            child: FigmaText(
+            child: FigmaText.rich(
               style: FigmaTextStyle(
                 fontName: FontName(family: 'Roboto'),
                 fontSize: 24,
@@ -45,7 +45,7 @@ void main() {
       const MaterialApp(
         home: Scaffold(
           body: Center(
-            child: FigmaText(
+            child: FigmaText.rich(
               style: FigmaTextStyle(
                 fontName: FontName(family: 'Roboto'),
                 fontSize: 32,
@@ -79,7 +79,7 @@ void main() {
       const MaterialApp(
         home: Scaffold(
           body: Center(
-            child: FigmaText(
+            child: FigmaText.rich(
               style: FigmaTextStyle(
                 fontName: FontName(family: 'Roboto'),
                 fontSize: 28,
@@ -113,7 +113,7 @@ void main() {
       const MaterialApp(
         home: Scaffold(
           body: Center(
-            child: FigmaText(
+            child: FigmaText.rich(
               style: FigmaTextStyle(
                 fontName: FontName(family: 'Roboto'),
                 fontSize: 28,
@@ -148,7 +148,7 @@ void main() {
       const MaterialApp(
         home: Scaffold(
           body: Center(
-            child: FigmaText(
+            child: FigmaText.rich(
               style: FigmaTextStyle(
                 fontName: FontName(family: 'Roboto'),
                 fontSize: 24,
@@ -183,7 +183,7 @@ void main() {
       const MaterialApp(
         home: Scaffold(
           body: Center(
-            child: FigmaText(
+            child: FigmaText.rich(
               style: FigmaTextStyle(
                 fontName: FontName(family: 'Roboto'),
                 fontSize: 24,
@@ -220,7 +220,7 @@ void main() {
           body: Center(
             child: SizedBox(
               width: 200,
-              child: FigmaText(
+              child: FigmaText.rich(
                 style: FigmaTextStyle(
                   fontName: FontName(family: 'Roboto'),
                   fontSize: 20,
@@ -258,7 +258,7 @@ void main() {
           body: Center(
             child: SizedBox(
               width: 200,
-              child: FigmaText(
+              child: FigmaText.rich(
                 style: FigmaTextStyle(
                   fontName: FontName(family: 'Roboto'),
                   fontSize: 20,
@@ -293,7 +293,7 @@ void main() {
       const MaterialApp(
         home: Scaffold(
           body: Center(
-            child: FigmaText(
+            child: FigmaText.rich(
               style: FigmaTextStyle(
                 fontName: FontName(family: 'Roboto'),
                 fontSize: 24,
@@ -347,7 +347,7 @@ void main() {
       const MaterialApp(
         home: Scaffold(
           body: Center(
-            child: FigmaText(
+            child: FigmaText.rich(
               style: FigmaTextStyle(
                 fontName: FontName(family: 'Roboto'),
                 fontSize: 28,
@@ -384,7 +384,7 @@ void main() {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                FigmaText(
+                FigmaText.rich(
                   style: FigmaTextStyle(
                     fontName: FontName(family: 'Roboto'),
                     fontSize: 16,
@@ -403,7 +403,7 @@ void main() {
                   ],
                 ),
                 SizedBox(height: 10),
-                FigmaText(
+                FigmaText.rich(
                   style: FigmaTextStyle(
                     fontName: FontName(family: 'Roboto'),
                     fontSize: 24,
@@ -422,7 +422,7 @@ void main() {
                   ],
                 ),
                 SizedBox(height: 10),
-                FigmaText(
+                FigmaText.rich(
                   style: FigmaTextStyle(
                     fontName: FontName(family: 'Roboto'),
                     fontSize: 32,
@@ -460,7 +460,7 @@ void main() {
           body: Center(
             child: SizedBox(
               width: 300,
-              child: FigmaText(
+              child: FigmaText.rich(
                 style: FigmaTextStyle(
                   fontName: FontName(family: 'Roboto'),
                   fontSize: 20,

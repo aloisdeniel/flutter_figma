@@ -1,7 +1,7 @@
 import 'dart:js_interop';
 
 import 'package:figma_plugin/src/figma.dart';
-import 'package:figma_plugin/src/generator.dart';
+import 'package:figma_plugin/src/generators/dart.dart';
 
 @JS('__html__')
 external String get htmlContent;
@@ -17,9 +17,11 @@ void main() {
   _generateCode();
 
   // Listen for selection changes
-  figma.on('selectionchange', (() {
-    _generateCode();
-  }.toJS));
+  figma.on(
+      'selectionchange',
+      (() {
+        _generateCode();
+      }.toJS));
 
   // Handle messages from UI
   figma.ui.onmessage = ((MessageData msg) {
@@ -38,7 +40,7 @@ void _generateCode() {
   print('Generating code from selection...');
 
   final selection = figma.currentPage.selection.toDart;
-  
+
   if (selection.isEmpty) {
     print('No selection - showing placeholder');
     final message = {

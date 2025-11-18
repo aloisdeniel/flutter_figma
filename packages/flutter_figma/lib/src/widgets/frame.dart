@@ -9,7 +9,8 @@ import 'package:flutter_figma/src/widgets/layout.dart';
 class FigmaFrame extends StatelessWidget {
   const FigmaFrame({
     super.key,
-    this.layout = const FigmaAutoLayoutProperties(),
+    this.layout = const FigmaAbsoluteLayoutProperties(),
+    this.size,
     this.decoration,
     this.effects = const [],
     this.opacity = 1.0,
@@ -19,6 +20,7 @@ class FigmaFrame extends StatelessWidget {
     this.children = const [],
   });
 
+  final ChildSize? size;
   final FigmaLayoutProperties layout;
   final FigmaDecoration? decoration;
   final List<FigmaEffect> effects;
@@ -73,6 +75,13 @@ class FigmaFrame extends StatelessWidget {
           const Color(0x00000000),
           _convertBlendMode(blendMode),
         ),
+        child: result,
+      );
+    }
+
+    if (size case final size?) {
+      result = FigmaSized(
+        size: size,
         child: result,
       );
     }

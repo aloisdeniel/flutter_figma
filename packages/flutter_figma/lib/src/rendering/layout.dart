@@ -27,7 +27,7 @@ class RenderFigmaLayout extends RenderBox
   RenderFigmaLayout({
     double width = 0,
     double height = 0,
-    AutoLayoutMode mode = AutoLayoutMode.horizontal,
+    AutoLayoutMode mode = AutoLayoutMode.none,
     PrimaryAxisSizingMode primaryAxisSizingMode = PrimaryAxisSizingMode.fixed,
     CounterAxisSizingMode counterAxisSizingMode = CounterAxisSizingMode.fixed,
     LayoutAlign primaryAxisAlignItems = LayoutAlign.min,
@@ -213,8 +213,6 @@ class RenderFigmaLayout extends RenderBox
   }
 
   void _performAbsoluteLayout(List<RenderBox> absoluteChildren) {
-    size = constraints.constrain(Size(_width, _height));
-
     for (final child in absoluteChildren) {
       final childParentData = child.parentData! as FigmaLayoutParentData;
       final childWidth = childParentData.width;
@@ -231,6 +229,8 @@ class RenderFigmaLayout extends RenderBox
       );
 
       childParentData.offset = Offset(childParentData.x, childParentData.y);
+
+      size = constraints.constrain(Size(_width, _height));
     }
   }
 
@@ -238,10 +238,12 @@ class RenderFigmaLayout extends RenderBox
     if (autoChildren.isEmpty) {
       final padSumP = _getPadStartP() + _getPadEndP();
       final padSumC = _getPadStartC() + _getPadEndC();
-      size = switch (_mode) {
+      final expectedSize = switch (_mode) {
         AutoLayoutMode.horizontal => Size(padSumP, padSumC),
         AutoLayoutMode.vertical => Size(padSumC, padSumP),
+        _ => throw Exception(),
       };
+      size = constraints.constrain(expectedSize);
       return;
     }
 
@@ -304,6 +306,7 @@ class RenderFigmaLayout extends RenderBox
       innerFixedP = switch (_mode) {
         AutoLayoutMode.horizontal => constraints.maxWidth - padSumP,
         AutoLayoutMode.vertical => constraints.maxHeight - padSumP,
+        AutoLayoutMode.none => null,
       };
     }
 
@@ -330,6 +333,7 @@ class RenderFigmaLayout extends RenderBox
       innerC = switch (_mode) {
         AutoLayoutMode.horizontal => constraints.maxHeight - padSumC,
         AutoLayoutMode.vertical => constraints.maxWidth - padSumC,
+        AutoLayoutMode.none => throw Exception(),
       };
     } else {
       innerC = lines.isEmpty
@@ -342,6 +346,7 @@ class RenderFigmaLayout extends RenderBox
       switch (_mode) {
         AutoLayoutMode.horizontal => Size(innerP + padSumP, innerC + padSumC),
         AutoLayoutMode.vertical => Size(innerC + padSumC, innerP + padSumP),
+        AutoLayoutMode.none => throw Exception(),
       },
     );
 
@@ -350,24 +355,12 @@ class RenderFigmaLayout extends RenderBox
 
   void _performMixedLayout(
       List<RenderBox> autoChildren, List<RenderBox> absoluteChildren) {
-    _performAutoLayout(autoChildren);
-
-    for (final child in absoluteChildren) {
-      final childParentData = child.parentData! as FigmaLayoutParentData;
-      final childWidth = childParentData.width;
-      final childHeight = childParentData.height;
-
-      child.layout(
-        BoxConstraints(
-          minWidth: childWidth,
-          maxWidth: childWidth,
-          minHeight: childHeight,
-          maxHeight: childHeight,
-        ),
-        parentUsesSize: false,
-      );
-
-      childParentData.offset = Offset(childParentData.x, childParentData.y);
+    switch (_mode) {
+      case AutoLayoutMode.none:
+        _performAbsoluteLayout(absoluteChildren);
+      case AutoLayoutMode.horizontal:
+      case AutoLayoutMode.vertical:
+        _performAutoLayout(autoChildren);
     }
   }
 
@@ -375,6 +368,7 @@ class RenderFigmaLayout extends RenderBox
     return switch (_mode) {
       AutoLayoutMode.horizontal => size.width,
       AutoLayoutMode.vertical => size.height,
+      AutoLayoutMode.none => throw Exception(),
     };
   }
 
@@ -382,6 +376,7 @@ class RenderFigmaLayout extends RenderBox
     return switch (_mode) {
       AutoLayoutMode.horizontal => size.height,
       AutoLayoutMode.vertical => size.width,
+      AutoLayoutMode.none => throw Exception(),
     };
   }
 
@@ -389,6 +384,7 @@ class RenderFigmaLayout extends RenderBox
     return switch (_mode) {
       AutoLayoutMode.horizontal => _paddingLeft,
       AutoLayoutMode.vertical => _paddingTop,
+      AutoLayoutMode.none => throw Exception(),
     };
   }
 
@@ -396,6 +392,7 @@ class RenderFigmaLayout extends RenderBox
     return switch (_mode) {
       AutoLayoutMode.horizontal => _paddingRight,
       AutoLayoutMode.vertical => _paddingBottom,
+      AutoLayoutMode.none => throw Exception(),
     };
   }
 
@@ -403,6 +400,7 @@ class RenderFigmaLayout extends RenderBox
     return switch (_mode) {
       AutoLayoutMode.horizontal => _paddingTop,
       AutoLayoutMode.vertical => _paddingLeft,
+      AutoLayoutMode.none => throw Exception(),
     };
   }
 
@@ -410,6 +408,7 @@ class RenderFigmaLayout extends RenderBox
     return switch (_mode) {
       AutoLayoutMode.horizontal => _paddingBottom,
       AutoLayoutMode.vertical => _paddingRight,
+      AutoLayoutMode.none => throw Exception(),
     };
   }
 
@@ -519,6 +518,7 @@ class RenderFigmaLayout extends RenderBox
               _paddingLeft + line.offsetC + offsetCItem,
               _paddingTop + cursorP,
             ),
+          AutoLayoutMode.none => throw Exception(),
         };
 
         cursorP += _getPrimarySize(childSizes[i]) + gap;

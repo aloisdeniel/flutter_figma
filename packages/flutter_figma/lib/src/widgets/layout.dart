@@ -227,20 +227,14 @@ class FigmaPositioned extends ParentDataWidget<FigmaLayoutParentData> {
   Type get debugTypicalAncestorWidgetClass => FigmaLayout;
 }
 
-class FigmaChildSize extends ParentDataWidget<FigmaLayoutParentData> {
-  const FigmaChildSize({
+class FigmaSized extends ParentDataWidget<FigmaLayoutParentData> {
+  const FigmaSized({
     super.key,
+    required this.size,
     required super.child,
-    this.width = 0,
-    this.height = 0,
-    this.primaryAxisSizing,
-    this.counterAxisSizing,
   });
 
-  final double width;
-  final double height;
-  final ChildSizingMode? primaryAxisSizing;
-  final ChildSizingMode? counterAxisSizing;
+  final ChildSize size;
 
   @override
   void applyParentData(RenderObject renderObject) {
@@ -248,20 +242,20 @@ class FigmaChildSize extends ParentDataWidget<FigmaLayoutParentData> {
     final parentData = renderObject.parentData! as FigmaLayoutParentData;
     bool needsLayout = false;
 
-    if (parentData.width != width) {
-      parentData.width = width;
+    if (parentData.width != size.width) {
+      parentData.width = size.width;
       needsLayout = true;
     }
-    if (parentData.height != height) {
-      parentData.height = height;
+    if (parentData.height != size.height) {
+      parentData.height = size.height;
       needsLayout = true;
     }
-    if (parentData.primaryAxisSizing != primaryAxisSizing) {
-      parentData.primaryAxisSizing = primaryAxisSizing;
+    if (parentData.primaryAxisSizing != size.primaryAxisSizing) {
+      parentData.primaryAxisSizing = size.primaryAxisSizing;
       needsLayout = true;
     }
-    if (parentData.counterAxisSizing != counterAxisSizing) {
-      parentData.counterAxisSizing = counterAxisSizing;
+    if (parentData.counterAxisSizing != size.counterAxisSizing) {
+      parentData.counterAxisSizing = size.counterAxisSizing;
       needsLayout = true;
     }
 

@@ -83,7 +83,7 @@ class FigmaTextSpan {
 class FontName {
   const FontName({
     required this.family,
-    this.style = FigmaFontStyle.italic,
+    this.style = FigmaFontStyle.regular,
     this.weight = FontWeight.normal,
   });
 
@@ -139,6 +139,11 @@ enum LetterSpacingUnit {
 
 sealed class LineHeight {
   const LineHeight();
+  const factory LineHeight.percent(double value) = LineHeightPercent;
+
+  const factory LineHeight.pixels(double value) = LineHeightPixels;
+
+  const factory LineHeight.auto() = LineHeightAuto;
 }
 
 class LineHeightPixels extends LineHeight {

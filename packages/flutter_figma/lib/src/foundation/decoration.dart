@@ -43,7 +43,7 @@ class FigmaDecoration {
   const FigmaDecoration({
     this.fills = const [],
     this.strokes = const [],
-    required this.shape,
+    this.shape = const FigmaRectangleShape(),
   });
 
   final List<FigmaPaint> fills;

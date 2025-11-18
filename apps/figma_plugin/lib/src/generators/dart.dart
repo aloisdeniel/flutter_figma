@@ -1,6 +1,6 @@
 import 'dart:js_interop';
 
-import 'figma.dart';
+import 'package:figma_plugin/src/figma.dart';
 
 class FlutterCodeGenerator {
   FlutterCodeGenerator();
@@ -38,9 +38,16 @@ class FlutterCodeGenerator {
     _indentLevel--;
   }
 
-  void _buildSceneNode(SceneNode node) {
-    // Wrap with FigmaPositioned if node has absolute positioning or constraints
-    final needsPositioning = node.x != 0 || node.y != 0;
+  void _buildSceneNode(SceneNode node, {FrameNode? parentFrame}) {
+    // Determine if we need FigmaPositioned based on parent's layout mode
+    final bool parentHasAutoLayout = parentFrame != null &&
+        (parentFrame.layoutMode == 'HORIZONTAL' ||
+            parentFrame.layoutMode == 'VERTICAL');
+
+    // For auto layout parents, only wrap with FigmaPositioned if node is absolutely positioned
+    // For absolute layout parents, wrap if node has position or needs constraints
+    final bool needsPositioning =
+        !parentHasAutoLayout && (node.x != 0 || node.y != 0);
 
     if (needsPositioning) {
       _writeLine('FigmaPositioned(');
@@ -50,19 +57,40 @@ class FlutterCodeGenerator {
       _writeLine('width: ${node.width},');
       _writeLine('height: ${node.height},');
 
-      // Add layout sizing modes for children in auto layout
+      _writeLine('child: ');
+      _indent();
+    } else if (parentHasAutoLayout) {
+      // For children in auto layout, wrap with FigmaChildSize if they have sizing modes
       final hSizing = _parseChildSizingMode(node.layoutSizingHorizontal);
       final vSizing = _parseChildSizingMode(node.layoutSizingVertical);
 
-      if (hSizing != null) {
-        _writeLine('primaryAxisSizing: $hSizing,');
-      }
-      if (vSizing != null) {
-        _writeLine('counterAxisSizing: $vSizing,');
-      }
+      if (hSizing != null || vSizing != null) {
+        _writeLine('FigmaChildSize(');
+        _indent();
+        _writeLine('width: ${node.width},');
+        _writeLine('height: ${node.height},');
 
-      _writeLine('child: ');
-      _indent();
+        // Determine primary and counter axis based on parent's layout mode
+        if (parentFrame.layoutMode == 'HORIZONTAL') {
+          if (hSizing != null) {
+            _writeLine('primaryAxisSizing: $hSizing,');
+          }
+          if (vSizing != null) {
+            _writeLine('counterAxisSizing: $vSizing,');
+          }
+        } else {
+          // VERTICAL
+          if (vSizing != null) {
+            _writeLine('primaryAxisSizing: $vSizing,');
+          }
+          if (hSizing != null) {
+            _writeLine('counterAxisSizing: $hSizing,');
+          }
+        }
+
+        _writeLine('child: ');
+        _indent();
+      }
     }
 
     switch (node.type) {
@@ -93,6 +121,16 @@ class FlutterCodeGenerator {
       _writeLine(',');
       _unindent();
       _writeLine(')');
+    } else if (parentHasAutoLayout) {
+      final hSizing = _parseChildSizingMode(node.layoutSizingHorizontal);
+      final vSizing = _parseChildSizingMode(node.layoutSizingVertical);
+
+      if (hSizing != null || vSizing != null) {
+        _unindent();
+        _writeLine(',');
+        _unindent();
+        _writeLine(')');
+      }
     }
   }
 
@@ -145,7 +183,7 @@ class FlutterCodeGenerator {
       _writeLine('children: [');
       _indent();
       for (var child in children) {
-        _buildSceneNode(child);
+        _buildSceneNode(child, parentFrame: node);
         _writeLine(',');
       }
       _unindent();
@@ -166,14 +204,14 @@ class FlutterCodeGenerator {
     }
 
     if (children.length == 1) {
-      _buildSceneNode(children.first);
+      _buildSceneNode(children.first, parentFrame: null);
     } else {
       _writeLine('Stack(');
       _indent();
       _writeLine('children: [');
       _indent();
       for (var child in children) {
-        _buildSceneNode(child);
+        _buildSceneNode(child, parentFrame: null);
         _writeLine(',');
       }
       _unindent();
@@ -309,7 +347,7 @@ class FlutterCodeGenerator {
   }
 
   void _buildAutoLayoutProperties(FrameNode node) {
-    _writeLine('layout: FigmaAutoLayoutProperties(');
+    _writeLine('layout: FigmaLayoutProperties.auto(');
     _indent();
 
     // Layout mode
@@ -414,7 +452,7 @@ class FlutterCodeGenerator {
   }
 
   void _buildAbsoluteLayoutProperties(FrameNode node) {
-    _writeLine('layout: FigmaAbsoluteLayoutProperties(');
+    _writeLine('layout: FigmaLayoutProperties.absolute(');
     _indent();
     _writeLine('width: ${node.width},');
     _writeLine('height: ${node.height},');
