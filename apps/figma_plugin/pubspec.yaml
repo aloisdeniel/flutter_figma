@@ -1,0 +1,12 @@
+name: figma_plugin
+description: The figma plugin to generate flutter_figma trees.
+version: 0.0.1
+publish_to: none
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+
+dev_dependencies:
+  lints: ^4.0.0

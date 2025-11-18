@@ -1,6 +1,7 @@
 import 'dart:ui' as ui;
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/foundation/foundation.dart';
+import 'package:flutter_figma/src/widgets/clip.dart';
 import 'package:flutter_figma/src/widgets/decorated.dart';
 import 'package:flutter_figma/src/widgets/filtered.dart';
 import 'package:flutter_figma/src/widgets/layout.dart';
@@ -56,6 +57,12 @@ class FigmaFrame extends StatelessWidget {
     if (opacity != 1.0) {
       result = Opacity(
         opacity: opacity.clamp(0.0, 1.0),
+        child: result,
+      );
+    }
+    if (clipContent) {
+      result = FigmaClip(
+        shape: decoration?.shape ?? FigmaRectangleShape(),
         child: result,
       );
     }

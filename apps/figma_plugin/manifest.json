@@ -1,0 +1,12 @@
+{
+  "name": "Figpub",
+  "id": "5685eaef-a58c-4f07-b65b-e9b9e37470a2",
+  "api": "1.0.0",
+  "editorType": ["figma"],
+  "main": "build/code.js",
+  "ui": "build/ui.html",
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": ["none"]
+  }
+}

@@ -6,7 +6,7 @@ import 'package:flutter_figma/src/foundation/geometry.dart';
 class RenderFigmaTransformed extends RenderProxyBox {
   RenderFigmaTransformed({
     required FigmaTransform transform,
-  })  : _transform = transform;
+  }) : _transform = transform;
 
   FigmaTransform _transform;
   FigmaTransform get transform => _transform;
@@ -22,14 +22,14 @@ class RenderFigmaTransformed extends RenderProxyBox {
   void performLayout() {
     if (child != null) {
       final matrix = _transformToMatrix4(_transform);
-      
+
       final transformedConstraints = _transformConstraints(constraints, matrix);
-      
+
       child!.layout(
         transformedConstraints,
         parentUsesSize: true,
       );
-      
+
       _childSize = child!.size;
 
       if (_hasRotation(matrix)) {
@@ -44,19 +44,24 @@ class RenderFigmaTransformed extends RenderProxyBox {
     }
   }
 
-  BoxConstraints _transformConstraints(BoxConstraints constraints, Matrix4 matrix) {
+  BoxConstraints _transformConstraints(
+      BoxConstraints constraints, Matrix4 matrix) {
     final scaleX = math.sqrt(matrix[0] * matrix[0] + matrix[1] * matrix[1]);
     final scaleY = math.sqrt(matrix[4] * matrix[4] + matrix[5] * matrix[5]);
-    
+
     if (scaleX == 0 || scaleY == 0) {
       return BoxConstraints.tight(Size.zero);
     }
-    
+
     return BoxConstraints(
       minWidth: constraints.minWidth / scaleX,
-      maxWidth: constraints.maxWidth.isFinite ? constraints.maxWidth / scaleX : double.infinity,
+      maxWidth: constraints.maxWidth.isFinite
+          ? constraints.maxWidth / scaleX
+          : double.infinity,
       minHeight: constraints.minHeight / scaleY,
-      maxHeight: constraints.maxHeight.isFinite ? constraints.maxHeight / scaleY : double.infinity,
+      maxHeight: constraints.maxHeight.isFinite
+          ? constraints.maxHeight / scaleY
+          : double.infinity,
     );
   }
 
@@ -84,14 +89,14 @@ class RenderFigmaTransformed extends RenderProxyBox {
   bool _hasRotation(Matrix4 matrix) {
     final scaleX = math.sqrt(matrix[0] * matrix[0] + matrix[1] * matrix[1]);
     final scaleY = math.sqrt(matrix[4] * matrix[4] + matrix[5] * matrix[5]);
-    
+
     if (scaleX == 0 || scaleY == 0) return false;
-    
+
     final cosAngle = matrix[0] / scaleX;
     final sinAngle = matrix[1] / scaleX;
-    
+
     final angle = math.atan2(sinAngle, cosAngle).abs();
-    
+
     return angle > 0.0001;
   }
 
@@ -122,20 +127,20 @@ class RenderFigmaTransformed extends RenderProxyBox {
     if (child == null || _childSize == null) return;
 
     final matrix = _transformToMatrix4(_transform);
-    
+
     final hasRotation = _hasRotation(matrix);
-    
+
     if (hasRotation) {
       final childCenterX = _childSize!.width / 2;
       final childCenterY = _childSize!.height / 2;
       final boxCenterX = size.width / 2;
       final boxCenterY = size.height / 2;
-      
+
       final translatedMatrix = Matrix4.identity()
         ..translate(offset.dx + boxCenterX, offset.dy + boxCenterY)
         ..multiply(matrix)
         ..translate(-childCenterX, -childCenterY);
-      
+
       context.pushTransform(
         needsCompositing,
         Offset.zero,
@@ -158,11 +163,11 @@ class RenderFigmaTransformed extends RenderProxyBox {
 
       final minX = transformedCorners.map((c) => c.dx).reduce(math.min);
       final minY = transformedCorners.map((c) => c.dy).reduce(math.min);
-      
+
       final translatedMatrix = Matrix4.identity()
         ..translate(offset.dx - minX, offset.dy - minY)
         ..multiply(matrix);
-      
+
       context.pushTransform(
         needsCompositing,
         Offset.zero,
@@ -178,15 +183,15 @@ class RenderFigmaTransformed extends RenderProxyBox {
 
     final matrix = _transformToMatrix4(_transform);
     final hasRotation = _hasRotation(matrix);
-    
+
     Matrix4 effectiveTransform;
-    
+
     if (hasRotation) {
       final childCenterX = _childSize!.width / 2;
       final childCenterY = _childSize!.height / 2;
       final boxCenterX = size.width / 2;
       final boxCenterY = size.height / 2;
-      
+
       effectiveTransform = Matrix4.identity()
         ..translate(boxCenterX, boxCenterY)
         ..multiply(matrix)
@@ -207,12 +212,12 @@ class RenderFigmaTransformed extends RenderProxyBox {
 
       final minX = transformedCorners.map((c) => c.dx).reduce(math.min);
       final minY = transformedCorners.map((c) => c.dy).reduce(math.min);
-      
+
       effectiveTransform = Matrix4.identity()
         ..translate(-minX, -minY)
         ..multiply(matrix);
     }
-    
+
     return result.addWithPaintTransform(
       transform: effectiveTransform,
       position: position,
