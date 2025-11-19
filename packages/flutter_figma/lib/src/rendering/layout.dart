@@ -13,6 +13,12 @@ class FigmaLayoutParentData extends ContainerBoxParentData<RenderBox> {
   ChildSizingMode? primaryAxisSizing;
   ChildSizingMode? counterAxisSizing;
 
+  // Grid-specific properties
+  int gridColumn = 0;
+  int gridRow = 0;
+  int gridColumnSpan = 1;
+  int gridRowSpan = 1;
+
   bool get isAbsolutePositioned =>
       horizontalConstraint != ConstraintType.min ||
       verticalConstraint != ConstraintType.min ||
@@ -39,6 +45,12 @@ class RenderFigmaLayout extends RenderBox
     double paddingBottom = 0,
     double itemSpacing = 0,
     double counterAxisSpacing = 0,
+    int gridColumnCount = 1,
+    int gridRowCount = 1,
+    List<GridTrack> gridColumns = const [],
+    List<GridTrack> gridRows = const [],
+    double gridColumnGap = 0,
+    double gridRowGap = 0,
   })  : _width = width,
         _height = height,
         _mode = mode,
@@ -52,7 +64,13 @@ class RenderFigmaLayout extends RenderBox
         _paddingTop = paddingTop,
         _paddingBottom = paddingBottom,
         _itemSpacing = itemSpacing,
-        _counterAxisSpacing = counterAxisSpacing;
+        _counterAxisSpacing = counterAxisSpacing,
+        _gridColumnCount = gridColumnCount,
+        _gridRowCount = gridRowCount,
+        _gridColumns = gridColumns,
+        _gridRows = gridRows,
+        _gridColumnGap = gridColumnGap,
+        _gridRowGap = gridRowGap;
 
   double _width;
   double get width => _width;
@@ -180,6 +198,60 @@ class RenderFigmaLayout extends RenderBox
     }
   }
 
+  int _gridColumnCount;
+  int get gridColumnCount => _gridColumnCount;
+  set gridColumnCount(int value) {
+    if (_gridColumnCount != value) {
+      _gridColumnCount = value;
+      markNeedsLayout();
+    }
+  }
+
+  int _gridRowCount;
+  int get gridRowCount => _gridRowCount;
+  set gridRowCount(int value) {
+    if (_gridRowCount != value) {
+      _gridRowCount = value;
+      markNeedsLayout();
+    }
+  }
+
+  List<GridTrack> _gridColumns;
+  List<GridTrack> get gridColumns => _gridColumns;
+  set gridColumns(List<GridTrack> value) {
+    if (_gridColumns != value) {
+      _gridColumns = value;
+      markNeedsLayout();
+    }
+  }
+
+  List<GridTrack> _gridRows;
+  List<GridTrack> get gridRows => _gridRows;
+  set gridRows(List<GridTrack> value) {
+    if (_gridRows != value) {
+      _gridRows = value;
+      markNeedsLayout();
+    }
+  }
+
+  double _gridColumnGap;
+  double get gridColumnGap => _gridColumnGap;
+  set gridColumnGap(double value) {
+    if (_gridColumnGap != value) {
+      _gridColumnGap = value;
+      markNeedsLayout();
+    }
+  }
+
+  double _gridRowGap;
+  double get gridRowGap => _gridRowGap;
+  set gridRowGap(double value) {
+    if (_gridRowGap != value) {
+      _gridRowGap = value;
+      markNeedsLayout();
+    }
+  }
+
   @override
   void setupParentData(RenderBox child) {
     if (child.parentData is! FigmaLayoutParentData) {
@@ -189,6 +261,11 @@ class RenderFigmaLayout extends RenderBox
 
   @override
   void performLayout() {
+    if (_mode == AutoLayoutMode.grid) {
+      _performGridLayout();
+      return;
+    }
+
     final autoChildren = <RenderBox>[];
     final absoluteChildren = <RenderBox>[];
 
@@ -374,7 +451,7 @@ class RenderFigmaLayout extends RenderBox
       innerFixedP = switch (_mode) {
         AutoLayoutMode.horizontal => constraints.maxWidth - padSumP,
         AutoLayoutMode.vertical => constraints.maxHeight - padSumP,
-        AutoLayoutMode.none => null,
+        AutoLayoutMode.none || AutoLayoutMode.grid => null,
       };
     }
 
@@ -401,7 +478,7 @@ class RenderFigmaLayout extends RenderBox
       innerC = switch (_mode) {
         AutoLayoutMode.horizontal => constraints.maxHeight - padSumC,
         AutoLayoutMode.vertical => constraints.maxWidth - padSumC,
-        AutoLayoutMode.none => throw Exception(),
+        AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
       };
     } else {
       innerC = lines.isEmpty
@@ -414,7 +491,7 @@ class RenderFigmaLayout extends RenderBox
       switch (_mode) {
         AutoLayoutMode.horizontal => Size(innerP + padSumP, innerC + padSumC),
         AutoLayoutMode.vertical => Size(innerC + padSumC, innerP + padSumP),
-        AutoLayoutMode.none => throw Exception(),
+        AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
       },
     );
 
@@ -433,6 +510,9 @@ class RenderFigmaLayout extends RenderBox
 
         // Then position absolute children on top, respecting their constraints
         _positionAbsoluteChildren(absoluteChildren);
+      case AutoLayoutMode.grid:
+        // Grid layout doesn't support mixed layout yet
+        _performGridLayout();
     }
   }
 
@@ -440,7 +520,7 @@ class RenderFigmaLayout extends RenderBox
     return switch (_mode) {
       AutoLayoutMode.horizontal => size.width,
       AutoLayoutMode.vertical => size.height,
-      AutoLayoutMode.none => throw Exception(),
+      AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
     };
   }
 
@@ -448,7 +528,7 @@ class RenderFigmaLayout extends RenderBox
     return switch (_mode) {
       AutoLayoutMode.horizontal => size.height,
       AutoLayoutMode.vertical => size.width,
-      AutoLayoutMode.none => throw Exception(),
+      AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
     };
   }
 
@@ -456,7 +536,7 @@ class RenderFigmaLayout extends RenderBox
     return switch (_mode) {
       AutoLayoutMode.horizontal => _paddingLeft,
       AutoLayoutMode.vertical => _paddingTop,
-      AutoLayoutMode.none => throw Exception(),
+      AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
     };
   }
 
@@ -464,7 +544,7 @@ class RenderFigmaLayout extends RenderBox
     return switch (_mode) {
       AutoLayoutMode.horizontal => _paddingRight,
       AutoLayoutMode.vertical => _paddingBottom,
-      AutoLayoutMode.none => throw Exception(),
+      AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
     };
   }
 
@@ -472,7 +552,7 @@ class RenderFigmaLayout extends RenderBox
     return switch (_mode) {
       AutoLayoutMode.horizontal => _paddingTop,
       AutoLayoutMode.vertical => _paddingLeft,
-      AutoLayoutMode.none => throw Exception(),
+      AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
     };
   }
 
@@ -480,7 +560,7 @@ class RenderFigmaLayout extends RenderBox
     return switch (_mode) {
       AutoLayoutMode.horizontal => _paddingBottom,
       AutoLayoutMode.vertical => _paddingRight,
-      AutoLayoutMode.none => throw Exception(),
+      AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
     };
   }
 
@@ -590,7 +670,7 @@ class RenderFigmaLayout extends RenderBox
               _paddingLeft + line.offsetC + offsetCItem,
               _paddingTop + cursorP,
             ),
-          AutoLayoutMode.none => throw Exception(),
+          AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
         };
 
         cursorP += _getPrimarySize(childSizes[i]) + gap;
@@ -606,6 +686,152 @@ class RenderFigmaLayout extends RenderBox
   @override
   void paint(PaintingContext context, Offset offset) {
     defaultPaint(context, offset);
+  }
+
+  void _performGridLayout() {
+    // Calculate available space
+    final availableWidth =
+        constraints.maxWidth - _paddingLeft - _paddingRight;
+    final availableHeight =
+        constraints.maxHeight - _paddingTop - _paddingBottom;
+
+    // Calculate column widths
+    final columnWidths = <double>[];
+    double totalFixedWidth = 0;
+    int autoColumnCount = 0;
+
+    for (int i = 0; i < _gridColumnCount; i++) {
+      if (i < _gridColumns.length) {
+        final track = _gridColumns[i];
+        if (track.sizingMode == GridTrackSizingMode.fixed &&
+            track.size != null) {
+          columnWidths.add(track.size!);
+          totalFixedWidth += track.size!;
+        } else {
+          columnWidths.add(0); // Will be calculated later
+          autoColumnCount++;
+        }
+      } else {
+        columnWidths.add(0);
+        autoColumnCount++;
+      }
+    }
+
+    // Calculate auto column width
+    final totalGapWidth = _gridColumnGap * math.max(0, _gridColumnCount - 1);
+    final availableForAuto = availableWidth - totalFixedWidth - totalGapWidth;
+    final autoColumnWidth =
+        autoColumnCount > 0 ? availableForAuto / autoColumnCount : 0.0;
+
+    for (int i = 0; i < columnWidths.length; i++) {
+      if (columnWidths[i] == 0) {
+        columnWidths[i] = autoColumnWidth < 0 ? 0.0 : autoColumnWidth;
+      }
+    }
+
+    // Calculate row heights
+    final rowHeights = <double>[];
+    double totalFixedHeight = 0;
+    int autoRowCount = 0;
+
+    for (int i = 0; i < _gridRowCount; i++) {
+      if (i < _gridRows.length) {
+        final track = _gridRows[i];
+        if (track.sizingMode == GridTrackSizingMode.fixed &&
+            track.size != null) {
+          rowHeights.add(track.size!);
+          totalFixedHeight += track.size!;
+        } else {
+          rowHeights.add(0); // Will be calculated later
+          autoRowCount++;
+        }
+      } else {
+        rowHeights.add(0);
+        autoRowCount++;
+      }
+    }
+
+    // Calculate auto row height
+    final totalGapHeight = _gridRowGap * math.max(0, _gridRowCount - 1);
+    final availableForAutoHeight =
+        availableHeight - totalFixedHeight - totalGapHeight;
+    final autoRowHeight =
+        autoRowCount > 0 ? availableForAutoHeight / autoRowCount : 0.0;
+
+    for (int i = 0; i < rowHeights.length; i++) {
+      if (rowHeights[i] == 0) {
+        rowHeights[i] = autoRowHeight < 0 ? 0.0 : autoRowHeight;
+      }
+    }
+
+    // Layout children
+    int childIndex = 0;
+    RenderBox? child = firstChild;
+    while (child != null) {
+      final childParentData = child.parentData! as FigmaLayoutParentData;
+
+      // Auto-assign grid position if not explicitly set
+      if (childParentData.gridColumn == 0 && childParentData.gridRow == 0) {
+        childParentData.gridRow = childIndex ~/ _gridColumnCount;
+        childParentData.gridColumn = childIndex % _gridColumnCount;
+      }
+
+      final col = childParentData.gridColumn;
+      final row = childParentData.gridRow;
+      final colSpan = childParentData.gridColumnSpan;
+      final rowSpan = childParentData.gridRowSpan;
+
+      // Calculate cell size based on span
+      double cellWidth = 0;
+      for (int i = col; i < math.min(col + colSpan, columnWidths.length); i++) {
+        cellWidth += columnWidths[i];
+        if (i < col + colSpan - 1) {
+          cellWidth += _gridColumnGap;
+        }
+      }
+
+      double cellHeight = 0;
+      for (int i = row; i < math.min(row + rowSpan, rowHeights.length); i++) {
+        cellHeight += rowHeights[i];
+        if (i < row + rowSpan - 1) {
+          cellHeight += _gridRowGap;
+        }
+      }
+
+      // Layout child
+      child.layout(
+        BoxConstraints.tightFor(width: cellWidth, height: cellHeight),
+        parentUsesSize: true,
+      );
+
+      // Calculate position
+      double x = _paddingLeft;
+      for (int i = 0; i < col; i++) {
+        x += columnWidths[i] + _gridColumnGap;
+      }
+
+      double y = _paddingTop;
+      for (int i = 0; i < row; i++) {
+        y += rowHeights[i] + _gridRowGap;
+      }
+
+      childParentData.offset = Offset(x, y);
+
+      child = childParentData.nextSibling;
+      childIndex++;
+    }
+
+    // Set container size
+    final totalWidth = columnWidths.fold<double>(0, (sum, w) => sum + w) +
+        totalGapWidth +
+        _paddingLeft +
+        _paddingRight;
+    final totalHeight = rowHeights.fold<double>(0, (sum, h) => sum + h) +
+        totalGapHeight +
+        _paddingTop +
+        _paddingBottom;
+
+    size = constraints.constrain(Size(totalWidth, totalHeight));
   }
 
   @override
@@ -629,6 +855,10 @@ class RenderFigmaLayout extends RenderBox
     properties.add(DoubleProperty('paddingBottom', paddingBottom));
     properties.add(DoubleProperty('itemSpacing', itemSpacing));
     properties.add(DoubleProperty('counterAxisSpacing', counterAxisSpacing));
+    properties.add(IntProperty('gridColumnCount', gridColumnCount));
+    properties.add(IntProperty('gridRowCount', gridRowCount));
+    properties.add(DoubleProperty('gridColumnGap', gridColumnGap));
+    properties.add(DoubleProperty('gridRowGap', gridRowGap));
   }
 }
 

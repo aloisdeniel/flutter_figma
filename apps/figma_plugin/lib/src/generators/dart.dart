@@ -42,7 +42,8 @@ class FlutterCodeGenerator {
     // Determine if we need FigmaPositioned based on parent's layout mode
     final bool parentHasAutoLayout = parentFrame != null &&
         (parentFrame.layoutMode == 'HORIZONTAL' ||
-            parentFrame.layoutMode == 'VERTICAL');
+            parentFrame.layoutMode == 'VERTICAL' ||
+            parentFrame.layoutMode == 'GRID');
 
     // For auto layout parents, only wrap with FigmaPositioned if node is absolutely positioned
     // For absolute layout parents, wrap if node has position or needs constraints
@@ -143,6 +144,8 @@ class FlutterCodeGenerator {
     // Layout properties
     if (node.layoutMode == 'HORIZONTAL' || node.layoutMode == 'VERTICAL') {
       _buildAutoLayoutProperties(node);
+    } else if (node.layoutMode == 'GRID') {
+      _buildGridLayoutProperties(node);
     } else {
       _buildAbsoluteLayoutProperties(node);
     }
@@ -456,6 +459,35 @@ class FlutterCodeGenerator {
     _indent();
     _writeLine('width: ${node.width},');
     _writeLine('height: ${node.height},');
+    _unindent();
+    _writeLine('),');
+  }
+
+  void _buildGridLayoutProperties(FrameNode node) {
+    _writeLine('layout: FigmaLayoutProperties.grid(');
+    _indent();
+
+    // TODO: These properties would need to come from the Figma API
+    // For now, we'll use default values
+    _writeLine('columnCount: 3,');
+    _writeLine('rowCount: 3,');
+    _writeLine('columnGap: ${node.itemSpacing},');
+    _writeLine('rowGap: ${node.itemSpacing},');
+
+    // Padding
+    if (node.paddingLeft != 0) {
+      _writeLine('paddingLeft: ${node.paddingLeft},');
+    }
+    if (node.paddingRight != 0) {
+      _writeLine('paddingRight: ${node.paddingRight},');
+    }
+    if (node.paddingTop != 0) {
+      _writeLine('paddingTop: ${node.paddingTop},');
+    }
+    if (node.paddingBottom != 0) {
+      _writeLine('paddingBottom: ${node.paddingBottom},');
+    }
+
     _unindent();
     _writeLine('),');
   }

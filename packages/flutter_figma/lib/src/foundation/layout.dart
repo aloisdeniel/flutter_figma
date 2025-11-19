@@ -27,7 +27,7 @@ enum AutoLayoutMode {
   none,
   horizontal,
   vertical,
-  //grid, //TODO
+  grid,
 }
 
 enum PrimaryAxisSizingMode {
@@ -83,4 +83,37 @@ class ChildSize {
   @override
   int get hashCode =>
       Object.hash(width, height, primaryAxisSizing, counterAxisSizing);
+}
+
+/// Represents the sizing mode for grid tracks (rows or columns)
+enum GridTrackSizingMode {
+  /// Track size is automatically calculated based on available space
+  auto,
+  
+  /// Track has a fixed size in pixels
+  fixed,
+}
+
+/// Represents a grid track (row or column) with its sizing configuration
+class GridTrack {
+  const GridTrack({
+    this.size,
+    this.sizingMode = GridTrackSizingMode.auto,
+  });
+
+  /// The size of the track in pixels (when sizingMode is fixed)
+  final double? size;
+  
+  /// How the track should be sized
+  final GridTrackSizingMode sizingMode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is GridTrack &&
+          size == other.size &&
+          sizingMode == other.sizingMode;
+
+  @override
+  int get hashCode => Object.hash(size, sizingMode);
 }

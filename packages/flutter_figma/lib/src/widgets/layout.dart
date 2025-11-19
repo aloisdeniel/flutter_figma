@@ -24,6 +24,19 @@ sealed class FigmaLayoutProperties {
     double width,
     double height,
   }) = FigmaAbsoluteLayoutProperties;
+
+  const factory FigmaLayoutProperties.grid({
+    int columnCount,
+    int rowCount,
+    List<GridTrack> columns,
+    List<GridTrack> rows,
+    double columnGap,
+    double rowGap,
+    double paddingLeft,
+    double paddingRight,
+    double paddingTop,
+    double paddingBottom,
+  }) = FigmaGridLayoutProperties;
 }
 
 class FigmaAbsoluteLayoutProperties extends FigmaLayoutProperties {
@@ -64,6 +77,32 @@ class FigmaAutoLayoutProperties extends FigmaLayoutProperties {
   final double paddingBottom;
   final double itemSpacing;
   final double counterAxisSpacing;
+}
+
+class FigmaGridLayoutProperties extends FigmaLayoutProperties {
+  const FigmaGridLayoutProperties({
+    this.columnCount = 1,
+    this.rowCount = 1,
+    this.columns = const [],
+    this.rows = const [],
+    this.columnGap = 0,
+    this.rowGap = 0,
+    this.paddingLeft = 0,
+    this.paddingRight = 0,
+    this.paddingTop = 0,
+    this.paddingBottom = 0,
+  });
+
+  final int columnCount;
+  final int rowCount;
+  final List<GridTrack> columns;
+  final List<GridTrack> rows;
+  final double columnGap;
+  final double rowGap;
+  final double paddingLeft;
+  final double paddingRight;
+  final double paddingTop;
+  final double paddingBottom;
 }
 
 class FigmaLayout extends MultiChildRenderObjectWidget {
@@ -111,6 +150,31 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           width: width,
           height: height,
         ),
+      FigmaGridLayoutProperties(
+        :final columnCount,
+        :final rowCount,
+        :final columns,
+        :final rows,
+        :final columnGap,
+        :final rowGap,
+        :final paddingLeft,
+        :final paddingRight,
+        :final paddingTop,
+        :final paddingBottom
+      ) =>
+        RenderFigmaLayout(
+          mode: AutoLayoutMode.grid,
+          gridColumnCount: columnCount,
+          gridRowCount: rowCount,
+          gridColumns: columns,
+          gridRows: rows,
+          gridColumnGap: columnGap,
+          gridRowGap: rowGap,
+          paddingLeft: paddingLeft,
+          paddingRight: paddingRight,
+          paddingTop: paddingTop,
+          paddingBottom: paddingBottom,
+        ),
     };
   }
 
@@ -149,6 +213,30 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
         renderObject
           ..width = width
           ..height = height;
+      case FigmaGridLayoutProperties(
+          :final columnCount,
+          :final rowCount,
+          :final columns,
+          :final rows,
+          :final columnGap,
+          :final rowGap,
+          :final paddingLeft,
+          :final paddingRight,
+          :final paddingTop,
+          :final paddingBottom
+        ):
+        renderObject
+          ..mode = AutoLayoutMode.grid
+          ..gridColumnCount = columnCount
+          ..gridRowCount = rowCount
+          ..gridColumns = columns
+          ..gridRows = rows
+          ..gridColumnGap = columnGap
+          ..gridRowGap = rowGap
+          ..paddingLeft = paddingLeft
+          ..paddingRight = paddingRight
+          ..paddingTop = paddingTop
+          ..paddingBottom = paddingBottom;
     }
   }
 }
@@ -256,6 +344,56 @@ class FigmaSized extends ParentDataWidget<FigmaLayoutParentData> {
     }
     if (parentData.counterAxisSizing != size.counterAxisSizing) {
       parentData.counterAxisSizing = size.counterAxisSizing;
+      needsLayout = true;
+    }
+
+    if (needsLayout) {
+      final targetParent = renderObject.parent;
+      if (targetParent is RenderObject) {
+        targetParent.markNeedsLayout();
+      }
+    }
+  }
+
+  @override
+  Type get debugTypicalAncestorWidgetClass => FigmaLayout;
+}
+
+class FigmaGridCell extends ParentDataWidget<FigmaLayoutParentData> {
+  const FigmaGridCell({
+    super.key,
+    required super.child,
+    this.column = 0,
+    this.row = 0,
+    this.columnSpan = 1,
+    this.rowSpan = 1,
+  });
+
+  final int column;
+  final int row;
+  final int columnSpan;
+  final int rowSpan;
+
+  @override
+  void applyParentData(RenderObject renderObject) {
+    assert(renderObject.parentData is FigmaLayoutParentData);
+    final parentData = renderObject.parentData! as FigmaLayoutParentData;
+    bool needsLayout = false;
+
+    if (parentData.gridColumn != column) {
+      parentData.gridColumn = column;
+      needsLayout = true;
+    }
+    if (parentData.gridRow != row) {
+      parentData.gridRow = row;
+      needsLayout = true;
+    }
+    if (parentData.gridColumnSpan != columnSpan) {
+      parentData.gridColumnSpan = columnSpan;
+      needsLayout = true;
+    }
+    if (parentData.gridRowSpan != rowSpan) {
+      parentData.gridRowSpan = rowSpan;
       needsLayout = true;
     }
 
