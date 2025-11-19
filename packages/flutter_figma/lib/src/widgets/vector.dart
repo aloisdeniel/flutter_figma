@@ -1,34 +1,27 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_figma/src/foundation/foundation.dart';
 import 'package:flutter_figma/src/widgets/blend.dart';
 import 'package:flutter_figma/src/widgets/clip.dart';
-import 'package:flutter_figma/src/widgets/decorated.dart';
-import 'package:flutter_figma/src/widgets/filtered.dart';
-import 'package:flutter_figma/src/widgets/layout.dart';
+import 'package:flutter_figma/widgets.dart';
 
-class FigmaFrame extends StatelessWidget {
-  const FigmaFrame({
+class FigmaVector extends StatelessWidget {
+  const FigmaVector({
     super.key,
-    this.layout = const FigmaAbsoluteLayoutProperties(),
     this.size,
-    this.decoration,
+    required this.decoration,
     this.effects = const [],
     this.opacity = 1.0,
     this.visible = true,
     this.blendMode = BlendMode.passThrough,
     this.clipContent = true,
-    this.children = const [],
   });
 
   final ChildSize? size;
-  final FigmaLayoutProperties layout;
-  final FigmaDecoration? decoration;
+  final FigmaDecoration decoration;
   final List<FigmaEffect> effects;
   final double opacity;
   final bool visible;
   final BlendMode blendMode;
   final bool clipContent;
-  final List<Widget> children;
 
   @override
   Widget build(BuildContext context) {
@@ -36,22 +29,14 @@ class FigmaFrame extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
-    Widget result = FigmaLayout(
-      layout: layout,
-      children: children,
+    Widget result = FigmaDecorated(
+      decoration: decoration,
     );
 
-    if (decoration != null) {
-      result = FigmaDecorated(
-        decoration: decoration!,
-        child: result,
-      );
-    }
-
-    if (effects.isNotEmpty && decoration != null) {
+    if (effects.isNotEmpty) {
       result = FigmaFiltered(
         effects: effects,
-        shape: decoration!.shape,
+        shape: decoration.shape,
         child: result,
       );
     }
@@ -64,7 +49,7 @@ class FigmaFrame extends StatelessWidget {
     }
     if (clipContent) {
       result = FigmaClip(
-        shape: decoration?.shape ?? FigmaRectangleShape(),
+        shape: decoration.shape,
         child: result,
       );
     }

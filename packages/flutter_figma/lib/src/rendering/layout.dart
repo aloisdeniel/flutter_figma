@@ -213,10 +213,30 @@ class RenderFigmaLayout extends RenderBox
   }
 
   void _performAbsoluteLayout(List<RenderBox> absoluteChildren) {
+    size = constraints.constrain(Size(_width, _height));
+    _positionAbsoluteChildren(absoluteChildren);
+  }
+
+  void _positionAbsoluteChildren(List<RenderBox> absoluteChildren) {
     for (final child in absoluteChildren) {
       final childParentData = child.parentData! as FigmaLayoutParentData;
-      final childWidth = childParentData.width;
-      final childHeight = childParentData.height;
+
+      // Calculate child size based on constraints
+      double childWidth = childParentData.width;
+      double childHeight = childParentData.height;
+
+      // Handle stretch constraints - child should stretch to fill available space
+      if (childParentData.horizontalConstraint == ConstraintType.stretch) {
+        // For stretch, the width extends from x to (containerWidth - x)
+        // In Figma, x represents the left distance and width represents right distance
+        childWidth = size.width - childParentData.x - childParentData.width;
+      }
+
+      if (childParentData.verticalConstraint == ConstraintType.stretch) {
+        // For stretch, the height extends from y to (containerHeight - y)
+        // In Figma, y represents the top distance and height represents bottom distance
+        childHeight = size.height - childParentData.y - childParentData.height;
+      }
 
       child.layout(
         BoxConstraints(
@@ -228,9 +248,57 @@ class RenderFigmaLayout extends RenderBox
         parentUsesSize: false,
       );
 
-      childParentData.offset = Offset(childParentData.x, childParentData.y);
+      // Calculate position based on constraint types
+      double x = childParentData.x;
+      double y = childParentData.y;
 
-      size = constraints.constrain(Size(_width, _height));
+      switch (childParentData.horizontalConstraint) {
+        case ConstraintType.min:
+          // Pin to left - x is distance from left
+          x = childParentData.x;
+          break;
+        case ConstraintType.max:
+          // Pin to right - x is distance from right
+          x = size.width - childParentData.x - childWidth;
+          break;
+        case ConstraintType.center:
+          // Center horizontally - x is offset from center
+          x = (size.width - childWidth) / 2 + childParentData.x;
+          break;
+        case ConstraintType.stretch:
+          // Pin to both left and right - x is distance from left
+          x = childParentData.x;
+          break;
+        case ConstraintType.scale:
+          // Scale proportionally - x is proportional position
+          x = childParentData.x;
+          break;
+      }
+
+      switch (childParentData.verticalConstraint) {
+        case ConstraintType.min:
+          // Pin to top - y is distance from top
+          y = childParentData.y;
+          break;
+        case ConstraintType.max:
+          // Pin to bottom - y is distance from bottom
+          y = size.height - childParentData.y - childHeight;
+          break;
+        case ConstraintType.center:
+          // Center vertically - y is offset from center
+          y = (size.height - childHeight) / 2 + childParentData.y;
+          break;
+        case ConstraintType.stretch:
+          // Pin to both top and bottom - y is distance from top
+          y = childParentData.y;
+          break;
+        case ConstraintType.scale:
+          // Scale proportionally - y is proportional position
+          y = childParentData.y;
+          break;
+      }
+
+      childParentData.offset = Offset(x, y);
     }
   }
 
@@ -360,7 +428,11 @@ class RenderFigmaLayout extends RenderBox
         _performAbsoluteLayout(absoluteChildren);
       case AutoLayoutMode.horizontal:
       case AutoLayoutMode.vertical:
+        // First layout the auto children to determine the container size
         _performAutoLayout(autoChildren);
+
+        // Then position absolute children on top, respecting their constraints
+        _positionAbsoluteChildren(absoluteChildren);
     }
   }
 
