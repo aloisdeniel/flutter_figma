@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import 'enums.dart';
@@ -91,8 +92,8 @@ class VectorRegion {
       other is VectorRegion &&
           runtimeType == other.runtimeType &&
           windingRule == other.windingRule &&
-          _listEquals(loops, other.loops) &&
-          _listEquals(fills, other.fills) &&
+          listEquals(loops, other.loops) &&
+          listEquals(fills, other.fills) &&
           fillStyleId == other.fillStyleId;
 
   @override
@@ -123,9 +124,9 @@ class VectorNetwork {
       identical(this, other) ||
       other is VectorNetwork &&
           runtimeType == other.runtimeType &&
-          _listEquals(vertices, other.vertices) &&
-          _listEquals(segments, other.segments) &&
-          _listEquals(regions, other.regions);
+          listEquals(vertices, other.vertices) &&
+          listEquals(segments, other.segments) &&
+          listEquals(regions, other.regions);
 
   @override
   int get hashCode => Object.hash(Object.hashAll(vertices),
@@ -139,11 +140,11 @@ class VectorNetwork {
 class VectorPath {
   const VectorPath({
     required this.windingRule,
-    required this.data,
+    required this.path,
   });
 
   final String windingRule;
-  final String data;
+  final Path path;
 
   @override
   bool operator ==(Object other) =>
@@ -151,21 +152,11 @@ class VectorPath {
       other is VectorPath &&
           runtimeType == other.runtimeType &&
           windingRule == other.windingRule &&
-          data == other.data;
+          path == other.path;
 
   @override
-  int get hashCode => Object.hash(windingRule, data);
+  int get hashCode => Object.hash(windingRule, path);
 
   @override
-  String toString() => 'VectorPath(windingRule: $windingRule, data: $data)';
-}
-
-bool _listEquals<T>(List<T>? a, List<T>? b) {
-  if (a == null && b == null) return true;
-  if (a == null || b == null) return false;
-  if (a.length != b.length) return false;
-  for (var i = 0; i < a.length; i++) {
-    if (a[i] != b[i]) return false;
-  }
-  return true;
+  String toString() => 'VectorPath(windingRule: $windingRule, path: $path)';
 }

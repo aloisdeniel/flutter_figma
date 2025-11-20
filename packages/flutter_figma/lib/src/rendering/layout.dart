@@ -1,15 +1,24 @@
-import 'dart:math' as math;
-
 import 'package:flutter/rendering.dart';
 import 'package:flutter_figma/src/foundation/foundation.dart';
+import 'layout_freeform.dart';
+import 'layout_auto.dart';
+import 'layout_grid.dart';
+
+enum FigmaPositionningMode {
+  auto,
+  absolute,
+}
 
 class FigmaLayoutParentData extends ContainerBoxParentData<RenderBox> {
+  FigmaPositionningMode mode = FigmaPositionningMode.auto;
   double x = 0;
   double y = 0;
   double width = 0;
   double height = 0;
   ConstraintType horizontalConstraint = ConstraintType.min;
   ConstraintType verticalConstraint = ConstraintType.min;
+
+  // AutoLayout-specific
   ChildSizingMode? primaryAxisSizing;
   ChildSizingMode? counterAxisSizing;
 
@@ -18,22 +27,19 @@ class FigmaLayoutParentData extends ContainerBoxParentData<RenderBox> {
   int gridRow = 0;
   int gridColumnSpan = 1;
   int gridRowSpan = 1;
-
-  bool get isAbsolutePositioned =>
-      horizontalConstraint != ConstraintType.min ||
-      verticalConstraint != ConstraintType.min ||
-      x != 0 ||
-      y != 0;
 }
 
 class RenderFigmaLayout extends RenderBox
     with
         ContainerRenderObjectMixin<RenderBox, FigmaLayoutParentData>,
-        RenderBoxContainerDefaultsMixin<RenderBox, FigmaLayoutParentData> {
+        RenderBoxContainerDefaultsMixin<RenderBox, FigmaLayoutParentData>,
+        FigmaAbsoluteLayoutMixin,
+        FigmaAutoLayoutMixin,
+        FigmaGridLayoutMixin {
   RenderFigmaLayout({
-    double width = 0,
-    double height = 0,
-    AutoLayoutMode mode = AutoLayoutMode.none,
+    LayoutMode mode = LayoutMode.freeform,
+    double referenceWidth = 0,
+    double referenceHeight = 0,
     PrimaryAxisSizingMode primaryAxisSizingMode = PrimaryAxisSizingMode.fixed,
     CounterAxisSizingMode counterAxisSizingMode = CounterAxisSizingMode.fixed,
     LayoutAlign primaryAxisAlignItems = LayoutAlign.min,
@@ -51,9 +57,9 @@ class RenderFigmaLayout extends RenderBox
     List<GridTrack> gridRows = const [],
     double gridColumnGap = 0,
     double gridRowGap = 0,
-  })  : _width = width,
-        _height = height,
-        _mode = mode,
+  })  : _mode = mode,
+        _referenceWidth = referenceWidth,
+        _referenceHeight = referenceHeight,
         _primaryAxisSizingMode = primaryAxisSizingMode,
         _counterAxisSizingMode = counterAxisSizingMode,
         _primaryAxisAlignItems = primaryAxisAlignItems,
@@ -72,32 +78,36 @@ class RenderFigmaLayout extends RenderBox
         _gridColumnGap = gridColumnGap,
         _gridRowGap = gridRowGap;
 
-  double _width;
-  double get width => _width;
-  set width(double value) {
-    if (_width != value) {
-      _width = value;
+  double _referenceWidth;
+  double get referenceWidth => _referenceWidth;
+  set referenceWidth(double value) {
+    if (_referenceWidth != value) {
+      _referenceWidth = value;
       markNeedsLayout();
     }
   }
 
-  double _height;
-  double get height => _height;
-  set height(double value) {
-    if (_height != value) {
-      _height = value;
+  double _referenceHeight;
+  double get referenceHeight => _referenceHeight;
+  set referenceHeight(double value) {
+    if (_referenceHeight != value) {
+      _referenceHeight = value;
       markNeedsLayout();
     }
   }
 
-  AutoLayoutMode _mode;
-  AutoLayoutMode get mode => _mode;
-  set mode(AutoLayoutMode value) {
+  LayoutMode _mode;
+  LayoutMode get mode => _mode;
+  set mode(LayoutMode value) {
     if (_mode != value) {
       _mode = value;
       markNeedsLayout();
     }
   }
+
+  // FigmaAutoLayoutMixin implementation
+  @override
+  LayoutMode get autoLayoutMode => _mode;
 
   PrimaryAxisSizingMode _primaryAxisSizingMode;
   PrimaryAxisSizingMode get primaryAxisSizingMode => _primaryAxisSizingMode;
@@ -261,420 +271,51 @@ class RenderFigmaLayout extends RenderBox
 
   @override
   void performLayout() {
-    if (_mode == AutoLayoutMode.grid) {
-      _performGridLayout();
-      return;
-    }
-
-    final autoChildren = <RenderBox>[];
-    final absoluteChildren = <RenderBox>[];
-
-    RenderBox? child = firstChild;
-    while (child != null) {
-      final childParentData = child.parentData! as FigmaLayoutParentData;
-      if (childParentData.isAbsolutePositioned) {
-        absoluteChildren.add(child);
-      } else {
-        autoChildren.add(child);
-      }
-      child = childParentData.nextSibling;
-    }
-
-    if (autoChildren.isEmpty && absoluteChildren.isNotEmpty) {
-      _performAbsoluteLayout(absoluteChildren);
-    } else if (absoluteChildren.isEmpty && autoChildren.isNotEmpty) {
-      _performAutoLayout(autoChildren);
-    } else {
-      _performMixedLayout(autoChildren, absoluteChildren);
-    }
-  }
-
-  void _performAbsoluteLayout(List<RenderBox> absoluteChildren) {
-    size = constraints.constrain(Size(_width, _height));
-    _positionAbsoluteChildren(absoluteChildren);
-  }
-
-  void _positionAbsoluteChildren(List<RenderBox> absoluteChildren) {
-    for (final child in absoluteChildren) {
-      final childParentData = child.parentData! as FigmaLayoutParentData;
-
-      // Calculate child size based on constraints
-      double childWidth = childParentData.width;
-      double childHeight = childParentData.height;
-
-      // Handle stretch constraints - child should stretch to fill available space
-      if (childParentData.horizontalConstraint == ConstraintType.stretch) {
-        // For stretch, the width extends from x to (containerWidth - x)
-        // In Figma, x represents the left distance and width represents right distance
-        childWidth = size.width - childParentData.x - childParentData.width;
-      }
-
-      if (childParentData.verticalConstraint == ConstraintType.stretch) {
-        // For stretch, the height extends from y to (containerHeight - y)
-        // In Figma, y represents the top distance and height represents bottom distance
-        childHeight = size.height - childParentData.y - childParentData.height;
-      }
-
-      child.layout(
-        BoxConstraints(
-          minWidth: childWidth,
-          maxWidth: childWidth,
-          minHeight: childHeight,
-          maxHeight: childHeight,
-        ),
-        parentUsesSize: false,
-      );
-
-      // Calculate position based on constraint types
-      double x = childParentData.x;
-      double y = childParentData.y;
-
-      switch (childParentData.horizontalConstraint) {
-        case ConstraintType.min:
-          // Pin to left - x is distance from left
-          x = childParentData.x;
-          break;
-        case ConstraintType.max:
-          // Pin to right - x is distance from right
-          x = size.width - childParentData.x - childWidth;
-          break;
-        case ConstraintType.center:
-          // Center horizontally - x is offset from center
-          x = (size.width - childWidth) / 2 + childParentData.x;
-          break;
-        case ConstraintType.stretch:
-          // Pin to both left and right - x is distance from left
-          x = childParentData.x;
-          break;
-        case ConstraintType.scale:
-          // Scale proportionally - x is proportional position
-          x = childParentData.x;
-          break;
-      }
-
-      switch (childParentData.verticalConstraint) {
-        case ConstraintType.min:
-          // Pin to top - y is distance from top
-          y = childParentData.y;
-          break;
-        case ConstraintType.max:
-          // Pin to bottom - y is distance from bottom
-          y = size.height - childParentData.y - childHeight;
-          break;
-        case ConstraintType.center:
-          // Center vertically - y is offset from center
-          y = (size.height - childHeight) / 2 + childParentData.y;
-          break;
-        case ConstraintType.stretch:
-          // Pin to both top and bottom - y is distance from top
-          y = childParentData.y;
-          break;
-        case ConstraintType.scale:
-          // Scale proportionally - y is proportional position
-          y = childParentData.y;
-          break;
-      }
-
-      childParentData.offset = Offset(x, y);
-    }
-  }
-
-  void _performAutoLayout(List<RenderBox> autoChildren) {
-    if (autoChildren.isEmpty) {
-      final padSumP = _getPadStartP() + _getPadEndP();
-      final padSumC = _getPadStartC() + _getPadEndC();
-      final expectedSize = switch (_mode) {
-        AutoLayoutMode.horizontal => Size(padSumP, padSumC),
-        AutoLayoutMode.vertical => Size(padSumC, padSumP),
-        _ => throw Exception(),
-      };
-      size = constraints.constrain(expectedSize);
-      return;
-    }
-
-    final List<Size> childSizes = [];
-    for (final child in autoChildren) {
-      final childParentData = child.parentData! as FigmaLayoutParentData;
-      final primarySizing = childParentData.primaryAxisSizing;
-      final counterSizing = childParentData.counterAxisSizing;
-
-      BoxConstraints childConstraints;
-      if (_mode == AutoLayoutMode.horizontal) {
-        final minWidth = primarySizing == ChildSizingMode.fixed
-            ? childParentData.width
-            : 0.0;
-        final maxWidth = primarySizing == ChildSizingMode.fixed
-            ? childParentData.width
-            : double.infinity;
-        final minHeight = counterSizing == ChildSizingMode.fixed
-            ? childParentData.height
-            : 0.0;
-        final maxHeight = counterSizing == ChildSizingMode.fixed
-            ? childParentData.height
-            : double.infinity;
-        childConstraints = BoxConstraints(
-          minWidth: minWidth,
-          maxWidth: maxWidth,
-          minHeight: minHeight,
-          maxHeight: maxHeight,
-        );
-      } else {
-        final minWidth = counterSizing == ChildSizingMode.fixed
-            ? childParentData.width
-            : 0.0;
-        final maxWidth = counterSizing == ChildSizingMode.fixed
-            ? childParentData.width
-            : double.infinity;
-        final minHeight = primarySizing == ChildSizingMode.fixed
-            ? childParentData.height
-            : 0.0;
-        final maxHeight = primarySizing == ChildSizingMode.fixed
-            ? childParentData.height
-            : double.infinity;
-        childConstraints = BoxConstraints(
-          minWidth: minWidth,
-          maxWidth: maxWidth,
-          minHeight: minHeight,
-          maxHeight: maxHeight,
-        );
-      }
-
-      child.layout(childConstraints, parentUsesSize: true);
-      childSizes.add(child.size);
-    }
-
-    final padSumP = _getPadStartP() + _getPadEndP();
-    final padSumC = _getPadStartC() + _getPadEndC();
-
-    double? innerFixedP;
-    if (_primaryAxisSizingMode == PrimaryAxisSizingMode.fixed) {
-      innerFixedP = switch (_mode) {
-        AutoLayoutMode.horizontal => constraints.maxWidth - padSumP,
-        AutoLayoutMode.vertical => constraints.maxHeight - padSumP,
-        AutoLayoutMode.none || AutoLayoutMode.grid => null,
-      };
-    }
-
-    final lines = _buildLines(childSizes, innerFixedP);
-
-    double innerP;
-    if (_primaryAxisSizingMode == PrimaryAxisSizingMode.fixed) {
-      innerP = innerFixedP!;
-    } else {
-      if (_layoutWrap == LayoutWrap.wrap && lines.length > 1) {
-        innerP = lines.map((l) => l.sumP).reduce(math.max);
-      } else {
-        innerP = childSizes.isEmpty
-            ? 0
-            : childSizes
-                    .map((s) => _getPrimarySize(s))
-                    .reduce((a, b) => a + b) +
-                _itemSpacing * (childSizes.length - 1);
-      }
-    }
-
-    double innerC;
-    if (_counterAxisSizingMode == CounterAxisSizingMode.fixed) {
-      innerC = switch (_mode) {
-        AutoLayoutMode.horizontal => constraints.maxHeight - padSumC,
-        AutoLayoutMode.vertical => constraints.maxWidth - padSumC,
-        AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
-      };
-    } else {
-      innerC = lines.isEmpty
-          ? 0
-          : lines.map((l) => l.maxC).reduce((a, b) => a + b) +
-              _counterAxisSpacing * math.max(0, lines.length - 1);
-    }
-
-    size = constraints.constrain(
-      switch (_mode) {
-        AutoLayoutMode.horizontal => Size(innerP + padSumP, innerC + padSumC),
-        AutoLayoutMode.vertical => Size(innerC + padSumC, innerP + padSumP),
-        AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
-      },
-    );
-
-    _positionAutoChildren(autoChildren, lines, childSizes, innerP, innerC);
-  }
-
-  void _performMixedLayout(
-      List<RenderBox> autoChildren, List<RenderBox> absoluteChildren) {
     switch (_mode) {
-      case AutoLayoutMode.none:
-        _performAbsoluteLayout(absoluteChildren);
-      case AutoLayoutMode.horizontal:
-      case AutoLayoutMode.vertical:
+      case LayoutMode.freeform:
+        final children = <RenderBox>[];
+
+        RenderBox? child = firstChild;
+        while (child != null) {
+          final childParentData = child.parentData! as FigmaLayoutParentData;
+          if (childParentData.mode != FigmaPositionningMode.absolute) {
+            print('A child does not have its absolute positioning');
+          }
+          children.add(child);
+          child = childParentData.nextSibling;
+        }
+
+        size = constraints.biggest;
+        positionAbsoluteChildren(
+          children,
+          Size(referenceWidth, referenceHeight),
+          size,
+        );
+      case LayoutMode.horizontal:
+      case LayoutMode.vertical:
+        final autoChildren = <RenderBox>[];
+        final absoluteChildren = <RenderBox>[];
+
+        RenderBox? child = firstChild;
+        while (child != null) {
+          final childParentData = child.parentData! as FigmaLayoutParentData;
+          if (childParentData.mode == FigmaPositionningMode.absolute) {
+            absoluteChildren.add(child);
+          } else {
+            autoChildren.add(child);
+          }
+          child = childParentData.nextSibling;
+        }
         // First layout the auto children to determine the container size
-        _performAutoLayout(autoChildren);
+        size = performAutoLayout(autoChildren, constraints);
+        positionAutoChildren(autoChildren, size);
 
         // Then position absolute children on top, respecting their constraints
-        _positionAbsoluteChildren(absoluteChildren);
-      case AutoLayoutMode.grid:
+        positionAbsoluteChildren(
+            absoluteChildren, Size(referenceWidth, referenceHeight), size);
+      case LayoutMode.grid:
         // Grid layout doesn't support mixed layout yet
-        _performGridLayout();
-    }
-  }
-
-  double _getPrimarySize(Size size) {
-    return switch (_mode) {
-      AutoLayoutMode.horizontal => size.width,
-      AutoLayoutMode.vertical => size.height,
-      AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
-    };
-  }
-
-  double _getCounterSize(Size size) {
-    return switch (_mode) {
-      AutoLayoutMode.horizontal => size.height,
-      AutoLayoutMode.vertical => size.width,
-      AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
-    };
-  }
-
-  double _getPadStartP() {
-    return switch (_mode) {
-      AutoLayoutMode.horizontal => _paddingLeft,
-      AutoLayoutMode.vertical => _paddingTop,
-      AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
-    };
-  }
-
-  double _getPadEndP() {
-    return switch (_mode) {
-      AutoLayoutMode.horizontal => _paddingRight,
-      AutoLayoutMode.vertical => _paddingBottom,
-      AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
-    };
-  }
-
-  double _getPadStartC() {
-    return switch (_mode) {
-      AutoLayoutMode.horizontal => _paddingTop,
-      AutoLayoutMode.vertical => _paddingLeft,
-      AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
-    };
-  }
-
-  double _getPadEndC() {
-    return switch (_mode) {
-      AutoLayoutMode.horizontal => _paddingBottom,
-      AutoLayoutMode.vertical => _paddingRight,
-      AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
-    };
-  }
-
-  List<_Line> _buildLines(List<Size> childSizes, double? innerFixedP) {
-    final lineCapacityP =
-        (_layoutWrap == LayoutWrap.wrap && innerFixedP != null)
-            ? innerFixedP
-            : double.infinity;
-
-    final lines = <_Line>[];
-    var currentLine = _Line();
-
-    for (var i = 0; i < childSizes.length; i++) {
-      final itemP = _getPrimarySize(childSizes[i]);
-      final need = (currentLine.items.isEmpty ? 0 : _itemSpacing) + itemP;
-
-      if (_layoutWrap == LayoutWrap.wrap &&
-          currentLine.sumP + need > lineCapacityP &&
-          currentLine.items.isNotEmpty) {
-        lines.add(currentLine);
-        currentLine = _Line();
-      }
-
-      currentLine.items.add(i);
-      currentLine.sumP +=
-          (currentLine.items.length == 1 ? 0 : _itemSpacing) + itemP;
-      currentLine.maxC =
-          math.max(currentLine.maxC, _getCounterSize(childSizes[i]));
-    }
-
-    if (currentLine.items.isNotEmpty) {
-      lines.add(currentLine);
-    }
-
-    return lines;
-  }
-
-  void _positionAutoChildren(List<RenderBox> autoChildren, List<_Line> lines,
-      List<Size> childSizes, double innerP, double innerC) {
-    final totalLinesC = lines.isEmpty
-        ? 0.0
-        : lines.map((l) => l.maxC).reduce((a, b) => a + b) +
-            _counterAxisSpacing * math.max(0, lines.length - 1);
-
-    final startC = switch (_counterAxisAlignItems) {
-      LayoutAlign.min => 0.0,
-      LayoutAlign.center => (innerC - totalLinesC) / 2,
-      LayoutAlign.max => innerC - totalLinesC,
-      LayoutAlign.stretch => 0.0,
-      LayoutAlign.spaceBetween => 0.0,
-    };
-
-    var cursorC = startC;
-    for (final line in lines) {
-      line.offsetC = cursorC;
-      cursorC += line.maxC + _counterAxisSpacing;
-    }
-
-    for (final line in lines) {
-      final usedP = line.items.isEmpty
-          ? 0.0
-          : line.items
-                  .map((i) => _getPrimarySize(childSizes[i]))
-                  .reduce((a, b) => a + b) +
-              _itemSpacing * math.max(0, line.items.length - 1);
-      final freeP = innerP - usedP;
-
-      double gap;
-      double offsetP;
-
-      if (_primaryAxisAlignItems == LayoutAlign.spaceBetween &&
-          line.items.length > 1) {
-        gap = freeP / (line.items.length - 1);
-        offsetP = 0;
-      } else {
-        gap = _itemSpacing;
-        offsetP = switch (_primaryAxisAlignItems) {
-          LayoutAlign.min => 0.0,
-          LayoutAlign.center => freeP / 2,
-          LayoutAlign.max => freeP,
-          LayoutAlign.spaceBetween => 0.0,
-          LayoutAlign.stretch => 0.0,
-        };
-      }
-
-      var cursorP = offsetP;
-
-      for (final i in line.items) {
-        final child = autoChildren[i];
-
-        final offsetCItem = switch (_counterAxisAlignItems) {
-          LayoutAlign.min => 0.0,
-          LayoutAlign.center =>
-            (line.maxC - _getCounterSize(childSizes[i])) / 2,
-          LayoutAlign.max => line.maxC - _getCounterSize(childSizes[i]),
-          LayoutAlign.stretch => 0.0,
-          LayoutAlign.spaceBetween => 0.0,
-        };
-
-        final childParentData = child.parentData! as FigmaLayoutParentData;
-        childParentData.offset = switch (_mode) {
-          AutoLayoutMode.horizontal => Offset(
-              _paddingLeft + cursorP,
-              _paddingTop + line.offsetC + offsetCItem,
-            ),
-          AutoLayoutMode.vertical => Offset(
-              _paddingLeft + line.offsetC + offsetCItem,
-              _paddingTop + cursorP,
-            ),
-          AutoLayoutMode.none || AutoLayoutMode.grid => throw Exception(),
-        };
-
-        cursorP += _getPrimarySize(childSizes[i]) + gap;
-      }
+        size = performGridLayout();
     }
   }
 
@@ -688,158 +329,10 @@ class RenderFigmaLayout extends RenderBox
     defaultPaint(context, offset);
   }
 
-  void _performGridLayout() {
-    // Calculate available space
-    final availableWidth =
-        constraints.maxWidth - _paddingLeft - _paddingRight;
-    final availableHeight =
-        constraints.maxHeight - _paddingTop - _paddingBottom;
-
-    // Calculate column widths
-    final columnWidths = <double>[];
-    double totalFixedWidth = 0;
-    int autoColumnCount = 0;
-
-    for (int i = 0; i < _gridColumnCount; i++) {
-      if (i < _gridColumns.length) {
-        final track = _gridColumns[i];
-        if (track.sizingMode == GridTrackSizingMode.fixed &&
-            track.size != null) {
-          columnWidths.add(track.size!);
-          totalFixedWidth += track.size!;
-        } else {
-          columnWidths.add(0); // Will be calculated later
-          autoColumnCount++;
-        }
-      } else {
-        columnWidths.add(0);
-        autoColumnCount++;
-      }
-    }
-
-    // Calculate auto column width
-    final totalGapWidth = _gridColumnGap * math.max(0, _gridColumnCount - 1);
-    final availableForAuto = availableWidth - totalFixedWidth - totalGapWidth;
-    final autoColumnWidth =
-        autoColumnCount > 0 ? availableForAuto / autoColumnCount : 0.0;
-
-    for (int i = 0; i < columnWidths.length; i++) {
-      if (columnWidths[i] == 0) {
-        columnWidths[i] = autoColumnWidth < 0 ? 0.0 : autoColumnWidth;
-      }
-    }
-
-    // Calculate row heights
-    final rowHeights = <double>[];
-    double totalFixedHeight = 0;
-    int autoRowCount = 0;
-
-    for (int i = 0; i < _gridRowCount; i++) {
-      if (i < _gridRows.length) {
-        final track = _gridRows[i];
-        if (track.sizingMode == GridTrackSizingMode.fixed &&
-            track.size != null) {
-          rowHeights.add(track.size!);
-          totalFixedHeight += track.size!;
-        } else {
-          rowHeights.add(0); // Will be calculated later
-          autoRowCount++;
-        }
-      } else {
-        rowHeights.add(0);
-        autoRowCount++;
-      }
-    }
-
-    // Calculate auto row height
-    final totalGapHeight = _gridRowGap * math.max(0, _gridRowCount - 1);
-    final availableForAutoHeight =
-        availableHeight - totalFixedHeight - totalGapHeight;
-    final autoRowHeight =
-        autoRowCount > 0 ? availableForAutoHeight / autoRowCount : 0.0;
-
-    for (int i = 0; i < rowHeights.length; i++) {
-      if (rowHeights[i] == 0) {
-        rowHeights[i] = autoRowHeight < 0 ? 0.0 : autoRowHeight;
-      }
-    }
-
-    // Layout children
-    int childIndex = 0;
-    RenderBox? child = firstChild;
-    while (child != null) {
-      final childParentData = child.parentData! as FigmaLayoutParentData;
-
-      // Auto-assign grid position if not explicitly set
-      if (childParentData.gridColumn == 0 && childParentData.gridRow == 0) {
-        childParentData.gridRow = childIndex ~/ _gridColumnCount;
-        childParentData.gridColumn = childIndex % _gridColumnCount;
-      }
-
-      final col = childParentData.gridColumn;
-      final row = childParentData.gridRow;
-      final colSpan = childParentData.gridColumnSpan;
-      final rowSpan = childParentData.gridRowSpan;
-
-      // Calculate cell size based on span
-      double cellWidth = 0;
-      for (int i = col; i < math.min(col + colSpan, columnWidths.length); i++) {
-        cellWidth += columnWidths[i];
-        if (i < col + colSpan - 1) {
-          cellWidth += _gridColumnGap;
-        }
-      }
-
-      double cellHeight = 0;
-      for (int i = row; i < math.min(row + rowSpan, rowHeights.length); i++) {
-        cellHeight += rowHeights[i];
-        if (i < row + rowSpan - 1) {
-          cellHeight += _gridRowGap;
-        }
-      }
-
-      // Layout child
-      child.layout(
-        BoxConstraints.tightFor(width: cellWidth, height: cellHeight),
-        parentUsesSize: true,
-      );
-
-      // Calculate position
-      double x = _paddingLeft;
-      for (int i = 0; i < col; i++) {
-        x += columnWidths[i] + _gridColumnGap;
-      }
-
-      double y = _paddingTop;
-      for (int i = 0; i < row; i++) {
-        y += rowHeights[i] + _gridRowGap;
-      }
-
-      childParentData.offset = Offset(x, y);
-
-      child = childParentData.nextSibling;
-      childIndex++;
-    }
-
-    // Set container size
-    final totalWidth = columnWidths.fold<double>(0, (sum, w) => sum + w) +
-        totalGapWidth +
-        _paddingLeft +
-        _paddingRight;
-    final totalHeight = rowHeights.fold<double>(0, (sum, h) => sum + h) +
-        totalGapHeight +
-        _paddingTop +
-        _paddingBottom;
-
-    size = constraints.constrain(Size(totalWidth, totalHeight));
-  }
-
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
-    properties.add(DoubleProperty('width', width));
-    properties.add(DoubleProperty('height', height));
-    properties.add(EnumProperty<AutoLayoutMode>('direction', mode));
+    properties.add(EnumProperty<LayoutMode>('direction', mode));
     properties.add(EnumProperty<PrimaryAxisSizingMode>(
         'primaryAxisSizingMode', primaryAxisSizingMode));
     properties.add(EnumProperty<CounterAxisSizingMode>(
@@ -860,11 +353,4 @@ class RenderFigmaLayout extends RenderBox
     properties.add(DoubleProperty('gridColumnGap', gridColumnGap));
     properties.add(DoubleProperty('gridRowGap', gridRowGap));
   }
-}
-
-class _Line {
-  List<int> items = [];
-  double sumP = 0;
-  double maxC = 0;
-  double offsetC = 0;
 }

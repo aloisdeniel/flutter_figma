@@ -9,7 +9,7 @@ class FigmaClip extends SingleChildRenderObjectWidget {
     super.child,
   });
 
-  final FigmaDecorationShape shape;
+  final FigmaShape shape;
 
   @override
   RenderObject createRenderObject(BuildContext context) {

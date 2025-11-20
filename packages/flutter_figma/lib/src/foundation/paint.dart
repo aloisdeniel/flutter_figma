@@ -70,8 +70,8 @@ class ColorStop {
 
 abstract class GradientPaint extends FigmaPaint {
   const GradientPaint({
-    required this.gradientTransform,
     required this.gradientStops,
+    this.gradientTransform = FigmaTransform.identity,
     super.visible,
     super.opacity,
     super.blendMode,
@@ -83,8 +83,8 @@ abstract class GradientPaint extends FigmaPaint {
 
 class LinearGradientPaint extends GradientPaint {
   const LinearGradientPaint({
-    required super.gradientTransform,
     required super.gradientStops,
+    super.gradientTransform,
     super.visible,
     super.opacity,
     super.blendMode,
@@ -112,8 +112,8 @@ class LinearGradientPaint extends GradientPaint {
 
 class RadialGradientPaint extends GradientPaint {
   const RadialGradientPaint({
-    required super.gradientTransform,
     required super.gradientStops,
+    super.gradientTransform,
     super.visible,
     super.opacity,
     super.blendMode,
@@ -141,8 +141,8 @@ class RadialGradientPaint extends GradientPaint {
 
 class AngularGradientPaint extends GradientPaint {
   const AngularGradientPaint({
-    required super.gradientTransform,
     required super.gradientStops,
+    super.gradientTransform,
     super.visible,
     super.opacity,
     super.blendMode,

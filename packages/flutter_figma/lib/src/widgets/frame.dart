@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_figma/src/foundation/foundation.dart';
-import 'package:flutter_figma/src/widgets/blend.dart';
+import 'package:flutter_figma/src/widgets/appearance.dart';
 import 'package:flutter_figma/src/widgets/clip.dart';
 import 'package:flutter_figma/src/widgets/decorated.dart';
 import 'package:flutter_figma/src/widgets/filtered.dart';
@@ -9,19 +9,23 @@ import 'package:flutter_figma/src/widgets/layout.dart';
 class FigmaFrame extends StatelessWidget {
   const FigmaFrame({
     super.key,
-    this.layout = const FigmaAbsoluteLayoutProperties(),
+    required this.layout,
     this.size,
     this.decoration,
     this.effects = const [],
     this.opacity = 1.0,
     this.visible = true,
     this.blendMode = BlendMode.passThrough,
+    this.shape = const FigmaRectangleShape(),
+    this.stroke = const FigmaStroke.uniform(weight: 1),
     this.clipContent = true,
     this.children = const [],
   });
 
   final ChildSize? size;
   final FigmaLayoutProperties layout;
+  final FigmaRectangleShape shape;
+  final FigmaStroke stroke;
   final FigmaDecoration? decoration;
   final List<FigmaEffect> effects;
   final double opacity;
@@ -41,9 +45,17 @@ class FigmaFrame extends StatelessWidget {
       children: children,
     );
 
-    if (decoration != null) {
+    if (clipContent) {
+      result = FigmaClip(
+        shape: shape,
+        child: result,
+      );
+    }
+
+    if (decoration case final decoration?) {
       result = FigmaDecorated(
-        decoration: decoration!,
+        decoration: decoration,
+        shape: shape,
         child: result,
       );
     }
@@ -51,26 +63,14 @@ class FigmaFrame extends StatelessWidget {
     if (effects.isNotEmpty && decoration != null) {
       result = FigmaFiltered(
         effects: effects,
-        shape: decoration!.shape,
+        shape: shape,
         child: result,
       );
     }
 
-    if (opacity != 1.0) {
-      result = Opacity(
+    if (blendMode != BlendMode.passThrough || opacity < 1) {
+      result = FigmaAppearance(
         opacity: opacity.clamp(0.0, 1.0),
-        child: result,
-      );
-    }
-    if (clipContent) {
-      result = FigmaClip(
-        shape: decoration?.shape ?? FigmaRectangleShape(),
-        child: result,
-      );
-    }
-
-    if (blendMode != BlendMode.passThrough) {
-      result = FigmaBlend(
         mode: blendMode,
         child: result,
       );

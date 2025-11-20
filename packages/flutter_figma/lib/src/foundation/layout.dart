@@ -23,8 +23,8 @@ enum OverlayPositionType {
   manual,
 }
 
-enum AutoLayoutMode {
-  none,
+enum LayoutMode {
+  freeform,
   horizontal,
   vertical,
   grid,
@@ -89,7 +89,7 @@ class ChildSize {
 enum GridTrackSizingMode {
   /// Track size is automatically calculated based on available space
   auto,
-  
+
   /// Track has a fixed size in pixels
   fixed,
 }
@@ -103,7 +103,7 @@ class GridTrack {
 
   /// The size of the track in pixels (when sizingMode is fixed)
   final double? size;
-  
+
   /// How the track should be sized
   final GridTrackSizingMode sizingMode;
 

@@ -11,7 +11,7 @@ class FigmaFiltered extends SingleChildRenderObjectWidget {
   });
 
   final List<FigmaEffect> effects;
-  final FigmaDecorationShape shape;
+  final FigmaShape shape;
 
   @override
   RenderObject createRenderObject(BuildContext context) {

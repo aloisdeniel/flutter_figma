@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:flutter_figma/src/widgets/blend.dart';
-import 'package:flutter_figma/src/widgets/clip.dart';
+import 'package:flutter_figma/src/widgets/appearance.dart';
 import 'package:flutter_figma/widgets.dart';
 
 class FigmaVector extends StatelessWidget {
@@ -8,6 +7,7 @@ class FigmaVector extends StatelessWidget {
     super.key,
     this.size,
     required this.decoration,
+    required this.shape,
     this.effects = const [],
     this.opacity = 1.0,
     this.visible = true,
@@ -16,6 +16,7 @@ class FigmaVector extends StatelessWidget {
   });
 
   final ChildSize? size;
+  final FigmaShape shape;
   final FigmaDecoration decoration;
   final List<FigmaEffect> effects;
   final double opacity;
@@ -36,7 +37,7 @@ class FigmaVector extends StatelessWidget {
     if (effects.isNotEmpty) {
       result = FigmaFiltered(
         effects: effects,
-        shape: decoration.shape,
+        shape: shape,
         child: result,
       );
     }
@@ -49,13 +50,13 @@ class FigmaVector extends StatelessWidget {
     }
     if (clipContent) {
       result = FigmaClip(
-        shape: decoration.shape,
+        shape: shape,
         child: result,
       );
     }
 
     if (blendMode != BlendMode.passThrough) {
-      result = FigmaBlend(
+      result = FigmaAppearance(
         mode: blendMode,
         child: result,
       );

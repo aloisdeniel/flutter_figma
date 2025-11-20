@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_figma/widgets.dart';
 
-part 'examples/card.dart';
-part 'examples/layout.dart';
+part 'examples/clip.dart';
+part 'examples/decorated.dart';
+part 'examples/layout_auto.dart';
+part 'examples/layout_freeform.dart';
+part 'examples/layout_grid.dart';
 part 'examples/text.dart';
 
 void main() {
@@ -27,8 +30,11 @@ class Home extends StatefulWidget {
 
   static const examples = <Example>[
     TextExample(),
-    LayoutExample(),
-    CardExample(),
+    ClipExample(),
+    DecoratedExample(),
+    FreeformLayoutExample(),
+    AutoLayoutExample(),
+    GridLayoutExample(),
   ];
 
   @override

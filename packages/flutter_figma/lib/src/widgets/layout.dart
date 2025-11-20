@@ -6,7 +6,9 @@ sealed class FigmaLayoutProperties {
   const FigmaLayoutProperties();
 
   const factory FigmaLayoutProperties.auto({
-    AutoLayoutMode mode,
+    required double referenceWidth,
+    required double referenceHeight,
+    Axis axis,
     PrimaryAxisSizingMode primaryAxisSizingMode,
     CounterAxisSizingMode counterAxisSizingMode,
     LayoutAlign primaryAxisAlignItems,
@@ -20,10 +22,10 @@ sealed class FigmaLayoutProperties {
     double counterAxisSpacing,
   }) = FigmaAutoLayoutProperties;
 
-  const factory FigmaLayoutProperties.absolute({
-    double width,
-    double height,
-  }) = FigmaAbsoluteLayoutProperties;
+  const factory FigmaLayoutProperties.freeform({
+    required double referenceWidth,
+    required double referenceHeight,
+  }) = FigmaFreeformLayoutProperties;
 
   const factory FigmaLayoutProperties.grid({
     int columnCount,
@@ -39,19 +41,20 @@ sealed class FigmaLayoutProperties {
   }) = FigmaGridLayoutProperties;
 }
 
-class FigmaAbsoluteLayoutProperties extends FigmaLayoutProperties {
-  const FigmaAbsoluteLayoutProperties({
-    this.width = 0,
-    this.height = 0,
+class FigmaFreeformLayoutProperties extends FigmaLayoutProperties {
+  const FigmaFreeformLayoutProperties({
+    required this.referenceWidth,
+    required this.referenceHeight,
   });
-
-  final double width;
-  final double height;
+  final double referenceWidth;
+  final double referenceHeight;
 }
 
 class FigmaAutoLayoutProperties extends FigmaLayoutProperties {
   const FigmaAutoLayoutProperties({
-    this.mode = AutoLayoutMode.horizontal,
+    required this.referenceWidth,
+    required this.referenceHeight,
+    this.axis = Axis.horizontal,
     this.primaryAxisSizingMode = PrimaryAxisSizingMode.fixed,
     this.counterAxisSizingMode = CounterAxisSizingMode.fixed,
     this.primaryAxisAlignItems = LayoutAlign.min,
@@ -65,7 +68,9 @@ class FigmaAutoLayoutProperties extends FigmaLayoutProperties {
     this.counterAxisSpacing = 0,
   });
 
-  final AutoLayoutMode mode;
+  final double referenceWidth;
+  final double referenceHeight;
+  final Axis axis;
   final PrimaryAxisSizingMode primaryAxisSizingMode;
   final CounterAxisSizingMode counterAxisSizingMode;
   final LayoutAlign primaryAxisAlignItems;
@@ -108,8 +113,8 @@ class FigmaGridLayoutProperties extends FigmaLayoutProperties {
 class FigmaLayout extends MultiChildRenderObjectWidget {
   const FigmaLayout({
     super.key,
+    required this.layout,
     required super.children,
-    this.layout = const FigmaAutoLayoutProperties(),
   });
 
   final FigmaLayoutProperties layout;
@@ -118,7 +123,9 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
   RenderObject createRenderObject(BuildContext context) {
     return switch (layout) {
       FigmaAutoLayoutProperties(
-        :final mode,
+        :final referenceWidth,
+        :final referenceHeight,
+        :final axis,
         :final primaryAxisSizingMode,
         :final counterAxisSizingMode,
         :final primaryAxisAlignItems,
@@ -132,7 +139,12 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
         :final counterAxisSpacing
       ) =>
         RenderFigmaLayout(
-          mode: mode,
+          mode: switch (axis) {
+            Axis.horizontal => LayoutMode.horizontal,
+            Axis.vertical => LayoutMode.vertical,
+          },
+          referenceWidth: referenceWidth,
+          referenceHeight: referenceHeight,
           primaryAxisSizingMode: primaryAxisSizingMode,
           counterAxisSizingMode: counterAxisSizingMode,
           primaryAxisAlignItems: primaryAxisAlignItems,
@@ -145,10 +157,13 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           itemSpacing: itemSpacing,
           counterAxisSpacing: counterAxisSpacing,
         ),
-      FigmaAbsoluteLayoutProperties(:final width, :final height) =>
+      FigmaFreeformLayoutProperties(
+        :final referenceWidth,
+        :final referenceHeight,
+      ) =>
         RenderFigmaLayout(
-          width: width,
-          height: height,
+          referenceWidth: referenceWidth,
+          referenceHeight: referenceHeight,
         ),
       FigmaGridLayoutProperties(
         :final columnCount,
@@ -163,7 +178,7 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
         :final paddingBottom
       ) =>
         RenderFigmaLayout(
-          mode: AutoLayoutMode.grid,
+          mode: LayoutMode.grid,
           gridColumnCount: columnCount,
           gridRowCount: rowCount,
           gridColumns: columns,
@@ -183,7 +198,9 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
       BuildContext context, RenderFigmaLayout renderObject) {
     switch (layout) {
       case FigmaAutoLayoutProperties(
-          :final mode,
+          :final referenceWidth,
+          :final referenceHeight,
+          :final axis,
           :final primaryAxisSizingMode,
           :final counterAxisSizingMode,
           :final primaryAxisAlignItems,
@@ -197,7 +214,12 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           :final counterAxisSpacing
         ):
         renderObject
-          ..mode = mode
+          ..mode = switch (axis) {
+            Axis.horizontal => LayoutMode.horizontal,
+            Axis.vertical => LayoutMode.vertical,
+          }
+          ..referenceHeight = referenceHeight
+          ..referenceWidth = referenceWidth
           ..primaryAxisSizingMode = primaryAxisSizingMode
           ..counterAxisSizingMode = counterAxisSizingMode
           ..primaryAxisAlignItems = primaryAxisAlignItems
@@ -209,10 +231,6 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           ..paddingBottom = paddingBottom
           ..itemSpacing = itemSpacing
           ..counterAxisSpacing = counterAxisSpacing;
-      case FigmaAbsoluteLayoutProperties(:final width, :final height):
-        renderObject
-          ..width = width
-          ..height = height;
       case FigmaGridLayoutProperties(
           :final columnCount,
           :final rowCount,
@@ -226,7 +244,7 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           :final paddingBottom
         ):
         renderObject
-          ..mode = AutoLayoutMode.grid
+          ..mode = LayoutMode.grid
           ..gridColumnCount = columnCount
           ..gridRowCount = rowCount
           ..gridColumns = columns
@@ -237,12 +255,19 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           ..paddingRight = paddingRight
           ..paddingTop = paddingTop
           ..paddingBottom = paddingBottom;
+      case FigmaFreeformLayoutProperties(
+          :final referenceWidth,
+          :final referenceHeight,
+        ):
+        renderObject
+          ..referenceHeight = referenceHeight
+          ..referenceWidth = referenceWidth;
     }
   }
 }
 
 class FigmaPositioned extends ParentDataWidget<FigmaLayoutParentData> {
-  const FigmaPositioned({
+  const FigmaPositioned.freeform({
     super.key,
     required super.child,
     this.x = 0,
@@ -251,10 +276,49 @@ class FigmaPositioned extends ParentDataWidget<FigmaLayoutParentData> {
     this.height = 0,
     this.horizontalConstraint = ConstraintType.min,
     this.verticalConstraint = ConstraintType.min,
-    this.primaryAxisSizing,
-    this.counterAxisSizing,
-  });
+  })  : primaryAxisSizing = null,
+        counterAxisSizing = null,
+        mode = FigmaPositionningMode.absolute,
+        column = 0,
+        row = 0,
+        columnSpan = 1,
+        rowSpan = 1;
 
+  const FigmaPositioned.auto({
+    super.key,
+    required super.child,
+    this.width = 0,
+    this.height = 0,
+    ChildSizingMode this.primaryAxisSizing = ChildSizingMode.hug,
+    ChildSizingMode this.counterAxisSizing = ChildSizingMode.hug,
+  })  : x = 0,
+        y = 0,
+        mode = FigmaPositionningMode.auto,
+        horizontalConstraint = ConstraintType.min,
+        verticalConstraint = ConstraintType.min,
+        column = 0,
+        row = 0,
+        columnSpan = 1,
+        rowSpan = 1;
+
+  const FigmaPositioned.grid({
+    super.key,
+    required super.child,
+    this.row = 0,
+    this.column = 0,
+    this.rowSpan = 1,
+    this.columnSpan = 1,
+  })  : x = 0,
+        y = 0,
+        mode = FigmaPositionningMode.auto,
+        height = 0,
+        width = 0,
+        counterAxisSizing = null,
+        primaryAxisSizing = null,
+        horizontalConstraint = ConstraintType.min,
+        verticalConstraint = ConstraintType.min;
+
+  final FigmaPositionningMode mode;
   final double x;
   final double y;
   final double width;
@@ -263,6 +327,10 @@ class FigmaPositioned extends ParentDataWidget<FigmaLayoutParentData> {
   final ConstraintType verticalConstraint;
   final ChildSizingMode? primaryAxisSizing;
   final ChildSizingMode? counterAxisSizing;
+  final int column;
+  final int row;
+  final int columnSpan;
+  final int rowSpan;
 
   @override
   void applyParentData(RenderObject renderObject) {
@@ -270,6 +338,10 @@ class FigmaPositioned extends ParentDataWidget<FigmaLayoutParentData> {
     final parentData = renderObject.parentData! as FigmaLayoutParentData;
     bool needsLayout = false;
 
+    if (parentData.mode != mode) {
+      parentData.mode = mode;
+      needsLayout = true;
+    }
     if (parentData.x != x) {
       parentData.x = x;
       needsLayout = true;
@@ -300,6 +372,23 @@ class FigmaPositioned extends ParentDataWidget<FigmaLayoutParentData> {
     }
     if (parentData.counterAxisSizing != counterAxisSizing) {
       parentData.counterAxisSizing = counterAxisSizing;
+      needsLayout = true;
+    }
+
+    if (parentData.gridColumn != column) {
+      parentData.gridColumn = column;
+      needsLayout = true;
+    }
+    if (parentData.gridRow != row) {
+      parentData.gridRow = row;
+      needsLayout = true;
+    }
+    if (parentData.gridColumnSpan != columnSpan) {
+      parentData.gridColumnSpan = columnSpan;
+      needsLayout = true;
+    }
+    if (parentData.gridRowSpan != rowSpan) {
+      parentData.gridRowSpan = rowSpan;
       needsLayout = true;
     }
 

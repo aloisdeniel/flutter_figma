@@ -26,6 +26,12 @@ void main() {
               ),
               children: [
                 FigmaDecorated(
+                  shape: FigmaRectangleShape(
+                    topLeftRadius: 15,
+                    topRightRadius: 15,
+                    bottomLeftRadius: 15,
+                    bottomRightRadius: 15,
+                  ),
                   decoration: const FigmaDecoration(
                     fills: [
                       SolidPaint(
@@ -33,16 +39,16 @@ void main() {
                         opacity: 1.0,
                       ),
                     ],
-                    shape: FigmaRectangleShape(
-                      topLeftRadius: 15,
-                      topRightRadius: 15,
-                      bottomLeftRadius: 15,
-                      bottomRightRadius: 15,
-                    ),
                   ),
                   child: const SizedBox(width: 80, height: 80),
                 ),
                 FigmaDecorated(
+                  shape: FigmaRectangleShape(
+                    topLeftRadius: 15,
+                    topRightRadius: 15,
+                    bottomLeftRadius: 15,
+                    bottomRightRadius: 15,
+                  ),
                   decoration: const FigmaDecoration(
                     fills: [
                       LinearGradientPaint(
@@ -60,16 +66,16 @@ void main() {
                         opacity: 1.0,
                       ),
                     ],
-                    shape: FigmaRectangleShape(
-                      topLeftRadius: 15,
-                      topRightRadius: 15,
-                      bottomLeftRadius: 15,
-                      bottomRightRadius: 15,
-                    ),
                   ),
                   child: const SizedBox(width: 80, height: 80),
                 ),
                 FigmaDecorated(
+                  shape: FigmaRectangleShape(
+                    topLeftRadius: 15,
+                    topRightRadius: 15,
+                    bottomLeftRadius: 15,
+                    bottomRightRadius: 15,
+                  ),
                   decoration: const FigmaDecoration(
                     fills: [
                       SolidPaint(
@@ -83,12 +89,6 @@ void main() {
                         opacity: 1.0,
                       ),
                     ],
-                    shape: FigmaRectangleShape(
-                      topLeftRadius: 15,
-                      topRightRadius: 15,
-                      bottomLeftRadius: 15,
-                      bottomRightRadius: 15,
-                    ),
                   ),
                   child: const SizedBox(width: 80, height: 80),
                 ),
@@ -119,6 +119,12 @@ void main() {
             child: FigmaTransformed(
               transform: FigmaTransform(cos, sin, 0, -sin, cos, 0),
               child: FigmaDecorated(
+                shape: FigmaRectangleShape(
+                  topLeftRadius: 20,
+                  topRightRadius: 20,
+                  bottomLeftRadius: 20,
+                  bottomRightRadius: 20,
+                ),
                 decoration: const FigmaDecoration(
                   fills: [
                     RadialGradientPaint(
@@ -142,12 +148,6 @@ void main() {
                       opacity: 1.0,
                     ),
                   ],
-                  shape: FigmaRectangleShape(
-                    topLeftRadius: 20,
-                    topRightRadius: 20,
-                    bottomLeftRadius: 20,
-                    bottomRightRadius: 20,
-                  ),
                 ),
                 child: const SizedBox(
                   width: 150,
@@ -270,6 +270,12 @@ void main() {
                     FigmaTransformed(
                       transform: FigmaTransform(cos, sin, 0, -sin, cos, 0),
                       child: FigmaDecorated(
+                        shape: FigmaRectangleShape(
+                          topLeftRadius: 12,
+                          topRightRadius: 12,
+                          bottomLeftRadius: 12,
+                          bottomRightRadius: 12,
+                        ),
                         decoration: const FigmaDecoration(
                           fills: [
                             SolidPaint(
@@ -277,17 +283,17 @@ void main() {
                               opacity: 1.0,
                             ),
                           ],
-                          shape: FigmaRectangleShape(
-                            topLeftRadius: 12,
-                            topRightRadius: 12,
-                            bottomLeftRadius: 12,
-                            bottomRightRadius: 12,
-                          ),
                         ),
                         child: const SizedBox(width: 70, height: 70),
                       ),
                     ),
                     FigmaDecorated(
+                      shape: FigmaRectangleShape(
+                        topLeftRadius: 12,
+                        topRightRadius: 12,
+                        bottomLeftRadius: 12,
+                        bottomRightRadius: 12,
+                      ),
                       decoration: const FigmaDecoration(
                         fills: [
                           LinearGradientPaint(
@@ -305,12 +311,6 @@ void main() {
                             opacity: 1.0,
                           ),
                         ],
-                        shape: FigmaRectangleShape(
-                          topLeftRadius: 12,
-                          topRightRadius: 12,
-                          bottomLeftRadius: 12,
-                          bottomRightRadius: 12,
-                        ),
                       ),
                       child: const SizedBox(width: 70, height: 70),
                     ),
@@ -319,6 +319,12 @@ void main() {
                 FigmaTransformed(
                   transform: const FigmaTransform(1.2, 0, 0, 0, 1.2, 0),
                   child: FigmaDecorated(
+                    shape: FigmaRectangleShape(
+                      topLeftRadius: 20,
+                      topRightRadius: 20,
+                      bottomLeftRadius: 20,
+                      bottomRightRadius: 20,
+                    ),
                     decoration: const FigmaDecoration(
                       fills: [
                         RadialGradientPaint(
@@ -342,12 +348,6 @@ void main() {
                           opacity: 1.0,
                         ),
                       ],
-                      shape: FigmaRectangleShape(
-                        topLeftRadius: 20,
-                        topRightRadius: 20,
-                        bottomLeftRadius: 20,
-                        bottomRightRadius: 20,
-                      ),
                     ),
                     child: const SizedBox(
                       width: 120,
@@ -390,6 +390,12 @@ void main() {
           backgroundColor: Colors.white,
           body: Center(
             child: FigmaDecorated(
+              shape: FigmaRectangleShape(
+                topLeftRadius: 25,
+                topRightRadius: 25,
+                bottomLeftRadius: 25,
+                bottomRightRadius: 25,
+              ),
               decoration: const FigmaDecoration(
                 fills: [
                   SolidPaint(
@@ -403,12 +409,6 @@ void main() {
                     opacity: 1.0,
                   ),
                 ],
-                shape: FigmaRectangleShape(
-                  topLeftRadius: 25,
-                  topRightRadius: 25,
-                  bottomLeftRadius: 25,
-                  bottomRightRadius: 25,
-                ),
               ),
               child: SizedBox(
                 width: 320,
@@ -424,6 +424,12 @@ void main() {
                   ),
                   children: [
                     FigmaDecorated(
+                      shape: FigmaRectangleShape(
+                        topLeftRadius: 15,
+                        topRightRadius: 15,
+                        bottomLeftRadius: 15,
+                        bottomRightRadius: 15,
+                      ),
                       decoration: const FigmaDecoration(
                         fills: [
                           LinearGradientPaint(
@@ -441,12 +447,6 @@ void main() {
                             opacity: 1.0,
                           ),
                         ],
-                        shape: FigmaRectangleShape(
-                          topLeftRadius: 15,
-                          topRightRadius: 15,
-                          bottomLeftRadius: 15,
-                          bottomRightRadius: 15,
-                        ),
                       ),
                       child: const SizedBox(
                         height: 60,
@@ -475,6 +475,12 @@ void main() {
                           transform:
                               FigmaTransform(cos30, sin30, 0, -sin30, cos30, 0),
                           child: FigmaDecorated(
+                            shape: FigmaRectangleShape(
+                              topLeftRadius: 10,
+                              topRightRadius: 10,
+                              bottomLeftRadius: 10,
+                              bottomRightRadius: 10,
+                            ),
                             decoration: const FigmaDecoration(
                               fills: [
                                 SolidPaint(
@@ -482,12 +488,6 @@ void main() {
                                   opacity: 1.0,
                                 ),
                               ],
-                              shape: FigmaRectangleShape(
-                                topLeftRadius: 10,
-                                topRightRadius: 10,
-                                bottomLeftRadius: 10,
-                                bottomRightRadius: 10,
-                              ),
                             ),
                             child: const SizedBox(width: 60, height: 60),
                           ),
@@ -495,6 +495,12 @@ void main() {
                         FigmaTransformed(
                           transform: const FigmaTransform(1, 0, 0, 0, -1, 0),
                           child: FigmaDecorated(
+                            shape: FigmaRectangleShape(
+                              topLeftRadius: 10,
+                              topRightRadius: 10,
+                              bottomLeftRadius: 10,
+                              bottomRightRadius: 10,
+                            ),
                             decoration: const FigmaDecoration(
                               fills: [
                                 SolidPaint(
@@ -502,12 +508,6 @@ void main() {
                                   opacity: 1.0,
                                 ),
                               ],
-                              shape: FigmaRectangleShape(
-                                topLeftRadius: 10,
-                                topRightRadius: 10,
-                                bottomLeftRadius: 10,
-                                bottomRightRadius: 10,
-                              ),
                             ),
                             child: const SizedBox(
                               width: 60,
@@ -526,6 +526,12 @@ void main() {
                           ),
                         ),
                         FigmaDecorated(
+                          shape: FigmaRectangleShape(
+                            topLeftRadius: 30,
+                            topRightRadius: 30,
+                            bottomLeftRadius: 30,
+                            bottomRightRadius: 30,
+                          ),
                           decoration: const FigmaDecoration(
                             fills: [
                               AngularGradientPaint(
@@ -547,18 +553,18 @@ void main() {
                                 opacity: 1.0,
                               ),
                             ],
-                            shape: FigmaRectangleShape(
-                              topLeftRadius: 30,
-                              topRightRadius: 30,
-                              bottomLeftRadius: 30,
-                              bottomRightRadius: 30,
-                            ),
                           ),
                           child: const SizedBox(width: 60, height: 60),
                         ),
                       ],
                     ),
                     FigmaDecorated(
+                      shape: FigmaRectangleShape(
+                        topLeftRadius: 15,
+                        topRightRadius: 15,
+                        bottomLeftRadius: 15,
+                        bottomRightRadius: 15,
+                      ),
                       decoration: const FigmaDecoration(
                         fills: [
                           SolidPaint(
@@ -572,12 +578,6 @@ void main() {
                             opacity: 1.0,
                           ),
                         ],
-                        shape: FigmaRectangleShape(
-                          topLeftRadius: 15,
-                          topRightRadius: 15,
-                          bottomLeftRadius: 15,
-                          bottomRightRadius: 15,
-                        ),
                       ),
                       child: const SizedBox(
                         height: 50,
@@ -622,6 +622,13 @@ void main() {
             child: FigmaTransformed(
               transform: FigmaTransform(cos, sin, 0, -sin, cos, 0),
               child: FigmaDecorated(
+                shape: FigmaRectangleShape(
+                  topLeftRadius: 20,
+                  topRightRadius: 20,
+                  bottomLeftRadius: 20,
+                  bottomRightRadius: 20,
+                  smoothing: 0.6,
+                ),
                 decoration: const FigmaDecoration(
                   fills: [
                     SolidPaint(
@@ -635,13 +642,6 @@ void main() {
                       opacity: 1.0,
                     ),
                   ],
-                  shape: FigmaRectangleShape(
-                    topLeftRadius: 20,
-                    topRightRadius: 20,
-                    bottomLeftRadius: 20,
-                    bottomRightRadius: 20,
-                    smoothing: 0.6,
-                  ),
                 ),
                 child: SizedBox(
                   width: 280,
@@ -666,6 +666,12 @@ void main() {
                         ),
                         children: [
                           FigmaDecorated(
+                            shape: FigmaRectangleShape(
+                              topLeftRadius: 25,
+                              topRightRadius: 25,
+                              bottomLeftRadius: 25,
+                              bottomRightRadius: 25,
+                            ),
                             decoration: const FigmaDecoration(
                               fills: [
                                 LinearGradientPaint(
@@ -683,12 +689,6 @@ void main() {
                                   opacity: 1.0,
                                 ),
                               ],
-                              shape: FigmaRectangleShape(
-                                topLeftRadius: 25,
-                                topRightRadius: 25,
-                                bottomLeftRadius: 25,
-                                bottomRightRadius: 25,
-                              ),
                             ),
                             child: const SizedBox(width: 50, height: 50),
                           ),
@@ -732,6 +732,12 @@ void main() {
                             transform:
                                 const FigmaTransform(1.1, 0, 0, 0, 1.1, 0),
                             child: FigmaDecorated(
+                              shape: FigmaRectangleShape(
+                                topLeftRadius: 8,
+                                topRightRadius: 8,
+                                bottomLeftRadius: 8,
+                                bottomRightRadius: 8,
+                              ),
                               decoration: const FigmaDecoration(
                                 fills: [
                                   SolidPaint(
@@ -739,17 +745,17 @@ void main() {
                                     opacity: 1.0,
                                   ),
                                 ],
-                                shape: FigmaRectangleShape(
-                                  topLeftRadius: 8,
-                                  topRightRadius: 8,
-                                  bottomLeftRadius: 8,
-                                  bottomRightRadius: 8,
-                                ),
                               ),
                               child: const SizedBox(width: 30, height: 30),
                             ),
                           ),
                           FigmaDecorated(
+                            shape: FigmaRectangleShape(
+                              topLeftRadius: 8,
+                              topRightRadius: 8,
+                              bottomLeftRadius: 8,
+                              bottomRightRadius: 8,
+                            ),
                             decoration: const FigmaDecoration(
                               fills: [
                                 SolidPaint(
@@ -757,16 +763,16 @@ void main() {
                                   opacity: 1.0,
                                 ),
                               ],
-                              shape: FigmaRectangleShape(
-                                topLeftRadius: 8,
-                                topRightRadius: 8,
-                                bottomLeftRadius: 8,
-                                bottomRightRadius: 8,
-                              ),
                             ),
                             child: const SizedBox(width: 30, height: 30),
                           ),
                           FigmaDecorated(
+                            shape: FigmaRectangleShape(
+                              topLeftRadius: 8,
+                              topRightRadius: 8,
+                              bottomLeftRadius: 8,
+                              bottomRightRadius: 8,
+                            ),
                             decoration: const FigmaDecoration(
                               fills: [
                                 SolidPaint(
@@ -774,18 +780,18 @@ void main() {
                                   opacity: 1.0,
                                 ),
                               ],
-                              shape: FigmaRectangleShape(
-                                topLeftRadius: 8,
-                                topRightRadius: 8,
-                                bottomLeftRadius: 8,
-                                bottomRightRadius: 8,
-                              ),
                             ),
                             child: const SizedBox(width: 30, height: 30),
                           ),
                         ],
                       ),
                       FigmaDecorated(
+                        shape: FigmaRectangleShape(
+                          topLeftRadius: 12,
+                          topRightRadius: 12,
+                          bottomLeftRadius: 12,
+                          bottomRightRadius: 12,
+                        ),
                         decoration: const FigmaDecoration(
                           fills: [
                             LinearGradientPaint(
@@ -803,12 +809,6 @@ void main() {
                               opacity: 1.0,
                             ),
                           ],
-                          shape: FigmaRectangleShape(
-                            topLeftRadius: 12,
-                            topRightRadius: 12,
-                            bottomLeftRadius: 12,
-                            bottomRightRadius: 12,
-                          ),
                         ),
                         child: const SizedBox(
                           height: 40,

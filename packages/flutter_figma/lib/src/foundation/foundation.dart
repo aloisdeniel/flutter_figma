@@ -4,5 +4,7 @@ export 'enums.dart';
 export 'geometry.dart';
 export 'layout.dart';
 export 'paint.dart';
+export 'shape.dart';
+export 'stroke.dart';
 export 'text.dart';
 export 'vector.dart';
