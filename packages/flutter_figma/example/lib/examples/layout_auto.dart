@@ -18,6 +18,7 @@ class AutoLayoutExample extends StatelessWidget implements Example {
               child: FigmaLayout(
                 layout: FigmaLayoutProperties.auto(
                   axis: axis,
+                  primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                   referenceWidth: 300,
                   referenceHeight: 200,
                   paddingLeft: 10,

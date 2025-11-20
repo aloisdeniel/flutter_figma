@@ -22,6 +22,8 @@ mixin FigmaAutoLayoutMixin on RenderBox {
   double get paddingBottom;
   double get itemSpacing;
   double get counterAxisSpacing;
+  double get referenceWidth;
+  double get referenceHeight;
 
   BoxConstraints get constraints;
 
@@ -49,8 +51,8 @@ mixin FigmaAutoLayoutMixin on RenderBox {
     double? innerFixedP;
     if (primaryAxisSizingMode == PrimaryAxisSizingMode.fixed) {
       innerFixedP = switch (autoLayoutMode) {
-        LayoutMode.horizontal => constraints.maxWidth - padSumP,
-        LayoutMode.vertical => constraints.maxHeight - padSumP,
+        LayoutMode.horizontal => referenceWidth - padSumP,
+        LayoutMode.vertical => referenceHeight - padSumP,
         LayoutMode.freeform || LayoutMode.grid => null,
       };
     }
@@ -194,8 +196,8 @@ mixin FigmaAutoLayoutMixin on RenderBox {
   ) {
     if (counterAxisSizingMode == CounterAxisSizingMode.fixed) {
       return switch (autoLayoutMode) {
-        LayoutMode.horizontal => constraints.maxHeight - padSumC,
-        LayoutMode.vertical => constraints.maxWidth - padSumC,
+        LayoutMode.horizontal => referenceHeight - padSumC,
+        LayoutMode.vertical => referenceWidth - padSumC,
         LayoutMode.freeform ||
         LayoutMode.grid =>
           throw Exception('Invalid auto layout mode'),

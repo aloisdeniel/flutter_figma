@@ -55,7 +55,7 @@ class FigmaAutoLayoutProperties extends FigmaLayoutProperties {
     required this.referenceWidth,
     required this.referenceHeight,
     this.axis = Axis.horizontal,
-    this.primaryAxisSizingMode = PrimaryAxisSizingMode.fixed,
+    this.primaryAxisSizingMode = PrimaryAxisSizingMode.auto,
     this.counterAxisSizingMode = CounterAxisSizingMode.fixed,
     this.primaryAxisAlignItems = LayoutAlign.min,
     this.counterAxisAlignItems = LayoutAlign.min,
