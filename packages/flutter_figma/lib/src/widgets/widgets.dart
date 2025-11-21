@@ -2,6 +2,7 @@ export 'clip.dart';
 export 'decorated.dart';
 export 'filtered.dart';
 export 'frame.dart';
+export 'interactions.dart';
 export 'text.dart';
 export 'transformed.dart';
 export 'layout.dart';

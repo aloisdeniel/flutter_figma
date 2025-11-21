@@ -4,9 +4,28 @@ import 'enums.dart';
 
 abstract class FigmaEffect {
   const FigmaEffect({
-    required this.visible,
+    this.visible = true,
   });
 
+  const factory FigmaEffect.dropShadow({
+    required Color color,
+    required Offset offset,
+    required double radius,
+    double spread,
+    bool visible,
+    BlendMode blendMode,
+    bool showShadowBehindNode,
+  }) = DropShadowEffect;
+
+  const factory FigmaEffect.layerBlur({
+    required double radius,
+    bool visible,
+  }) = LayerBlurEffect;
+
+  const factory FigmaEffect.backgroundBlur({
+    required double radius,
+    bool visible,
+  }) = BackgroundBlurEffect;
   final bool visible;
 }
 
@@ -15,9 +34,9 @@ class DropShadowEffect extends FigmaEffect {
     required this.color,
     required this.offset,
     required this.radius,
+    super.visible,
     this.spread,
-    required super.visible,
-    required this.blendMode,
+    this.blendMode = BlendMode.normal,
     this.showShadowBehindNode = false,
   });
 
@@ -90,7 +109,7 @@ class InnerShadowEffect extends FigmaEffect {
 abstract class BlurEffect extends FigmaEffect {
   const BlurEffect({
     required this.radius,
-    required super.visible,
+    super.visible,
   });
 
   final double radius;
@@ -99,7 +118,7 @@ abstract class BlurEffect extends FigmaEffect {
 class LayerBlurEffect extends BlurEffect {
   const LayerBlurEffect({
     required super.radius,
-    required super.visible,
+    super.visible,
   });
 
   @override
@@ -119,8 +138,8 @@ class LayerBlurEffect extends BlurEffect {
 
 class BackgroundBlurEffect extends BlurEffect {
   const BackgroundBlurEffect({
+    super.visible,
     required super.radius,
-    required super.visible,
   });
 
   @override
@@ -145,7 +164,7 @@ class ProgressiveBlurEffect extends FigmaEffect {
     required this.startRadius,
     required this.startOffset,
     required this.endOffset,
-    required super.visible,
+    super.visible,
   });
 
   final double radius;
@@ -176,10 +195,10 @@ class ProgressiveBlurEffect extends FigmaEffect {
 abstract class NoiseEffect extends FigmaEffect {
   const NoiseEffect({
     required this.color,
-    required super.visible,
     required this.blendMode,
     required this.noiseSize,
     required this.density,
+    super.visible,
   });
 
   final Color color;
@@ -221,10 +240,10 @@ class DuotoneNoiseEffect extends NoiseEffect {
   const DuotoneNoiseEffect({
     required super.color,
     required this.secondaryColor,
-    required super.visible,
     required super.blendMode,
     required super.noiseSize,
     required super.density,
+    super.visible,
   });
 
   final Color secondaryColor;

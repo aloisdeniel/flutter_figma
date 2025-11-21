@@ -15,12 +15,14 @@ class FigmaFiltered extends SingleChildRenderObjectWidget {
 
   @override
   RenderObject createRenderObject(BuildContext context) {
-    return RenderFigmaFiltered(effects: effects);
+    return RenderFigmaFiltered(effects: effects, shape: shape);
   }
 
   @override
   void updateRenderObject(
       BuildContext context, RenderFigmaFiltered renderObject) {
-    renderObject.effects = effects;
+    renderObject
+      ..effects = effects
+      ..shape = shape;
   }
 }

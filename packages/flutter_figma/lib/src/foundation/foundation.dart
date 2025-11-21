@@ -2,6 +2,7 @@ export 'decoration.dart';
 export 'effects.dart';
 export 'enums.dart';
 export 'geometry.dart';
+export 'interactions.dart';
 export 'layout.dart';
 export 'paint.dart';
 export 'shape.dart';

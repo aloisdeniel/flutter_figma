@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_figma/widgets.dart';
 
 part 'examples/clip.dart';
+part 'examples/effects.dart';
 part 'examples/decorated.dart';
+part 'examples/interactions.dart';
 part 'examples/layout_auto.dart';
 part 'examples/layout_freeform.dart';
 part 'examples/layout_grid.dart';
@@ -35,6 +37,8 @@ class Home extends StatefulWidget {
     FreeformLayoutExample(),
     AutoLayoutExample(),
     GridLayoutExample(),
+    EffectsExample(),
+    InteractionsExample(),
   ];
 
   @override
