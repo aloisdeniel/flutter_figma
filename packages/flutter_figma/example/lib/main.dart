@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_figma/widgets.dart';
 
 part 'examples/clip.dart';
+part 'examples/combined.dart';
 part 'examples/effects.dart';
 part 'examples/decorated.dart';
 part 'examples/interactions.dart';
@@ -39,6 +40,7 @@ class Home extends StatefulWidget {
     GridLayoutExample(),
     EffectsExample(),
     InteractionsExample(),
+    CombinedExample(),
   ];
 
   @override

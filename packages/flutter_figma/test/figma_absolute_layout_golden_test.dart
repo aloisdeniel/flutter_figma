@@ -12,26 +12,26 @@ void main() {
           backgroundColor: Colors.white,
           body: Center(
             child: FigmaLayout(
-              layout: const FigmaAbsoluteLayoutProperties(
-                width: 300,
-                height: 200,
+              layout: const FigmaLayoutProperties.freeform(
+                referenceWidth: 300,
+                referenceHeight: 200,
               ),
               children: [
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 20,
                   y: 20,
                   width: 60,
                   height: 60,
                   child: Container(color: Colors.red),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 100,
                   y: 40,
                   width: 80,
                   height: 50,
                   child: Container(color: Colors.blue),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 200,
                   y: 100,
                   width: 70,
@@ -59,12 +59,12 @@ void main() {
           backgroundColor: Colors.white,
           body: Center(
             child: FigmaLayout(
-              layout: const FigmaAbsoluteLayoutProperties(
-                width: 300,
-                height: 200,
+              layout: const FigmaFreeformLayoutProperties(
+                referenceWidth: 300,
+                referenceHeight: 200,
               ),
               children: [
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 10,
                   y: 10,
                   width: 80,
@@ -81,7 +81,7 @@ void main() {
                     ),
                   ),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 110,
                   y: 80,
                   width: 80,
@@ -119,12 +119,12 @@ void main() {
           backgroundColor: Colors.white,
           body: Center(
             child: FigmaLayout(
-              layout: const FigmaAbsoluteLayoutProperties(
-                width: 300,
-                height: 200,
+              layout: const FigmaFreeformLayoutProperties(
+                referenceWidth: 300,
+                referenceHeight: 200,
               ),
               children: [
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 210,
                   y: 10,
                   width: 80,
@@ -141,7 +141,7 @@ void main() {
                     ),
                   ),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 10,
                   y: 130,
                   width: 80,
@@ -179,12 +179,12 @@ void main() {
           backgroundColor: Colors.white,
           body: Center(
             child: FigmaLayout(
-              layout: const FigmaAbsoluteLayoutProperties(
-                width: 300,
-                height: 200,
+              layout: const FigmaFreeformLayoutProperties(
+                referenceWidth: 300,
+                referenceHeight: 200,
               ),
               children: [
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 110,
                   y: 70,
                   width: 80,
@@ -201,7 +201,7 @@ void main() {
                     ),
                   ),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 210,
                   y: 70,
                   width: 60,
@@ -239,12 +239,12 @@ void main() {
           backgroundColor: Colors.white,
           body: Center(
             child: FigmaLayout(
-              layout: const FigmaAbsoluteLayoutProperties(
-                width: 300,
-                height: 200,
+              layout: const FigmaFreeformLayoutProperties(
+                referenceWidth: 300,
+                referenceHeight: 200,
               ),
               children: [
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 20,
                   y: 20,
                   width: 260,
@@ -261,7 +261,7 @@ void main() {
                     ),
                   ),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 20,
                   y: 90,
                   width: 60,
@@ -300,12 +300,12 @@ void main() {
           backgroundColor: Colors.white,
           body: Center(
             child: FigmaLayout(
-              layout: const FigmaAbsoluteLayoutProperties(
-                width: 300,
-                height: 200,
+              layout: const FigmaFreeformLayoutProperties(
+                referenceWidth: 300,
+                referenceHeight: 200,
               ),
               children: [
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 50,
                   y: 40,
                   width: 80,
@@ -322,7 +322,7 @@ void main() {
                     ),
                   ),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 150,
                   y: 110,
                   width: 100,
@@ -364,12 +364,12 @@ void main() {
                 border: Border.all(color: Colors.black, width: 2),
               ),
               child: FigmaLayout(
-                layout: const FigmaAbsoluteLayoutProperties(
-                  width: 400,
-                  height: 300,
+                layout: const FigmaFreeformLayoutProperties(
+                  referenceWidth: 300,
+                  referenceHeight: 200,
                 ),
                 children: [
-                  FigmaPositioned(
+                  FigmaPositioned.freeform(
                     x: 10,
                     y: 10,
                     width: 70,
@@ -385,7 +385,7 @@ void main() {
                       ),
                     ),
                   ),
-                  FigmaPositioned(
+                  FigmaPositioned.freeform(
                     x: 320,
                     y: 10,
                     width: 70,
@@ -401,7 +401,7 @@ void main() {
                       ),
                     ),
                   ),
-                  FigmaPositioned(
+                  FigmaPositioned.freeform(
                     x: 165,
                     y: 125,
                     width: 70,
@@ -417,7 +417,7 @@ void main() {
                       ),
                     ),
                   ),
-                  FigmaPositioned(
+                  FigmaPositioned.freeform(
                     x: 10,
                     y: 80,
                     width: 380,
@@ -425,7 +425,7 @@ void main() {
                     horizontalConstraint: ConstraintType.stretch,
                     verticalConstraint: ConstraintType.min,
                     child: Container(
-                      color: Colors.indigo.withOpacity(0.7),
+                      color: Colors.indigo.withValues(alpha: .7),
                       child: const Center(
                         child: Text('STRETCH H',
                             style:
@@ -433,7 +433,7 @@ void main() {
                       ),
                     ),
                   ),
-                  FigmaPositioned(
+                  FigmaPositioned.freeform(
                     x: 100,
                     y: 70,
                     width: 60,
@@ -441,7 +441,7 @@ void main() {
                     horizontalConstraint: ConstraintType.scale,
                     verticalConstraint: ConstraintType.scale,
                     child: Container(
-                      color: Colors.amber.withOpacity(0.8),
+                      color: Colors.amber.withValues(alpha: .8),
                       child: const Center(
                         child: Text('SCALE',
                             style:
@@ -449,7 +449,7 @@ void main() {
                       ),
                     ),
                   ),
-                  FigmaPositioned(
+                  FigmaPositioned.freeform(
                     x: 10,
                     y: 240,
                     width: 70,
@@ -487,36 +487,36 @@ void main() {
           backgroundColor: Colors.white,
           body: Center(
             child: FigmaLayout(
-              layout: const FigmaAbsoluteLayoutProperties(
-                width: 300,
-                height: 200,
+              layout: const FigmaFreeformLayoutProperties(
+                referenceWidth: 300,
+                referenceHeight: 200,
               ),
               children: [
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 50,
                   y: 50,
                   width: 120,
                   height: 100,
                   child: Container(
-                    color: Colors.red.withOpacity(0.7),
+                    color: Colors.red.withValues(alpha: 0.7),
                   ),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 100,
                   y: 70,
                   width: 120,
                   height: 100,
                   child: Container(
-                    color: Colors.blue.withOpacity(0.7),
+                    color: Colors.blue.withValues(alpha: .7),
                   ),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 150,
                   y: 50,
                   width: 120,
                   height: 100,
                   child: Container(
-                    color: Colors.green.withOpacity(0.7),
+                    color: Colors.green.withValues(alpha: .7),
                   ),
                 ),
               ],
@@ -540,19 +540,21 @@ void main() {
           backgroundColor: Colors.white,
           body: Center(
             child: FigmaLayout(
-              layout: const FigmaAbsoluteLayoutProperties(
-                width: 400,
-                height: 300,
+              layout: const FigmaFreeformLayoutProperties(
+                referenceWidth: 400,
+                referenceHeight: 300,
               ),
               children: [
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 20,
                   y: 20,
                   width: 150,
                   height: 120,
                   child: FigmaLayout(
                     layout: const FigmaAutoLayoutProperties(
-                      mode: AutoLayoutMode.vertical,
+                      referenceWidth: 150,
+                      referenceHeight: 120,
+                      axis: Axis.vertical,
                       itemSpacing: 8,
                       paddingLeft: 10,
                       paddingRight: 10,
@@ -568,14 +570,16 @@ void main() {
                     ],
                   ),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 200,
                   y: 100,
                   width: 180,
                   height: 80,
                   child: FigmaLayout(
                     layout: const FigmaAutoLayoutProperties(
-                      mode: AutoLayoutMode.horizontal,
+                      referenceWidth: 180,
+                      referenceHeight: 80,
+                      axis: Axis.horizontal,
                       itemSpacing: 10,
                       paddingLeft: 12,
                       paddingRight: 12,
@@ -612,8 +616,10 @@ void main() {
           backgroundColor: Colors.white,
           body: Center(
             child: FigmaLayout(
-              layout: const FigmaAutoLayoutProperties(
-                mode: AutoLayoutMode.vertical,
+              layout: const FigmaLayoutProperties.auto(
+                axis: Axis.vertical,
+                referenceWidth: 400,
+                referenceHeight: 300,
                 itemSpacing: 20,
                 paddingLeft: 20,
                 paddingRight: 20,
@@ -630,26 +636,26 @@ void main() {
                   child: const Center(child: Text('Header')),
                 ),
                 FigmaLayout(
-                  layout: const FigmaAbsoluteLayoutProperties(
-                    width: 300,
-                    height: 200,
+                  layout: const FigmaFreeformLayoutProperties(
+                    referenceWidth: 300,
+                    referenceHeight: 200,
                   ),
                   children: [
-                    FigmaPositioned(
+                    FigmaPositioned.freeform(
                       x: 10,
                       y: 10,
                       width: 80,
                       height: 80,
                       child: Container(color: Colors.red),
                     ),
-                    FigmaPositioned(
+                    FigmaPositioned.freeform(
                       x: 110,
                       y: 60,
                       width: 80,
                       height: 80,
                       child: Container(color: Colors.blue),
                     ),
-                    FigmaPositioned(
+                    FigmaPositioned.freeform(
                       x: 210,
                       y: 110,
                       width: 80,
@@ -685,12 +691,12 @@ void main() {
           backgroundColor: Colors.grey[100],
           body: Center(
             child: FigmaLayout(
-              layout: const FigmaAbsoluteLayoutProperties(
-                width: 500,
-                height: 400,
+              layout: const FigmaFreeformLayoutProperties(
+                referenceWidth: 500,
+                referenceHeight: 400,
               ),
               children: [
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 20,
                   y: 20,
                   width: 220,
@@ -699,7 +705,9 @@ void main() {
                   verticalConstraint: ConstraintType.stretch,
                   child: FigmaLayout(
                     layout: const FigmaAutoLayoutProperties(
-                      mode: AutoLayoutMode.vertical,
+                      referenceWidth: 220,
+                      referenceHeight: 360,
+                      axis: Axis.vertical,
                       itemSpacing: 12,
                       paddingLeft: 15,
                       paddingRight: 15,
@@ -739,7 +747,7 @@ void main() {
                     ],
                   ),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 260,
                   y: 20,
                   width: 220,
@@ -754,7 +762,7 @@ void main() {
                     ),
                   ),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 260,
                   y: 200,
                   width: 220,
@@ -763,7 +771,9 @@ void main() {
                   verticalConstraint: ConstraintType.max,
                   child: FigmaLayout(
                     layout: const FigmaAutoLayoutProperties(
-                      mode: AutoLayoutMode.horizontal,
+                      referenceWidth: 220,
+                      referenceHeight: 180,
+                      axis: Axis.horizontal,
                       layoutWrap: LayoutWrap.wrap,
                       itemSpacing: 8,
                       counterAxisSpacing: 8,
@@ -805,7 +815,9 @@ void main() {
           body: Center(
             child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                mode: AutoLayoutMode.horizontal,
+                referenceWidth: 400,
+                referenceHeight: 200,
+                axis: Axis.horizontal,
                 itemSpacing: 16,
                 paddingLeft: 20,
                 paddingRight: 20,
@@ -882,7 +894,9 @@ void main() {
           body: Center(
             child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                mode: AutoLayoutMode.vertical,
+                referenceWidth: 300,
+                referenceHeight: 200,
+                axis: Axis.vertical,
                 itemSpacing: 12,
                 paddingLeft: 20,
                 paddingRight: 20,
@@ -959,7 +973,9 @@ void main() {
           body: Center(
             child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                mode: AutoLayoutMode.horizontal,
+                referenceWidth: 300,
+                referenceHeight: 100,
+                axis: Axis.horizontal,
                 itemSpacing: 10,
                 paddingLeft: 15,
                 paddingRight: 15,
@@ -1033,7 +1049,9 @@ void main() {
           body: Center(
             child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                mode: AutoLayoutMode.horizontal,
+                referenceWidth: 400,
+                referenceHeight: 200,
+                axis: Axis.horizontal,
                 itemSpacing: 10,
                 paddingLeft: 20,
                 paddingRight: 20,
@@ -1061,13 +1079,13 @@ void main() {
                         Text('Auto 2', style: TextStyle(color: Colors.white)),
                   ),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 10,
                   y: 10,
                   width: 60,
                   height: 60,
                   child: Container(
-                    color: Colors.red.withOpacity(0.9),
+                    color: Colors.red.withValues(alpha: .9),
                     child: const Center(
                       child: Text('Abs',
                           style: TextStyle(color: Colors.white, fontSize: 12)),
@@ -1083,13 +1101,13 @@ void main() {
                         Text('Auto 3', style: TextStyle(color: Colors.white)),
                   ),
                 ),
-                FigmaPositioned(
+                FigmaPositioned.freeform(
                   x: 150,
                   y: 50,
                   width: 70,
                   height: 40,
                   child: Container(
-                    color: Colors.purple.withOpacity(0.9),
+                    color: Colors.purple.withValues(alpha: .9),
                     child: const Center(
                       child: Text('Absolute',
                           style: TextStyle(color: Colors.white, fontSize: 10)),

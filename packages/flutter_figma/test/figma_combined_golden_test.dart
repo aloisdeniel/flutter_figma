@@ -16,8 +16,10 @@ void main() {
           backgroundColor: Colors.white,
           body: Center(
             child: FigmaLayout(
-              layout: const FigmaAutoLayoutProperties(
-                mode: AutoLayoutMode.horizontal,
+              layout: const FigmaLayoutProperties.auto(
+                referenceWidth: 400,
+                referenceHeight: 120,
+                axis: Axis.horizontal,
                 itemSpacing: 12,
                 paddingLeft: 20,
                 paddingRight: 20,
@@ -189,7 +191,9 @@ void main() {
           body: Center(
             child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                mode: AutoLayoutMode.horizontal,
+                referenceWidth: 400,
+                referenceHeight: 200,
+                axis: Axis.horizontal,
                 itemSpacing: 30,
                 paddingLeft: 40,
                 paddingRight: 40,
@@ -249,7 +253,9 @@ void main() {
           body: Center(
             child: FigmaLayout(
               layout: const FigmaAutoLayoutProperties(
-                mode: AutoLayoutMode.vertical,
+                referenceWidth: 400,
+                referenceHeight: 500,
+                axis: Axis.vertical,
                 primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                 counterAxisSizingMode: CounterAxisSizingMode.auto,
                 itemSpacing: 20,
@@ -261,7 +267,9 @@ void main() {
               children: [
                 FigmaLayout(
                   layout: const FigmaAutoLayoutProperties(
-                    mode: AutoLayoutMode.horizontal,
+                    referenceWidth: 300,
+                    referenceHeight: 100,
+                    axis: Axis.horizontal,
                     primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                     counterAxisSizingMode: CounterAxisSizingMode.auto,
                     itemSpacing: 15,
@@ -415,7 +423,9 @@ void main() {
                 height: 280,
                 child: FigmaLayout(
                   layout: const FigmaAutoLayoutProperties(
-                    mode: AutoLayoutMode.vertical,
+                    referenceWidth: 320,
+                    referenceHeight: 280,
+                    axis: Axis.vertical,
                     itemSpacing: 15,
                     paddingLeft: 25,
                     paddingRight: 25,
@@ -464,7 +474,9 @@ void main() {
                     ),
                     FigmaLayout(
                       layout: const FigmaAutoLayoutProperties(
-                        mode: AutoLayoutMode.horizontal,
+                        referenceWidth: 270,
+                        referenceHeight: 80,
+                        axis: Axis.horizontal,
                         primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                         counterAxisSizingMode: CounterAxisSizingMode.auto,
                         itemSpacing: 12,
@@ -648,7 +660,9 @@ void main() {
                   height: 200,
                   child: FigmaLayout(
                     layout: const FigmaAutoLayoutProperties(
-                      mode: AutoLayoutMode.vertical,
+                      referenceWidth: 280,
+                      referenceHeight: 200,
+                      axis: Axis.vertical,
                       itemSpacing: 16,
                       paddingLeft: 20,
                       paddingRight: 20,
@@ -658,7 +672,9 @@ void main() {
                     children: [
                       FigmaLayout(
                         layout: const FigmaAutoLayoutProperties(
-                          mode: AutoLayoutMode.horizontal,
+                          referenceWidth: 240,
+                          referenceHeight: 70,
+                          axis: Axis.horizontal,
                           primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                           counterAxisSizingMode: CounterAxisSizingMode.auto,
                           itemSpacing: 12,
@@ -721,7 +737,9 @@ void main() {
                       ),
                       FigmaLayout(
                         layout: const FigmaAutoLayoutProperties(
-                          mode: AutoLayoutMode.horizontal,
+                          referenceWidth: 240,
+                          referenceHeight: 50,
+                          axis: Axis.horizontal,
                           primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                           counterAxisSizingMode: CounterAxisSizingMode.auto,
                           itemSpacing: 8,

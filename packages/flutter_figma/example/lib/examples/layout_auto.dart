@@ -53,6 +53,45 @@ class AutoLayoutExample extends StatelessWidget implements Example {
                 ],
               ),
             ),
+          Container(
+            color: Color(0x11000000),
+            child: FigmaLayout(
+              layout: FigmaLayoutProperties.auto(
+                axis: Axis.horizontal,
+                primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
+                referenceWidth: 300,
+                referenceHeight: 200,
+                paddingLeft: 10,
+                paddingRight: 10,
+                paddingTop: 10,
+                paddingBottom: 10,
+                itemSpacing: 10,
+              ),
+              children: [
+                FigmaPositioned.auto(
+                  width: 100,
+                  height: 100,
+                  primaryAxisSizing: ChildSizingMode.fixed,
+                  counterAxisSizing: ChildSizingMode.fixed,
+                  child: Container(color: Colors.red, child: Text('Hello')),
+                ),
+                FigmaPositioned.auto(
+                  width: 100,
+                  height: 100,
+                  primaryAxisSizing: ChildSizingMode.fixed,
+                  child: Container(color: Colors.green, child: Text('Example')),
+                ),
+                FigmaPositioned.freeform(
+                  x: 140,
+                  y: 20,
+                  width: 140,
+                  height: 100,
+                  horizontalConstraint: ConstraintType.max,
+                  child: Container(color: Colors.orange.withValues(alpha: 0.5)),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

@@ -19,15 +19,6 @@ extension FigmaPaintGradientExtensions on Paint {
         final colors = gradientStops.map((stop) => stop.color).toList();
         final stops = gradientStops.map((stop) => stop.position).toList();
 
-        final matrix = _transformToMatrix4(gradientTransform, rect);
-        final begin = _transformPoint(matrix, 0, 0);
-        final end = _transformPoint(matrix, 1, 0);
-
-        print('begin: $begin');
-        print('end: $end');
-        print('colors: ${colors.join(', ')}');
-        print('stops: ${stops.join(', ')}');
-
         shader = ui.Gradient.linear(
           Offset.zero, // TODO
           Offset(rect.size.width, 0), //TODO
