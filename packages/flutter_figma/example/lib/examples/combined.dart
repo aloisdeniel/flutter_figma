@@ -9,7 +9,14 @@ class CombinedExample extends StatelessWidget implements Example {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-      child: Column(
+      child: FigmaLayout(
+        layout: const FigmaLayoutProperties.auto(
+          axis: Axis.vertical,
+          referenceWidth: 400,
+          referenceHeight: 900,
+          primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
+          itemSpacing: 0,
+        ),
         children: [
           const SizedBox(height: 20),
           // Dashboard Card with gradient header
@@ -18,9 +25,8 @@ class CombinedExample extends StatelessWidget implements Example {
             decoration: const FigmaDecoration(
               fills: [SolidPaint(color: Color.fromRGBO(255, 255, 255, 1.0))],
             ),
-            child: SizedBox(
-              width: 360,
-              height: 640,
+            child: FigmaSized(
+              size: const ChildSize(width: 360, height: 640),
               child: FigmaLayout(
                 layout: const FigmaLayoutProperties.auto(
                   axis: Axis.vertical,
@@ -58,32 +64,36 @@ class CombinedExample extends StatelessWidget implements Example {
                         ),
                       ],
                     ),
-                    child: const SizedBox(
-                      height: 120,
-                      child: Padding(
-                        padding: EdgeInsets.all(24),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              'Dashboard',
-                              style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'Welcome back! Here\'s your overview',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ],
+                    child: FigmaSized(
+                      size: const ChildSize(height: 120, width: 100),
+                      child: FigmaLayout(
+                        layout: const FigmaLayoutProperties.auto(
+                          axis: Axis.vertical,
+                          referenceWidth: 360,
+                          referenceHeight: 120,
+                          primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
+                          counterAxisAlignItems: LayoutAlign.min,
+                          primaryAxisAlignItems: LayoutAlign.center,
+                          itemSpacing: 8,
+                          paddingLeft: 24,
+                          paddingRight: 24,
+                          paddingTop: 24,
+                          paddingBottom: 24,
                         ),
+                        children: const [
+                          Text(
+                            'Dashboard',
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white,
+                            ),
+                          ),
+                          Text(
+                            'Welcome back! Here\'s your overview',
+                            style: TextStyle(fontSize: 14, color: Colors.white),
+                          ),
+                        ],
                       ),
                     ),
                   ),
@@ -130,8 +140,8 @@ class CombinedExample extends StatelessWidget implements Example {
                           SolidPaint(color: Color.fromRGBO(249, 250, 251, 1.0)),
                         ],
                       ),
-                      child: SizedBox(
-                        height: 220,
+                      child: FigmaSized(
+                        size: const ChildSize(height: 220, width: 100),
                         child: FigmaLayout(
                           layout: const FigmaLayoutProperties.auto(
                             axis: Axis.vertical,
@@ -200,7 +210,10 @@ class CombinedExample extends StatelessWidget implements Example {
                                 ),
                               ],
                             ),
-                            child: const SizedBox(width: 60, height: 60),
+                            child: const FigmaSized(
+                              size: ChildSize(width: 60, height: 60),
+                              child: SizedBox.shrink(),
+                            ),
                           ),
                         ),
                         FigmaDecorated(
@@ -221,7 +234,10 @@ class CombinedExample extends StatelessWidget implements Example {
                               ),
                             ],
                           ),
-                          child: const SizedBox(width: 60, height: 60),
+                          child: const FigmaSized(
+                            size: ChildSize(width: 60, height: 60),
+                            child: SizedBox.shrink(),
+                          ),
                         ),
                         FigmaTransformed(
                           transform: const FigmaTransform(1, 0, 0, 0, -1, 0),
@@ -247,7 +263,10 @@ class CombinedExample extends StatelessWidget implements Example {
                                 ),
                               ],
                             ),
-                            child: const SizedBox(width: 60, height: 60),
+                            child: const FigmaSized(
+                              size: ChildSize(width: 60, height: 60),
+                              child: SizedBox.shrink(),
+                            ),
                           ),
                         ),
                       ],
@@ -277,7 +296,10 @@ class CombinedExample extends StatelessWidget implements Example {
               ),
             ),
           ),
-          const SizedBox(height: 40),
+          const FigmaSized(
+            size: ChildSize(height: 40, width: 100),
+            child: SizedBox.shrink(),
+          ),
         ],
       ),
     );

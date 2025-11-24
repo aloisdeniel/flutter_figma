@@ -14,10 +14,7 @@ sealed class FigmaLayoutProperties {
     LayoutAlign primaryAxisAlignItems,
     LayoutAlign counterAxisAlignItems,
     LayoutWrap layoutWrap,
-    double paddingLeft,
-    double paddingRight,
-    double paddingTop,
-    double paddingBottom,
+    EdgeInsets padding,
     double itemSpacing,
     double counterAxisSpacing,
   }) = FigmaAutoLayoutProperties;
@@ -60,10 +57,7 @@ class FigmaAutoLayoutProperties extends FigmaLayoutProperties {
     this.primaryAxisAlignItems = LayoutAlign.min,
     this.counterAxisAlignItems = LayoutAlign.min,
     this.layoutWrap = LayoutWrap.noWrap,
-    this.paddingLeft = 0,
-    this.paddingRight = 0,
-    this.paddingTop = 0,
-    this.paddingBottom = 0,
+    this.padding = EdgeInsets.zero,
     this.itemSpacing = 0,
     this.counterAxisSpacing = 0,
   });
@@ -76,10 +70,7 @@ class FigmaAutoLayoutProperties extends FigmaLayoutProperties {
   final LayoutAlign primaryAxisAlignItems;
   final LayoutAlign counterAxisAlignItems;
   final LayoutWrap layoutWrap;
-  final double paddingLeft;
-  final double paddingRight;
-  final double paddingTop;
-  final double paddingBottom;
+  final EdgeInsets padding;
   final double itemSpacing;
   final double counterAxisSpacing;
 }
@@ -131,10 +122,7 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
         :final primaryAxisAlignItems,
         :final counterAxisAlignItems,
         :final layoutWrap,
-        :final paddingLeft,
-        :final paddingRight,
-        :final paddingTop,
-        :final paddingBottom,
+        :final padding,
         :final itemSpacing,
         :final counterAxisSpacing
       ) =>
@@ -150,10 +138,10 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           primaryAxisAlignItems: primaryAxisAlignItems,
           counterAxisAlignItems: counterAxisAlignItems,
           layoutWrap: layoutWrap,
-          paddingLeft: paddingLeft,
-          paddingRight: paddingRight,
-          paddingTop: paddingTop,
-          paddingBottom: paddingBottom,
+          paddingLeft: padding.left,
+          paddingRight: padding.right,
+          paddingTop: padding.top,
+          paddingBottom: padding.bottom,
           itemSpacing: itemSpacing,
           counterAxisSpacing: counterAxisSpacing,
         ),
@@ -206,10 +194,7 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           :final primaryAxisAlignItems,
           :final counterAxisAlignItems,
           :final layoutWrap,
-          :final paddingLeft,
-          :final paddingRight,
-          :final paddingTop,
-          :final paddingBottom,
+          :final padding,
           :final itemSpacing,
           :final counterAxisSpacing
         ):
@@ -225,10 +210,10 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           ..primaryAxisAlignItems = primaryAxisAlignItems
           ..counterAxisAlignItems = counterAxisAlignItems
           ..layoutWrap = layoutWrap
-          ..paddingLeft = paddingLeft
-          ..paddingRight = paddingRight
-          ..paddingTop = paddingTop
-          ..paddingBottom = paddingBottom
+          ..paddingLeft = padding.left
+          ..paddingRight = padding.right
+          ..paddingTop = padding.top
+          ..paddingBottom = padding.bottom
           ..itemSpacing = itemSpacing
           ..counterAxisSpacing = counterAxisSpacing;
       case FigmaGridLayoutProperties(
