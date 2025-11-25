@@ -21,10 +21,7 @@ void main() {
                 referenceHeight: 120,
                 axis: Axis.horizontal,
                 itemSpacing: 12,
-                paddingLeft: 20,
-                paddingRight: 20,
-                paddingTop: 20,
-                paddingBottom: 20,
+                padding: EdgeInsets.all(20),
               ),
               children: [
                 FigmaDecorated(
@@ -195,10 +192,7 @@ void main() {
                 referenceHeight: 200,
                 axis: Axis.horizontal,
                 itemSpacing: 30,
-                paddingLeft: 40,
-                paddingRight: 40,
-                paddingTop: 40,
-                paddingBottom: 40,
+                padding: EdgeInsets.all(40),
                 primaryAxisAlignItems: LayoutAlign.center,
                 counterAxisAlignItems: LayoutAlign.center,
               ),
@@ -259,10 +253,7 @@ void main() {
                 primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                 counterAxisSizingMode: CounterAxisSizingMode.auto,
                 itemSpacing: 20,
-                paddingLeft: 30,
-                paddingRight: 30,
-                paddingTop: 30,
-                paddingBottom: 30,
+                padding: EdgeInsets.all(30),
               ),
               children: [
                 FigmaLayout(
@@ -427,10 +418,7 @@ void main() {
                     referenceHeight: 280,
                     axis: Axis.vertical,
                     itemSpacing: 15,
-                    paddingLeft: 25,
-                    paddingRight: 25,
-                    paddingTop: 25,
-                    paddingBottom: 25,
+                    padding: EdgeInsets.all(25),
                   ),
                   children: [
                     FigmaDecorated(
@@ -664,10 +652,7 @@ void main() {
                       referenceHeight: 200,
                       axis: Axis.vertical,
                       itemSpacing: 16,
-                      paddingLeft: 20,
-                      paddingRight: 20,
-                      paddingTop: 20,
-                      paddingBottom: 20,
+                      padding: EdgeInsets.all(20),
                     ),
                     children: [
                       FigmaLayout(

@@ -30,9 +30,27 @@ class FigmaTextStyle {
   const FigmaTextStyle({
     required this.fontName,
     required this.fontSize,
-    required this.letterSpacing,
-    required this.lineHeight,
+    this.letterSpacing = const LetterSpacing(
+      value: 1,
+      unit: LetterSpacingUnit.percent,
+    ),
+    this.lineHeight = const LineHeightAuto(),
   });
+
+  FigmaTextStyle.system({
+    required this.fontSize,
+    FontWeight weight = FontWeight.normal,
+    FigmaFontStyle style = FigmaFontStyle.regular,
+    this.letterSpacing = const LetterSpacing(
+      value: 1,
+      unit: LetterSpacingUnit.percent,
+    ),
+    this.lineHeight = const LineHeightAuto(),
+  }) : fontName = FontName(
+          family: 'system',
+          weight: weight,
+          style: style,
+        );
 
   final FontName fontName;
   final double fontSize;

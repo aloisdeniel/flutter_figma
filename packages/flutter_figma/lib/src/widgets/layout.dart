@@ -31,10 +31,7 @@ sealed class FigmaLayoutProperties {
     List<GridTrack> rows,
     double columnGap,
     double rowGap,
-    double paddingLeft,
-    double paddingRight,
-    double paddingTop,
-    double paddingBottom,
+    EdgeInsets padding,
   }) = FigmaGridLayoutProperties;
 }
 
@@ -83,10 +80,7 @@ class FigmaGridLayoutProperties extends FigmaLayoutProperties {
     this.rows = const [],
     this.columnGap = 0,
     this.rowGap = 0,
-    this.paddingLeft = 0,
-    this.paddingRight = 0,
-    this.paddingTop = 0,
-    this.paddingBottom = 0,
+    this.padding = EdgeInsets.zero,
   });
 
   final int columnCount;
@@ -95,10 +89,7 @@ class FigmaGridLayoutProperties extends FigmaLayoutProperties {
   final List<GridTrack> rows;
   final double columnGap;
   final double rowGap;
-  final double paddingLeft;
-  final double paddingRight;
-  final double paddingTop;
-  final double paddingBottom;
+  final EdgeInsets padding;
 }
 
 class FigmaLayout extends MultiChildRenderObjectWidget {
@@ -160,10 +151,7 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
         :final rows,
         :final columnGap,
         :final rowGap,
-        :final paddingLeft,
-        :final paddingRight,
-        :final paddingTop,
-        :final paddingBottom
+        :final padding,
       ) =>
         RenderFigmaLayout(
           mode: LayoutMode.grid,
@@ -173,10 +161,10 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           gridRows: rows,
           gridColumnGap: columnGap,
           gridRowGap: rowGap,
-          paddingLeft: paddingLeft,
-          paddingRight: paddingRight,
-          paddingTop: paddingTop,
-          paddingBottom: paddingBottom,
+          paddingLeft: padding.left,
+          paddingRight: padding.right,
+          paddingTop: padding.top,
+          paddingBottom: padding.bottom,
         ),
     };
   }
@@ -223,10 +211,7 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           :final rows,
           :final columnGap,
           :final rowGap,
-          :final paddingLeft,
-          :final paddingRight,
-          :final paddingTop,
-          :final paddingBottom
+          :final padding,
         ):
         renderObject
           ..mode = LayoutMode.grid
@@ -236,10 +221,10 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           ..gridRows = rows
           ..gridColumnGap = columnGap
           ..gridRowGap = rowGap
-          ..paddingLeft = paddingLeft
-          ..paddingRight = paddingRight
-          ..paddingTop = paddingTop
-          ..paddingBottom = paddingBottom;
+          ..paddingLeft = padding.left
+          ..paddingRight = padding.right
+          ..paddingTop = padding.top
+          ..paddingBottom = padding.bottom;
       case FigmaFreeformLayoutProperties(
           :final referenceWidth,
           :final referenceHeight,

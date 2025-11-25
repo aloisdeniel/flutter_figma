@@ -21,10 +21,7 @@ class AutoLayoutExample extends StatelessWidget implements Example {
                   primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                   referenceWidth: 300,
                   referenceHeight: 200,
-                  paddingLeft: 10,
-                  paddingRight: 10,
-                  paddingTop: 10,
-                  paddingBottom: 10,
+                  padding: EdgeInsets.all(10),
                   itemSpacing: 10,
                 ),
                 children: [
@@ -61,10 +58,7 @@ class AutoLayoutExample extends StatelessWidget implements Example {
                 primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
                 referenceWidth: 300,
                 referenceHeight: 200,
-                paddingLeft: 10,
-                paddingRight: 10,
-                paddingTop: 10,
-                paddingBottom: 10,
+                padding: EdgeInsets.all(10),
                 itemSpacing: 10,
               ),
               children: [

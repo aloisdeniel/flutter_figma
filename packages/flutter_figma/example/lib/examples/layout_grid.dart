@@ -18,10 +18,7 @@ class GridLayoutExample extends StatelessWidget implements Example {
             height: 200,
             child: FigmaLayout(
               layout: FigmaLayoutProperties.grid(
-                paddingLeft: 10,
-                paddingRight: 10,
-                paddingTop: 10,
-                paddingBottom: 10,
+                padding: EdgeInsets.all(10),
                 columnGap: 10,
                 rowGap: 10,
                 columnCount: 3,
