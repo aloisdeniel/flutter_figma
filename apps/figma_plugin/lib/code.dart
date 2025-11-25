@@ -1,7 +1,7 @@
 import 'dart:js_interop';
 
 import 'package:figma_plugin/src/figma.dart';
-import 'package:figma_plugin/src/generators/dart.dart';
+import 'package:figma_plugin/src/generators/dart/flutter_code_generator.dart';
 
 @JS('__html__')
 external String get htmlContent;
