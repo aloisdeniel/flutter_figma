@@ -40,33 +40,31 @@ class FlutterCodeGenerator {
 
   void _buildSceneNode(SceneNode node, {FrameNode? parentFrame}) {
     // Determine if we need FigmaPositioned based on parent's layout mode
-    final bool parentHasAutoLayout = parentFrame != null &&
+    final bool parentIsAutoLayout = parentFrame != null &&
         (parentFrame.layoutMode == 'HORIZONTAL' ||
-            parentFrame.layoutMode == 'VERTICAL' ||
-            parentFrame.layoutMode == 'GRID');
+            parentFrame.layoutMode == 'VERTICAL');
+    final bool parentIsGrid =
+        parentFrame != null && parentFrame.layoutMode == 'GRID';
+    final bool parentIsFreeform =
+        parentFrame != null && parentFrame.layoutMode == 'NONE';
 
-    // For auto layout parents, only wrap with FigmaPositioned if node is absolutely positioned
-    // For absolute layout parents, wrap if node has position or needs constraints
-    final bool needsPositioning =
-        !parentHasAutoLayout && (node.x != 0 || node.y != 0);
-
-    if (needsPositioning) {
-      _writeLine('FigmaPositioned(');
+    if (parentIsFreeform) {
+      // Freeform layout - use FigmaPositioned.freeform
+      _writeLine('FigmaPositioned.freeform(');
       _indent();
       _writeLine('x: ${node.x},');
       _writeLine('y: ${node.y},');
       _writeLine('width: ${node.width},');
       _writeLine('height: ${node.height},');
-
       _writeLine('child: ');
       _indent();
-    } else if (parentHasAutoLayout) {
-      // For children in auto layout, wrap with FigmaChildSize if they have sizing modes
+    } else if (parentIsAutoLayout) {
+      // Auto layout - use FigmaPositioned.auto with sizing modes
       final hSizing = _parseChildSizingMode(node.layoutSizingHorizontal);
       final vSizing = _parseChildSizingMode(node.layoutSizingVertical);
 
       if (hSizing != null || vSizing != null) {
-        _writeLine('FigmaChildSize(');
+        _writeLine('FigmaPositioned.auto(');
         _indent();
         _writeLine('width: ${node.width},');
         _writeLine('height: ${node.height},');
@@ -92,6 +90,15 @@ class FlutterCodeGenerator {
         _writeLine('child: ');
         _indent();
       }
+    } else if (parentIsGrid) {
+      // Grid layout - use FigmaPositioned.grid
+      // TODO: Extract actual grid position from Figma API if available
+      _writeLine('FigmaPositioned.grid(');
+      _indent();
+      _writeLine('row: 0,');
+      _writeLine('column: 0,');
+      _writeLine('child: ');
+      _indent();
     }
 
     switch (node.type) {
@@ -117,21 +124,15 @@ class FlutterCodeGenerator {
         print('Unsupported node type: ${node.type}');
     }
 
-    if (needsPositioning) {
+    if (parentIsFreeform ||
+        parentIsGrid ||
+        (parentIsAutoLayout &&
+            (_parseChildSizingMode(node.layoutSizingHorizontal) != null ||
+                _parseChildSizingMode(node.layoutSizingVertical) != null))) {
       _unindent();
       _writeLine(',');
       _unindent();
       _writeLine(')');
-    } else if (parentHasAutoLayout) {
-      final hSizing = _parseChildSizingMode(node.layoutSizingHorizontal);
-      final vSizing = _parseChildSizingMode(node.layoutSizingVertical);
-
-      if (hSizing != null || vSizing != null) {
-        _unindent();
-        _writeLine(',');
-        _unindent();
-        _writeLine(')');
-      }
     }
   }
 
@@ -147,8 +148,11 @@ class FlutterCodeGenerator {
     } else if (node.layoutMode == 'GRID') {
       _buildGridLayoutProperties(node);
     } else {
-      _buildAbsoluteLayoutProperties(node);
+      _buildFreeformLayoutProperties(node);
     }
+
+    // Shape (corner radius) - FrameNode doesn't have corner radius properties
+    // Corner radius would need to be accessed through a different property if available
 
     // Decoration (fills and strokes)
     final hasFills = node.fills.toDart.isNotEmpty;
@@ -169,6 +173,11 @@ class FlutterCodeGenerator {
       _unindent();
       _writeLine('],');
     }
+
+    // Opacity - FrameNode doesn't have opacity property
+    // Opacity would need to be accessed through effects if available
+
+    // Blend mode - FrameNode doesn't have blendMode property
 
     // Clip content
     if (node.clipsContent) {
@@ -227,59 +236,65 @@ class FlutterCodeGenerator {
   void _buildRectangleNode(RectangleNode node) {
     _writeLine('FigmaFrame(');
     _indent();
-    _buildKey(node);
 
-    // Absolute layout for rectangles
-    _writeLine('layout: FigmaAbsoluteLayoutProperties(');
+    // Freeform layout for rectangles
+    _writeLine('layout: FigmaFreeformLayoutProperties(');
     _indent();
-    _writeLine('width: ${node.width},');
-    _writeLine('height: ${node.height},');
+    _writeLine('referenceWidth: ${node.width},');
+    _writeLine('referenceHeight: ${node.height},');
     _unindent();
     _writeLine('),');
 
-    // Decoration with corner radius
+    // Shape with corner radius
+    if (node.topLeftRadius != 0 ||
+        node.topRightRadius != 0 ||
+        node.bottomLeftRadius != 0 ||
+        node.bottomRightRadius != 0) {
+      _writeLine('shape: FigmaRectangleShape(');
+      _indent();
+      _writeLine('topLeftRadius: ${node.topLeftRadius},');
+      _writeLine('topRightRadius: ${node.topRightRadius},');
+      _writeLine('bottomLeftRadius: ${node.bottomLeftRadius},');
+      _writeLine('bottomRightRadius: ${node.bottomRightRadius},');
+      _unindent();
+      _writeLine('),');
+    }
+
+    // Decoration
     final fills = node.fills.toDart;
     final strokes = node.strokes.toDart;
 
-    _writeLine('decoration: FigmaDecoration(');
-    _indent();
-
-    // Fills
-    if (fills.isNotEmpty) {
-      _writeLine('fills: [');
+    if (fills.isNotEmpty || strokes.isNotEmpty) {
+      _writeLine('decoration: FigmaDecoration(');
       _indent();
-      for (var fill in fills) {
-        _buildPaint(fill);
-        _writeLine(',');
+
+      // Fills
+      if (fills.isNotEmpty) {
+        _writeLine('fills: [');
+        _indent();
+        for (var fill in fills) {
+          _buildPaint(fill);
+          _writeLine(',');
+        }
+        _unindent();
+        _writeLine('],');
       }
-      _unindent();
-      _writeLine('],');
-    }
 
-    // Strokes
-    if (strokes.isNotEmpty) {
-      _writeLine('strokes: [');
-      _indent();
-      for (var stroke in strokes) {
-        _buildPaint(stroke);
-        _writeLine(',');
+      // Strokes
+      if (strokes.isNotEmpty) {
+        _writeLine('strokes: [');
+        _indent();
+        for (var stroke in strokes) {
+          _buildPaint(stroke);
+          _writeLine(',');
+        }
+        _unindent();
+        _writeLine('],');
       }
+
       _unindent();
-      _writeLine('],');
+      _writeLine('),');
     }
-
-    // Shape with corner radius
-    _writeLine('shape: FigmaRectangleShape(');
-    _indent();
-    _writeLine('topLeftRadius: ${node.topLeftRadius},');
-    _writeLine('topRightRadius: ${node.topRightRadius},');
-    _writeLine('bottomLeftRadius: ${node.bottomLeftRadius},');
-    _writeLine('bottomRightRadius: ${node.bottomRightRadius},');
-    _unindent();
-    _writeLine('),');
-
-    _unindent();
-    _writeLine('),');
 
     // Visibility
     if (!node.visible) {
@@ -291,15 +306,23 @@ class FlutterCodeGenerator {
   }
 
   void _buildTextNode(TextNode node) {
-    _writeLine('FigmaText(');
-    _indent();
+    // Use simple constructor if no mixed styles
+    final hasMixedStyles =
+        node.fontSize == figma.mixed || node.fontName == figma.mixed;
 
-    // Characters as text spans
-    _writeLine('characters: [');
-    _indent();
-    _writeLine('FigmaTextSpan(text: ${_escapeString(node.characters)}),');
-    _unindent();
-    _writeLine('],');
+    if (!hasMixedStyles) {
+      _writeLine('FigmaText(');
+      _indent();
+      _writeLine('${_escapeString(node.characters)},');
+    } else {
+      _writeLine('FigmaText.rich(');
+      _indent();
+      _writeLine('characters: [');
+      _indent();
+      _writeLine('FigmaTextSpan(text: ${_escapeString(node.characters)}),');
+      _unindent();
+      _writeLine('],');
+    }
 
     // Text style
     if (node.fontSize != figma.mixed) {
@@ -350,14 +373,18 @@ class FlutterCodeGenerator {
   }
 
   void _buildAutoLayoutProperties(FrameNode node) {
-    _writeLine('layout: FigmaLayoutProperties.auto(');
+    _writeLine('layout: FigmaAutoLayoutProperties(');
     _indent();
 
-    // Layout mode
+    // Reference dimensions
+    _writeLine('referenceWidth: ${node.width},');
+    _writeLine('referenceHeight: ${node.height},');
+
+    // Layout axis
     if (node.layoutMode == 'HORIZONTAL') {
-      _writeLine('mode: AutoLayoutMode.horizontal,');
+      _writeLine('axis: Axis.horizontal,');
     } else if (node.layoutMode == 'VERTICAL') {
-      _writeLine('mode: AutoLayoutMode.vertical,');
+      _writeLine('axis: Axis.vertical,');
     }
 
     // Sizing modes
@@ -371,24 +398,23 @@ class FlutterCodeGenerator {
       _writeLine('counterAxisSizingMode: $counterSizing,');
     }
 
-    // Alignment
-    final primaryAlign = _parseLayoutAlign(node.layoutAlign);
-    if (primaryAlign != 'LayoutAlign.min') {
-      _writeLine('primaryAxisAlignItems: $primaryAlign,');
-    }
+    // Alignment - FrameNode doesn't have primaryAxisAlignItems/counterAxisAlignItems
+    // These properties may not be available in the current Figma API
 
     // Padding
-    if (node.paddingLeft != 0) {
-      _writeLine('paddingLeft: ${node.paddingLeft},');
-    }
-    if (node.paddingRight != 0) {
-      _writeLine('paddingRight: ${node.paddingRight},');
-    }
-    if (node.paddingTop != 0) {
-      _writeLine('paddingTop: ${node.paddingTop},');
-    }
-    if (node.paddingBottom != 0) {
-      _writeLine('paddingBottom: ${node.paddingBottom},');
+    final hasPadding = node.paddingLeft != 0 ||
+        node.paddingRight != 0 ||
+        node.paddingTop != 0 ||
+        node.paddingBottom != 0;
+    if (hasPadding) {
+      _writeLine('padding: EdgeInsets.only(');
+      _indent();
+      _writeLine('left: ${node.paddingLeft},');
+      _writeLine('right: ${node.paddingRight},');
+      _writeLine('top: ${node.paddingTop},');
+      _writeLine('bottom: ${node.paddingBottom},');
+      _unindent();
+      _writeLine('),');
     }
 
     // Item spacing
@@ -424,23 +450,6 @@ class FlutterCodeGenerator {
     return 'CounterAxisSizingMode.fixed';
   }
 
-  String _parseLayoutAlign(String align) {
-    switch (align.toUpperCase()) {
-      case 'MIN':
-        return 'LayoutAlign.min';
-      case 'CENTER':
-        return 'LayoutAlign.center';
-      case 'MAX':
-        return 'LayoutAlign.max';
-      case 'STRETCH':
-        return 'LayoutAlign.stretch';
-      case 'SPACE_BETWEEN':
-        return 'LayoutAlign.spaceBetween';
-      default:
-        return 'LayoutAlign.min';
-    }
-  }
-
   String? _parseChildSizingMode(String mode) {
     switch (mode.toUpperCase()) {
       case 'HUG':
@@ -454,17 +463,17 @@ class FlutterCodeGenerator {
     }
   }
 
-  void _buildAbsoluteLayoutProperties(FrameNode node) {
-    _writeLine('layout: FigmaLayoutProperties.absolute(');
+  void _buildFreeformLayoutProperties(FrameNode node) {
+    _writeLine('layout: FigmaFreeformLayoutProperties(');
     _indent();
-    _writeLine('width: ${node.width},');
-    _writeLine('height: ${node.height},');
+    _writeLine('referenceWidth: ${node.width},');
+    _writeLine('referenceHeight: ${node.height},');
     _unindent();
     _writeLine('),');
   }
 
   void _buildGridLayoutProperties(FrameNode node) {
-    _writeLine('layout: FigmaLayoutProperties.grid(');
+    _writeLine('layout: FigmaGridLayoutProperties(');
     _indent();
 
     // TODO: These properties would need to come from the Figma API
@@ -475,17 +484,19 @@ class FlutterCodeGenerator {
     _writeLine('rowGap: ${node.itemSpacing},');
 
     // Padding
-    if (node.paddingLeft != 0) {
-      _writeLine('paddingLeft: ${node.paddingLeft},');
-    }
-    if (node.paddingRight != 0) {
-      _writeLine('paddingRight: ${node.paddingRight},');
-    }
-    if (node.paddingTop != 0) {
-      _writeLine('paddingTop: ${node.paddingTop},');
-    }
-    if (node.paddingBottom != 0) {
-      _writeLine('paddingBottom: ${node.paddingBottom},');
+    final hasPadding = node.paddingLeft != 0 ||
+        node.paddingRight != 0 ||
+        node.paddingTop != 0 ||
+        node.paddingBottom != 0;
+    if (hasPadding) {
+      _writeLine('padding: EdgeInsets.only(');
+      _indent();
+      _writeLine('left: ${node.paddingLeft},');
+      _writeLine('right: ${node.paddingRight},');
+      _writeLine('top: ${node.paddingTop},');
+      _writeLine('bottom: ${node.paddingBottom},');
+      _unindent();
+      _writeLine('),');
     }
 
     _unindent();
@@ -522,9 +533,6 @@ class FlutterCodeGenerator {
       _unindent();
       _writeLine('],');
     }
-
-    // Shape (default rectangle)
-    _writeLine('shape: FigmaRectangleShape(),');
 
     _unindent();
     _writeLine('),');
@@ -626,44 +634,20 @@ class FlutterCodeGenerator {
     }
   }
 
-  void _buildKey(SceneNode node) {
-    _writeLine('key: const Key(\'${node.id}\')');
-  }
-
   String _buildColor(double? opacity, RGB color) {
     return 'Color.from(alpha: ${opacity ?? 1.0}, red: ${color.r}, green: ${color.g}, blue: ${color.b})';
   }
 
   void _buildEllipseNode(EllipseNode node) {
-    // Ellipses are rendered as frames with fills
-    _writeLine('FigmaFrame(');
-    _indent();
-
-    _writeLine('layout: FigmaAbsoluteLayoutProperties(');
-    _indent();
-    _writeLine('width: ${node.width},');
-    _writeLine('height: ${node.height},');
-    _unindent();
-    _writeLine('),');
-
-    // TODO: Add ellipse shape support when available
-    _writeLine('decoration: FigmaDecoration(');
-    _indent();
-    _writeLine('fills: [],');
-    _writeLine('shape: FigmaRectangleShape(),');
-    _unindent();
-    _writeLine('),');
-
-    if (!node.visible) {
-      _writeLine('visible: false,');
-    }
-
-    _unindent();
-    _writeLine(')');
+    // EllipseNode doesn't have fills and strokes in the current API
+    // Rendering as a placeholder for now
+    _writeLine('// Ellipse node: ${_escapeString(node.name)}');
+    _writeLine('SizedBox(width: ${node.width}, height: ${node.height})');
   }
 
   void _buildVectorNode(VectorNode node) {
-    // Vectors are complex - for now render as placeholder
+    // VectorNode doesn't have fills and strokes in the current API
+    // Rendering as a placeholder for now
     _writeLine('// Vector node: ${_escapeString(node.name)}');
     _writeLine('SizedBox(width: ${node.width}, height: ${node.height})');
   }
@@ -739,18 +723,24 @@ class FlutterCodeGenerator {
     // Parse font weight from style string
     final styleLower = style.toLowerCase();
     if (styleLower.contains('thin')) return 'FontWeight.w100';
-    if (styleLower.contains('extralight') || styleLower.contains('ultra light'))
+    if (styleLower.contains('extralight') ||
+        styleLower.contains('ultra light')) {
       return 'FontWeight.w200';
+    }
     if (styleLower.contains('light')) return 'FontWeight.w300';
     if (styleLower.contains('medium')) return 'FontWeight.w500';
-    if (styleLower.contains('semibold') || styleLower.contains('demibold'))
+    if (styleLower.contains('semibold') || styleLower.contains('demibold')) {
       return 'FontWeight.w600';
-    if (styleLower.contains('bold') && !styleLower.contains('extrabold'))
+    }
+    if (styleLower.contains('bold') && !styleLower.contains('extrabold')) {
       return 'FontWeight.w700';
-    if (styleLower.contains('extrabold') || styleLower.contains('ultrabold'))
+    }
+    if (styleLower.contains('extrabold') || styleLower.contains('ultrabold')) {
       return 'FontWeight.w800';
-    if (styleLower.contains('black') || styleLower.contains('heavy'))
+    }
+    if (styleLower.contains('black') || styleLower.contains('heavy')) {
       return 'FontWeight.w900';
+    }
     return 'FontWeight.w400'; // Regular/Normal
   }
 
