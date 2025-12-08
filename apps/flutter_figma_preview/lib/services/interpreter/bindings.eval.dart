@@ -6,6 +6,7 @@
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
 import 'bindings.dart';
+import 'bindings_conversions.dart';
 import 'package:flutter_figma_preview/services/interpreter/bindings.eval.dart';
 import 'package:dart_eval/stdlib/core.dart';
 
@@ -85,23 +86,7 @@ class $FigmaTransform implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/geometry.dart',
-                'FigmaTransform',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -216,17 +201,8 @@ class $FigmaTransform implements $Instance {
       case 'm12':
         final _m12 = $value.m12;
         return $double(_m12);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaTransform;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -326,23 +302,7 @@ class $FigmaRectangleShape implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/shape.dart',
-                'FigmaRectangleShape',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -434,17 +394,8 @@ class $FigmaRectangleShape implements $Instance {
       case 'smoothing':
         final _smoothing = $value.smoothing;
         return $double(_smoothing);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaRectangleShape;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -485,23 +436,7 @@ class $FigmaStrokeAlignment implements $Instance {
 
     values: ['inside', 'center', 'outside'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/stroke.dart',
-                'FigmaStrokeAlignment',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -535,18 +470,7 @@ class $FigmaStrokeAlignment implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaStrokeAlignment;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -587,23 +511,7 @@ class $FigmaStrokeJoin implements $Instance {
 
     values: ['miter', 'bevel', 'round'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/stroke.dart',
-                'FigmaStrokeJoin',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -637,18 +545,7 @@ class $FigmaStrokeJoin implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaStrokeJoin;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -792,23 +689,7 @@ class $FigmaStroke implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/stroke.dart',
-                'FigmaStroke',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -931,17 +812,8 @@ class $FigmaStroke implements $Instance {
       case 'alignment':
         final _alignment = $value.alignment;
         return $FigmaStrokeAlignment.wrap(_alignment);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaStroke;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -1316,32 +1188,16 @@ class $FigmaPaint implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/paint.dart',
-                'FigmaPaint',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
-      '_type': BridgeFieldDef(
+      'type': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
               'package:flutter_figma_preview/services/interpreter/bindings.dart',
-              '_FigmaPaint',
+              'FigmaPaintType',
             ),
             [],
           ),
@@ -1349,7 +1205,7 @@ class $FigmaPaint implements $Instance {
         isStatic: false,
       ),
 
-      '_solidColor': BridgeFieldDef(
+      'solidColor': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -1363,7 +1219,7 @@ class $FigmaPaint implements $Instance {
         isStatic: false,
       ),
 
-      '_gradientStops': BridgeFieldDef(
+      'gradientStops': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(CoreTypes.list, [
             BridgeTypeAnnotation(
@@ -1381,7 +1237,7 @@ class $FigmaPaint implements $Instance {
         isStatic: false,
       ),
 
-      '_gradientTransform': BridgeFieldDef(
+      'gradientTransform': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -1395,17 +1251,17 @@ class $FigmaPaint implements $Instance {
         isStatic: false,
       ),
 
-      '_visible': BridgeFieldDef(
+      'visible': BridgeFieldDef(
         BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool, [])),
         isStatic: false,
       ),
 
-      '_opacity': BridgeFieldDef(
+      'opacity': BridgeFieldDef(
         BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.double, [])),
         isStatic: false,
       ),
 
-      '_blendMode': BridgeFieldDef(
+      'blendMode': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -1523,17 +1379,39 @@ class $FigmaPaint implements $Instance {
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
     switch (identifier) {
-      case 'build':
-        return __build;
+      case 'type':
+        final _type = $value.type;
+        return runtime.wrapAlways(_type);
+
+      case 'solidColor':
+        final _solidColor = $value.solidColor;
+        return _solidColor == null ? const $null() : $Color.wrap(_solidColor);
+
+      case 'gradientStops':
+        final _gradientStops = $value.gradientStops;
+        return _gradientStops == null
+            ? const $null()
+            : $List.view(_gradientStops, (e) => $ColorStop.wrap(e));
+
+      case 'gradientTransform':
+        final _gradientTransform = $value.gradientTransform;
+        return _gradientTransform == null
+            ? const $null()
+            : $FigmaTransform.wrap(_gradientTransform);
+
+      case 'visible':
+        final _visible = $value.visible;
+        return $bool(_visible);
+
+      case 'opacity':
+        final _opacity = $value.opacity;
+        return $double(_opacity);
+
+      case 'blendMode':
+        final _blendMode = $value.blendMode;
+        return $BlendMode.wrap(_blendMode);
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaPaint;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -1596,23 +1474,7 @@ class $ColorStop implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/paint.dart',
-                'ColorStop',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -1669,17 +1531,8 @@ class $ColorStop implements $Instance {
       case 'color':
         final _color = $value.color;
         return $Color.wrap(_color);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $ColorStop;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -1758,23 +1611,7 @@ class $FigmaDecoration implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/decoration.dart',
-                'FigmaDecoration',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -1850,17 +1687,8 @@ class $FigmaDecoration implements $Instance {
       case 'strokes':
         final _strokes = $value.strokes;
         return $List.view(_strokes, (e) => $FigmaPaint.wrap(e));
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaDecoration;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -1897,23 +1725,7 @@ class $Widget implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter/src/widgets/framework.dart',
-                'Widget',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -1937,18 +1749,7 @@ class $Widget implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $Widget;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -1989,23 +1790,7 @@ class $Axis implements $Instance {
 
     values: ['vertical', 'horizontal'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter/src/painting/basic_types.dart',
-                'Axis',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -2038,18 +1823,7 @@ class $Axis implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $Axis;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -2090,23 +1864,7 @@ class $OverflowDirection implements $Instance {
 
     values: ['none', 'horizontal', 'vertical', 'both'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/layout.dart',
-                'OverflowDirection',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -2141,18 +1899,7 @@ class $OverflowDirection implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $OverflowDirection;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -2193,23 +1940,7 @@ class $LayoutMode implements $Instance {
 
     values: ['freeform', 'horizontal', 'vertical', 'grid'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/layout.dart',
-                'LayoutMode',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -2244,18 +1975,7 @@ class $LayoutMode implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $LayoutMode;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -2296,23 +2016,7 @@ class $PrimaryAxisSizingMode implements $Instance {
 
     values: ['fixed', 'auto'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/layout.dart',
-                'PrimaryAxisSizingMode',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -2345,18 +2049,7 @@ class $PrimaryAxisSizingMode implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $PrimaryAxisSizingMode;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -2397,23 +2090,7 @@ class $CounterAxisSizingMode implements $Instance {
 
     values: ['fixed', 'auto'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/layout.dart',
-                'CounterAxisSizingMode',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -2446,18 +2123,7 @@ class $CounterAxisSizingMode implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $CounterAxisSizingMode;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -2498,23 +2164,7 @@ class $LayoutWrap implements $Instance {
 
     values: ['noWrap', 'wrap'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/layout.dart',
-                'LayoutWrap',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -2547,18 +2197,7 @@ class $LayoutWrap implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $LayoutWrap;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -2599,23 +2238,7 @@ class $LayoutAlign implements $Instance {
 
     values: ['min', 'center', 'max', 'stretch', 'spaceBetween'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/layout.dart',
-                'LayoutAlign',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -2651,18 +2274,7 @@ class $LayoutAlign implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $LayoutAlign;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -2703,23 +2315,7 @@ class $ChildSizingMode implements $Instance {
 
     values: ['fixed', 'hug'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/layout.dart',
-                'ChildSizingMode',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -2752,18 +2348,7 @@ class $ChildSizingMode implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $ChildSizingMode;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -2836,23 +2421,7 @@ class $EdgeInsets implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter/src/painting/edge_insets.dart',
-                'EdgeInsets',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -2943,17 +2512,8 @@ class $EdgeInsets implements $Instance {
       case 'right':
         final _right = $value.right;
         return $double(_right);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $EdgeInsets;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -3234,32 +2794,16 @@ class $FigmaLayoutProperties implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/widgets/layout.dart',
-                'FigmaLayoutProperties',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
-      '_type': BridgeFieldDef(
+      'type': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
               'package:flutter_figma_preview/services/interpreter/bindings.dart',
-              '_FigmaLayoutProperties',
+              'FigmaLayoutPropertiesType',
             ),
             [],
           ),
@@ -3267,7 +2811,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_autoReferenceWidth': BridgeFieldDef(
+      'autoReferenceWidth': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(CoreTypes.double, []),
           nullable: true,
@@ -3275,7 +2819,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_autoReferenceHeight': BridgeFieldDef(
+      'autoReferenceHeight': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(CoreTypes.double, []),
           nullable: true,
@@ -3283,7 +2827,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_autoAxis': BridgeFieldDef(
+      'autoAxis': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -3297,7 +2841,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_autoPrimaryAxisSizingMode': BridgeFieldDef(
+      'autoPrimaryAxisSizingMode': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -3311,7 +2855,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_autoCounterAxisSizingMode': BridgeFieldDef(
+      'autoCounterAxisSizingMode': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -3325,7 +2869,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_autoPrimaryAxisAlignItems': BridgeFieldDef(
+      'autoPrimaryAxisAlignItems': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -3339,7 +2883,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_autoCounterAxisAlignItems': BridgeFieldDef(
+      'autoCounterAxisAlignItems': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -3353,7 +2897,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_autoLayoutWrap': BridgeFieldDef(
+      'autoLayoutWrap': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -3367,7 +2911,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_autoPadding': BridgeFieldDef(
+      'autoPadding': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -3381,7 +2925,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_autoItemSpacing': BridgeFieldDef(
+      'autoItemSpacing': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(CoreTypes.double, []),
           nullable: true,
@@ -3389,7 +2933,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_autoCounterAxisSpacing': BridgeFieldDef(
+      'autoCounterAxisSpacing': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(CoreTypes.double, []),
           nullable: true,
@@ -3397,7 +2941,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_freeformReferenceWidth': BridgeFieldDef(
+      'freeformReferenceWidth': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(CoreTypes.double, []),
           nullable: true,
@@ -3405,7 +2949,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_freeformReferenceHeight': BridgeFieldDef(
+      'freeformReferenceHeight': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(CoreTypes.double, []),
           nullable: true,
@@ -3413,17 +2957,17 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_gridColumnCount': BridgeFieldDef(
+      'gridColumnCount': BridgeFieldDef(
         BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int, []), nullable: true),
         isStatic: false,
       ),
 
-      '_gridRowCount': BridgeFieldDef(
+      'gridRowCount': BridgeFieldDef(
         BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.int, []), nullable: true),
         isStatic: false,
       ),
 
-      '_gridColumns': BridgeFieldDef(
+      'gridColumns': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(CoreTypes.list, [
             BridgeTypeAnnotation(
@@ -3441,7 +2985,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_gridRows': BridgeFieldDef(
+      'gridRows': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(CoreTypes.list, [
             BridgeTypeAnnotation(
@@ -3459,7 +3003,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_gridColumnGap': BridgeFieldDef(
+      'gridColumnGap': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(CoreTypes.double, []),
           nullable: true,
@@ -3467,7 +3011,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_gridRowGap': BridgeFieldDef(
+      'gridRowGap': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(CoreTypes.double, []),
           nullable: true,
@@ -3475,7 +3019,7 @@ class $FigmaLayoutProperties implements $Instance {
         isStatic: false,
       ),
 
-      '_gridPadding': BridgeFieldDef(
+      'gridPadding': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -3558,17 +3102,123 @@ class $FigmaLayoutProperties implements $Instance {
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
     switch (identifier) {
-      case 'build':
-        return __build;
+      case 'type':
+        final _type = $value.type;
+        return runtime.wrapAlways(_type);
+
+      case 'autoReferenceWidth':
+        final _autoReferenceWidth = $value.autoReferenceWidth;
+        return _autoReferenceWidth == null
+            ? const $null()
+            : $double(_autoReferenceWidth);
+
+      case 'autoReferenceHeight':
+        final _autoReferenceHeight = $value.autoReferenceHeight;
+        return _autoReferenceHeight == null
+            ? const $null()
+            : $double(_autoReferenceHeight);
+
+      case 'autoAxis':
+        final _autoAxis = $value.autoAxis;
+        return _autoAxis == null ? const $null() : $Axis.wrap(_autoAxis);
+
+      case 'autoPrimaryAxisSizingMode':
+        final _autoPrimaryAxisSizingMode = $value.autoPrimaryAxisSizingMode;
+        return _autoPrimaryAxisSizingMode == null
+            ? const $null()
+            : $PrimaryAxisSizingMode.wrap(_autoPrimaryAxisSizingMode);
+
+      case 'autoCounterAxisSizingMode':
+        final _autoCounterAxisSizingMode = $value.autoCounterAxisSizingMode;
+        return _autoCounterAxisSizingMode == null
+            ? const $null()
+            : $CounterAxisSizingMode.wrap(_autoCounterAxisSizingMode);
+
+      case 'autoPrimaryAxisAlignItems':
+        final _autoPrimaryAxisAlignItems = $value.autoPrimaryAxisAlignItems;
+        return _autoPrimaryAxisAlignItems == null
+            ? const $null()
+            : $LayoutAlign.wrap(_autoPrimaryAxisAlignItems);
+
+      case 'autoCounterAxisAlignItems':
+        final _autoCounterAxisAlignItems = $value.autoCounterAxisAlignItems;
+        return _autoCounterAxisAlignItems == null
+            ? const $null()
+            : $LayoutAlign.wrap(_autoCounterAxisAlignItems);
+
+      case 'autoLayoutWrap':
+        final _autoLayoutWrap = $value.autoLayoutWrap;
+        return _autoLayoutWrap == null
+            ? const $null()
+            : $LayoutWrap.wrap(_autoLayoutWrap);
+
+      case 'autoPadding':
+        final _autoPadding = $value.autoPadding;
+        return _autoPadding == null
+            ? const $null()
+            : $EdgeInsets.wrap(_autoPadding);
+
+      case 'autoItemSpacing':
+        final _autoItemSpacing = $value.autoItemSpacing;
+        return _autoItemSpacing == null
+            ? const $null()
+            : $double(_autoItemSpacing);
+
+      case 'autoCounterAxisSpacing':
+        final _autoCounterAxisSpacing = $value.autoCounterAxisSpacing;
+        return _autoCounterAxisSpacing == null
+            ? const $null()
+            : $double(_autoCounterAxisSpacing);
+
+      case 'freeformReferenceWidth':
+        final _freeformReferenceWidth = $value.freeformReferenceWidth;
+        return _freeformReferenceWidth == null
+            ? const $null()
+            : $double(_freeformReferenceWidth);
+
+      case 'freeformReferenceHeight':
+        final _freeformReferenceHeight = $value.freeformReferenceHeight;
+        return _freeformReferenceHeight == null
+            ? const $null()
+            : $double(_freeformReferenceHeight);
+
+      case 'gridColumnCount':
+        final _gridColumnCount = $value.gridColumnCount;
+        return _gridColumnCount == null
+            ? const $null()
+            : $int(_gridColumnCount);
+
+      case 'gridRowCount':
+        final _gridRowCount = $value.gridRowCount;
+        return _gridRowCount == null ? const $null() : $int(_gridRowCount);
+
+      case 'gridColumns':
+        final _gridColumns = $value.gridColumns;
+        return _gridColumns == null
+            ? const $null()
+            : $List.view(_gridColumns, (e) => $GridTrack.wrap(e));
+
+      case 'gridRows':
+        final _gridRows = $value.gridRows;
+        return _gridRows == null
+            ? const $null()
+            : $List.view(_gridRows, (e) => $GridTrack.wrap(e));
+
+      case 'gridColumnGap':
+        final _gridColumnGap = $value.gridColumnGap;
+        return _gridColumnGap == null ? const $null() : $double(_gridColumnGap);
+
+      case 'gridRowGap':
+        final _gridRowGap = $value.gridRowGap;
+        return _gridRowGap == null ? const $null() : $double(_gridRowGap);
+
+      case 'gridPadding':
+        final _gridPadding = $value.gridPadding;
+        return _gridPadding == null
+            ? const $null()
+            : $EdgeInsets.wrap(_gridPadding);
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaLayoutProperties;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -3653,23 +3303,7 @@ class $FigmaLayout implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter/src/widgets/framework.dart',
-                'Widget',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -3741,17 +3375,8 @@ class $FigmaLayout implements $Instance {
       case 'children':
         final _children = $value.children;
         return $List.view(_children, (e) => $Widget.wrap(e));
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaLayout;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -3818,17 +3443,7 @@ class $Color implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(BridgeTypeSpec('dart:ui', 'Color'), []),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -3900,17 +3515,8 @@ class $Color implements $Instance {
       case 'blue':
         final _blue = $value.blue;
         return $double(_blue);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $Color;
-    final result = self.$value;
-    return $Color.wrap(result);
   }
 
   @override
@@ -3965,17 +3571,7 @@ class $Offset implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(BridgeTypeSpec('dart:ui', 'Offset'), []),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -4022,17 +3618,8 @@ class $Offset implements $Instance {
       case 'dy':
         final _dy = $value.dy;
         return $double(_dy);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $Offset;
-    final result = self.$value;
-    return $Offset.wrap(result);
   }
 
   @override
@@ -4055,18 +3642,6 @@ class $FontWeight implements $Instance {
       'package:flutter_figma_preview/services/interpreter/bindings.dart',
       'FontWeight.values*g',
       $FontWeight.$values,
-    );
-
-    runtime.registerBridgeFunc(
-      'package:flutter_figma_preview/services/interpreter/bindings.dart',
-      'FontWeight.normal*g',
-      $FontWeight.$normal,
-    );
-
-    runtime.registerBridgeFunc(
-      'package:flutter_figma_preview/services/interpreter/bindings.dart',
-      'FontWeight.bold*g',
-      $FontWeight.$bold,
     );
   }
 
@@ -4095,52 +3670,8 @@ class $FontWeight implements $Instance {
       'w900',
     ],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(BridgeTypeSpec('dart:ui', 'FontWeight'), []),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
-    getters: {
-      'normal': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma_preview/services/interpreter/bindings.dart',
-                'FontWeight',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-        isStatic: true,
-      ),
-
-      'bold': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma_preview/services/interpreter/bindings.dart',
-                'FontWeight',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-        isStatic: true,
-      ),
-    },
+    methods: {},
+    getters: {},
     setters: {},
     fields: {},
   );
@@ -4163,18 +3694,6 @@ class $FontWeight implements $Instance {
     return $List.view(value, (e) => $FontWeight.wrap(e));
   }
 
-  /// Wrapper for the [FontWeight.normal] getter
-  static $Value? $normal(Runtime runtime, $Value? target, List<$Value?> args) {
-    final value = FontWeight.normal;
-    return $FontWeight.wrap(value);
-  }
-
-  /// Wrapper for the [FontWeight.bold] getter
-  static $Value? $bold(Runtime runtime, $Value? target, List<$Value?> args) {
-    final value = FontWeight.bold;
-    return $FontWeight.wrap(value);
-  }
-
   final $Instance _superclass;
 
   @override
@@ -4191,18 +3710,7 @@ class $FontWeight implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FontWeight;
-    final result = self.$value;
-    return $FontWeight.wrap(result);
   }
 
   @override
@@ -4263,23 +3771,7 @@ class $BlendMode implements $Instance {
       'luminosity',
     ],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/enums.dart',
-                'BlendMode',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -4329,18 +3821,7 @@ class $BlendMode implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $BlendMode;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -4381,23 +3862,7 @@ class $ConstraintType implements $Instance {
 
     values: ['min', 'center', 'max', 'stretch', 'scale'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/enums.dart',
-                'ConstraintType',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -4433,18 +3898,7 @@ class $ConstraintType implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $ConstraintType;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -4485,23 +3939,7 @@ class $ScaleMode implements $Instance {
 
     values: ['fill', 'fit', 'crop', 'tile'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/layout.dart',
-                'ScaleMode',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -4536,18 +3974,7 @@ class $ScaleMode implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $ScaleMode;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -4588,23 +4015,7 @@ class $GridTrackSizingMode implements $Instance {
 
     values: ['auto', 'fixed'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/layout.dart',
-                'GridTrackSizingMode',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -4637,18 +4048,7 @@ class $GridTrackSizingMode implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $GridTrackSizingMode;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -4733,23 +4133,7 @@ class $ChildSize implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/layout.dart',
-                'ChildSize',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -4843,17 +4227,8 @@ class $ChildSize implements $Instance {
         return _counterAxisSizing == null
             ? const $null()
             : $ChildSizingMode.wrap(_counterAxisSizing);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $ChildSize;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -4919,23 +4294,7 @@ class $GridTrack implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/layout.dart',
-                'GridTrack',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -4998,17 +4357,8 @@ class $GridTrack implements $Instance {
       case 'sizingMode':
         final _sizingMode = $value.sizingMode;
         return $GridTrackSizingMode.wrap(_sizingMode);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $GridTrack;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -5171,32 +4521,16 @@ class $FigmaEffect implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/effects.dart',
-                'FigmaEffect',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
-      '_type': BridgeFieldDef(
+      'type': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
               'package:flutter_figma_preview/services/interpreter/bindings.dart',
-              '_FigmaEffect',
+              'FigmaEffectType',
             ),
             [],
           ),
@@ -5204,7 +4538,7 @@ class $FigmaEffect implements $Instance {
         isStatic: false,
       ),
 
-      '_color': BridgeFieldDef(
+      'color': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -5218,7 +4552,7 @@ class $FigmaEffect implements $Instance {
         isStatic: false,
       ),
 
-      '_offset': BridgeFieldDef(
+      'offset': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -5232,12 +4566,12 @@ class $FigmaEffect implements $Instance {
         isStatic: false,
       ),
 
-      '_radius': BridgeFieldDef(
+      'radius': BridgeFieldDef(
         BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.double, [])),
         isStatic: false,
       ),
 
-      '_spread': BridgeFieldDef(
+      'spread': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(CoreTypes.double, []),
           nullable: true,
@@ -5245,12 +4579,12 @@ class $FigmaEffect implements $Instance {
         isStatic: false,
       ),
 
-      '_visible': BridgeFieldDef(
+      'visible': BridgeFieldDef(
         BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool, [])),
         isStatic: false,
       ),
 
-      '_blendMode': BridgeFieldDef(
+      'blendMode': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
@@ -5264,7 +4598,7 @@ class $FigmaEffect implements $Instance {
         isStatic: false,
       ),
 
-      '_showShadowBehindNode': BridgeFieldDef(
+      'showShadowBehindNode': BridgeFieldDef(
         BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.bool, []), nullable: true),
         isStatic: false,
       ),
@@ -5337,17 +4671,41 @@ class $FigmaEffect implements $Instance {
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
     switch (identifier) {
-      case 'build':
-        return __build;
+      case 'type':
+        final _type = $value.type;
+        return runtime.wrapAlways(_type);
+
+      case 'color':
+        final _color = $value.color;
+        return _color == null ? const $null() : $Color.wrap(_color);
+
+      case 'offset':
+        final _offset = $value.offset;
+        return _offset == null ? const $null() : $Offset.wrap(_offset);
+
+      case 'radius':
+        final _radius = $value.radius;
+        return $double(_radius);
+
+      case 'spread':
+        final _spread = $value.spread;
+        return _spread == null ? const $null() : $double(_spread);
+
+      case 'visible':
+        final _visible = $value.visible;
+        return $bool(_visible);
+
+      case 'blendMode':
+        final _blendMode = $value.blendMode;
+        return _blendMode == null ? const $null() : $BlendMode.wrap(_blendMode);
+
+      case 'showShadowBehindNode':
+        final _showShadowBehindNode = $value.showShadowBehindNode;
+        return _showShadowBehindNode == null
+            ? const $null()
+            : $bool(_showShadowBehindNode);
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaEffect;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -5388,23 +4746,7 @@ class $FigmaFontStyle implements $Instance {
 
     values: ['regular', 'italic'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/text.dart',
-                'FigmaFontStyle',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -5437,18 +4779,7 @@ class $FigmaFontStyle implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaFontStyle;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -5489,23 +4820,7 @@ class $LetterSpacingUnit implements $Instance {
 
     values: ['pixels', 'percent'],
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/text.dart',
-                'LetterSpacingUnit',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {},
@@ -5538,18 +4853,7 @@ class $LetterSpacingUnit implements $Instance {
 
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
-    switch (identifier) {
-      case 'build':
-        return __build;
-    }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $LetterSpacingUnit;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -5626,23 +4930,7 @@ class $FontName implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/text.dart',
-                'FontName',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -5720,17 +5008,8 @@ class $FontName implements $Instance {
       case 'weight':
         final _weight = $value.weight;
         return $FontWeight.wrap(_weight);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FontName;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -5793,23 +5072,7 @@ class $LetterSpacing implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/text.dart',
-                'LetterSpacing',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -5866,17 +5129,8 @@ class $LetterSpacing implements $Instance {
       case 'unit':
         final _unit = $value.unit;
         return $LetterSpacingUnit.wrap(_unit);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $LetterSpacing;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -5928,7 +5182,10 @@ class $LineHeight implements $Instance {
           params: [
             BridgeParameter(
               'value',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.double, [])),
+              BridgeTypeAnnotation(
+                BridgeTypeRef(CoreTypes.double, []),
+                nullable: true,
+              ),
               false,
             ),
           ],
@@ -5943,7 +5200,10 @@ class $LineHeight implements $Instance {
           params: [
             BridgeParameter(
               'value',
-              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.double, [])),
+              BridgeTypeAnnotation(
+                BridgeTypeRef(CoreTypes.double, []),
+                nullable: true,
+              ),
               false,
             ),
           ],
@@ -5961,32 +5221,16 @@ class $LineHeight implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/text.dart',
-                'LineHeight',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
-      '_type': BridgeFieldDef(
+      'type': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(
             BridgeTypeSpec(
               'package:flutter_figma_preview/services/interpreter/bindings.dart',
-              '_LineHeight',
+              'LineHeightType',
             ),
             [],
           ),
@@ -5994,7 +5238,7 @@ class $LineHeight implements $Instance {
         isStatic: false,
       ),
 
-      '_value': BridgeFieldDef(
+      'value': BridgeFieldDef(
         BridgeTypeAnnotation(
           BridgeTypeRef(CoreTypes.double, []),
           nullable: true,
@@ -6046,17 +5290,15 @@ class $LineHeight implements $Instance {
   @override
   $Value? $getProperty(Runtime runtime, String identifier) {
     switch (identifier) {
-      case 'build':
-        return __build;
+      case 'type':
+        final _type = $value.type;
+        return runtime.wrapAlways(_type);
+
+      case 'value':
+        final _value = $value.value;
+        return _value == null ? const $null() : $double(_value);
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $LineHeight;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -6147,23 +5389,7 @@ class $FigmaTextStyle implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/text.dart',
-                'FigmaTextStyle',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -6261,17 +5487,8 @@ class $FigmaTextStyle implements $Instance {
       case 'lineHeight':
         final _lineHeight = $value.lineHeight;
         return $LineHeight.wrap(_lineHeight);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaTextStyle;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -6335,23 +5552,7 @@ class $FigmaTextSpan implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter_figma/src/foundation/text.dart',
-                'FigmaTextSpan',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -6409,17 +5610,8 @@ class $FigmaTextSpan implements $Instance {
       case 'style':
         final _style = $value.style;
         return _style == null ? const $null() : $FigmaTextStyle.wrap(_style);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaTextSpan;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -6612,23 +5804,7 @@ class $FigmaFrame implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter/src/widgets/framework.dart',
-                'Widget',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -6846,17 +6022,8 @@ class $FigmaFrame implements $Instance {
       case 'children':
         final _children = $value.children;
         return $List.view(_children, (e) => $Widget.wrap(e));
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaFrame;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -7053,23 +6220,7 @@ class $FigmaText implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter/src/widgets/framework.dart',
-                'Widget',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -7213,17 +6364,8 @@ class $FigmaText implements $Instance {
         return _characters == null
             ? const $null()
             : $List.view(_characters, (e) => $FigmaTextSpan.wrap(e));
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaText;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -7332,23 +6474,7 @@ class $FigmaDecorated implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter/src/widgets/framework.dart',
-                'Widget',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -7452,17 +6578,8 @@ class $FigmaDecorated implements $Instance {
       case 'child':
         final _child = $value.child;
         return $Widget.wrap(_child);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaDecorated;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -7543,23 +6660,7 @@ class $FigmaTransformed implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter/src/widgets/framework.dart',
-                'Widget',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -7624,17 +6725,8 @@ class $FigmaTransformed implements $Instance {
       case 'child':
         final _child = $value.child;
         return $Widget.wrap(_child);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaTransformed;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -7715,23 +6807,7 @@ class $FigmaClip implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter/src/widgets/framework.dart',
-                'Widget',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -7796,17 +6872,8 @@ class $FigmaClip implements $Instance {
       case 'child':
         final _child = $value.child;
         return $Widget.wrap(_child);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaClip;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override
@@ -7905,23 +6972,7 @@ class $FigmaFiltered implements $Instance {
       ),
     },
 
-    methods: {
-      'build': BridgeMethodDef(
-        BridgeFunctionDef(
-          returns: BridgeTypeAnnotation(
-            BridgeTypeRef(
-              BridgeTypeSpec(
-                'package:flutter/src/widgets/framework.dart',
-                'Widget',
-              ),
-              [],
-            ),
-          ),
-          namedParams: [],
-          params: [],
-        ),
-      ),
-    },
+    methods: {},
     getters: {},
     setters: {},
     fields: {
@@ -8011,17 +7062,8 @@ class $FigmaFiltered implements $Instance {
       case 'child':
         final _child = $value.child;
         return $Widget.wrap(_child);
-      case 'build':
-        return __build;
     }
     return _superclass.$getProperty(runtime, identifier);
-  }
-
-  static const $Function __build = $Function(_build);
-  static $Value? _build(Runtime runtime, $Value? target, List<$Value?> args) {
-    final self = target! as $FigmaFiltered;
-    final result = self.$value.build();
-    return runtime.wrapAlways(result);
   }
 
   @override

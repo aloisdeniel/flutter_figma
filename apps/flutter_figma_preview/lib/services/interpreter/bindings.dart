@@ -1,6 +1,4 @@
 import 'package:eval_annotation/eval_annotation.dart';
-import 'package:flutter/widgets.dart' as flu;
-import 'package:flutter_figma/widgets.dart' as fig;
 
 // ============================================================================
 // Geometry types
@@ -62,17 +60,7 @@ class FigmaRectangleShape {
 enum FigmaStrokeAlignment { inside, center, outside }
 
 @Bind()
-enum FigmaStrokeJoin {
-  miter,
-  bevel,
-  round;
-
-  fig.FigmaStrokeJoin build() => switch (this) {
-    miter => fig.FigmaStrokeJoin.miter,
-    bevel => fig.FigmaStrokeJoin.bevel,
-    round => fig.FigmaStrokeJoin.round,
-  };
-}
+enum FigmaStrokeJoin { miter, bevel, round }
 
 @Bind()
 class FigmaStroke {
@@ -100,22 +88,13 @@ class FigmaStroke {
   final double leftWeight;
   final FigmaStrokeJoin join;
   final FigmaStrokeAlignment alignment;
-
-  fig.FigmaStroke build() => fig.FigmaStroke(
-    topWeight: topWeight,
-    bottomWeight: bottomWeight,
-    leftWeight: leftWeight,
-    rightWeight: rightWeight,
-    join: join.build(),
-    alignment: alignment.build(),
-  );
 }
 
 // ============================================================================
 // Paint types
 // ============================================================================
 
-enum _FigmaPaint {
+enum FigmaPaintType {
   solid,
   linearGradient,
   radialGradient,
@@ -127,117 +106,57 @@ enum _FigmaPaint {
 class FigmaPaint {
   const FigmaPaint.solid({
     required Color color,
-    bool visible = true,
-    double opacity = 1.0,
-    BlendMode blendMode = BlendMode.normal,
-  }) : _type = _FigmaPaint.solid,
-       _solidColor = color,
-       _visible = visible,
-       _opacity = opacity,
-       _blendMode = blendMode,
-       _gradientStops = null,
-       _gradientTransform = null;
+    this.visible = true,
+    this.opacity = 1.0,
+    this.blendMode = BlendMode.normal,
+  }) : type = FigmaPaintType.solid,
+       solidColor = color,
+       gradientStops = null,
+       gradientTransform = null;
 
   const FigmaPaint.linearGradient({
-    required List<ColorStop> gradientStops,
-    FigmaTransform gradientTransform = FigmaTransform.identity,
-    bool visible = true,
-    double opacity = 1.0,
-    BlendMode blendMode = BlendMode.normal,
-  }) : _type = _FigmaPaint.linearGradient,
-       _gradientStops = gradientStops,
-       _gradientTransform = gradientTransform,
-       _visible = visible,
-       _opacity = opacity,
-       _blendMode = blendMode,
-       _solidColor = null;
+    required List<ColorStop> this.gradientStops,
+    FigmaTransform this.gradientTransform = FigmaTransform.identity,
+    this.visible = true,
+    this.opacity = 1.0,
+    this.blendMode = BlendMode.normal,
+  }) : type = FigmaPaintType.linearGradient,
+       solidColor = null;
 
   const FigmaPaint.radialGradient({
-    required List<ColorStop> gradientStops,
-    FigmaTransform gradientTransform = FigmaTransform.identity,
-    bool visible = true,
-    double opacity = 1.0,
-    BlendMode blendMode = BlendMode.normal,
-  }) : _type = _FigmaPaint.radialGradient,
-       _gradientStops = gradientStops,
-       _gradientTransform = gradientTransform,
-       _visible = visible,
-       _opacity = opacity,
-       _blendMode = blendMode,
-       _solidColor = null;
+    required List<ColorStop> this.gradientStops,
+    FigmaTransform this.gradientTransform = FigmaTransform.identity,
+    this.visible = true,
+    this.opacity = 1.0,
+    this.blendMode = BlendMode.normal,
+  }) : type = FigmaPaintType.radialGradient,
+       solidColor = null;
 
   const FigmaPaint.angularGradient({
-    required List<ColorStop> gradientStops,
-    FigmaTransform gradientTransform = FigmaTransform.identity,
-    bool visible = true,
-    double opacity = 1.0,
-    BlendMode blendMode = BlendMode.normal,
-  }) : _type = _FigmaPaint.angularGradient,
-       _gradientStops = gradientStops,
-       _gradientTransform = gradientTransform,
-       _visible = visible,
-       _opacity = opacity,
-       _blendMode = blendMode,
-       _solidColor = null;
+    required List<ColorStop> this.gradientStops,
+    FigmaTransform this.gradientTransform = FigmaTransform.identity,
+    this.visible = true,
+    this.opacity = 1.0,
+    this.blendMode = BlendMode.normal,
+  }) : type = FigmaPaintType.angularGradient,
+       solidColor = null;
 
   const FigmaPaint.diamondGradient({
-    required List<ColorStop> gradientStops,
-    required FigmaTransform gradientTransform,
-    bool visible = true,
-    double opacity = 1.0,
-    BlendMode blendMode = BlendMode.normal,
-  }) : _type = _FigmaPaint.diamondGradient,
-       _gradientStops = gradientStops,
-       _gradientTransform = gradientTransform,
-       _visible = visible,
-       _opacity = opacity,
-       _blendMode = blendMode,
-       _solidColor = null;
+    required List<ColorStop> this.gradientStops,
+    required FigmaTransform this.gradientTransform,
+    this.visible = true,
+    this.opacity = 1.0,
+    this.blendMode = BlendMode.normal,
+  }) : type = FigmaPaintType.diamondGradient,
+       solidColor = null;
 
-  final _FigmaPaint _type;
-  final Color? _solidColor;
-  final List<ColorStop>? _gradientStops;
-  final FigmaTransform? _gradientTransform;
-  final bool _visible;
-  final double _opacity;
-  final BlendMode _blendMode;
-
-  fig.FigmaPaint build() => switch (_type) {
-    _FigmaPaint.solid => fig.SolidPaint(
-      color: _solidColor!.build(),
-      visible: _visible,
-      opacity: _opacity,
-      blendMode: _blendMode.build(),
-    ),
-    _FigmaPaint.linearGradient => fig.LinearGradientPaint(
-      gradientStops: _gradientStops!.map((x) => x.build()).toList(),
-      gradientTransform: _gradientTransform!.build(),
-      visible: _visible,
-      opacity: _opacity,
-      blendMode: _blendMode.build(),
-    ),
-    _FigmaPaint.radialGradient => fig.RadialGradientPaint(
-      gradientStops: _gradientStops!.map((x) => x.build()).toList(),
-      gradientTransform: _gradientTransform!.build(),
-      visible: _visible,
-      opacity: _opacity,
-      blendMode: _blendMode.build(),
-    ),
-    _FigmaPaint.angularGradient => fig.AngularGradientPaint(
-      gradientStops: _gradientStops!.map((x) => x.build()).toList(),
-      gradientTransform: _gradientTransform!.build(),
-      visible: _visible,
-      opacity: _opacity,
-      blendMode: _blendMode.build(),
-    ),
-    _FigmaPaint.diamondGradient => fig.DiamondGradientPaint(
-      gradientStops: _gradientStops!.map((x) => x.build()).toList(),
-      gradientTransform: _gradientTransform!.build(),
-      visible: _visible,
-      opacity: _opacity,
-      blendMode: _blendMode.build(),
-    ),
-  };
+  final FigmaPaintType type;
+  final Color? solidColor;
+  final List<ColorStop>? gradientStops;
+  final FigmaTransform? gradientTransform;
+  final bool visible;
+  final double opacity;
+  final BlendMode blendMode;
 }
 
 @Bind()
@@ -246,9 +165,6 @@ class ColorStop {
 
   final double position;
   final Color color;
-
-  fig.ColorStop build() =>
-      fig.ColorStop(position: position, color: color.build());
 }
 
 @Bind()
@@ -257,11 +173,6 @@ class FigmaDecoration {
 
   final List<FigmaPaint> fills;
   final List<FigmaPaint> strokes;
-
-  fig.FigmaDecoration build() => fig.FigmaDecoration(
-    fills: fills.map((x) => x.build()).toList(),
-    strokes: strokes.map((x) => x.build()).toList(),
-  );
 }
 
 @Bind()
@@ -270,106 +181,28 @@ abstract class Widget {
 }
 
 @Bind()
-enum Axis {
-  vertical,
-  horizontal;
-
-  flu.Axis build() => switch (this) {
-    vertical => flu.Axis.vertical,
-    horizontal => flu.Axis.horizontal,
-  };
-}
+enum Axis { vertical, horizontal }
 
 @Bind()
-enum OverflowDirection {
-  none,
-  horizontal,
-  vertical,
-  both;
-
-  fig.OverflowDirection build() => switch (this) {
-    none => fig.OverflowDirection.none,
-    horizontal => fig.OverflowDirection.horizontal,
-    vertical => fig.OverflowDirection.vertical,
-    both => fig.OverflowDirection.both,
-  };
-}
+enum OverflowDirection { none, horizontal, vertical, both }
 
 @Bind()
-enum LayoutMode {
-  freeform,
-  horizontal,
-  vertical,
-  grid;
-
-  fig.LayoutMode build() => switch (this) {
-    freeform => fig.LayoutMode.freeform,
-    horizontal => fig.LayoutMode.horizontal,
-    vertical => fig.LayoutMode.vertical,
-    grid => fig.LayoutMode.grid,
-  };
-}
+enum LayoutMode { freeform, horizontal, vertical, grid }
 
 @Bind()
-enum PrimaryAxisSizingMode {
-  fixed,
-  auto;
-
-  fig.PrimaryAxisSizingMode build() => switch (this) {
-    fixed => fig.PrimaryAxisSizingMode.fixed,
-    auto => fig.PrimaryAxisSizingMode.auto,
-  };
-}
+enum PrimaryAxisSizingMode { fixed, auto }
 
 @Bind()
-enum CounterAxisSizingMode {
-  fixed,
-  auto;
-
-  fig.CounterAxisSizingMode build() => switch (this) {
-    fixed => fig.CounterAxisSizingMode.fixed,
-    auto => fig.CounterAxisSizingMode.auto,
-  };
-}
+enum CounterAxisSizingMode { fixed, auto }
 
 @Bind()
-enum LayoutWrap {
-  noWrap,
-  wrap;
-
-  fig.LayoutWrap build() => switch (this) {
-    noWrap => fig.LayoutWrap.noWrap,
-    wrap => fig.LayoutWrap.wrap,
-  };
-}
+enum LayoutWrap { noWrap, wrap }
 
 @Bind()
-enum LayoutAlign {
-  min,
-  center,
-  max,
-  stretch,
-  spaceBetween;
-
-  fig.LayoutAlign build() => switch (this) {
-    min => fig.LayoutAlign.min,
-    center => fig.LayoutAlign.center,
-    max => fig.LayoutAlign.max,
-    stretch => fig.LayoutAlign.stretch,
-    spaceBetween => fig.LayoutAlign.spaceBetween,
-  };
-}
+enum LayoutAlign { min, center, max, stretch, spaceBetween }
 
 @Bind()
-enum ChildSizingMode {
-  fixed,
-  hug;
-
-  fig.ChildSizingMode build() => switch (this) {
-    fixed => fig.ChildSizingMode.fixed,
-    hug => fig.ChildSizingMode.hug,
-  };
-}
+enum ChildSizingMode { fixed, hug }
 
 @Bind()
 class EdgeInsets {
@@ -390,12 +223,9 @@ class EdgeInsets {
     right: 0,
     left: 0,
   );
-
-  flu.EdgeInsets build() =>
-      flu.EdgeInsets.only(top: top, bottom: bottom, left: left, right: right);
 }
 
-enum _FigmaLayoutProperties { auto, freeform, grid }
+enum FigmaLayoutPropertiesType { auto, freeform, grid }
 
 @Bind()
 class FigmaLayoutProperties {
@@ -411,52 +241,52 @@ class FigmaLayoutProperties {
     EdgeInsets padding = EdgeInsets.zero,
     double itemSpacing = 0,
     double counterAxisSpacing = 0,
-  }) : _type = _FigmaLayoutProperties.auto,
-       _autoReferenceWidth = referenceWidth,
-       _autoReferenceHeight = referenceHeight,
-       _autoAxis = axis,
-       _autoPrimaryAxisSizingMode = primaryAxisSizingMode,
-       _autoCounterAxisSizingMode = counterAxisSizingMode,
-       _autoPrimaryAxisAlignItems = primaryAxisAlignItems,
-       _autoCounterAxisAlignItems = counterAxisAlignItems,
-       _autoLayoutWrap = layoutWrap,
-       _autoPadding = padding,
-       _autoItemSpacing = itemSpacing,
-       _autoCounterAxisSpacing = counterAxisSpacing,
-       _freeformReferenceWidth = null,
-       _freeformReferenceHeight = null,
-       _gridColumnCount = null,
-       _gridRowCount = null,
-       _gridColumns = null,
-       _gridRows = null,
-       _gridColumnGap = null,
-       _gridRowGap = null,
-       _gridPadding = null;
+  }) : type = FigmaLayoutPropertiesType.auto,
+       autoReferenceWidth = referenceWidth,
+       autoReferenceHeight = referenceHeight,
+       autoAxis = axis,
+       autoPrimaryAxisSizingMode = primaryAxisSizingMode,
+       autoCounterAxisSizingMode = counterAxisSizingMode,
+       autoPrimaryAxisAlignItems = primaryAxisAlignItems,
+       autoCounterAxisAlignItems = counterAxisAlignItems,
+       autoLayoutWrap = layoutWrap,
+       autoPadding = padding,
+       autoItemSpacing = itemSpacing,
+       autoCounterAxisSpacing = counterAxisSpacing,
+       freeformReferenceWidth = null,
+       freeformReferenceHeight = null,
+       gridColumnCount = null,
+       gridRowCount = null,
+       gridColumns = null,
+       gridRows = null,
+       gridColumnGap = null,
+       gridRowGap = null,
+       gridPadding = null;
 
   const FigmaLayoutProperties.freeform({
     required double referenceWidth,
     required double referenceHeight,
-  }) : _type = _FigmaLayoutProperties.freeform,
-       _freeformReferenceWidth = referenceWidth,
-       _freeformReferenceHeight = referenceHeight,
-       _autoReferenceWidth = null,
-       _autoReferenceHeight = null,
-       _autoAxis = null,
-       _autoPrimaryAxisSizingMode = null,
-       _autoCounterAxisSizingMode = null,
-       _autoPrimaryAxisAlignItems = null,
-       _autoCounterAxisAlignItems = null,
-       _autoLayoutWrap = null,
-       _autoPadding = null,
-       _autoItemSpacing = null,
-       _autoCounterAxisSpacing = null,
-       _gridColumnCount = null,
-       _gridRowCount = null,
-       _gridColumns = null,
-       _gridRows = null,
-       _gridColumnGap = null,
-       _gridRowGap = null,
-       _gridPadding = null;
+  }) : type = FigmaLayoutPropertiesType.freeform,
+       freeformReferenceWidth = referenceWidth,
+       freeformReferenceHeight = referenceHeight,
+       autoReferenceWidth = null,
+       autoReferenceHeight = null,
+       autoAxis = null,
+       autoPrimaryAxisSizingMode = null,
+       autoCounterAxisSizingMode = null,
+       autoPrimaryAxisAlignItems = null,
+       autoCounterAxisAlignItems = null,
+       autoLayoutWrap = null,
+       autoPadding = null,
+       autoItemSpacing = null,
+       autoCounterAxisSpacing = null,
+       gridColumnCount = null,
+       gridRowCount = null,
+       gridColumns = null,
+       gridRows = null,
+       gridColumnGap = null,
+       gridRowGap = null,
+       gridPadding = null;
 
   const FigmaLayoutProperties.grid({
     int columnCount = 1,
@@ -466,84 +296,55 @@ class FigmaLayoutProperties {
     double columnGap = 0,
     double rowGap = 0,
     EdgeInsets padding = EdgeInsets.zero,
-  }) : _type = _FigmaLayoutProperties.grid,
-       _gridColumnCount = columnCount,
-       _gridRowCount = rowCount,
-       _gridColumns = columns,
-       _gridRows = rows,
-       _gridColumnGap = columnGap,
-       _gridRowGap = rowGap,
-       _gridPadding = padding,
-       _autoReferenceWidth = null,
-       _autoReferenceHeight = null,
-       _autoAxis = null,
-       _autoPrimaryAxisSizingMode = null,
-       _autoCounterAxisSizingMode = null,
-       _autoPrimaryAxisAlignItems = null,
-       _autoCounterAxisAlignItems = null,
-       _autoLayoutWrap = null,
-       _autoPadding = null,
-       _autoItemSpacing = null,
-       _autoCounterAxisSpacing = null,
-       _freeformReferenceWidth = null,
-       _freeformReferenceHeight = null;
+  }) : type = FigmaLayoutPropertiesType.grid,
+       gridColumnCount = columnCount,
+       gridRowCount = rowCount,
+       gridColumns = columns,
+       gridRows = rows,
+       gridColumnGap = columnGap,
+       gridRowGap = rowGap,
+       gridPadding = padding,
+       autoReferenceWidth = null,
+       autoReferenceHeight = null,
+       autoAxis = null,
+       autoPrimaryAxisSizingMode = null,
+       autoCounterAxisSizingMode = null,
+       autoPrimaryAxisAlignItems = null,
+       autoCounterAxisAlignItems = null,
+       autoLayoutWrap = null,
+       autoPadding = null,
+       autoItemSpacing = null,
+       autoCounterAxisSpacing = null,
+       freeformReferenceWidth = null,
+       freeformReferenceHeight = null;
 
-  final _FigmaLayoutProperties _type;
+  final FigmaLayoutPropertiesType type;
 
   // Auto layout properties
-  final double? _autoReferenceWidth;
-  final double? _autoReferenceHeight;
-  final Axis? _autoAxis;
-  final PrimaryAxisSizingMode? _autoPrimaryAxisSizingMode;
-  final CounterAxisSizingMode? _autoCounterAxisSizingMode;
-  final LayoutAlign? _autoPrimaryAxisAlignItems;
-  final LayoutAlign? _autoCounterAxisAlignItems;
-  final LayoutWrap? _autoLayoutWrap;
-  final EdgeInsets? _autoPadding;
-  final double? _autoItemSpacing;
-  final double? _autoCounterAxisSpacing;
+  final double? autoReferenceWidth;
+  final double? autoReferenceHeight;
+  final Axis? autoAxis;
+  final PrimaryAxisSizingMode? autoPrimaryAxisSizingMode;
+  final CounterAxisSizingMode? autoCounterAxisSizingMode;
+  final LayoutAlign? autoPrimaryAxisAlignItems;
+  final LayoutAlign? autoCounterAxisAlignItems;
+  final LayoutWrap? autoLayoutWrap;
+  final EdgeInsets? autoPadding;
+  final double? autoItemSpacing;
+  final double? autoCounterAxisSpacing;
 
   // Freeform layout properties
-  final double? _freeformReferenceWidth;
-  final double? _freeformReferenceHeight;
+  final double? freeformReferenceWidth;
+  final double? freeformReferenceHeight;
 
   // Grid layout properties
-  final int? _gridColumnCount;
-  final int? _gridRowCount;
-  final List<GridTrack>? _gridColumns;
-  final List<GridTrack>? _gridRows;
-  final double? _gridColumnGap;
-  final double? _gridRowGap;
-  final EdgeInsets? _gridPadding;
-
-  fig.FigmaLayoutProperties build() => switch (_type) {
-    _FigmaLayoutProperties.auto => fig.FigmaLayoutProperties.auto(
-      referenceWidth: _autoReferenceWidth!,
-      referenceHeight: _autoReferenceHeight!,
-      axis: _autoAxis!.build(),
-      primaryAxisSizingMode: _autoPrimaryAxisSizingMode!.build(),
-      counterAxisSizingMode: _autoCounterAxisSizingMode!.build(),
-      primaryAxisAlignItems: _autoPrimaryAxisAlignItems!.build(),
-      counterAxisAlignItems: _autoCounterAxisAlignItems!.build(),
-      layoutWrap: _autoLayoutWrap!.build(),
-      padding: _autoPadding!.build(),
-      itemSpacing: _autoItemSpacing!,
-      counterAxisSpacing: _autoCounterAxisSpacing!,
-    ),
-    _FigmaLayoutProperties.freeform => fig.FigmaLayoutProperties.freeform(
-      referenceWidth: _freeformReferenceWidth!,
-      referenceHeight: _freeformReferenceHeight!,
-    ),
-    _FigmaLayoutProperties.grid => fig.FigmaLayoutProperties.grid(
-      columnCount: _gridColumnCount!,
-      rowCount: _gridRowCount!,
-      columns: _gridColumns!.map((x) => x.build()).toList(),
-      rows: _gridRows!.map((x) => x.build()).toList(),
-      columnGap: _gridColumnGap!,
-      rowGap: _gridRowGap!,
-      padding: _gridPadding!.build(),
-    ),
-  };
+  final int? gridColumnCount;
+  final int? gridRowCount;
+  final List<GridTrack>? gridColumns;
+  final List<GridTrack>? gridRows;
+  final double? gridColumnGap;
+  final double? gridRowGap;
+  final EdgeInsets? gridPadding;
 }
 
 @Bind()
@@ -551,13 +352,6 @@ class FigmaLayout extends Widget {
   const FigmaLayout({required this.layout, required this.children});
   final FigmaLayoutProperties layout;
   final List<Widget> children;
-  @override
-  flu.Widget build() {
-    return fig.FigmaLayout(
-      layout: layout.build(),
-      children: children.map((x) => x.build()).toList(),
-    );
-  }
 }
 
 // ============================================================================
@@ -577,9 +371,6 @@ class Color {
   final double red;
   final double green;
   final double blue;
-
-  flu.Color build() =>
-      flu.Color.from(alpha: alpha, red: red, green: green, blue: blue);
 }
 
 @Bind()
@@ -587,37 +378,10 @@ class Offset {
   const Offset(this.dx, this.dy);
   final double dx;
   final double dy;
-
-  flu.Offset build() => flu.Offset(dx, dy);
 }
 
 @Bind()
-enum FontWeight {
-  w100,
-  w200,
-  w300,
-  w400,
-  w500,
-  w600,
-  w700,
-  w800,
-  w900;
-
-  flu.FontWeight build() => switch (this) {
-    w100 => flu.FontWeight.w100,
-    w200 => flu.FontWeight.w200,
-    w300 => flu.FontWeight.w300,
-    w400 => flu.FontWeight.w400,
-    w500 => flu.FontWeight.w500,
-    w600 => flu.FontWeight.w600,
-    w700 => flu.FontWeight.w700,
-    w800 => flu.FontWeight.w800,
-    w900 => flu.FontWeight.w900,
-  };
-
-  static FontWeight get normal => w400;
-  static FontWeight get bold => w700;
-}
+enum FontWeight { w100, w200, w300, w400, w500, w600, w700, w800, w900 }
 
 // ============================================================================
 // Enums
@@ -643,73 +407,17 @@ enum BlendMode {
   hue,
   saturation,
   color,
-  luminosity;
-
-  fig.BlendMode build() => switch (this) {
-    passThrough => fig.BlendMode.passThrough,
-    normal => fig.BlendMode.normal,
-    darken => fig.BlendMode.darken,
-    multiply => fig.BlendMode.multiply,
-    linearBurn => fig.BlendMode.linearBurn,
-    colorBurn => fig.BlendMode.colorBurn,
-    lighten => fig.BlendMode.lighten,
-    screen => fig.BlendMode.screen,
-    linearDodge => fig.BlendMode.linearDodge,
-    colorDodge => fig.BlendMode.colorDodge,
-    overlay => fig.BlendMode.overlay,
-    softLight => fig.BlendMode.softLight,
-    hardLight => fig.BlendMode.hardLight,
-    difference => fig.BlendMode.difference,
-    exclusion => fig.BlendMode.exclusion,
-    hue => fig.BlendMode.hue,
-    saturation => fig.BlendMode.saturation,
-    color => fig.BlendMode.color,
-    luminosity => fig.BlendMode.luminosity,
-  };
+  luminosity,
 }
 
 @Bind()
-enum ConstraintType {
-  min,
-  center,
-  max,
-  stretch,
-  scale;
-
-  fig.ConstraintType build() => switch (this) {
-    min => fig.ConstraintType.min,
-    center => fig.ConstraintType.center,
-    max => fig.ConstraintType.max,
-    stretch => fig.ConstraintType.stretch,
-    scale => fig.ConstraintType.scale,
-  };
-}
+enum ConstraintType { min, center, max, stretch, scale }
 
 @Bind()
-enum ScaleMode {
-  fill,
-  fit,
-  crop,
-  tile;
-
-  fig.ScaleMode build() => switch (this) {
-    fill => fig.ScaleMode.fill,
-    fit => fig.ScaleMode.fit,
-    crop => fig.ScaleMode.crop,
-    tile => fig.ScaleMode.tile,
-  };
-}
+enum ScaleMode { fill, fit, crop, tile }
 
 @Bind()
-enum GridTrackSizingMode {
-  auto,
-  fixed;
-
-  fig.GridTrackSizingMode build() => switch (this) {
-    auto => fig.GridTrackSizingMode.auto,
-    fixed => fig.GridTrackSizingMode.fixed,
-  };
-}
+enum GridTrackSizingMode { auto, fixed }
 
 // ============================================================================
 // Layout types
@@ -728,13 +436,6 @@ class ChildSize {
   final double height;
   final ChildSizingMode? primaryAxisSizing;
   final ChildSizingMode? counterAxisSizing;
-
-  fig.ChildSize build() => fig.ChildSize(
-    width: width,
-    height: height,
-    primaryAxisSizing: primaryAxisSizing?.build(),
-    counterAxisSizing: counterAxisSizing?.build(),
-  );
 }
 
 @Bind()
@@ -743,86 +444,50 @@ class GridTrack {
 
   final double? size;
   final GridTrackSizingMode sizingMode;
-
-  fig.GridTrack build() =>
-      fig.GridTrack(size: size, sizingMode: sizingMode.build());
 }
 
 // ============================================================================
 // Effect types
 // ============================================================================
 
-enum _FigmaEffect { dropShadow, layerBlur, backgroundBlur }
+enum FigmaEffectType { dropShadow, layerBlur, backgroundBlur }
 
 @Bind()
 class FigmaEffect {
   const FigmaEffect.dropShadow({
-    required Color color,
-    required Offset offset,
-    required double radius,
-    double spread = 0,
-    bool visible = true,
-    BlendMode blendMode = BlendMode.normal,
-    bool showShadowBehindNode = false,
-  }) : _type = _FigmaEffect.dropShadow,
-       _color = color,
-       _offset = offset,
-       _radius = radius,
-       _spread = spread,
-       _visible = visible,
-       _blendMode = blendMode,
-       _showShadowBehindNode = showShadowBehindNode;
+    required Color this.color,
+    required Offset this.offset,
+    required this.radius,
+    double this.spread = 0,
+    this.visible = true,
+    BlendMode this.blendMode = BlendMode.normal,
+    bool this.showShadowBehindNode = false,
+  }) : type = FigmaEffectType.dropShadow;
 
-  const FigmaEffect.layerBlur({required double radius, bool visible = true})
-    : _type = _FigmaEffect.layerBlur,
-      _radius = radius,
-      _visible = visible,
-      _color = null,
-      _offset = null,
-      _spread = null,
-      _blendMode = null,
-      _showShadowBehindNode = null;
+  const FigmaEffect.layerBlur({required this.radius, this.visible = true})
+    : type = FigmaEffectType.layerBlur,
+      color = null,
+      offset = null,
+      spread = null,
+      blendMode = null,
+      showShadowBehindNode = null;
 
-  const FigmaEffect.backgroundBlur({
-    required double radius,
-    bool visible = true,
-  }) : _type = _FigmaEffect.backgroundBlur,
-       _radius = radius,
-       _visible = visible,
-       _color = null,
-       _offset = null,
-       _spread = null,
-       _blendMode = null,
-       _showShadowBehindNode = null;
+  const FigmaEffect.backgroundBlur({required this.radius, this.visible = true})
+    : type = FigmaEffectType.backgroundBlur,
+      color = null,
+      offset = null,
+      spread = null,
+      blendMode = null,
+      showShadowBehindNode = null;
 
-  final _FigmaEffect _type;
-  final Color? _color;
-  final Offset? _offset;
-  final double _radius;
-  final double? _spread;
-  final bool _visible;
-  final BlendMode? _blendMode;
-  final bool? _showShadowBehindNode;
-
-  fig.FigmaEffect build() => switch (_type) {
-    _FigmaEffect.dropShadow => fig.FigmaEffect.dropShadow(
-      color: _color!.build(),
-      offset: _offset!.build(),
-      radius: _radius,
-      spread: _spread!,
-      visible: _visible,
-      blendMode: _blendMode!.build(),
-      showShadowBehindNode: _showShadowBehindNode!,
-    ),
-    _FigmaEffect.layerBlur => fig.FigmaEffect.layerBlur(
-      radius: _radius,
-      visible: _visible,
-    ),
-    _FigmaEffect.backgroundBlur => fig.FigmaEffect.backgroundBlur(
-      radius: _radius,
-      visible: _visible,
-    ),
-  };
+  final FigmaEffectType type;
+  final Color? color;
+  final Offset? offset;
+  final double radius;
+  final double? spread;
+  final bool visible;
+  final BlendMode? blendMode;
+  final bool? showShadowBehindNode;
 }
 
 // ============================================================================
@@ -830,26 +495,10 @@ class FigmaEffect {
 // ============================================================================
 
 @Bind()
-enum FigmaFontStyle {
-  regular,
-  italic;
-
-  fig.FigmaFontStyle build() => switch (this) {
-    regular => fig.FigmaFontStyle.regular,
-    italic => fig.FigmaFontStyle.italic,
-  };
-}
+enum FigmaFontStyle { regular, italic }
 
 @Bind()
-enum LetterSpacingUnit {
-  pixels,
-  percent;
-
-  fig.LetterSpacingUnit build() => switch (this) {
-    pixels => fig.LetterSpacingUnit.pixels,
-    percent => fig.LetterSpacingUnit.percent,
-  };
-}
+enum LetterSpacingUnit { pixels, percent }
 
 @Bind()
 class FontName {
@@ -862,12 +511,6 @@ class FontName {
   final String family;
   final FigmaFontStyle style;
   final FontWeight weight;
-
-  fig.FontName build() => fig.FontName(
-    family: family,
-    style: style.build(),
-    weight: weight.build(),
-  );
 }
 
 @Bind()
@@ -876,9 +519,6 @@ class LetterSpacing {
 
   final double value;
   final LetterSpacingUnit unit;
-
-  fig.LetterSpacing build() =>
-      fig.LetterSpacing(value: value, unit: unit.build());
 }
 
 enum LineHeightType { pixels, percent, auto }
@@ -950,23 +590,6 @@ class FigmaFrame extends Widget {
   final BlendMode blendMode;
   final bool clipContent;
   final List<Widget> children;
-
-  @override
-  flu.Widget build() {
-    return fig.FigmaFrame(
-      layout: layout.build(),
-      size: size?.build(),
-      decoration: decoration?.build(),
-      effects: effects.map((x) => x.build()).toList(),
-      opacity: opacity,
-      visible: visible,
-      blendMode: blendMode.build(),
-      shape: shape.build(),
-      stroke: stroke.build(),
-      clipContent: clipContent,
-      children: children.map((x) => x.build()).toList(),
-    );
-  }
 }
 
 @Bind()
@@ -990,23 +613,6 @@ class FigmaText extends Widget {
   final List<FigmaPaint> strokes;
   final String? text;
   final List<FigmaTextSpan>? characters;
-
-  @override
-  flu.Widget build() {
-    return characters != null
-        ? fig.FigmaText.rich(
-            characters: characters!.map((x) => x.build()).toList(),
-            style: style?.build(),
-            fills: fills.map((x) => x.build()).toList(),
-            strokes: strokes.map((x) => x.build()).toList(),
-          )
-        : fig.FigmaText(
-            text!,
-            style: style?.build(),
-            fills: fills.map((x) => x.build()).toList(),
-            strokes: strokes.map((x) => x.build()).toList(),
-          );
-  }
 }
 
 @Bind()
@@ -1022,16 +628,6 @@ class FigmaDecorated extends Widget {
   final FigmaRectangleShape shape;
   final FigmaDecoration decoration;
   final Widget child;
-
-  @override
-  flu.Widget build() {
-    return fig.FigmaDecorated(
-      decoration: decoration.build(),
-      shape: shape.build(),
-      stroke: stroke.build(),
-      child: child.build(),
-    );
-  }
 }
 
 @Bind()
@@ -1040,14 +636,6 @@ class FigmaTransformed extends Widget {
 
   final FigmaTransform transform;
   final Widget child;
-
-  @override
-  flu.Widget build() {
-    return fig.FigmaTransformed(
-      transform: transform.build(),
-      child: child.build(),
-    );
-  }
 }
 
 @Bind()
@@ -1056,11 +644,6 @@ class FigmaClip extends Widget {
 
   final FigmaRectangleShape shape;
   final Widget child;
-
-  @override
-  flu.Widget build() {
-    return fig.FigmaClip(shape: shape.build(), child: child.build());
-  }
 }
 
 @Bind()
@@ -1074,13 +657,4 @@ class FigmaFiltered extends Widget {
   final List<FigmaEffect> effects;
   final FigmaRectangleShape shape;
   final Widget child;
-
-  @override
-  flu.Widget build() {
-    return fig.FigmaFiltered(
-      effects: effects.map((x) => x.build()).toList(),
-      shape: shape.build(),
-      child: child.build(),
-    );
-  }
 }
