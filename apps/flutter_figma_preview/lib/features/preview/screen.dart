@@ -10,7 +10,17 @@ class PreviewScreen extends StatefulWidget {
 }
 
 class _PreviewScreenState extends State<PreviewScreen> {
-  final _controller = TextEditingController();
+  final _controller = TextEditingController(
+    text: '''
+  class Example extends StatelessWidget {
+  const Example();
+
+  @override
+  Widget build(BuildContext context){
+    return FigmaText('Hello!');
+  }
+}''',
+  );
 
   final _interpreter = Interpreter();
   final ValueNotifier<InterpreterResult> _result =
@@ -46,6 +56,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
           child: Material(
             child: TextField(
               controller: _controller,
+              maxLines: null,
               decoration: InputDecoration.collapsed(
                 hintText: 'Enter code here...',
               ),
@@ -53,11 +64,14 @@ class _PreviewScreenState extends State<PreviewScreen> {
           ),
         ),
         Expanded(
-          child: ValueListenableBuilder(
-            valueListenable: _result,
-            builder: (context, result, _) {
-              return Preview(result: result);
-            },
+          child: Container(
+            color: Colors.white,
+            child: ValueListenableBuilder(
+              valueListenable: _result,
+              builder: (context, result, _) {
+                return Preview(result: result);
+              },
+            ),
           ),
         ),
       ],
