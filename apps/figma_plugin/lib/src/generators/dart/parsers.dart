@@ -4,6 +4,33 @@ import 'package:figma_plugin/src/figma.dart';
 class Parsers {
   Parsers._();
 
+  /// Converts a string to PascalCase for class names
+  /// Example: "my frame name" -> "MyFrameName"
+  static String toPascalCase(String str) {
+    if (str.isEmpty) return 'Widget';
+    
+    // Remove special characters and split by spaces, hyphens, underscores
+    final words = str
+        .replaceAll(RegExp(r'[^\w\s-]'), '')
+        .split(RegExp(r'[\s_-]+'))
+        .where((word) => word.isNotEmpty)
+        .toList();
+    
+    if (words.isEmpty) return 'Widget';
+    
+    // Capitalize first letter of each word
+    final pascalCase = words
+        .map((word) => word[0].toUpperCase() + word.substring(1).toLowerCase())
+        .join('');
+    
+    // Ensure it starts with a letter (Dart class name requirement)
+    if (pascalCase.isEmpty || !RegExp(r'^[A-Z]').hasMatch(pascalCase)) {
+      return 'Widget$pascalCase';
+    }
+    
+    return pascalCase;
+  }
+
   static String parsePrimaryAxisSizingMode(FrameNode node) {
     // In Figma, the primary axis sizing is determined by layoutSizingHorizontal/Vertical
     final mode = node.layoutMode == 'HORIZONTAL'

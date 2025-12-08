@@ -2,6 +2,7 @@ import 'package:figma_plugin/src/figma.dart';
 
 import 'code_buffer.dart';
 import 'node_builder.dart';
+import 'parsers.dart';
 
 /// Main code generator for Flutter code from Figma nodes
 class FlutterCodeGenerator {
@@ -17,9 +18,43 @@ class FlutterCodeGenerator {
 
     for (var node in nodes) {
       buffer.writeLine('');
-      nodeBuilder.buildSceneNode(node);
+      _generateWidgetClass(buffer, nodeBuilder, node);
     }
 
     return buffer.toString();
+  }
+
+  void _generateWidgetClass(
+    CodeBuffer buffer,
+    NodeBuilder nodeBuilder,
+    SceneNode node,
+  ) {
+    final className = Parsers.toPascalCase(node.name);
+
+    // Generate class definition
+    buffer.writeLine('class $className extends StatelessWidget {');
+    buffer.indent();
+
+    // Constructor
+    buffer.writeLine('const $className({super.key});');
+    buffer.writeLine('');
+
+    // Build method
+    buffer.writeLine('@override');
+    buffer.writeLine('Widget build(BuildContext context) {');
+    buffer.indent();
+    buffer.writeLine('return ');
+    buffer.indent();
+
+    // Generate the widget tree
+    nodeBuilder.buildSceneNode(node);
+    buffer.writeLine(';');
+
+    buffer.unindent();
+    buffer.unindent();
+    buffer.writeLine('}');
+
+    buffer.unindent();
+    buffer.writeLine('}');
   }
 }
