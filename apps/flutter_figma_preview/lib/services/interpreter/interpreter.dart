@@ -1,4 +1,5 @@
 import 'package:dart_eval/dart_eval.dart';
+import 'package:flutter_figma_preview/eval_plugin.dart';
 
 sealed class InterpreterResult {
   const InterpreterResult();
@@ -7,6 +8,7 @@ sealed class InterpreterResult {
 class Interpreter {
   InterpreterResult evaluate(String code) {
     final compiler = Compiler();
+    compiler.addPlugin(FlutterFigmaPreviewPlugin());
 
     final program = compiler.compile({
       'preview': {
