@@ -273,6 +273,37 @@ extension GridTrackBuild on GridTrack {
       fig.GridTrack(size: size, sizingMode: sizingMode.build());
 }
 
+extension FigmaLayoutPropertiesBuild on FigmaLayoutProperties {
+  fig.FigmaLayoutProperties build() => switch (type) {
+    FigmaLayoutPropertiesType.auto => fig.FigmaLayoutProperties.auto(
+      referenceWidth: autoReferenceWidth!,
+      referenceHeight: autoReferenceHeight!,
+      axis: autoAxis!.build(),
+      primaryAxisSizingMode: autoPrimaryAxisSizingMode!.build(),
+      counterAxisSizingMode: autoCounterAxisSizingMode!.build(),
+      primaryAxisAlignItems: autoPrimaryAxisAlignItems!.build(),
+      counterAxisAlignItems: autoCounterAxisAlignItems!.build(),
+      layoutWrap: autoLayoutWrap!.build(),
+      padding: autoPadding!.build(),
+      itemSpacing: autoItemSpacing!,
+      counterAxisSpacing: autoCounterAxisSpacing!,
+    ),
+    FigmaLayoutPropertiesType.freeform => fig.FigmaLayoutProperties.freeform(
+      referenceWidth: freeformReferenceWidth!,
+      referenceHeight: freeformReferenceHeight!,
+    ),
+    FigmaLayoutPropertiesType.grid => fig.FigmaLayoutProperties.grid(
+      columnCount: gridColumnCount!,
+      rowCount: gridRowCount!,
+      columns: gridColumns!.map((x) => x.build()).toList(),
+      rows: gridRows!.map((x) => x.build()).toList(),
+      columnGap: gridColumnGap!,
+      rowGap: gridRowGap!,
+      padding: gridPadding!.build(),
+    ),
+  };
+}
+
 extension FigmaFontStyleBuild on FigmaFontStyle {
   fig.FigmaFontStyle build() => switch (this) {
     FigmaFontStyle.regular => fig.FigmaFontStyle.regular,

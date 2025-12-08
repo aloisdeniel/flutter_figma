@@ -8,6 +8,8 @@ class FlutterFigmaPreviewPlugin implements EvalPlugin {
 
   @override
   void configureForCompile(BridgeDeclarationRegistry registry) {
+    registry.defineBridgeClass($Key.$declaration);
+    registry.defineBridgeClass($BuildContext.$declaration);
     registry.defineBridgeClass($FigmaTransform.$declaration);
     registry.defineBridgeClass($FigmaRectangleShape.$declaration);
     registry.defineBridgeClass($FigmaStroke.$declaration);
@@ -36,6 +38,7 @@ class FlutterFigmaPreviewPlugin implements EvalPlugin {
     registry.defineBridgeClass($FigmaFiltered.$declaration);
     registry.defineBridgeEnum($FigmaStrokeAlignment.$declaration);
     registry.defineBridgeEnum($FigmaStrokeJoin.$declaration);
+    registry.defineBridgeEnum($FigmaPaintType.$declaration);
     registry.defineBridgeEnum($Axis.$declaration);
     registry.defineBridgeEnum($OverflowDirection.$declaration);
     registry.defineBridgeEnum($LayoutMode.$declaration);
@@ -44,17 +47,21 @@ class FlutterFigmaPreviewPlugin implements EvalPlugin {
     registry.defineBridgeEnum($LayoutWrap.$declaration);
     registry.defineBridgeEnum($LayoutAlign.$declaration);
     registry.defineBridgeEnum($ChildSizingMode.$declaration);
+    registry.defineBridgeEnum($FigmaLayoutPropertiesType.$declaration);
     registry.defineBridgeEnum($FontWeight.$declaration);
     registry.defineBridgeEnum($BlendMode.$declaration);
     registry.defineBridgeEnum($ConstraintType.$declaration);
     registry.defineBridgeEnum($ScaleMode.$declaration);
     registry.defineBridgeEnum($GridTrackSizingMode.$declaration);
+    registry.defineBridgeEnum($FigmaEffectType.$declaration);
     registry.defineBridgeEnum($FigmaFontStyle.$declaration);
     registry.defineBridgeEnum($LetterSpacingUnit.$declaration);
   }
 
   @override
   void configureForRuntime(Runtime runtime) {
+    $Key.configureForRuntime(runtime);
+    $BuildContext.configureForRuntime(runtime);
     $FigmaTransform.configureForRuntime(runtime);
     $FigmaRectangleShape.configureForRuntime(runtime);
     $FigmaStroke.configureForRuntime(runtime);
@@ -83,6 +90,7 @@ class FlutterFigmaPreviewPlugin implements EvalPlugin {
     $FigmaFiltered.configureForRuntime(runtime);
     $FigmaStrokeAlignment.configureForRuntime(runtime);
     $FigmaStrokeJoin.configureForRuntime(runtime);
+    $FigmaPaintType.configureForRuntime(runtime);
     $Axis.configureForRuntime(runtime);
     $OverflowDirection.configureForRuntime(runtime);
     $LayoutMode.configureForRuntime(runtime);
@@ -91,11 +99,13 @@ class FlutterFigmaPreviewPlugin implements EvalPlugin {
     $LayoutWrap.configureForRuntime(runtime);
     $LayoutAlign.configureForRuntime(runtime);
     $ChildSizingMode.configureForRuntime(runtime);
+    $FigmaLayoutPropertiesType.configureForRuntime(runtime);
     $FontWeight.configureForRuntime(runtime);
     $BlendMode.configureForRuntime(runtime);
     $ConstraintType.configureForRuntime(runtime);
     $ScaleMode.configureForRuntime(runtime);
     $GridTrackSizingMode.configureForRuntime(runtime);
+    $FigmaEffectType.configureForRuntime(runtime);
     $FigmaFontStyle.configureForRuntime(runtime);
     $LetterSpacingUnit.configureForRuntime(runtime);
   }

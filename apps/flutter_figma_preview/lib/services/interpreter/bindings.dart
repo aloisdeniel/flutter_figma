@@ -1,9 +1,23 @@
 import 'package:eval_annotation/eval_annotation.dart';
 
 // ============================================================================
-// Geometry types
+// Flutter
 // ============================================================================
 
+@Bind()
+class Key {
+  const Key(this.value);
+  final String value;
+}
+
+@Bind()
+class BuildContext {
+  const BuildContext();
+}
+
+// ============================================================================
+// Geometry types
+// ============================================================================
 @Bind()
 class FigmaTransform {
   const FigmaTransform(
@@ -94,6 +108,7 @@ class FigmaStroke {
 // Paint types
 // ============================================================================
 
+@Bind()
 enum FigmaPaintType {
   solid,
   linearGradient,
@@ -225,6 +240,7 @@ class EdgeInsets {
   );
 }
 
+@Bind()
 enum FigmaLayoutPropertiesType { auto, freeform, grid }
 
 @Bind()
@@ -450,6 +466,7 @@ class GridTrack {
 // Effect types
 // ============================================================================
 
+@Bind()
 enum FigmaEffectType { dropShadow, layerBlur, backgroundBlur }
 
 @Bind()
@@ -597,15 +614,15 @@ class FigmaText extends Widget {
   const FigmaText(
     this.text, {
     this.style,
-    this.fills = const [],
-    this.strokes = const [],
+    this.fills = const <FigmaPaint>[],
+    this.strokes = const <FigmaPaint>[],
   }) : characters = null;
 
   const FigmaText.rich({
     required List<FigmaTextSpan> this.characters,
     this.style,
-    this.fills = const [],
-    this.strokes = const [],
+    this.fills = const <FigmaPaint>[],
+    this.strokes = const <FigmaPaint>[],
   }) : text = null;
 
   final FigmaTextStyle? style;

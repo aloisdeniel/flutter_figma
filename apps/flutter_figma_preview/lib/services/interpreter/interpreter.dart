@@ -1,8 +1,20 @@
 import 'package:dart_eval/dart_eval.dart';
+import 'package:flutter/widgets.dart' show Widget;
 import 'package:flutter_figma_preview/eval_plugin.dart';
+
+import 'bindings.dart' as b;
 
 sealed class InterpreterResult {
   const InterpreterResult();
+}
+
+class EmptyInterpreterResult extends InterpreterResult {
+  const EmptyInterpreterResult();
+}
+
+class SuccessInterpreterResult extends InterpreterResult {
+  const SuccessInterpreterResult(this.widgets);
+  final List<Widget> widgets;
 }
 
 class Interpreter {
@@ -12,21 +24,46 @@ class Interpreter {
 
     final program = compiler.compile({
       'preview': {
-        'main.dart': '''
-      import 'package:preview/widgets.dart';
-      void main() {
-        final parentheses = findParentheses('Hello (world)');
-        if (parentheses.isNotEmpty) print(parentheses); 
-      }
+        'widgets.dart':
+            '''
+import 'package:flutter_figma_preview/services/interpreter/bindings.dart';
+
+abstract class StatelessWidget {
+  const StatelessWidget();
+
+  Widget build(BuildContext context);
+}
+
+class Example extends StatelessWidget {
+  const Example();
+
+  @override
+  Widget build(BuildContext context){
+    return FigmaText('Hello!');
+  }
+}
+
+      //$code
     ''',
-        'widgets.dart': r'''
-      List<int> findParentheses(string) {
-        final regex = RegExp(r'\((.*?)\)');
-        final matches = regex.allMatches(string);
-        return matches.map((match) => match.start).toList();
+        'main.dart': '''
+      import 'package:flutter_figma_preview/services/interpreter/bindings.dart';
+      import 'package:preview/widgets.dart';
+      List<Widget> main() {
+        final context = BuildContext();
+        return [
+          // All widgets
+          Example(),
+        ].map((x) => x.build(context)).toList();
       }
     ''',
       },
     });
+
+    final runtime = Runtime.ofProgram(program);
+    runtime.addPlugin(FlutterFigmaPreviewPlugin());
+    final result = runtime.executeLib('package:preview/main.dart', 'main');
+    print(result);
+
+    return SuccessInterpreterResult([]);
   }
 }

@@ -6,9 +6,168 @@
 import 'package:dart_eval/dart_eval.dart';
 import 'package:dart_eval/dart_eval_bridge.dart';
 import 'bindings.dart';
-import 'bindings_conversions.dart';
-import 'package:flutter_figma_preview/services/interpreter/bindings.eval.dart';
 import 'package:dart_eval/stdlib/core.dart';
+import 'package:flutter_figma_preview/services/interpreter/bindings.eval.dart';
+
+/// dart_eval wrapper binding for [Key]
+class $Key implements $Instance {
+  /// Configure this class for use in a [Runtime]
+  static void configureForRuntime(Runtime runtime) {
+    runtime.registerBridgeFunc(
+      'package:flutter_figma_preview/services/interpreter/bindings.dart',
+      'Key.',
+      $Key.$new,
+    );
+  }
+
+  /// Compile-time type specification of [$Key]
+  static const $spec = BridgeTypeSpec(
+    'package:flutter_figma_preview/services/interpreter/bindings.dart',
+    'Key',
+  );
+
+  /// Compile-time type declaration of [$Key]
+  static const $type = BridgeTypeRef($spec);
+
+  /// Compile-time class declaration of [$Key]
+  static const $declaration = BridgeClassDef(
+    BridgeClassType($type),
+    constructors: {
+      '': BridgeConstructorDef(
+        BridgeFunctionDef(
+          returns: BridgeTypeAnnotation($type),
+          namedParams: [],
+          params: [
+            BridgeParameter(
+              'value',
+              BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string, [])),
+              false,
+            ),
+          ],
+        ),
+        isFactory: false,
+      ),
+    },
+
+    methods: {},
+    getters: {},
+    setters: {},
+    fields: {
+      'value': BridgeFieldDef(
+        BridgeTypeAnnotation(BridgeTypeRef(CoreTypes.string, [])),
+        isStatic: false,
+      ),
+    },
+    wrap: true,
+    bridge: false,
+  );
+
+  /// Wrapper for the [Key.new] constructor
+  static $Value? $new(Runtime runtime, $Value? thisValue, List<$Value?> args) {
+    return $Key.wrap(Key(args[0]!.$value));
+  }
+
+  final $Instance _superclass;
+
+  @override
+  final Key $value;
+
+  @override
+  Key get $reified => $value;
+
+  /// Wrap a [Key] in a [$Key]
+  $Key.wrap(this.$value) : _superclass = $Object($value);
+
+  @override
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
+
+  @override
+  $Value? $getProperty(Runtime runtime, String identifier) {
+    switch (identifier) {
+      case 'value':
+        final _value = $value.value;
+        return $String(_value);
+    }
+    return _superclass.$getProperty(runtime, identifier);
+  }
+
+  @override
+  void $setProperty(Runtime runtime, String identifier, $Value value) {
+    return _superclass.$setProperty(runtime, identifier, value);
+  }
+}
+
+/// dart_eval wrapper binding for [BuildContext]
+class $BuildContext implements $Instance {
+  /// Configure this class for use in a [Runtime]
+  static void configureForRuntime(Runtime runtime) {
+    runtime.registerBridgeFunc(
+      'package:flutter_figma_preview/services/interpreter/bindings.dart',
+      'BuildContext.',
+      $BuildContext.$new,
+    );
+  }
+
+  /// Compile-time type specification of [$BuildContext]
+  static const $spec = BridgeTypeSpec(
+    'package:flutter_figma_preview/services/interpreter/bindings.dart',
+    'BuildContext',
+  );
+
+  /// Compile-time type declaration of [$BuildContext]
+  static const $type = BridgeTypeRef($spec);
+
+  /// Compile-time class declaration of [$BuildContext]
+  static const $declaration = BridgeClassDef(
+    BridgeClassType($type),
+    constructors: {
+      '': BridgeConstructorDef(
+        BridgeFunctionDef(
+          returns: BridgeTypeAnnotation($type),
+          namedParams: [],
+          params: [],
+        ),
+        isFactory: false,
+      ),
+    },
+
+    methods: {},
+    getters: {},
+    setters: {},
+    fields: {},
+    wrap: true,
+    bridge: false,
+  );
+
+  /// Wrapper for the [BuildContext.new] constructor
+  static $Value? $new(Runtime runtime, $Value? thisValue, List<$Value?> args) {
+    return $BuildContext.wrap(BuildContext());
+  }
+
+  final $Instance _superclass;
+
+  @override
+  final BuildContext $value;
+
+  @override
+  BuildContext get $reified => $value;
+
+  /// Wrap a [BuildContext] in a [$BuildContext]
+  $BuildContext.wrap(this.$value) : _superclass = $Object($value);
+
+  @override
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
+
+  @override
+  $Value? $getProperty(Runtime runtime, String identifier) {
+    return _superclass.$getProperty(runtime, identifier);
+  }
+
+  @override
+  void $setProperty(Runtime runtime, String identifier, $Value value) {
+    return _superclass.$setProperty(runtime, identifier, value);
+  }
+}
 
 /// dart_eval wrapper binding for [FigmaTransform]
 class $FigmaTransform implements $Instance {
@@ -822,6 +981,89 @@ class $FigmaStroke implements $Instance {
   }
 }
 
+/// dart_eval enum wrapper binding for [FigmaPaintType]
+class $FigmaPaintType implements $Instance {
+  /// Configure this enum for use in a [Runtime]
+  static void configureForRuntime(Runtime runtime) {
+    runtime.registerBridgeEnumValues(
+      'package:flutter_figma_preview/services/interpreter/bindings.dart',
+      'FigmaPaintType',
+      $FigmaPaintType._$values,
+    );
+
+    runtime.registerBridgeFunc(
+      'package:flutter_figma_preview/services/interpreter/bindings.dart',
+      'FigmaPaintType.values*g',
+      $FigmaPaintType.$values,
+    );
+  }
+
+  /// Compile-time type specification of [$FigmaPaintType]
+  static const $spec = BridgeTypeSpec(
+    'package:flutter_figma_preview/services/interpreter/bindings.dart',
+    'FigmaPaintType',
+  );
+
+  /// Compile-time type declaration of [$FigmaPaintType]
+  static const $type = BridgeTypeRef($spec);
+
+  /// Compile-time class declaration of [$FigmaPaintType]
+  static const $declaration = BridgeEnumDef(
+    $type,
+
+    values: [
+      'solid',
+      'linearGradient',
+      'radialGradient',
+      'angularGradient',
+      'diamondGradient',
+    ],
+
+    methods: {},
+    getters: {},
+    setters: {},
+    fields: {},
+  );
+
+  static final _$values = {
+    'solid': $FigmaPaintType.wrap(FigmaPaintType.solid),
+    'linearGradient': $FigmaPaintType.wrap(FigmaPaintType.linearGradient),
+    'radialGradient': $FigmaPaintType.wrap(FigmaPaintType.radialGradient),
+    'angularGradient': $FigmaPaintType.wrap(FigmaPaintType.angularGradient),
+    'diamondGradient': $FigmaPaintType.wrap(FigmaPaintType.diamondGradient),
+  };
+
+  /// Wrapper for the [FigmaPaintType.values] getter
+  static $Value? $values(Runtime runtime, $Value? target, List<$Value?> args) {
+    final value = FigmaPaintType.values;
+    return $List.view(value, (e) => $FigmaPaintType.wrap(e));
+  }
+
+  final $Instance _superclass;
+
+  @override
+  final FigmaPaintType $value;
+
+  @override
+  FigmaPaintType get $reified => $value;
+
+  /// Wrap a [FigmaPaintType] in a [$FigmaPaintType]
+  $FigmaPaintType.wrap(this.$value) : _superclass = $Object($value);
+
+  @override
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
+
+  @override
+  $Value? $getProperty(Runtime runtime, String identifier) {
+    return _superclass.$getProperty(runtime, identifier);
+  }
+
+  @override
+  void $setProperty(Runtime runtime, String identifier, $Value value) {
+    return _superclass.$setProperty(runtime, identifier, value);
+  }
+}
+
 /// dart_eval wrapper binding for [FigmaPaint]
 class $FigmaPaint implements $Instance {
   /// Configure this class for use in a [Runtime]
@@ -1381,7 +1623,7 @@ class $FigmaPaint implements $Instance {
     switch (identifier) {
       case 'type':
         final _type = $value.type;
-        return runtime.wrapAlways(_type);
+        return $FigmaPaintType.wrap(_type);
 
       case 'solidColor':
         final _solidColor = $value.solidColor;
@@ -2522,6 +2764,83 @@ class $EdgeInsets implements $Instance {
   }
 }
 
+/// dart_eval enum wrapper binding for [FigmaLayoutPropertiesType]
+class $FigmaLayoutPropertiesType implements $Instance {
+  /// Configure this enum for use in a [Runtime]
+  static void configureForRuntime(Runtime runtime) {
+    runtime.registerBridgeEnumValues(
+      'package:flutter_figma_preview/services/interpreter/bindings.dart',
+      'FigmaLayoutPropertiesType',
+      $FigmaLayoutPropertiesType._$values,
+    );
+
+    runtime.registerBridgeFunc(
+      'package:flutter_figma_preview/services/interpreter/bindings.dart',
+      'FigmaLayoutPropertiesType.values*g',
+      $FigmaLayoutPropertiesType.$values,
+    );
+  }
+
+  /// Compile-time type specification of [$FigmaLayoutPropertiesType]
+  static const $spec = BridgeTypeSpec(
+    'package:flutter_figma_preview/services/interpreter/bindings.dart',
+    'FigmaLayoutPropertiesType',
+  );
+
+  /// Compile-time type declaration of [$FigmaLayoutPropertiesType]
+  static const $type = BridgeTypeRef($spec);
+
+  /// Compile-time class declaration of [$FigmaLayoutPropertiesType]
+  static const $declaration = BridgeEnumDef(
+    $type,
+
+    values: ['auto', 'freeform', 'grid'],
+
+    methods: {},
+    getters: {},
+    setters: {},
+    fields: {},
+  );
+
+  static final _$values = {
+    'auto': $FigmaLayoutPropertiesType.wrap(FigmaLayoutPropertiesType.auto),
+    'freeform': $FigmaLayoutPropertiesType.wrap(
+      FigmaLayoutPropertiesType.freeform,
+    ),
+    'grid': $FigmaLayoutPropertiesType.wrap(FigmaLayoutPropertiesType.grid),
+  };
+
+  /// Wrapper for the [FigmaLayoutPropertiesType.values] getter
+  static $Value? $values(Runtime runtime, $Value? target, List<$Value?> args) {
+    final value = FigmaLayoutPropertiesType.values;
+    return $List.view(value, (e) => $FigmaLayoutPropertiesType.wrap(e));
+  }
+
+  final $Instance _superclass;
+
+  @override
+  final FigmaLayoutPropertiesType $value;
+
+  @override
+  FigmaLayoutPropertiesType get $reified => $value;
+
+  /// Wrap a [FigmaLayoutPropertiesType] in a [$FigmaLayoutPropertiesType]
+  $FigmaLayoutPropertiesType.wrap(this.$value) : _superclass = $Object($value);
+
+  @override
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
+
+  @override
+  $Value? $getProperty(Runtime runtime, String identifier) {
+    return _superclass.$getProperty(runtime, identifier);
+  }
+
+  @override
+  void $setProperty(Runtime runtime, String identifier, $Value value) {
+    return _superclass.$setProperty(runtime, identifier, value);
+  }
+}
+
 /// dart_eval wrapper binding for [FigmaLayoutProperties]
 class $FigmaLayoutProperties implements $Instance {
   /// Configure this class for use in a [Runtime]
@@ -3104,7 +3423,7 @@ class $FigmaLayoutProperties implements $Instance {
     switch (identifier) {
       case 'type':
         final _type = $value.type;
-        return runtime.wrapAlways(_type);
+        return $FigmaLayoutPropertiesType.wrap(_type);
 
       case 'autoReferenceWidth':
         final _autoReferenceWidth = $value.autoReferenceWidth;
@@ -4367,6 +4686,81 @@ class $GridTrack implements $Instance {
   }
 }
 
+/// dart_eval enum wrapper binding for [FigmaEffectType]
+class $FigmaEffectType implements $Instance {
+  /// Configure this enum for use in a [Runtime]
+  static void configureForRuntime(Runtime runtime) {
+    runtime.registerBridgeEnumValues(
+      'package:flutter_figma_preview/services/interpreter/bindings.dart',
+      'FigmaEffectType',
+      $FigmaEffectType._$values,
+    );
+
+    runtime.registerBridgeFunc(
+      'package:flutter_figma_preview/services/interpreter/bindings.dart',
+      'FigmaEffectType.values*g',
+      $FigmaEffectType.$values,
+    );
+  }
+
+  /// Compile-time type specification of [$FigmaEffectType]
+  static const $spec = BridgeTypeSpec(
+    'package:flutter_figma_preview/services/interpreter/bindings.dart',
+    'FigmaEffectType',
+  );
+
+  /// Compile-time type declaration of [$FigmaEffectType]
+  static const $type = BridgeTypeRef($spec);
+
+  /// Compile-time class declaration of [$FigmaEffectType]
+  static const $declaration = BridgeEnumDef(
+    $type,
+
+    values: ['dropShadow', 'layerBlur', 'backgroundBlur'],
+
+    methods: {},
+    getters: {},
+    setters: {},
+    fields: {},
+  );
+
+  static final _$values = {
+    'dropShadow': $FigmaEffectType.wrap(FigmaEffectType.dropShadow),
+    'layerBlur': $FigmaEffectType.wrap(FigmaEffectType.layerBlur),
+    'backgroundBlur': $FigmaEffectType.wrap(FigmaEffectType.backgroundBlur),
+  };
+
+  /// Wrapper for the [FigmaEffectType.values] getter
+  static $Value? $values(Runtime runtime, $Value? target, List<$Value?> args) {
+    final value = FigmaEffectType.values;
+    return $List.view(value, (e) => $FigmaEffectType.wrap(e));
+  }
+
+  final $Instance _superclass;
+
+  @override
+  final FigmaEffectType $value;
+
+  @override
+  FigmaEffectType get $reified => $value;
+
+  /// Wrap a [FigmaEffectType] in a [$FigmaEffectType]
+  $FigmaEffectType.wrap(this.$value) : _superclass = $Object($value);
+
+  @override
+  int $getRuntimeType(Runtime runtime) => runtime.lookupType($spec);
+
+  @override
+  $Value? $getProperty(Runtime runtime, String identifier) {
+    return _superclass.$getProperty(runtime, identifier);
+  }
+
+  @override
+  void $setProperty(Runtime runtime, String identifier, $Value value) {
+    return _superclass.$setProperty(runtime, identifier, value);
+  }
+}
+
 /// dart_eval wrapper binding for [FigmaEffect]
 class $FigmaEffect implements $Instance {
   /// Configure this class for use in a [Runtime]
@@ -4673,7 +5067,7 @@ class $FigmaEffect implements $Instance {
     switch (identifier) {
       case 'type':
         final _type = $value.type;
-        return runtime.wrapAlways(_type);
+        return $FigmaEffectType.wrap(_type);
 
       case 'color':
         final _color = $value.color;
@@ -6308,8 +6702,10 @@ class $FigmaText implements $Instance {
       FigmaText(
         args[0]!.$value,
         style: args[1]?.$value,
-        fills: (args[2]?.$reified ?? const [] as List?)?.cast(),
-        strokes: (args[3]?.$reified ?? const [] as List?)?.cast(),
+        fills: (args[2]?.$reified ?? const <FigmaPaint>[] as List?)
+            ?.cast<FigmaPaint>(),
+        strokes: (args[3]?.$reified ?? const <FigmaPaint>[] as List?)
+            ?.cast<FigmaPaint>(),
       ),
     );
   }
@@ -6320,8 +6716,10 @@ class $FigmaText implements $Instance {
       FigmaText.rich(
         characters: (args[0]!.$reified as List).cast(),
         style: args[1]?.$value,
-        fills: (args[2]?.$reified ?? const [] as List?)?.cast(),
-        strokes: (args[3]?.$reified ?? const [] as List?)?.cast(),
+        fills: (args[2]?.$reified ?? const <FigmaPaint>[] as List?)
+            ?.cast<FigmaPaint>(),
+        strokes: (args[3]?.$reified ?? const <FigmaPaint>[] as List?)
+            ?.cast<FigmaPaint>(),
       ),
     );
   }
