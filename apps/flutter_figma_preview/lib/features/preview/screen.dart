@@ -1,6 +1,6 @@
+import 'package:binui/binui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_figma_preview/features/preview/widgets/preview.dart';
-import 'package:flutter_figma_preview/services/interpreter/interpreter.dart';
 
 class PreviewScreen extends StatefulWidget {
   const PreviewScreen({super.key});
@@ -12,19 +12,10 @@ class PreviewScreen extends StatefulWidget {
 class _PreviewScreenState extends State<PreviewScreen> {
   final _controller = TextEditingController(
     text: '''
-  class Example extends StatelessWidget {
-  const Example();
-
-  @override
-  Widget build(BuildContext context){
-    return FigmaText('Hello!');
-  }
-}''',
+''',
   );
 
-  final _interpreter = Interpreter();
-  final ValueNotifier<InterpreterResult> _result =
-      ValueNotifier<InterpreterResult>(EmptyInterpreterResult());
+  ValueNotifier<Library?> _result = ValueNotifier(null);
 
   @override
   void initState() {
@@ -33,9 +24,10 @@ class _PreviewScreenState extends State<PreviewScreen> {
     _evaluate();
   }
 
-  void _evaluate() {
+  void _evaluate() async {
     try {
-      _result.value = _interpreter.evaluate(_controller.text);
+      final importer = BinaryImporter.base64(_controller.text);
+      _result.value = await importer.import();
     } catch (e) {
       print(e);
     }
