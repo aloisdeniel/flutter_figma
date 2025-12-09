@@ -281,8 +281,16 @@ const Library$json = {
       '10': 'documentation'
     },
     {
-      '1': 'variables',
+      '1': 'version',
       '3': 4,
+      '5': 11,
+      '6': '.binui.Version',
+      '8': {},
+      '10': 'version'
+    },
+    {
+      '1': 'variables',
+      '3': 5,
       '4': 3,
       '5': 11,
       '6': '.binui.VariableCollection',
@@ -291,7 +299,7 @@ const Library$json = {
     },
     {
       '1': 'components',
-      '3': 5,
+      '3': 6,
       '4': 3,
       '5': 11,
       '6': '.binui.Component',
@@ -300,7 +308,7 @@ const Library$json = {
     },
     {
       '1': 'visualNodes',
-      '3': 6,
+      '3': 7,
       '4': 3,
       '5': 11,
       '6': '.binui.VisualNode',
@@ -313,10 +321,26 @@ const Library$json = {
 /// Descriptor for `Library`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List libraryDescriptor = $convert.base64Decode(
     'CgdMaWJyYXJ5Eg4KAmlkGAEoBUIAUgJpZBISCgRuYW1lGAIoCUIAUgRuYW1lEiYKDWRvY3VtZW'
-    '50YXRpb24YAyABKAlCAFINZG9jdW1lbnRhdGlvbhI5Cgl2YXJpYWJsZXMYBCADKAsyGS5iaW51'
-    'aS5WYXJpYWJsZUNvbGxlY3Rpb25CAFIJdmFyaWFibGVzEjIKCmNvbXBvbmVudHMYBSADKAsyEC'
-    '5iaW51aS5Db21wb25lbnRCAFIKY29tcG9uZW50cxI1Cgt2aXN1YWxOb2RlcxgGIAMoCzIRLmJp'
-    'bnVpLlZpc3VhbE5vZGVCAFILdmlzdWFsTm9kZXM=');
+    '50YXRpb24YAyABKAlCAFINZG9jdW1lbnRhdGlvbhIoCgd2ZXJzaW9uGAQoCzIOLmJpbnVpLlZl'
+    'cnNpb25CAFIHdmVyc2lvbhI5Cgl2YXJpYWJsZXMYBSADKAsyGS5iaW51aS5WYXJpYWJsZUNvbG'
+    'xlY3Rpb25CAFIJdmFyaWFibGVzEjIKCmNvbXBvbmVudHMYBiADKAsyEC5iaW51aS5Db21wb25l'
+    'bnRCAFIKY29tcG9uZW50cxI1Cgt2aXN1YWxOb2RlcxgHIAMoCzIRLmJpbnVpLlZpc3VhbE5vZG'
+    'VCAFILdmlzdWFsTm9kZXM=');
+
+@$core.Deprecated('Use versionDescriptor instead')
+const Version$json = {
+  '1': 'Version',
+  '2': [
+    {'1': 'major', '3': 1, '5': 5, '8': {}, '10': 'major'},
+    {'1': 'minor', '3': 2, '5': 5, '8': {}, '10': 'minor'},
+    {'1': 'patch', '3': 3, '5': 5, '8': {}, '10': 'patch'},
+  ],
+};
+
+/// Descriptor for `Version`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List versionDescriptor = $convert.base64Decode(
+    'CgdWZXJzaW9uEhQKBW1ham9yGAEoBUIAUgVtYWpvchIUCgVtaW5vchgCKAVCAFIFbWlub3ISFA'
+    'oFcGF0Y2gYAygFQgBSBXBhdGNo');
 
 @$core.Deprecated('Use componentPropertyDescriptor instead')
 const ComponentProperty$json = {
@@ -1555,8 +1579,8 @@ final $typed_data.Uint8List svgVectorGraphicsDescriptor = $convert.base64Decode(
     'ChFTdmdWZWN0b3JHcmFwaGljcxISCgRkYXRhGAEoCUIAUgRkYXRhEiUKB3ZpZXdCb3gYAigLMg'
     'suYmludWkuUmVjdEIAUgd2aWV3Qm94');
 
-@$core.Deprecated('Use versionDescriptor instead')
-const Version$json = {
+@$core.Deprecated('Use version_Descriptor instead')
+const Version_$json = {
   '1': 'Version',
   '2': [
     {'1': 'major', '3': 1, '5': 5, '8': {}, '10': 'major'},
@@ -1566,7 +1590,7 @@ const Version$json = {
 };
 
 /// Descriptor for `Version`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List versionDescriptor = $convert.base64Decode(
+final $typed_data.Uint8List version_Descriptor = $convert.base64Decode(
     'CgdWZXJzaW9uEhQKBW1ham9yGAEoBUIAUgVtYWpvchIUCgVtaW5vchgCKAVCAFIFbWlub3ISFA'
     'oFcGF0Y2gYAygFQgBSBXBhdGNo');
 

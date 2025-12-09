@@ -25,6 +25,7 @@ class Library extends $pb.GeneratedMessage {
     $core.int? id,
     $core.String? name,
     $core.String? documentation,
+    Version_? version,
     $core.Iterable<VariableCollection>? variables,
     $core.Iterable<Component>? components,
     $core.Iterable<VisualNode>? visualNodes,
@@ -33,6 +34,7 @@ class Library extends $pb.GeneratedMessage {
     if (id != null) result.id = id;
     if (name != null) result.name = name;
     if (documentation != null) result.documentation = documentation;
+    if (version != null) result.version = version;
     if (variables != null) result.variables.addAll(variables);
     if (components != null) result.components.addAll(components);
     if (visualNodes != null) result.visualNodes.addAll(visualNodes);
@@ -55,11 +57,13 @@ class Library extends $pb.GeneratedMessage {
     ..aI(1, _omitFieldNames ? '' : 'id')
     ..aOS(2, _omitFieldNames ? '' : 'name')
     ..aOS(3, _omitFieldNames ? '' : 'documentation')
-    ..pPM<VariableCollection>(4, _omitFieldNames ? '' : 'variables',
+    ..aOM<Version_>(4, _omitFieldNames ? '' : 'version',
+        subBuilder: Version_.create)
+    ..pPM<VariableCollection>(5, _omitFieldNames ? '' : 'variables',
         subBuilder: VariableCollection.create)
-    ..pPM<Component>(5, _omitFieldNames ? '' : 'components',
+    ..pPM<Component>(6, _omitFieldNames ? '' : 'components',
         subBuilder: Component.create)
-    ..pPM<VisualNode>(6, _omitFieldNames ? '' : 'visualNodes',
+    ..pPM<VisualNode>(7, _omitFieldNames ? '' : 'visualNodes',
         protoName: 'visualNodes', subBuilder: VisualNode.create)
     ..hasRequiredFields = false;
 
@@ -109,13 +113,101 @@ class Library extends $pb.GeneratedMessage {
   void clearDocumentation() => $_clearField(3);
 
   @$pb.TagNumber(4)
-  $pb.PbList<VariableCollection> get variables => $_getList(3);
+  Version_ get version => $_getN(3);
+  @$pb.TagNumber(4)
+  set version(Version_ value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasVersion() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearVersion() => $_clearField(4);
+  @$pb.TagNumber(4)
+  Version_ ensureVersion() => $_ensure(3);
 
   @$pb.TagNumber(5)
-  $pb.PbList<Component> get components => $_getList(4);
+  $pb.PbList<VariableCollection> get variables => $_getList(4);
 
   @$pb.TagNumber(6)
-  $pb.PbList<VisualNode> get visualNodes => $_getList(5);
+  $pb.PbList<Component> get components => $_getList(5);
+
+  @$pb.TagNumber(7)
+  $pb.PbList<VisualNode> get visualNodes => $_getList(6);
+}
+
+class Version extends $pb.GeneratedMessage {
+  factory Version({
+    $core.int? major,
+    $core.int? minor,
+    $core.int? patch,
+  }) {
+    final result = create();
+    if (major != null) result.major = major;
+    if (minor != null) result.minor = minor;
+    if (patch != null) result.patch = patch;
+    return result;
+  }
+
+  Version._();
+
+  factory Version.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory Version.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'Version',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'binui'),
+      createEmptyInstance: create)
+    ..aI(1, _omitFieldNames ? '' : 'major')
+    ..aI(2, _omitFieldNames ? '' : 'minor')
+    ..aI(3, _omitFieldNames ? '' : 'patch')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  Version clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  Version copyWith(void Function(Version) updates) =>
+      super.copyWith((message) => updates(message as Version)) as Version;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static Version create() => Version._();
+  @$core.override
+  Version createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static Version getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Version>(create);
+  static Version? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.int get major => $_getIZ(0);
+  @$pb.TagNumber(1)
+  set major($core.int value) => $_setSignedInt32(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasMajor() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearMajor() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get minor => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set minor($core.int value) => $_setSignedInt32(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasMinor() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearMinor() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get patch => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set patch($core.int value) => $_setSignedInt32(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasPatch() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPatch() => $_clearField(3);
 }
 
 class ComponentProperty extends $pb.GeneratedMessage {
@@ -950,7 +1042,7 @@ class Value extends $pb.GeneratedMessage {
     Transform2D? transform2D,
     VariantValue? variantValue,
     VectorGraphics? vectorGraphics,
-    Version? version,
+    Version_? version,
     VisualNode? visualNode,
   }) {
     final result = create();
@@ -1067,8 +1159,8 @@ class Value extends $pb.GeneratedMessage {
         protoName: 'variantValue', subBuilder: VariantValue.create)
     ..aOM<VectorGraphics>(19, _omitFieldNames ? '' : 'vectorGraphics',
         protoName: 'vectorGraphics', subBuilder: VectorGraphics.create)
-    ..aOM<Version>(20, _omitFieldNames ? '' : 'version',
-        subBuilder: Version.create)
+    ..aOM<Version_>(20, _omitFieldNames ? '' : 'version',
+        subBuilder: Version_.create)
     ..aOM<VisualNode>(21, _omitFieldNames ? '' : 'visualNode',
         protoName: 'visualNode', subBuilder: VisualNode.create)
     ..hasRequiredFields = false;
@@ -1340,15 +1432,15 @@ class Value extends $pb.GeneratedMessage {
   VectorGraphics ensureVectorGraphics() => $_ensure(18);
 
   @$pb.TagNumber(20)
-  Version get version => $_getN(19);
+  Version_ get version => $_getN(19);
   @$pb.TagNumber(20)
-  set version(Version value) => $_setField(20, value);
+  set version(Version_ value) => $_setField(20, value);
   @$pb.TagNumber(20)
   $core.bool hasVersion() => $_has(19);
   @$pb.TagNumber(20)
   void clearVersion() => $_clearField(20);
   @$pb.TagNumber(20)
-  Version ensureVersion() => $_ensure(19);
+  Version_ ensureVersion() => $_ensure(19);
 
   @$pb.TagNumber(21)
   VisualNode get visualNode => $_getN(20);
@@ -3668,8 +3760,8 @@ class SvgVectorGraphics extends $pb.GeneratedMessage {
   Rect ensureViewBox() => $_ensure(1);
 }
 
-class Version extends $pb.GeneratedMessage {
-  factory Version({
+class Version_ extends $pb.GeneratedMessage {
+  factory Version_({
     $core.int? major,
     $core.int? minor,
     $core.int? patch,
@@ -3681,12 +3773,12 @@ class Version extends $pb.GeneratedMessage {
     return result;
   }
 
-  Version._();
+  Version_._();
 
-  factory Version.fromBuffer($core.List<$core.int> data,
+  factory Version_.fromBuffer($core.List<$core.int> data,
           [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromBuffer(data, registry);
-  factory Version.fromJson($core.String json,
+  factory Version_.fromJson($core.String json,
           [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
       create()..mergeFromJson(json, registry);
 
@@ -3700,22 +3792,22 @@ class Version extends $pb.GeneratedMessage {
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  Version clone() => deepCopy();
+  Version_ clone() => deepCopy();
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  Version copyWith(void Function(Version) updates) =>
-      super.copyWith((message) => updates(message as Version)) as Version;
+  Version_ copyWith(void Function(Version_) updates) =>
+      super.copyWith((message) => updates(message as Version_)) as Version_;
 
   @$core.override
   $pb.BuilderInfo get info_ => _i;
 
   @$core.pragma('dart2js:noInline')
-  static Version create() => Version._();
+  static Version_ create() => Version_._();
   @$core.override
-  Version createEmptyInstance() => create();
+  Version_ createEmptyInstance() => create();
   @$core.pragma('dart2js:noInline')
-  static Version getDefault() =>
-      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Version>(create);
-  static Version? _defaultInstance;
+  static Version_ getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Version_>(create);
+  static Version_? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.int get major => $_getIZ(0);

@@ -1,20 +1,35 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:binui/src/definitions.pb.dart';
 import 'package:binui/src/exporters/bundle.dart';
 import 'package:binui/src/exporters/exporter.dart';
 
+enum BinaryFormat { bytes, base64 }
+
 class BinaryExporter extends Exporter {
-  const BinaryExporter({this.filename = 'library.bin'});
+  const BinaryExporter({
+    this.filename = 'library.bin',
+    this.format = BinaryFormat.bytes,
+  });
 
   final String filename;
+  final BinaryFormat format;
 
   @override
   FutureOr<Bundle> export(Library library) {
     final content = library.writeToBuffer();
     return Bundle(
       name: library.name,
-      files: [BinaryBundleFile('library.bin', content)],
+      files: [
+        switch (format) {
+          BinaryFormat.bytes => BinaryBundleFile('library.bin', content),
+          BinaryFormat.base64 => StringBundleFile(
+            'library.base64',
+            base64Encode(content),
+          ),
+        },
+      ],
     );
   }
 }
