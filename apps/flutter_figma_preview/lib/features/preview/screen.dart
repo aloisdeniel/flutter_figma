@@ -15,7 +15,7 @@ class _PreviewScreenState extends State<PreviewScreen> {
 ''',
   );
 
-  ValueNotifier<Library?> _result = ValueNotifier(null);
+  final _result = ValueNotifier<Library?>(null);
 
   @override
   void initState() {
@@ -61,6 +61,11 @@ class _PreviewScreenState extends State<PreviewScreen> {
             child: ValueListenableBuilder(
               valueListenable: _result,
               builder: (context, result, _) {
+                if (result == null) {
+                  return const Center(
+                    child: Text('Enter base64 encoded data to preview'),
+                  );
+                }
                 return Preview(result: result);
               },
             ),
