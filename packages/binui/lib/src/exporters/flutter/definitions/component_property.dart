@@ -5,13 +5,20 @@ import 'package:binui/src/exporters/flutter/values/value.dart';
 class ComponentPropertyDartExporter {
   const ComponentPropertyDartExporter();
 
-  String serialize(ComponentProperty property, {bool nullable = false}) {
+  String serialize(
+    Library library,
+    ComponentProperty property, {
+    bool nullable = false,
+  }) {
     final buffer = StringBuffer();
     if (property.documentation.isNotEmpty) {
       buffer.writeln('/// ${property.documentation}');
     }
     final propName = Naming.fieldName(property.name);
-    var typeName = ValueDartExporter.getTypeName(property.defaultValue);
+    var typeName = ValueDartExporter.getTypeName(
+      library,
+      property.defaultValue,
+    );
     if (nullable) {
       typeName = '$typeName?';
     }

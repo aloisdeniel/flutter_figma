@@ -1,9 +1,10 @@
 import 'package:binui/src/definitions.pb.dart';
+import 'package:binui/src/utils/dart_buffer.dart';
 
 class MetadataDartExporter {
   const MetadataDartExporter();
   String serialize(Library library) {
-    final result = StringBuffer();
+    final result = DartBuffer();
     result.writeln('const id = \'${library.id}\';');
     result.writeln('const name = \'${library.name}\';');
     result.writeln(

@@ -1,18 +1,25 @@
 import 'package:binui/src/definitions.pb.dart';
+import 'package:binui/src/exporters/flutter/definitions/component_property.dart';
 import 'package:binui/src/exporters/flutter/utils/naming.dart';
+import 'package:binui/src/exporters/flutter/values/value.dart';
+import 'package:binui/src/utils/dart_buffer.dart';
 
 class ComponentDefinitionDartExporter {
   const ComponentDefinitionDartExporter();
 
   String serialize(Library library, Component component) {
-    final buffer = StringBuffer();
+    final buffer = DartBuffer();
 
-    _serializeType(buffer, definition, context);
+    _serializeType(buffer, library, component);
 
     return buffer.toString();
   }
 
-  void _serializeType(StringBuffer buffer, Component definition) {
+  void _serializeType(
+    DartBuffer buffer,
+    Library library,
+    Component definition,
+  ) {
     final baseTypeName = Naming.typeName(definition.name);
     final typeName = '${baseTypeName}Properties';
     final inheritedTypeName = '${typeName}Provider';
@@ -24,19 +31,21 @@ class ComponentDefinitionDartExporter {
     buffer.writeln('class $typeName {');
 
     // constructor
+    final valueSerializer = ValueDartExporter();
     buffer.writeConstructor(typeName, {
       for (final property in definition.properties)
         property.name: valueSerializer.serialize(
+          library,
           property.defaultValue,
-          context,
         ),
     });
 
     buffer.writeln();
 
     // fields
+    final propertySerializer = ComponentPropertyDartExporter();
     for (final property in definition.properties) {
-      final serialized = propertySerializer.serialize(property, context);
+      final serialized = propertySerializer.serialize(library, property);
       buffer.writeln('  $serialized');
     }
 

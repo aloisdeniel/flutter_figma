@@ -1,19 +1,22 @@
 import 'package:binui/src/definitions.pb.dart';
+import 'package:binui/src/exporters/flutter/utils/naming.dart';
+import 'package:binui/src/exporters/flutter/values/value.dart';
+import 'package:binui/src/utils/dart_buffer.dart';
 
 class VariableCollectionDartExporter {
   const VariableCollectionDartExporter();
 
-  String serialize(VariableCollection definition) {
-    final baseVariables = definition.variants.first.variables;
-    final props = definition.variants.first.variableNames.toList();
+  String serialize(Library library, VariableCollection definition) {
+    final valueSerializer = ValueDartExporter();
+    final props = definition.variables;
     final baseTypeName = Naming.typeName(definition.name);
-    final buffer = StringBuffer();
+    final buffer = DartBuffer();
 
     // Mode enum
     buffer.writeln('enum ${baseTypeName}Mode {');
     for (final variant in definition.variants) {
       if (variant.documentation.isNotEmpty) {
-        buffer.writeln('/// ${definition.documentation}');
+        buffer.writeApiDocumentation(definition.documentation);
       }
       final valueName = Naming.fieldName(variant.name);
       buffer.writeln('  $valueName,');
@@ -23,16 +26,14 @@ class VariableCollectionDartExporter {
 
     buffer.writeln();
 
-    if (definition.documentation != null) {
-      buffer.writeln('/// ${definition.documentation}');
-    }
+    buffer.writeApiDocumentation(definition.documentation);
 
     final dataTypeName = '${baseTypeName}Data';
     buffer.writeln('class $dataTypeName {');
 
     // constructorj
     buffer.writeln('  const $dataTypeName({');
-    for (final property in baseVariables) {
+    for (final property in props) {
       final propName = Naming.fieldName(property.name);
       buffer.writeln('    required this.$propName,');
     }
@@ -41,21 +42,22 @@ class VariableCollectionDartExporter {
 
     // variant constructors
     for (final variant in definition.variants) {
-      if (variant.documentation != null) {
-        buffer.writeln('/// ${definition.documentation}');
-      }
+      buffer.writeApiDocumentation(variant.documentation);
       buffer.writeln(
         '  const $dataTypeName.${Naming.fieldName(variant.name)}() :',
       );
 
       final modeValueName = Naming.fieldName(variant.name);
       buffer.writeln('    key = ${baseTypeName}Mode.$modeValueName,');
-      for (var i = 0; i < baseVariables.length; i++) {
-        final property = baseVariables[i];
-        final isLast = i == baseVariables.length - 1;
-        final propName = Naming.fieldName(property.name);
-        final value = valueSerializer.serialize(property.value, context);
+      for (var i = 0; i < variant.values.length; i++) {
+        final prop = props[i];
+        final propName = Naming.fieldName(prop.name);
+
+        final variantValue = variant.values[i];
+        final value = valueSerializer.serialize(library, variantValue);
         buffer.writeln('    $propName = $value');
+
+        final isLast = i == variant.values.length - 1;
         if (!isLast) {
           buffer.write(',');
         }
@@ -68,26 +70,33 @@ class VariableCollectionDartExporter {
     // fields
     buffer.writeln('/// Unique mode identifier.');
     buffer.writeln('final dynamic key;');
-    for (final variable in baseVariables) {
-      if (variable.documentation != null) {
-        buffer.writeln('/// ${variable.documentation}');
-      }
+    for (var i = 0; i < definition.variables.length; i++) {
+      final variable = definition.variables[i];
+      final defaultValue = definition.variants.first.values[i];
+      buffer.writeApiDocumentation(variable.documentation);
       final propName = Naming.fieldName(variable.name);
-      var typeName = ValueDartExporter.getTypeName(variable.value);
+      var typeName = ValueDartExporter.getTypeName(library, defaultValue);
       buffer.writeln('final $typeName $propName;');
     }
 
+    final propMap = {
+      for (var i = 0; i < definition.variables.length; i++)
+        Naming.fieldName(
+          definition.variables[i].name,
+        ): ValueDartExporter.getTypeName(
+          library,
+          definition.variants.first.values[i],
+        ),
+    };
+    final propNames = propMap.keys.toList();
     // copyWith
     buffer.writeln();
-    buffer.writeCopyWith(dataTypeName, {
-      for (final property in baseVariables)
-        property.name: ValueDartExporter.getTypeName(property.value),
-    });
+    buffer.writeCopyWith(dataTypeName, propMap);
 
     // equality
     buffer.writeln();
-    buffer.writeOperatorEquals(dataTypeName, props);
-    buffer.writeHashCode(props);
+    buffer.writeOperatorEquals(dataTypeName, propNames);
+    buffer.writeHashCode(propNames);
 
     buffer.writeln('}');
 
