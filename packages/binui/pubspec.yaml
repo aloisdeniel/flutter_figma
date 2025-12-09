@@ -1,0 +1,15 @@
+name: binui
+description: A sample command-line application.
+version: 1.0.0
+# repository: https://github.com/my_org/my_repo
+
+environment:
+  sdk: ^3.9.2
+
+dependencies:
+  path: ^1.9.0
+
+dev_dependencies:
+  lints: ^6.0.0
+  orbe_proto: ^0.1.5
+  test: ^1.25.6
