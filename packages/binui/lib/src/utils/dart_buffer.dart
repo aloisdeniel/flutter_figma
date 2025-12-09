@@ -8,7 +8,10 @@ class DartBuffer {
   final int indentSpaces;
 
   void writeln([String? text]) {
-    if (text == null) _buffer.writeln();
+    if (text == null) {
+      _buffer.writeln();
+      return;
+    }
     _buffer.writeln('${' ' * (_indentLevel * indentSpaces)}$text');
   }
 
@@ -91,7 +94,7 @@ class DartBuffer {
 
       for (var i = 0; i < props.length; i++) {
         final propName = Naming.fieldName(props[i]);
-        write('&& other.$propName == $propName');
+        write(' && other.$propName == $propName');
         if (i < props.length - 1) {
           writeln('');
         } else {

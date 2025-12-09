@@ -9,6 +9,8 @@ import 'package:binui/src/exporters/flutter/definitions/variable_collection.dart
 import 'package:binui/src/exporters/flutter/metadata.dart';
 import 'package:binui/src/exporters/flutter/pubspec.dart';
 import 'package:binui/src/exporters/flutter/utils/naming.dart';
+import 'package:binui/src/exporters/flutter/values/value.dart';
+import 'package:binui/src/exporters/flutter/values/visual_node.dart';
 
 class FlutterExporter extends Exporter {
   const FlutterExporter();
@@ -16,6 +18,16 @@ class FlutterExporter extends Exporter {
   @override
   FutureOr<Bundle> export(Library library) {
     final files = <BundleFile>[];
+
+    // Export visual nodes
+    final visualNodeExporter = VisualNodeDartExporter(
+      valueSerializer: ValueDartExporter(),
+    );
+    for (var i = 0; i < library.visualNodes.length; i++) {
+      final item = library.visualNodes[i];
+      final content = visualNodeExporter.serialize(library, item);
+      files.add(StringBundleFile('lib/src/selected/widget_$i.dart', content));
+    }
 
     // Export variable collections
     final variableCollectionExporter = VariableCollectionDartExporter();

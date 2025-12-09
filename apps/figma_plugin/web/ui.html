@@ -17,6 +17,13 @@
       flex-direction: column;
       background: #ffffff;
       color: #333;
+      overflow: hidden;
+    }
+
+    .main-content {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
     }
 
     .header {
@@ -65,6 +72,55 @@
       overflow: auto;
       padding: 16px;
       background: #fafafa;
+    }
+
+    .sidebar {
+      width: 250px;
+      border-left: 1px solid #e5e5e5;
+      background: #f8f8f8;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .sidebar-header {
+      padding: 12px 16px;
+      border-bottom: 1px solid #e5e5e5;
+      font-size: 11px;
+      font-weight: 600;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .file-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 0;
+    }
+
+    .file-item {
+      padding: 8px 16px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.1s ease;
+      border-left: 3px solid transparent;
+      word-break: break-word;
+    }
+
+    .file-item:hover {
+      background: #ececec;
+    }
+
+    .file-item.selected {
+      background: #e3f2fd;
+      border-left-color: #18a0fb;
+      font-weight: 500;
+      color: #18a0fb;
+    }
+
+    .sidebar.hidden {
+      display: none;
     }
 
     pre {
@@ -156,12 +212,19 @@
     </div>
   </div>
 
-  <div class="code-container" id="code_container">
-    <div class="placeholder">
-      <div class="placeholder-content">
-        <div class="placeholder-icon">🎨</div>
-        <div>Select one or more layers in Figma to generate Flutter code</div>
+  <div class="main-content">
+    <div class="code-container" id="code_container">
+      <div class="placeholder">
+        <div class="placeholder-content">
+          <div class="placeholder-icon">🎨</div>
+          <div>Select one or more layers in Figma to generate Flutter code</div>
+        </div>
       </div>
+    </div>
+
+    <div class="sidebar hidden" id="sidebar">
+      <div class="sidebar-header">Generated Files</div>
+      <div class="file-list" id="file_list"></div>
     </div>
   </div>
 
@@ -169,18 +232,34 @@
 
   <script>
     let currentCode = '';
+    let currentFiles = [];
+    let selectedFileIndex = 0;
 
     window.onmessage = (event) => {
       const msg = event.data.pluginMessage;
       
       if (msg.type === 'code-generated') {
-        currentCode = msg.code;
-        document.getElementById('code_container').innerHTML = 
-          '<pre>' + escapeHtml(msg.code) + '</pre>';
-        document.getElementById('copy-btn').style.display = 'block';
-        updateStatus('Code generated', true);
+        currentFiles = msg.files || [];
+        
+        if (currentFiles.length > 0) {
+          selectedFileIndex = 0;
+          renderFileList();
+          displayFile(selectedFileIndex);
+          document.getElementById('sidebar').classList.remove('hidden');
+          document.getElementById('copy-btn').style.display = 'block';
+          updateStatus(`${currentFiles.length} file(s) generated`, true);
+        } else {
+          // Fallback for old format (single 'code' property)
+          currentCode = msg.code || '';
+          document.getElementById('code_container').innerHTML = 
+            '<pre>' + escapeHtml(currentCode) + '</pre>';
+          document.getElementById('sidebar').classList.add('hidden');
+          document.getElementById('copy-btn').style.display = 'block';
+          updateStatus('Code generated', true);
+        }
       } else if (msg.type === 'no-selection') {
         currentCode = '';
+        currentFiles = [];
         document.getElementById('code_container').innerHTML = 
           `<div class="placeholder">
             <div class="placeholder-content">
@@ -188,10 +267,37 @@
               <div>${escapeHtml(msg.message)}</div>
             </div>
           </div>`;
+        document.getElementById('sidebar').classList.add('hidden');
         document.getElementById('copy-btn').style.display = 'none';
         updateStatus('Waiting for selection', false);
       }
     };
+
+    function renderFileList() {
+      const fileList = document.getElementById('file_list');
+      fileList.innerHTML = '';
+      
+      currentFiles.forEach((file, index) => {
+        const fileItem = document.createElement('div');
+        fileItem.className = 'file-item' + (index === selectedFileIndex ? ' selected' : '');
+        fileItem.textContent = file.path;
+        fileItem.addEventListener('click', () => {
+          selectedFileIndex = index;
+          displayFile(index);
+          renderFileList(); // Re-render to update selection
+        });
+        fileList.appendChild(fileItem);
+      });
+    }
+
+    function displayFile(index) {
+      if (index >= 0 && index < currentFiles.length) {
+        const file = currentFiles[index];
+        currentCode = file.content;
+        document.getElementById('code_container').innerHTML = 
+          '<pre>' + escapeHtml(file.content) + '</pre>';
+      }
+    }
 
     document.getElementById('copy-btn').addEventListener('click', () => {
       if (currentCode) {
