@@ -44,6 +44,38 @@
     .header-actions {
       display: flex;
       gap: 8px;
+      align-items: center;
+    }
+
+    .format-picker {
+      display: flex;
+      gap: 4px;
+      background: white;
+      border: 1px solid #d1d1d1;
+      border-radius: 4px;
+      padding: 2px;
+    }
+
+    .format-option {
+      padding: 4px 10px;
+      border: none;
+      border-radius: 3px;
+      background: transparent;
+      cursor: pointer;
+      font-size: 11px;
+      font-weight: 500;
+      color: #666;
+      transition: all 0.15s ease;
+    }
+
+    .format-option:hover {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .format-option.active {
+      background: #18a0fb;
+      color: white;
     }
 
     button {
@@ -204,6 +236,10 @@
   <div class="header">
     <h1>Flutter Figma Code</h1>
     <div class="header-actions">
+      <div class="format-picker">
+        <button class="format-option active" data-format="dart">Dart Code</button>
+        <button class="format-option" data-format="binary">Binary (Base64)</button>
+      </div>
       <div class="status-indicator" id="status">
         <span class="status-dot"></span>
         <span id="status-text">Listening for selection...</span>
@@ -234,6 +270,7 @@
     let currentCode = '';
     let currentFiles = [];
     let selectedFileIndex = 0;
+    let currentFormat = 'dart';
 
     window.onmessage = (event) => {
       const msg = event.data.pluginMessage;
@@ -347,6 +384,23 @@
       div.textContent = text;
       return div.innerHTML;
     }
+
+    // Format picker functionality
+    document.querySelectorAll('.format-option').forEach(option => {
+      option.addEventListener('click', () => {
+        // Update active state
+        document.querySelectorAll('.format-option').forEach(opt => {
+          opt.classList.remove('active');
+        });
+        option.classList.add('active');
+        
+        // Update current format
+        currentFormat = option.dataset.format;
+        
+        // Request regeneration with new format
+        parent.postMessage({ pluginMessage: { type: 'format-changed', format: currentFormat } }, '*');
+      });
+    });
   </script>
 </body>
 </html>
