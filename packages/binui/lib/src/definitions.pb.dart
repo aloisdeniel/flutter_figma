@@ -212,12 +212,14 @@ class Version extends $pb.GeneratedMessage {
 
 class ComponentProperty extends $pb.GeneratedMessage {
   factory ComponentProperty({
+    $core.int? componentId,
     $core.int? id,
     $core.String? name,
     $core.String? documentation,
     Value? defaultValue,
   }) {
     final result = create();
+    if (componentId != null) result.componentId = componentId;
     if (id != null) result.id = id;
     if (name != null) result.name = name;
     if (documentation != null) result.documentation = documentation;
@@ -238,10 +240,11 @@ class ComponentProperty extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'ComponentProperty',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'binui'),
       createEmptyInstance: create)
-    ..aI(1, _omitFieldNames ? '' : 'id')
-    ..aOS(2, _omitFieldNames ? '' : 'name')
-    ..aOS(3, _omitFieldNames ? '' : 'documentation')
-    ..aOM<Value>(4, _omitFieldNames ? '' : 'defaultValue',
+    ..aI(1, _omitFieldNames ? '' : 'componentId', protoName: 'componentId')
+    ..aI(2, _omitFieldNames ? '' : 'id')
+    ..aOS(3, _omitFieldNames ? '' : 'name')
+    ..aOS(4, _omitFieldNames ? '' : 'documentation')
+    ..aOM<Value>(5, _omitFieldNames ? '' : 'defaultValue',
         protoName: 'defaultValue', subBuilder: Value.create)
     ..hasRequiredFields = false;
 
@@ -265,42 +268,51 @@ class ComponentProperty extends $pb.GeneratedMessage {
   static ComponentProperty? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.int get id => $_getIZ(0);
+  $core.int get componentId => $_getIZ(0);
   @$pb.TagNumber(1)
-  set id($core.int value) => $_setSignedInt32(0, value);
+  set componentId($core.int value) => $_setSignedInt32(0, value);
   @$pb.TagNumber(1)
-  $core.bool hasId() => $_has(0);
+  $core.bool hasComponentId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearId() => $_clearField(1);
+  void clearComponentId() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  $core.String get name => $_getSZ(1);
+  $core.int get id => $_getIZ(1);
   @$pb.TagNumber(2)
-  set name($core.String value) => $_setString(1, value);
+  set id($core.int value) => $_setSignedInt32(1, value);
   @$pb.TagNumber(2)
-  $core.bool hasName() => $_has(1);
+  $core.bool hasId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearName() => $_clearField(2);
+  void clearId() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.String get documentation => $_getSZ(2);
+  $core.String get name => $_getSZ(2);
   @$pb.TagNumber(3)
-  set documentation($core.String value) => $_setString(2, value);
+  set name($core.String value) => $_setString(2, value);
   @$pb.TagNumber(3)
-  $core.bool hasDocumentation() => $_has(2);
+  $core.bool hasName() => $_has(2);
   @$pb.TagNumber(3)
-  void clearDocumentation() => $_clearField(3);
+  void clearName() => $_clearField(3);
 
   @$pb.TagNumber(4)
-  Value get defaultValue => $_getN(3);
+  $core.String get documentation => $_getSZ(3);
   @$pb.TagNumber(4)
-  set defaultValue(Value value) => $_setField(4, value);
+  set documentation($core.String value) => $_setString(3, value);
   @$pb.TagNumber(4)
-  $core.bool hasDefaultValue() => $_has(3);
+  $core.bool hasDocumentation() => $_has(3);
   @$pb.TagNumber(4)
-  void clearDefaultValue() => $_clearField(4);
-  @$pb.TagNumber(4)
-  Value ensureDefaultValue() => $_ensure(3);
+  void clearDocumentation() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  Value get defaultValue => $_getN(4);
+  @$pb.TagNumber(5)
+  set defaultValue(Value value) => $_setField(5, value);
+  @$pb.TagNumber(5)
+  $core.bool hasDefaultValue() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearDefaultValue() => $_clearField(5);
+  @$pb.TagNumber(5)
+  Value ensureDefaultValue() => $_ensure(4);
 }
 
 class ComponentVariantValueDefinition extends $pb.GeneratedMessage {
@@ -474,10 +486,12 @@ class ComponentVariantDefinition extends $pb.GeneratedMessage {
 
 class ComponentVariantValue extends $pb.GeneratedMessage {
   factory ComponentVariantValue({
+    $core.int? componentId,
     $core.int? variantId,
     $core.int? id,
   }) {
     final result = create();
+    if (componentId != null) result.componentId = componentId;
     if (variantId != null) result.variantId = variantId;
     if (id != null) result.id = id;
     return result;
@@ -496,8 +510,9 @@ class ComponentVariantValue extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'ComponentVariantValue',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'binui'),
       createEmptyInstance: create)
-    ..aI(1, _omitFieldNames ? '' : 'variantId', protoName: 'variantId')
-    ..aI(2, _omitFieldNames ? '' : 'id')
+    ..aI(1, _omitFieldNames ? '' : 'componentId', protoName: 'componentId')
+    ..aI(2, _omitFieldNames ? '' : 'variantId', protoName: 'variantId')
+    ..aI(3, _omitFieldNames ? '' : 'id')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -521,22 +536,31 @@ class ComponentVariantValue extends $pb.GeneratedMessage {
   static ComponentVariantValue? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.int get variantId => $_getIZ(0);
+  $core.int get componentId => $_getIZ(0);
   @$pb.TagNumber(1)
-  set variantId($core.int value) => $_setSignedInt32(0, value);
+  set componentId($core.int value) => $_setSignedInt32(0, value);
   @$pb.TagNumber(1)
-  $core.bool hasVariantId() => $_has(0);
+  $core.bool hasComponentId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearVariantId() => $_clearField(1);
+  void clearComponentId() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  $core.int get id => $_getIZ(1);
+  $core.int get variantId => $_getIZ(1);
   @$pb.TagNumber(2)
-  set id($core.int value) => $_setSignedInt32(1, value);
+  set variantId($core.int value) => $_setSignedInt32(1, value);
   @$pb.TagNumber(2)
-  $core.bool hasId() => $_has(1);
+  $core.bool hasVariantId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearId() => $_clearField(2);
+  void clearVariantId() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.int get id => $_getIZ(2);
+  @$pb.TagNumber(3)
+  set id($core.int value) => $_setSignedInt32(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasId() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearId() => $_clearField(3);
 }
 
 class ComponentVariant extends $pb.GeneratedMessage {
@@ -1006,7 +1030,6 @@ enum Value_Type {
   border,
   borderSide,
   gradient,
-  instance,
   label,
   offset,
   radius,
@@ -1032,7 +1055,6 @@ class Value extends $pb.GeneratedMessage {
     Border? border,
     BorderSide? borderSide,
     Gradient? gradient,
-    Instance? instance,
     Label? label,
     Offset? offset,
     Radius? radius,
@@ -1055,7 +1077,6 @@ class Value extends $pb.GeneratedMessage {
     if (border != null) result.border = border;
     if (borderSide != null) result.borderSide = borderSide;
     if (gradient != null) result.gradient = gradient;
-    if (instance != null) result.instance = instance;
     if (label != null) result.label = label;
     if (offset != null) result.offset = offset;
     if (radius != null) result.radius = radius;
@@ -1089,7 +1110,6 @@ class Value extends $pb.GeneratedMessage {
     7: Value_Type.border,
     8: Value_Type.borderSide,
     9: Value_Type.gradient,
-    10: Value_Type.instance,
     11: Value_Type.label,
     12: Value_Type.offset,
     13: Value_Type.radius,
@@ -1107,29 +1127,8 @@ class Value extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'Value',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'binui'),
       createEmptyInstance: create)
-    ..oo(0, [
-      1,
-      2,
-      3,
-      4,
-      5,
-      6,
-      7,
-      8,
-      9,
-      10,
-      11,
-      12,
-      13,
-      14,
-      15,
-      16,
-      17,
-      18,
-      19,
-      20,
-      21
-    ])
+    ..oo(0,
+        [1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21])
     ..aOM<Alias>(1, _omitFieldNames ? '' : 'alias', subBuilder: Alias.create)
     ..aOS(2, _omitFieldNames ? '' : 'stringValue', protoName: 'stringValue')
     ..aD(3, _omitFieldNames ? '' : 'doubleValue', protoName: 'doubleValue')
@@ -1141,8 +1140,6 @@ class Value extends $pb.GeneratedMessage {
         protoName: 'borderSide', subBuilder: BorderSide.create)
     ..aOM<Gradient>(9, _omitFieldNames ? '' : 'gradient',
         subBuilder: Gradient.create)
-    ..aOM<Instance>(10, _omitFieldNames ? '' : 'instance',
-        subBuilder: Instance.create)
     ..aOM<Label>(11, _omitFieldNames ? '' : 'label', subBuilder: Label.create)
     ..aOM<Offset>(12, _omitFieldNames ? '' : 'offset',
         subBuilder: Offset.create)
@@ -1192,7 +1189,6 @@ class Value extends $pb.GeneratedMessage {
   @$pb.TagNumber(7)
   @$pb.TagNumber(8)
   @$pb.TagNumber(9)
-  @$pb.TagNumber(10)
   @$pb.TagNumber(11)
   @$pb.TagNumber(12)
   @$pb.TagNumber(13)
@@ -1214,7 +1210,6 @@ class Value extends $pb.GeneratedMessage {
   @$pb.TagNumber(7)
   @$pb.TagNumber(8)
   @$pb.TagNumber(9)
-  @$pb.TagNumber(10)
   @$pb.TagNumber(11)
   @$pb.TagNumber(12)
   @$pb.TagNumber(13)
@@ -1321,137 +1316,126 @@ class Value extends $pb.GeneratedMessage {
   @$pb.TagNumber(9)
   Gradient ensureGradient() => $_ensure(8);
 
-  @$pb.TagNumber(10)
-  Instance get instance => $_getN(9);
-  @$pb.TagNumber(10)
-  set instance(Instance value) => $_setField(10, value);
-  @$pb.TagNumber(10)
-  $core.bool hasInstance() => $_has(9);
-  @$pb.TagNumber(10)
-  void clearInstance() => $_clearField(10);
-  @$pb.TagNumber(10)
-  Instance ensureInstance() => $_ensure(9);
-
   @$pb.TagNumber(11)
-  Label get label => $_getN(10);
+  Label get label => $_getN(9);
   @$pb.TagNumber(11)
   set label(Label value) => $_setField(11, value);
   @$pb.TagNumber(11)
-  $core.bool hasLabel() => $_has(10);
+  $core.bool hasLabel() => $_has(9);
   @$pb.TagNumber(11)
   void clearLabel() => $_clearField(11);
   @$pb.TagNumber(11)
-  Label ensureLabel() => $_ensure(10);
+  Label ensureLabel() => $_ensure(9);
 
   @$pb.TagNumber(12)
-  Offset get offset => $_getN(11);
+  Offset get offset => $_getN(10);
   @$pb.TagNumber(12)
   set offset(Offset value) => $_setField(12, value);
   @$pb.TagNumber(12)
-  $core.bool hasOffset() => $_has(11);
+  $core.bool hasOffset() => $_has(10);
   @$pb.TagNumber(12)
   void clearOffset() => $_clearField(12);
   @$pb.TagNumber(12)
-  Offset ensureOffset() => $_ensure(11);
+  Offset ensureOffset() => $_ensure(10);
 
   @$pb.TagNumber(13)
-  Radius get radius => $_getN(12);
+  Radius get radius => $_getN(11);
   @$pb.TagNumber(13)
   set radius(Radius value) => $_setField(13, value);
   @$pb.TagNumber(13)
-  $core.bool hasRadius() => $_has(12);
+  $core.bool hasRadius() => $_has(11);
   @$pb.TagNumber(13)
   void clearRadius() => $_clearField(13);
   @$pb.TagNumber(13)
-  Radius ensureRadius() => $_ensure(12);
+  Radius ensureRadius() => $_ensure(11);
 
   @$pb.TagNumber(14)
-  BorderRadius get borderRadius => $_getN(13);
+  BorderRadius get borderRadius => $_getN(12);
   @$pb.TagNumber(14)
   set borderRadius(BorderRadius value) => $_setField(14, value);
   @$pb.TagNumber(14)
-  $core.bool hasBorderRadius() => $_has(13);
+  $core.bool hasBorderRadius() => $_has(12);
   @$pb.TagNumber(14)
   void clearBorderRadius() => $_clearField(14);
   @$pb.TagNumber(14)
-  BorderRadius ensureBorderRadius() => $_ensure(13);
+  BorderRadius ensureBorderRadius() => $_ensure(12);
 
   @$pb.TagNumber(15)
-  Rect get rect => $_getN(14);
+  Rect get rect => $_getN(13);
   @$pb.TagNumber(15)
   set rect(Rect value) => $_setField(15, value);
   @$pb.TagNumber(15)
-  $core.bool hasRect() => $_has(14);
+  $core.bool hasRect() => $_has(13);
   @$pb.TagNumber(15)
   void clearRect() => $_clearField(15);
   @$pb.TagNumber(15)
-  Rect ensureRect() => $_ensure(14);
+  Rect ensureRect() => $_ensure(13);
 
   @$pb.TagNumber(16)
-  TextStyle get textStyle => $_getN(15);
+  TextStyle get textStyle => $_getN(14);
   @$pb.TagNumber(16)
   set textStyle(TextStyle value) => $_setField(16, value);
   @$pb.TagNumber(16)
-  $core.bool hasTextStyle() => $_has(15);
+  $core.bool hasTextStyle() => $_has(14);
   @$pb.TagNumber(16)
   void clearTextStyle() => $_clearField(16);
   @$pb.TagNumber(16)
-  TextStyle ensureTextStyle() => $_ensure(15);
+  TextStyle ensureTextStyle() => $_ensure(14);
 
   @$pb.TagNumber(17)
-  Transform2D get transform2D => $_getN(16);
+  Transform2D get transform2D => $_getN(15);
   @$pb.TagNumber(17)
   set transform2D(Transform2D value) => $_setField(17, value);
   @$pb.TagNumber(17)
-  $core.bool hasTransform2D() => $_has(16);
+  $core.bool hasTransform2D() => $_has(15);
   @$pb.TagNumber(17)
   void clearTransform2D() => $_clearField(17);
   @$pb.TagNumber(17)
-  Transform2D ensureTransform2D() => $_ensure(16);
+  Transform2D ensureTransform2D() => $_ensure(15);
 
   @$pb.TagNumber(18)
-  VariantValue get variantValue => $_getN(17);
+  VariantValue get variantValue => $_getN(16);
   @$pb.TagNumber(18)
   set variantValue(VariantValue value) => $_setField(18, value);
   @$pb.TagNumber(18)
-  $core.bool hasVariantValue() => $_has(17);
+  $core.bool hasVariantValue() => $_has(16);
   @$pb.TagNumber(18)
   void clearVariantValue() => $_clearField(18);
   @$pb.TagNumber(18)
-  VariantValue ensureVariantValue() => $_ensure(17);
+  VariantValue ensureVariantValue() => $_ensure(16);
 
   @$pb.TagNumber(19)
-  VectorGraphics get vectorGraphics => $_getN(18);
+  VectorGraphics get vectorGraphics => $_getN(17);
   @$pb.TagNumber(19)
   set vectorGraphics(VectorGraphics value) => $_setField(19, value);
   @$pb.TagNumber(19)
-  $core.bool hasVectorGraphics() => $_has(18);
+  $core.bool hasVectorGraphics() => $_has(17);
   @$pb.TagNumber(19)
   void clearVectorGraphics() => $_clearField(19);
   @$pb.TagNumber(19)
-  VectorGraphics ensureVectorGraphics() => $_ensure(18);
+  VectorGraphics ensureVectorGraphics() => $_ensure(17);
 
   @$pb.TagNumber(20)
-  Version_ get version => $_getN(19);
+  Version_ get version => $_getN(18);
   @$pb.TagNumber(20)
   set version(Version_ value) => $_setField(20, value);
   @$pb.TagNumber(20)
-  $core.bool hasVersion() => $_has(19);
+  $core.bool hasVersion() => $_has(18);
   @$pb.TagNumber(20)
   void clearVersion() => $_clearField(20);
   @$pb.TagNumber(20)
-  Version_ ensureVersion() => $_ensure(19);
+  Version_ ensureVersion() => $_ensure(18);
 
   @$pb.TagNumber(21)
-  VisualNode get visualNode => $_getN(20);
+  VisualNode get visualNode => $_getN(19);
   @$pb.TagNumber(21)
   set visualNode(VisualNode value) => $_setField(21, value);
   @$pb.TagNumber(21)
-  $core.bool hasVisualNode() => $_has(20);
+  $core.bool hasVisualNode() => $_has(19);
   @$pb.TagNumber(21)
   void clearVisualNode() => $_clearField(21);
   @$pb.TagNumber(21)
-  VisualNode ensureVisualNode() => $_ensure(20);
+  VisualNode ensureVisualNode() => $_ensure(19);
 }
 
 enum Alias_Type { constant, property, variable, notSet }
@@ -1697,11 +1681,13 @@ class VariableAlias extends $pb.GeneratedMessage {
 
 class PropertyAlias extends $pb.GeneratedMessage {
   factory PropertyAlias({
-    $core.String? name,
+    $core.int? componentId,
+    $core.int? propertyId,
     Value? defaultValue,
   }) {
     final result = create();
-    if (name != null) result.name = name;
+    if (componentId != null) result.componentId = componentId;
+    if (propertyId != null) result.propertyId = propertyId;
     if (defaultValue != null) result.defaultValue = defaultValue;
     return result;
   }
@@ -1719,8 +1705,9 @@ class PropertyAlias extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'PropertyAlias',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'binui'),
       createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'name')
-    ..aOM<Value>(2, _omitFieldNames ? '' : 'defaultValue',
+    ..aI(1, _omitFieldNames ? '' : 'componentId', protoName: 'componentId')
+    ..aI(2, _omitFieldNames ? '' : 'propertyId', protoName: 'propertyId')
+    ..aOM<Value>(3, _omitFieldNames ? '' : 'defaultValue',
         protoName: 'defaultValue', subBuilder: Value.create)
     ..hasRequiredFields = false;
 
@@ -1744,24 +1731,33 @@ class PropertyAlias extends $pb.GeneratedMessage {
   static PropertyAlias? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get name => $_getSZ(0);
+  $core.int get componentId => $_getIZ(0);
   @$pb.TagNumber(1)
-  set name($core.String value) => $_setString(0, value);
+  set componentId($core.int value) => $_setSignedInt32(0, value);
   @$pb.TagNumber(1)
-  $core.bool hasName() => $_has(0);
+  $core.bool hasComponentId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearName() => $_clearField(1);
+  void clearComponentId() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  Value get defaultValue => $_getN(1);
+  $core.int get propertyId => $_getIZ(1);
   @$pb.TagNumber(2)
-  set defaultValue(Value value) => $_setField(2, value);
+  set propertyId($core.int value) => $_setSignedInt32(1, value);
   @$pb.TagNumber(2)
-  $core.bool hasDefaultValue() => $_has(1);
+  $core.bool hasPropertyId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearDefaultValue() => $_clearField(2);
-  @$pb.TagNumber(2)
-  Value ensureDefaultValue() => $_ensure(1);
+  void clearPropertyId() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  Value get defaultValue => $_getN(2);
+  @$pb.TagNumber(3)
+  set defaultValue(Value value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasDefaultValue() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearDefaultValue() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Value ensureDefaultValue() => $_ensure(2);
 }
 
 class Size extends $pb.GeneratedMessage {
@@ -2719,134 +2715,6 @@ class RadialGradient extends $pb.GeneratedMessage {
   void clearRadius() => $_clearField(3);
 }
 
-class Instance extends $pb.GeneratedMessage {
-  factory Instance({
-    $core.String? type,
-    $core.Iterable<InstanceArgument>? arguments,
-  }) {
-    final result = create();
-    if (type != null) result.type = type;
-    if (arguments != null) result.arguments.addAll(arguments);
-    return result;
-  }
-
-  Instance._();
-
-  factory Instance.fromBuffer($core.List<$core.int> data,
-          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(data, registry);
-  factory Instance.fromJson($core.String json,
-          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromJson(json, registry);
-
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'Instance',
-      package: const $pb.PackageName(_omitMessageNames ? '' : 'binui'),
-      createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'type')
-    ..pPM<InstanceArgument>(2, _omitFieldNames ? '' : 'arguments',
-        subBuilder: InstanceArgument.create)
-    ..hasRequiredFields = false;
-
-  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  Instance clone() => deepCopy();
-  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  Instance copyWith(void Function(Instance) updates) =>
-      super.copyWith((message) => updates(message as Instance)) as Instance;
-
-  @$core.override
-  $pb.BuilderInfo get info_ => _i;
-
-  @$core.pragma('dart2js:noInline')
-  static Instance create() => Instance._();
-  @$core.override
-  Instance createEmptyInstance() => create();
-  @$core.pragma('dart2js:noInline')
-  static Instance getDefault() =>
-      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Instance>(create);
-  static Instance? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get type => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set type($core.String value) => $_setString(0, value);
-  @$pb.TagNumber(1)
-  $core.bool hasType() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearType() => $_clearField(1);
-
-  @$pb.TagNumber(2)
-  $pb.PbList<InstanceArgument> get arguments => $_getList(1);
-}
-
-class InstanceArgument extends $pb.GeneratedMessage {
-  factory InstanceArgument({
-    $core.String? name,
-    Value? value,
-  }) {
-    final result = create();
-    if (name != null) result.name = name;
-    if (value != null) result.value = value;
-    return result;
-  }
-
-  InstanceArgument._();
-
-  factory InstanceArgument.fromBuffer($core.List<$core.int> data,
-          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(data, registry);
-  factory InstanceArgument.fromJson($core.String json,
-          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromJson(json, registry);
-
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'InstanceArgument',
-      package: const $pb.PackageName(_omitMessageNames ? '' : 'binui'),
-      createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'name')
-    ..aOM<Value>(2, _omitFieldNames ? '' : 'value', subBuilder: Value.create)
-    ..hasRequiredFields = false;
-
-  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  InstanceArgument clone() => deepCopy();
-  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  InstanceArgument copyWith(void Function(InstanceArgument) updates) =>
-      super.copyWith((message) => updates(message as InstanceArgument))
-          as InstanceArgument;
-
-  @$core.override
-  $pb.BuilderInfo get info_ => _i;
-
-  @$core.pragma('dart2js:noInline')
-  static InstanceArgument create() => InstanceArgument._();
-  @$core.override
-  InstanceArgument createEmptyInstance() => create();
-  @$core.pragma('dart2js:noInline')
-  static InstanceArgument getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<InstanceArgument>(create);
-  static InstanceArgument? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get name => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set name($core.String value) => $_setString(0, value);
-  @$pb.TagNumber(1)
-  $core.bool hasName() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearName() => $_clearField(1);
-
-  @$pb.TagNumber(2)
-  Value get value => $_getN(1);
-  @$pb.TagNumber(2)
-  set value(Value value) => $_setField(2, value);
-  @$pb.TagNumber(2)
-  $core.bool hasValue() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearValue() => $_clearField(2);
-  @$pb.TagNumber(2)
-  Value ensureValue() => $_ensure(1);
-}
-
 class Label extends $pb.GeneratedMessage {
   factory Label({
     LabelSegment? segment,
@@ -3544,14 +3412,14 @@ class MatrixRow extends $pb.GeneratedMessage {
 
 class VariantValue extends $pb.GeneratedMessage {
   factory VariantValue({
-    $core.String? component,
-    $core.String? type,
-    $core.String? value,
+    $core.int? componentId,
+    $core.int? variantId,
+    $core.int? valueId,
   }) {
     final result = create();
-    if (component != null) result.component = component;
-    if (type != null) result.type = type;
-    if (value != null) result.value = value;
+    if (componentId != null) result.componentId = componentId;
+    if (variantId != null) result.variantId = variantId;
+    if (valueId != null) result.valueId = valueId;
     return result;
   }
 
@@ -3568,9 +3436,9 @@ class VariantValue extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'VariantValue',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'binui'),
       createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'component')
-    ..aOS(2, _omitFieldNames ? '' : 'type')
-    ..aOS(3, _omitFieldNames ? '' : 'value')
+    ..aI(1, _omitFieldNames ? '' : 'componentId', protoName: 'componentId')
+    ..aI(2, _omitFieldNames ? '' : 'variantId', protoName: 'variantId')
+    ..aI(3, _omitFieldNames ? '' : 'valueId', protoName: 'valueId')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -3593,31 +3461,31 @@ class VariantValue extends $pb.GeneratedMessage {
   static VariantValue? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get component => $_getSZ(0);
+  $core.int get componentId => $_getIZ(0);
   @$pb.TagNumber(1)
-  set component($core.String value) => $_setString(0, value);
+  set componentId($core.int value) => $_setSignedInt32(0, value);
   @$pb.TagNumber(1)
-  $core.bool hasComponent() => $_has(0);
+  $core.bool hasComponentId() => $_has(0);
   @$pb.TagNumber(1)
-  void clearComponent() => $_clearField(1);
+  void clearComponentId() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  $core.String get type => $_getSZ(1);
+  $core.int get variantId => $_getIZ(1);
   @$pb.TagNumber(2)
-  set type($core.String value) => $_setString(1, value);
+  set variantId($core.int value) => $_setSignedInt32(1, value);
   @$pb.TagNumber(2)
-  $core.bool hasType() => $_has(1);
+  $core.bool hasVariantId() => $_has(1);
   @$pb.TagNumber(2)
-  void clearType() => $_clearField(2);
+  void clearVariantId() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.String get value => $_getSZ(2);
+  $core.int get valueId => $_getIZ(2);
   @$pb.TagNumber(3)
-  set value($core.String value) => $_setString(2, value);
+  set valueId($core.int value) => $_setSignedInt32(2, value);
   @$pb.TagNumber(3)
-  $core.bool hasValue() => $_has(2);
+  $core.bool hasValueId() => $_has(2);
   @$pb.TagNumber(3)
-  void clearValue() => $_clearField(3);
+  void clearValueId() => $_clearField(3);
 }
 
 enum VectorGraphics_Type { svg, notSet }

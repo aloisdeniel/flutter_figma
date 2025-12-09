@@ -23,10 +23,11 @@ message Version {
 // Components
 
 message ComponentProperty {
-  int32 id = 1;
-  string name = 2;
-  optional string documentation = 3;
-  Value defaultValue = 4;
+  int32 componentId = 1;
+  int32 id = 2;
+  string name = 3;
+  optional string documentation = 4;
+  Value defaultValue = 5;
 }
 
 message ComponentVariantValueDefinition {
@@ -43,8 +44,9 @@ message ComponentVariantDefinition {
 }
 
 message ComponentVariantValue {
-  int32 variantId = 1;
-  int32 id = 2;
+  int32 componentId = 1;
+  int32 variantId = 2;
+  int32 id = 3;
 }
 
 message ComponentVariant {
@@ -100,7 +102,6 @@ message Value {
     Border border = 7;
     BorderSide borderSide = 8;
     Gradient gradient = 9;
-    Instance instance = 10;
     Label label = 11;
     Offset offset = 12;
     Radius radius = 13;
@@ -136,8 +137,9 @@ message VariableAlias {
 }
 
 message PropertyAlias {
-  string name = 1;
-  Value defaultValue = 2;
+  int32 componentId = 1;
+  int32 propertyId = 2;
+  Value defaultValue = 3;
 }
 
 // Base
@@ -224,18 +226,6 @@ message RadialGradient {
   double radius = 3;
 }
 
-// Instance
-
-message Instance {
-  string type = 1;
-  repeated InstanceArgument arguments = 2;
-}
-
-message InstanceArgument {
-  string name = 1;
-  Value value = 2;
-}
-
 // Label
 
 message Label {
@@ -311,9 +301,9 @@ message MatrixRow {
 // Variant Value
 
 message VariantValue {
-  string component = 1;
-  string type = 2;
-  string value = 3;
+  int32 componentId = 1;
+  int32 variantId = 2;
+  int32 valueId = 3;
 }
 
 // Vector Graphics

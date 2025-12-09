@@ -346,11 +346,12 @@ final $typed_data.Uint8List versionDescriptor = $convert.base64Decode(
 const ComponentProperty$json = {
   '1': 'ComponentProperty',
   '2': [
-    {'1': 'id', '3': 1, '5': 5, '8': {}, '10': 'id'},
-    {'1': 'name', '3': 2, '5': 9, '8': {}, '10': 'name'},
+    {'1': 'componentId', '3': 1, '5': 5, '8': {}, '10': 'componentId'},
+    {'1': 'id', '3': 2, '5': 5, '8': {}, '10': 'id'},
+    {'1': 'name', '3': 3, '5': 9, '8': {}, '10': 'name'},
     {
       '1': 'documentation',
-      '3': 3,
+      '3': 4,
       '4': 1,
       '5': 9,
       '8': {},
@@ -358,7 +359,7 @@ const ComponentProperty$json = {
     },
     {
       '1': 'defaultValue',
-      '3': 4,
+      '3': 5,
       '5': 11,
       '6': '.binui.Value',
       '8': {},
@@ -369,9 +370,10 @@ const ComponentProperty$json = {
 
 /// Descriptor for `ComponentProperty`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List componentPropertyDescriptor = $convert.base64Decode(
-    'ChFDb21wb25lbnRQcm9wZXJ0eRIOCgJpZBgBKAVCAFICaWQSEgoEbmFtZRgCKAlCAFIEbmFtZR'
-    'ImCg1kb2N1bWVudGF0aW9uGAMgASgJQgBSDWRvY3VtZW50YXRpb24SMAoMZGVmYXVsdFZhbHVl'
-    'GAQoCzIMLmJpbnVpLlZhbHVlQgBSDGRlZmF1bHRWYWx1ZQ==');
+    'ChFDb21wb25lbnRQcm9wZXJ0eRIgCgtjb21wb25lbnRJZBgBKAVCAFILY29tcG9uZW50SWQSDg'
+    'oCaWQYAigFQgBSAmlkEhIKBG5hbWUYAygJQgBSBG5hbWUSJgoNZG9jdW1lbnRhdGlvbhgEIAEo'
+    'CUIAUg1kb2N1bWVudGF0aW9uEjAKDGRlZmF1bHRWYWx1ZRgFKAsyDC5iaW51aS5WYWx1ZUIAUg'
+    'xkZWZhdWx0VmFsdWU=');
 
 @$core.Deprecated('Use componentVariantValueDefinitionDescriptor instead')
 const ComponentVariantValueDefinition$json = {
@@ -433,15 +435,16 @@ final $typed_data.Uint8List componentVariantDefinitionDescriptor = $convert.base
 const ComponentVariantValue$json = {
   '1': 'ComponentVariantValue',
   '2': [
-    {'1': 'variantId', '3': 1, '5': 5, '8': {}, '10': 'variantId'},
-    {'1': 'id', '3': 2, '5': 5, '8': {}, '10': 'id'},
+    {'1': 'componentId', '3': 1, '5': 5, '8': {}, '10': 'componentId'},
+    {'1': 'variantId', '3': 2, '5': 5, '8': {}, '10': 'variantId'},
+    {'1': 'id', '3': 3, '5': 5, '8': {}, '10': 'id'},
   ],
 };
 
 /// Descriptor for `ComponentVariantValue`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List componentVariantValueDescriptor = $convert.base64Decode(
-    'ChVDb21wb25lbnRWYXJpYW50VmFsdWUSHAoJdmFyaWFudElkGAEoBUIAUgl2YXJpYW50SWQSDg'
-    'oCaWQYAigFQgBSAmlk');
+    'ChVDb21wb25lbnRWYXJpYW50VmFsdWUSIAoLY29tcG9uZW50SWQYASgFQgBSC2NvbXBvbmVudE'
+    'lkEhwKCXZhcmlhbnRJZBgCKAVCAFIJdmFyaWFudElkEg4KAmlkGAMoBUIAUgJpZA==');
 
 @$core.Deprecated('Use componentVariantDescriptor instead')
 const ComponentVariant$json = {
@@ -697,15 +700,6 @@ const Value$json = {
       '10': 'gradient'
     },
     {
-      '1': 'instance',
-      '3': 10,
-      '5': 11,
-      '6': '.binui.Instance',
-      '8': {},
-      '9': 0,
-      '10': 'instance'
-    },
-    {
       '1': 'label',
       '3': 11,
       '5': 11,
@@ -818,18 +812,17 @@ final $typed_data.Uint8List valueDescriptor = $convert.base64Decode(
     'NpemVCAEgAUgRzaXplEiQKBWNvbG9yGAYoCzIMLmJpbnVpLkNvbG9yQgBIAFIFY29sb3ISJwoG'
     'Ym9yZGVyGAcoCzINLmJpbnVpLkJvcmRlckIASABSBmJvcmRlchIzCgpib3JkZXJTaWRlGAgoCz'
     'IRLmJpbnVpLkJvcmRlclNpZGVCAEgAUgpib3JkZXJTaWRlEi0KCGdyYWRpZW50GAkoCzIPLmJp'
-    'bnVpLkdyYWRpZW50QgBIAFIIZ3JhZGllbnQSLQoIaW5zdGFuY2UYCigLMg8uYmludWkuSW5zdG'
-    'FuY2VCAEgAUghpbnN0YW5jZRIkCgVsYWJlbBgLKAsyDC5iaW51aS5MYWJlbEIASABSBWxhYmVs'
-    'EicKBm9mZnNldBgMKAsyDS5iaW51aS5PZmZzZXRCAEgAUgZvZmZzZXQSJwoGcmFkaXVzGA0oCz'
-    'INLmJpbnVpLlJhZGl1c0IASABSBnJhZGl1cxI5Cgxib3JkZXJSYWRpdXMYDigLMhMuYmludWku'
-    'Qm9yZGVyUmFkaXVzQgBIAFIMYm9yZGVyUmFkaXVzEiEKBHJlY3QYDygLMgsuYmludWkuUmVjdE'
-    'IASABSBHJlY3QSMAoJdGV4dFN0eWxlGBAoCzIQLmJpbnVpLlRleHRTdHlsZUIASABSCXRleHRT'
-    'dHlsZRI2Cgt0cmFuc2Zvcm0yRBgRKAsyEi5iaW51aS5UcmFuc2Zvcm0yREIASABSC3RyYW5zZm'
-    '9ybTJEEjkKDHZhcmlhbnRWYWx1ZRgSKAsyEy5iaW51aS5WYXJpYW50VmFsdWVCAEgAUgx2YXJp'
-    'YW50VmFsdWUSPwoOdmVjdG9yR3JhcGhpY3MYEygLMhUuYmludWkuVmVjdG9yR3JhcGhpY3NCAE'
-    'gAUg52ZWN0b3JHcmFwaGljcxIqCgd2ZXJzaW9uGBQoCzIOLmJpbnVpLlZlcnNpb25CAEgAUgd2'
-    'ZXJzaW9uEjMKCnZpc3VhbE5vZGUYFSgLMhEuYmludWkuVmlzdWFsTm9kZUIASABSCnZpc3VhbE'
-    '5vZGVCBgoEdHlwZQ==');
+    'bnVpLkdyYWRpZW50QgBIAFIIZ3JhZGllbnQSJAoFbGFiZWwYCygLMgwuYmludWkuTGFiZWxCAE'
+    'gAUgVsYWJlbBInCgZvZmZzZXQYDCgLMg0uYmludWkuT2Zmc2V0QgBIAFIGb2Zmc2V0EicKBnJh'
+    'ZGl1cxgNKAsyDS5iaW51aS5SYWRpdXNCAEgAUgZyYWRpdXMSOQoMYm9yZGVyUmFkaXVzGA4oCz'
+    'ITLmJpbnVpLkJvcmRlclJhZGl1c0IASABSDGJvcmRlclJhZGl1cxIhCgRyZWN0GA8oCzILLmJp'
+    'bnVpLlJlY3RCAEgAUgRyZWN0EjAKCXRleHRTdHlsZRgQKAsyEC5iaW51aS5UZXh0U3R5bGVCAE'
+    'gAUgl0ZXh0U3R5bGUSNgoLdHJhbnNmb3JtMkQYESgLMhIuYmludWkuVHJhbnNmb3JtMkRCAEgA'
+    'Ugt0cmFuc2Zvcm0yRBI5Cgx2YXJpYW50VmFsdWUYEigLMhMuYmludWkuVmFyaWFudFZhbHVlQg'
+    'BIAFIMdmFyaWFudFZhbHVlEj8KDnZlY3RvckdyYXBoaWNzGBMoCzIVLmJpbnVpLlZlY3Rvckdy'
+    'YXBoaWNzQgBIAFIOdmVjdG9yR3JhcGhpY3MSKgoHdmVyc2lvbhgUKAsyDi5iaW51aS5WZXJzaW'
+    '9uQgBIAFIHdmVyc2lvbhIzCgp2aXN1YWxOb2RlGBUoCzIRLmJpbnVpLlZpc3VhbE5vZGVCAEgA'
+    'Ugp2aXN1YWxOb2RlQgYKBHR5cGU=');
 
 @$core.Deprecated('Use aliasDescriptor instead')
 const Alias$json = {
@@ -921,10 +914,11 @@ final $typed_data.Uint8List variableAliasDescriptor = $convert.base64Decode(
 const PropertyAlias$json = {
   '1': 'PropertyAlias',
   '2': [
-    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
+    {'1': 'componentId', '3': 1, '5': 5, '8': {}, '10': 'componentId'},
+    {'1': 'propertyId', '3': 2, '5': 5, '8': {}, '10': 'propertyId'},
     {
       '1': 'defaultValue',
-      '3': 2,
+      '3': 3,
       '5': 11,
       '6': '.binui.Value',
       '8': {},
@@ -935,8 +929,9 @@ const PropertyAlias$json = {
 
 /// Descriptor for `PropertyAlias`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List propertyAliasDescriptor = $convert.base64Decode(
-    'Cg1Qcm9wZXJ0eUFsaWFzEhIKBG5hbWUYASgJQgBSBG5hbWUSMAoMZGVmYXVsdFZhbHVlGAIoCz'
-    'IMLmJpbnVpLlZhbHVlQgBSDGRlZmF1bHRWYWx1ZQ==');
+    'Cg1Qcm9wZXJ0eUFsaWFzEiAKC2NvbXBvbmVudElkGAEoBUIAUgtjb21wb25lbnRJZBIeCgpwcm'
+    '9wZXJ0eUlkGAIoBUIAUgpwcm9wZXJ0eUlkEjAKDGRlZmF1bHRWYWx1ZRgDKAsyDC5iaW51aS5W'
+    'YWx1ZUIAUgxkZWZhdWx0VmFsdWU=');
 
 @$core.Deprecated('Use sizeDescriptor instead')
 const Size$json = {
@@ -1254,49 +1249,6 @@ final $typed_data.Uint8List radialGradientDescriptor = $convert.base64Decode(
     'VzdG9wcxIlCgZjZW50ZXIYAigLMg0uYmludWkuT2Zmc2V0QgBSBmNlbnRlchIWCgZyYWRpdXMY'
     'AygBQgBSBnJhZGl1cw==');
 
-@$core.Deprecated('Use instanceDescriptor instead')
-const Instance$json = {
-  '1': 'Instance',
-  '2': [
-    {'1': 'type', '3': 1, '5': 9, '8': {}, '10': 'type'},
-    {
-      '1': 'arguments',
-      '3': 2,
-      '4': 3,
-      '5': 11,
-      '6': '.binui.InstanceArgument',
-      '8': {},
-      '10': 'arguments'
-    },
-  ],
-};
-
-/// Descriptor for `Instance`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List instanceDescriptor = $convert.base64Decode(
-    'CghJbnN0YW5jZRISCgR0eXBlGAEoCUIAUgR0eXBlEjcKCWFyZ3VtZW50cxgCIAMoCzIXLmJpbn'
-    'VpLkluc3RhbmNlQXJndW1lbnRCAFIJYXJndW1lbnRz');
-
-@$core.Deprecated('Use instanceArgumentDescriptor instead')
-const InstanceArgument$json = {
-  '1': 'InstanceArgument',
-  '2': [
-    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
-    {
-      '1': 'value',
-      '3': 2,
-      '5': 11,
-      '6': '.binui.Value',
-      '8': {},
-      '10': 'value'
-    },
-  ],
-};
-
-/// Descriptor for `InstanceArgument`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List instanceArgumentDescriptor = $convert.base64Decode(
-    'ChBJbnN0YW5jZUFyZ3VtZW50EhIKBG5hbWUYASgJQgBSBG5hbWUSIgoFdmFsdWUYAigLMgwuYm'
-    'ludWkuVmFsdWVCAFIFdmFsdWU=');
-
 @$core.Deprecated('Use labelDescriptor instead')
 const Label$json = {
   '1': 'Label',
@@ -1523,16 +1475,16 @@ final $typed_data.Uint8List matrixRowDescriptor = $convert
 const VariantValue$json = {
   '1': 'VariantValue',
   '2': [
-    {'1': 'component', '3': 1, '5': 9, '8': {}, '10': 'component'},
-    {'1': 'type', '3': 2, '5': 9, '8': {}, '10': 'type'},
-    {'1': 'value', '3': 3, '5': 9, '8': {}, '10': 'value'},
+    {'1': 'componentId', '3': 1, '5': 5, '8': {}, '10': 'componentId'},
+    {'1': 'variantId', '3': 2, '5': 5, '8': {}, '10': 'variantId'},
+    {'1': 'valueId', '3': 3, '5': 5, '8': {}, '10': 'valueId'},
   ],
 };
 
 /// Descriptor for `VariantValue`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List variantValueDescriptor = $convert.base64Decode(
-    'CgxWYXJpYW50VmFsdWUSHAoJY29tcG9uZW50GAEoCUIAUgljb21wb25lbnQSEgoEdHlwZRgCKA'
-    'lCAFIEdHlwZRIUCgV2YWx1ZRgDKAlCAFIFdmFsdWU=');
+    'CgxWYXJpYW50VmFsdWUSIAoLY29tcG9uZW50SWQYASgFQgBSC2NvbXBvbmVudElkEhwKCXZhcm'
+    'lhbnRJZBgCKAVCAFIJdmFyaWFudElkEhgKB3ZhbHVlSWQYAygFQgBSB3ZhbHVlSWQ=');
 
 @$core.Deprecated('Use vectorGraphicsDescriptor instead')
 const VectorGraphics$json = {
