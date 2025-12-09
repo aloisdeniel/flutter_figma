@@ -7,6 +7,8 @@ environment:
   sdk: ^3.6.0
 
 dependencies:
+  binui:
+    path: ../../packages/binui/
 
 dev_dependencies:
   lints: ^4.0.0

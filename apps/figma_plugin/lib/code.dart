@@ -1,7 +1,7 @@
 import 'dart:js_interop';
 
-import 'package:figma_plugin/src/figma.dart';
-import 'package:figma_plugin/src/generators/dart/flutter_code_generator.dart';
+import 'package:binui/binui.dart';
+import 'package:binui/src/importers/figma_plugin/figma.dart';
 
 @JS('__html__')
 external String get htmlContent;
@@ -36,7 +36,7 @@ void main() {
   }.toJS);
 }
 
-void _generateCode() {
+Future<void> _generateCode() async {
   print('Generating code from selection...');
 
   final selection = figma.currentPage.selection.toDart;
@@ -51,12 +51,21 @@ void _generateCode() {
     return;
   }
 
-  final generator = FlutterCodeGenerator();
-  final code = generator.generate(selection);
+  final importer = FigmaPluginImporter();
+  final library = await importer.import();
+
+  final generator = FlutterExporter();
+  final code = await generator.export(library);
 
   print('Code successfully generated!');
+  final files = code.files.whereType<StringBundleFile>().map(
+        (x) => {
+          'path': x.path,
+          'content': x.content,
+        },
+      );
 
-  final message = {'type': 'code-generated', 'code': code}.jsify()!;
+  final message = {'type': 'code-generated', 'files': files}.jsify()!;
 
   figma.ui.postMessage(message);
 }
