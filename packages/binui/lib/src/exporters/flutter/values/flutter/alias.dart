@@ -1,6 +1,6 @@
 import 'package:binui/src/definitions.dart';
-import 'package:binui/src/exporters/flutter/utils/naming.dart';
-import 'package:binui/src/exporters/flutter/values/value.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/value.dart';
+import 'package:binui/src/utils/naming.dart';
 
 class AliasDartExporter {
   const AliasDartExporter({
@@ -9,7 +9,7 @@ class AliasDartExporter {
   });
 
   final bool alwaysFallback;
-  final ValueDartExporter valueSerializer;
+  final FlutterValueExporter valueSerializer;
 
   String serialize(Library library, Alias value) {
     return switch (value.whichType()) {

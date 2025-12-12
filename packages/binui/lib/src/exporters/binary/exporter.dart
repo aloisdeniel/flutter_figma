@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:binui/src/definitions.pb.dart';
 import 'package:binui/src/exporters/bundle.dart';
 import 'package:binui/src/exporters/exporter.dart';
 
@@ -17,10 +16,10 @@ class BinaryExporter extends Exporter {
   final BinaryFormat format;
 
   @override
-  FutureOr<Bundle> export(Library library) {
-    final content = library.writeToBuffer();
+  FutureOr<Bundle> export(ExportContext context) {
+    final content = context.library.writeToBuffer();
     return Bundle(
-      name: library.name,
+      name: context.library.name,
       files: [
         switch (format) {
           BinaryFormat.bytes => BinaryBundleFile('library.bin', content),

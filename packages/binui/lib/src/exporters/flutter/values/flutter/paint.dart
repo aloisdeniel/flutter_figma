@@ -1,11 +1,11 @@
 import 'package:binui/src/definitions.dart';
-import 'package:binui/src/exporters/flutter/values/alias.dart';
-import 'package:binui/src/exporters/flutter/values/value.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/alias.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/value.dart';
 
 class PaintDartExporter {
   const PaintDartExporter({required this.valueSerializer});
 
-  final ValueDartExporter valueSerializer;
+  final FlutterValueExporter valueSerializer;
 
   /// Serializes a Paint to Flutter BoxDecoration color/gradient
   String serialize(Library library, Paint paint) {

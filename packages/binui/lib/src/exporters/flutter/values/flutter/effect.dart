@@ -1,11 +1,11 @@
 import 'package:binui/src/definitions.dart';
-import 'package:binui/src/exporters/flutter/values/alias.dart';
-import 'package:binui/src/exporters/flutter/values/value.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/alias.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/value.dart';
 
 class EffectDartExporter {
   const EffectDartExporter({required this.valueSerializer});
 
-  final ValueDartExporter valueSerializer;
+  final FlutterValueExporter valueSerializer;
 
   /// Serializes an Effect to Flutter BoxShadow or filter
   String serialize(Library library, Effect effect) {

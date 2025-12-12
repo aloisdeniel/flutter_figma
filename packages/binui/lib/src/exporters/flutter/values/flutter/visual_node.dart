@@ -1,14 +1,14 @@
 import 'package:binui/src/definitions.dart';
-import 'package:binui/src/exporters/flutter/utils/naming.dart';
-import 'package:binui/src/exporters/flutter/values/alias.dart';
-import 'package:binui/src/exporters/flutter/values/effect.dart';
-import 'package:binui/src/exporters/flutter/values/paint.dart';
-import 'package:binui/src/exporters/flutter/values/value.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/alias.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/effect.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/paint.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/value.dart';
+import 'package:binui/src/utils/naming.dart';
 
 class VisualNodeDartExporter {
   const VisualNodeDartExporter({required this.valueSerializer});
 
-  final ValueDartExporter valueSerializer;
+  final FlutterValueExporter valueSerializer;
 
   /// Serializes a VisualNode to a Flutter Widget
   String serialize(Library library, VisualNode node) {

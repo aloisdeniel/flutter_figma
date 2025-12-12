@@ -1,5 +1,5 @@
 import 'package:binui/src/definitions.pb.dart';
-import 'package:binui/src/utils/dart_buffer.dart';
+import 'package:binui/src/utils/dart/buffer.dart';
 
 class MetadataDartExporter {
   const MetadataDartExporter();

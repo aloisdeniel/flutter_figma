@@ -1,5 +1,5 @@
 import 'package:binui/src/exporters/bundle.dart';
-import 'package:binui/src/utils/dart_buffer.dart';
+import 'package:binui/src/utils/dart/buffer.dart';
 
 class BarrelDartExporter {
   const BarrelDartExporter();

@@ -1,22 +1,30 @@
 import 'dart:async';
 
-import 'package:binui/src/definitions.pb.dart';
 import 'package:binui/src/exporters/bundle.dart';
 import 'package:binui/src/exporters/exporter.dart';
 import 'package:binui/src/exporters/flutter/barrel.dart';
-import 'package:binui/src/exporters/flutter/definitions/component.dart';
-import 'package:binui/src/exporters/flutter/definitions/variable_collection.dart';
+import 'package:binui/src/exporters/flutter/component.dart';
 import 'package:binui/src/exporters/flutter/metadata.dart';
 import 'package:binui/src/exporters/flutter/pubspec.dart';
-import 'package:binui/src/exporters/flutter/utils/naming.dart';
 import 'package:binui/src/exporters/flutter/values/value.dart';
 import 'package:binui/src/exporters/flutter/values/visual_node.dart';
 
-class FlutterExporter extends Exporter {
+import '../../utils/naming.dart';
+import 'options.dart';
+import 'variable_collection.dart';
+
+class FlutterExportContext extends ExportContext {
+  const FlutterExportContext(super.library, this.options);
+  final FlutterExportOptions options;
+}
+
+class FlutterExporter extends Exporter<FlutterExportContext> {
   const FlutterExporter();
 
   @override
-  FutureOr<Bundle> export(Library library) {
+  FutureOr<Bundle> export(FlutterExportContext context) {
+    final library = context.library;
+
     final files = <BundleFile>[];
 
     // Export visual nodes

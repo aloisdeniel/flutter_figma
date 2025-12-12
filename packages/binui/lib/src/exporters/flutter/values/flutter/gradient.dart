@@ -1,5 +1,5 @@
 import 'package:binui/src/definitions.dart';
-import 'package:binui/src/exporters/flutter/values/color.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/color.dart';
 
 class GradientDartExporter {
   const GradientDartExporter();

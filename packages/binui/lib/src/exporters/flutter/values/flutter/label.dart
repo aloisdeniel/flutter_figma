@@ -1,10 +1,10 @@
 import 'package:binui/src/definitions.dart';
-import 'package:binui/src/exporters/flutter/values/value.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/value.dart';
 
 class LabelDartExporter {
   const LabelDartExporter({required this.valueSerializer});
 
-  final ValueDartExporter valueSerializer;
+  final FlutterValueExporter valueSerializer;
 
   String serialize(Library library, Label value) {
     return _serializeSegment(library, value.segment);
