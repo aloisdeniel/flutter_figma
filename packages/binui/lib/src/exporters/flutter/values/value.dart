@@ -14,4 +14,13 @@ class ValueDartExporter {
         throw UnimplementedError();
     }
   }
+
+  static String getTypeName(FlutterExportContext context, Value value) {
+    switch (context.options.visualNodes.mode) {
+      case FlutterVisualNodeExportMode.flutter:
+        return FlutterValueExporter.getTypeName(context.library, value);
+      case FlutterVisualNodeExportMode.flutterFigma:
+        throw UnimplementedError();
+    }
+  }
 }
