@@ -6,6 +6,25 @@ Future<List<VariableCollection>> _importVariableCollections() async {
       .getLocalVariableCollectionsAsync()
       .toDart;
 
+  // Build maps for resolving variable aliases
+  // Maps Figma collection ID to our collection index
+  final collectionIdToIndex = <String, int>{};
+  // Maps Figma variable ID to (collectionIndex, variableIndex)
+  final variableIdToIndices = <String, (int, int)>{};
+
+  // First pass: build the index maps
+  for (var i = 0; i < figmaCollections.length; i++) {
+    final collection = figmaCollections[i];
+    collectionIdToIndex[collection.id] = i;
+
+    final variableIds = collection.variableIds;
+    for (var k = 0; k < variableIds.length; k++) {
+      final variableId = variableIds[k].toDart;
+      variableIdToIndices[variableId] = (i, k);
+    }
+  }
+
+  // Second pass: import the collections with alias resolution
   for (var i = 0; i < figmaCollections.length; i++) {
     final collection = figmaCollections[i];
     final collectionName = collection.name;
@@ -31,7 +50,13 @@ Future<List<VariableCollection>> _importVariableCollections() async {
           final value = valuesByMode[modeId];
 
           if (value != null) {
-            values.add(_convertVariableValue(value, variable.resolvedType));
+            values.add(
+              _convertVariableValue(
+                value,
+                variable.resolvedType,
+                variableIdToIndices,
+              ),
+            );
           }
         }
       }
@@ -72,10 +97,37 @@ Future<List<VariableCollection>> _importVariableCollections() async {
   return collections;
 }
 
-Value _convertVariableValue(JSAny value, String resolvedType) {
+Value _convertVariableValue(
+  dynamic value,
+  String resolvedType,
+  Map<String, (int, int)> variableIdToIndices,
+) {
+  // Check if the value is a variable alias
+  if (value is Map) {
+    final type = value['type'];
+    if (type == 'VARIABLE_ALIAS') {
+      final aliasId = value['id'] as String;
+      final indices = variableIdToIndices[aliasId];
+      if (indices != null) {
+        final (collectionIndex, variableIndex) = indices;
+        return Value(
+          alias: Alias(
+            variable: VariableAlias(
+              collectionId: collectionIndex,
+              variableId: variableIndex,
+            ),
+          ),
+        );
+      }
+      // Fallback if alias target not found
+      return Value(stringValue: 'unresolved alias: $aliasId');
+    }
+  }
+
+  // Handle direct values
   switch (resolvedType) {
     case 'COLOR':
-      final rgba = value.jsify() as figma_api.RGBA;
+      final rgba = (value as JSAny).jsify() as figma_api.RGBA;
       return Value(
         color: Color(
           red: rgba.r.toDouble(),
@@ -85,10 +137,16 @@ Value _convertVariableValue(JSAny value, String resolvedType) {
         ),
       );
     case 'FLOAT':
+      if (value is num) {
+        return Value(doubleValue: value.toDouble());
+      }
       return Value(doubleValue: (value as JSNumber).toDartDouble);
     case 'STRING':
       return Value(stringValue: value.toString());
     case 'BOOLEAN':
+      if (value is bool) {
+        return Value(boolean: value);
+      }
       return Value(boolean: (value as JSBoolean).toDart);
     default:
       return Value(stringValue: 'unsupported');
