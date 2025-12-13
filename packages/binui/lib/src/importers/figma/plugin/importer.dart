@@ -6,6 +6,7 @@ import 'package:binui/src/importers/importer.dart';
 import 'package:binui/src/importers/figma/plugin/figma.dart' as figma_api;
 
 part 'importer.components.dart';
+part 'importer.styles.dart';
 part 'importer.variables.dart';
 part 'importer.visual_nodes.dart';
 
@@ -26,6 +27,14 @@ class FigmaPluginImporter extends Importer<FigmaImportOptions> {
     final visualNodes = options.visualNodes
         ? await _importSelectedVisualNodes()
         : <VisualNode>[];
+
+    // Import styles as a dedicated variable collection
+    if (options.styles) {
+      final stylesCollection = await _importStyles();
+      if (stylesCollection != null) {
+        variableCollections.add(stylesCollection);
+      }
+    }
 
     return Library(
       name: fileName,

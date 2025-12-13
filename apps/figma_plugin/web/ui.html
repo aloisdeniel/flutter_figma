@@ -439,6 +439,18 @@
           </div>
         </div>
 
+        <div class="option-item checked" data-option="styles">
+          <div class="option-checkbox">
+            <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2">
+              <path d="M2 6l3 3 5-5"/>
+            </svg>
+          </div>
+          <div class="option-content">
+            <div class="option-label">Styles</div>
+            <div class="option-hint">Import paint, text, and effect styles</div>
+          </div>
+        </div>
+
         <div class="options-actions">
           <button class="btn-primary" id="generate_btn">Generate Code</button>
         </div>
@@ -471,7 +483,8 @@
     let importOptions = {
       components: true,
       variables: true,
-      visualNodes: true
+      visualNodes: true,
+      styles: true
     };
     let currentStep = 'options'; // 'options' or 'code'
 

@@ -11,6 +11,7 @@ extension type ImportOptionsData._(JSObject _) implements JSObject {
   external bool? get components;
   external bool? get variables;
   external bool? get visualNodes;
+  external bool? get styles;
 }
 
 extension type MessageData._(JSObject _) implements JSObject {
@@ -32,6 +33,7 @@ FigmaImportOptions _parseImportOptions(ImportOptionsData? options) {
     components: options.components ?? true,
     variables: options.variables ?? true,
     visualNodes: options.visualNodes ?? true,
+    styles: options.styles ?? true,
   );
 }
 
