@@ -5,8 +5,8 @@ import 'package:binui/src/exporters/bundle.dart';
 import 'package:binui/src/exporters/exporter.dart';
 import 'package:binui/src/utils/naming.dart';
 
-class BinaryExporter extends Exporter {
-  const BinaryExporter();
+class JsonExporter extends Exporter {
+  const JsonExporter();
 
   @override
   FutureOr<Bundle> export(ExportContext context) {

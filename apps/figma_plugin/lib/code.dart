@@ -11,7 +11,7 @@ extension type MessageData._(JSObject _) implements JSObject {
   external String? get format;
 }
 
-enum OutputFormat { dart, binary }
+enum OutputFormat { dart, json, binary }
 
 OutputFormat _currentFormat = OutputFormat.dart;
 
@@ -35,8 +35,11 @@ void main() {
       return;
     }
     if (msg.type == 'format-changed') {
-      _currentFormat =
-          msg.format == 'binary' ? OutputFormat.binary : OutputFormat.dart;
+      _currentFormat = switch (msg.format) {
+        'binary' => OutputFormat.binary,
+        'json' => OutputFormat.json,
+        _ => OutputFormat.dart,
+      };
       _generateCode();
       return;
     }
@@ -69,11 +72,16 @@ Future<void> _generateCode() async {
   switch (_currentFormat) {
     case OutputFormat.dart:
       final generator = FlutterExporter();
-      code = await generator.export(library);
+      code = await generator
+          .export(FlutterExportContext(library, FlutterExportOptions()));
+      break;
+    case OutputFormat.json:
+      final generator = JsonExporter();
+      code = await generator.export(ExportContext(library));
       break;
     case OutputFormat.binary:
       final generator = BinaryExporter(format: BinaryFormat.base64);
-      code = await generator.export(library);
+      code = await generator.export(ExportContext(library));
       break;
   }
 
