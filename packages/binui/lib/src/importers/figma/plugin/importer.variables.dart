@@ -127,15 +127,18 @@ Value _convertVariableValue(
   // Handle direct values
   switch (resolvedType) {
     case 'COLOR':
-      final rgba = (value as JSAny).jsify() as figma_api.RGBA;
-      return Value(
-        color: Color(
-          red: rgba.r.toDouble(),
-          green: rgba.g.toDouble(),
-          blue: rgba.b.toDouble(),
-          alpha: rgba.a.toDouble(),
-        ),
-      );
+      // Value is already dartified, so it's a Map with r, g, b, a keys
+      if (value is Map) {
+        return Value(
+          color: Color(
+            red: (value['r'] as num).toDouble(),
+            green: (value['g'] as num).toDouble(),
+            blue: (value['b'] as num).toDouble(),
+            alpha: (value['a'] as num).toDouble(),
+          ),
+        );
+      }
+      return Value(stringValue: 'invalid color');
     case 'FLOAT':
       if (value is num) {
         return Value(doubleValue: value.toDouble());
