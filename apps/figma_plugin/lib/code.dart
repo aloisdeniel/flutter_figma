@@ -1,36 +1,47 @@
 import 'dart:js_interop';
 
 import 'package:binui/binui.dart';
+import 'package:binui/src/importers/figma/options.dart';
 import 'package:binui/src/importers/figma/plugin/figma.dart';
 
 @JS('__html__')
 external String get htmlContent;
 
+extension type ImportOptionsData._(JSObject _) implements JSObject {
+  external bool? get components;
+  external bool? get variables;
+  external bool? get visualNodes;
+}
+
 extension type MessageData._(JSObject _) implements JSObject {
   external String? get type;
   external String? get format;
+  external ImportOptionsData? get options;
 }
 
 enum OutputFormat { dart, json, binary }
 
 OutputFormat _currentFormat = OutputFormat.dart;
+FigmaImportOptions _currentImportOptions = const FigmaImportOptions();
+
+FigmaImportOptions _parseImportOptions(ImportOptionsData? options) {
+  if (options == null) {
+    return const FigmaImportOptions();
+  }
+  return FigmaImportOptions(
+    components: options.components ?? true,
+    variables: options.variables ?? true,
+    visualNodes: options.visualNodes ?? true,
+  );
+}
 
 void main() {
   figma.showUI(htmlContent, ShowUIOptions(width: 800, height: 600));
 
-  // Generate code on initial load
-  _generateCode();
-
-  // Listen for selection changes
-  figma.on(
-      'selectionchange',
-      (() {
-        _generateCode();
-      }.toJS));
-
   // Handle messages from UI
   figma.ui.onmessage = ((MessageData msg) {
     if (msg.type == 'generate') {
+      _currentImportOptions = _parseImportOptions(msg.options);
       _generateCode();
       return;
     }
@@ -40,6 +51,7 @@ void main() {
         'json' => OutputFormat.json,
         _ => OutputFormat.dart,
       };
+      _currentImportOptions = _parseImportOptions(msg.options);
       _generateCode();
       return;
     }
@@ -54,7 +66,7 @@ Future<void> _generateCode() async {
   print('Generating code...');
 
   final importer = FigmaPluginImporter();
-  final library = await importer.import();
+  final library = await importer.import(_currentImportOptions);
 
   final Bundle code;
   switch (_currentFormat) {
