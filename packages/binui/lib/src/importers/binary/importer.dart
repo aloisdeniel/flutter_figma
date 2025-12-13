@@ -5,7 +5,11 @@ import 'dart:typed_data';
 import 'package:binui/src/definitions.pb.dart';
 import 'package:binui/src/importers/importer.dart';
 
-class BinaryImporter extends Importer {
+class BinaryImportOptions {
+  const BinaryImportOptions();
+}
+
+class BinaryImporter extends Importer<BinaryImportOptions> {
   const BinaryImporter(this.bytes);
 
   factory BinaryImporter.base64(String content) {
@@ -14,7 +18,7 @@ class BinaryImporter extends Importer {
   final Uint8List bytes;
 
   @override
-  FutureOr<Library> import() {
+  FutureOr<Library> import(BinaryImportOptions options) {
     final result = Library();
     result.mergeFromBuffer(bytes);
     return result;
