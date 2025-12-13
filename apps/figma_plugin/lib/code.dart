@@ -51,19 +51,7 @@ void main() {
 }
 
 Future<void> _generateCode() async {
-  print('Generating code from selection...');
-
-  final selection = figma.currentPage.selection.toDart;
-
-  if (selection.isEmpty) {
-    print('No selection - showing placeholder');
-    final message = {
-      'type': 'no-selection',
-      'message': 'Select one or more layers to generate code'
-    }.jsify()!;
-    figma.ui.postMessage(message);
-    return;
-  }
+  print('Generating code...');
 
   final importer = FigmaPluginImporter();
   final library = await importer.import();
