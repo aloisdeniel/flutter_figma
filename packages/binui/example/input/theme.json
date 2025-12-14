@@ -1,0 +1,341 @@
+{
+  "id": 3,
+  "name": "Demo-Theme",
+  "variables": [
+    {
+      "name": "Background",
+      "documentation": ""
+    },
+    {
+      "name": "Foreground",
+      "documentation": ""
+    },
+    {
+      "name": "Button/Background",
+      "documentation": ""
+    },
+    {
+      "name": "Button/Foreground",
+      "documentation": ""
+    },
+    {
+      "name": "Tag/Background",
+      "documentation": ""
+    },
+    {
+      "name": "Tag/Foreground",
+      "documentation": ""
+    },
+    {
+      "name": "BackgroundTransparent",
+      "documentation": ""
+    }
+  ],
+  "variants": [
+    {
+      "name": "White",
+      "values": [
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 9
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 4
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 5
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 10
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 5
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 10
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 13
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Red",
+      "values": [
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 2
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 3
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 3
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 1
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 0
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 3
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 2
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orange",
+      "values": [
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 14
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 15
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 14
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 15
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 14
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 15
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 14
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Blue",
+      "values": [
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 11
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 8
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 7
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 8
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 7
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 8
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 12
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "White=Pressed",
+      "values": [
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 9
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 4
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 6
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 10
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 7
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 8
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 2,
+              "variableId": 13
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -10,3 +10,4 @@ export 'src/exporters/json/exporter.dart';
 export 'src/importers/importer.dart';
 export 'src/importers/figma/importer.dart';
 export 'src/importers/binary/importer.dart';
+export 'src/importers/json/importer.dart';

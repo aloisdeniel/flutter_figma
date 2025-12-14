@@ -87,6 +87,7 @@ Future<List<VariableCollection>> _importVariableCollections() async {
 
     collections.add(
       VariableCollection(
+        id: i,
         name: collectionName,
         variants: variants,
         variables: variableEntries,
