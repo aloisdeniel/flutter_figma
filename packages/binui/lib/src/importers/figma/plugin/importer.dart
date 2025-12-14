@@ -14,7 +14,9 @@ class FigmaPluginImporter extends Importer<FigmaImportOptions> {
   FigmaPluginImporter();
 
   @override
-  Future<Library> import(FigmaImportOptions options) async {
+  Future<Library> import(ImporterContext<FigmaImportOptions> context) async {
+    final options = context.options;
+
     final fileKey = figma_api.figma.fileKey ?? 'unknown';
     final fileName = figma_api.figma.root.name;
 
@@ -22,7 +24,7 @@ class FigmaPluginImporter extends Importer<FigmaImportOptions> {
         ? await _importComponents()
         : <Component>[];
     final variableCollections = options.variables
-        ? await _importVariableCollections()
+        ? await _importVariableCollections(context)
         : <VariableCollection>[];
     final visualNodes = options.visualNodes
         ? await _importSelectedVisualNodes()

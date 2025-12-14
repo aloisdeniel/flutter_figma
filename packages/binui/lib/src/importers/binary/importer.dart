@@ -18,7 +18,7 @@ class BinaryImporter extends Importer<BinaryImportOptions> {
   final Uint8List bytes;
 
   @override
-  FutureOr<Library> import(BinaryImportOptions options) {
+  FutureOr<Library> import(ImporterContext<BinaryImportOptions> options) {
     final result = Library();
     result.mergeFromBuffer(bytes);
     return result;

@@ -1,26 +1,31 @@
 part of 'importer.dart';
 
-Future<List<VariableCollection>> _importVariableCollections() async {
+Future<List<VariableCollection>> _importVariableCollections(
+  ImporterContext<FigmaImportOptions> context,
+) async {
   final collections = <VariableCollection>[];
   final figmaCollections = await figma_api.figma.variables
       .getLocalVariableCollectionsAsync()
       .toDart;
 
   // Build maps for resolving variable aliases
-  // Maps Figma collection ID to our collection index
-  final collectionIdToIndex = <String, int>{};
   // Maps Figma variable ID to (collectionIndex, variableIndex)
-  final variableIdToIndices = <String, (int, int)>{};
+  final figmaVariableIdToAlias = <String, (int, int)>{};
 
   // First pass: build the index maps
   for (var i = 0; i < figmaCollections.length; i++) {
     final collection = figmaCollections[i];
-    collectionIdToIndex[collection.id] = i;
+    final collectionId = context.identifiers.get(
+      'variable_collection/${collection.id}',
+    );
 
     final variableIds = collection.variableIds;
     for (var k = 0; k < variableIds.length; k++) {
-      final variableId = variableIds[k].toDart;
-      variableIdToIndices[variableId] = (i, k);
+      final figmaId = variableIds[k].toDart;
+      final variableId = context.identifiers.get(
+        'variable_collection/${collection.id}/$figmaId',
+      );
+      figmaVariableIdToAlias[figmaId] = (collectionId, variableId);
     }
   }
 
@@ -28,6 +33,9 @@ Future<List<VariableCollection>> _importVariableCollections() async {
   for (var i = 0; i < figmaCollections.length; i++) {
     final collection = figmaCollections[i];
     final collectionName = collection.name;
+    final collectionId = context.identifiers.get(
+      'variable_collection/${collection.id}',
+    );
     final modes = collection.modes;
     final variants = <VariableCollectionVariant>[];
 
@@ -54,7 +62,7 @@ Future<List<VariableCollection>> _importVariableCollections() async {
               _convertVariableValue(
                 value,
                 variable.resolvedType,
-                variableIdToIndices,
+                figmaVariableIdToAlias,
               ),
             );
           }
@@ -68,14 +76,19 @@ Future<List<VariableCollection>> _importVariableCollections() async {
     final variableEntries = <VariableCollectionEntry>[];
     final variableIds = collection.variableIds;
     for (var k = 0; k < variableIds.length; k++) {
-      final variableId = variableIds[k].toDart;
+      final figmaId = variableIds[k].toDart;
+
+      final variableId = context.identifiers.get(
+        'variable_collection/${collection.id}/$figmaId',
+      );
       final variable = await figma_api.figma.variables
-          .getVariableByIdAsync(variableId)
+          .getVariableByIdAsync(figmaId)
           .toDart;
 
       if (variable != null) {
         variableEntries.add(
           VariableCollectionEntry(
+            id: variableId,
             name: variable.name,
             documentation: variable.description.isNotEmpty
                 ? variable.description
@@ -87,7 +100,7 @@ Future<List<VariableCollection>> _importVariableCollections() async {
 
     collections.add(
       VariableCollection(
-        id: i,
+        id: collectionId,
         name: collectionName,
         variants: variants,
         variables: variableEntries,
@@ -101,14 +114,14 @@ Future<List<VariableCollection>> _importVariableCollections() async {
 Value _convertVariableValue(
   dynamic value,
   String resolvedType,
-  Map<String, (int, int)> variableIdToIndices,
+  Map<String, (int, int)> figmaIdToVariableIds,
 ) {
   // Check if the value is a variable alias
   if (value is Map) {
     final type = value['type'];
     if (type == 'VARIABLE_ALIAS') {
       final aliasId = value['id'] as String;
-      final indices = variableIdToIndices[aliasId];
+      final indices = figmaIdToVariableIds[aliasId];
       if (indices != null) {
         final (collectionIndex, variableIndex) = indices;
         return Value(

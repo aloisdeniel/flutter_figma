@@ -6,7 +6,7 @@ class FigmaPluginImporter extends Importer<FigmaImportOptions> {
   FigmaPluginImporter();
 
   @override
-  Future<Library> import(FigmaImportOptions options) async {
+  Future<Library> import(ImporterContext<FigmaImportOptions> options) async {
     throw UnimplementedError('Figma plugin importer is not implemented yet.');
   }
 }

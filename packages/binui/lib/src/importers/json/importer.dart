@@ -14,7 +14,7 @@ class JsonImporter extends Importer<JsonImportOptions> {
   final String content;
 
   @override
-  FutureOr<Library> import(JsonImportOptions options) {
+  FutureOr<Library> import(ImporterContext<JsonImportOptions> options) {
     final result = Library();
     result.mergeFromProto3Json(jsonDecode(content));
     return result;
