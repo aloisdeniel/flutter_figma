@@ -20,63 +20,70 @@ class InheritedWidgetClass extends DartClass {
          ],
          methods: [
            ...methods,
-           DartMethod(
-             name: 'updateShouldNotify',
-             returnType: 'bool',
-             parameters: [
-               DartArgument(name: 'oldWidget', type: name, isCovariant: true),
-             ],
-             body: DartBody(
-               build: (buffer) {
-                 buffer.writeln('return ');
-                 final comparison =
-                     'this.${data.name} != oldWidget.${data.name}';
-                 buffer.writeln('$comparison;');
-               },
+           ...[
+             DartMethod(
+               name: 'updateShouldNotify',
+               returnType: 'bool',
+               isOverride: true,
+               parameters: [
+                 DartArgument(
+                   name: 'oldWidget',
+                   type: name,
+                   isCovariant: true,
+                   isNamed: false,
+                 ),
+               ],
+               body: DartBody(
+                 build: (buffer) {
+                   buffer.writeln('return ');
+                   final comparison = '${data.name} != oldWidget.${data.name}';
+                   buffer.writeln('$comparison;');
+                 },
+               ),
              ),
-           ),
 
-           DartMethod(
-             name: 'maybeOf',
-             returnType: '${data.type}?',
-             isStatic: true,
-             parameters: [
-               DartArgument(
-                 name: 'context',
-                 type: 'fl.BuildContext',
-                 isNamed: false,
+             DartMethod(
+               name: 'maybeOf',
+               returnType: '${data.type}?',
+               isStatic: true,
+               parameters: [
+                 DartArgument(
+                   name: 'context',
+                   type: 'fl.BuildContext',
+                   isNamed: false,
+                 ),
+               ],
+               body: DartBody(
+                 build: (buffer) {
+                   buffer.writeln(
+                     'final instance = context.dependOnInheritedWidgetOfExactType<$name>();',
+                   );
+                   buffer.writeln('return instance?.${data.name};');
+                 },
                ),
-             ],
-             body: DartBody(
-               build: (buffer) {
-                 buffer.writeln(
-                   'final instance = context.dependOnInheritedWidgetOfExactType<$name>();',
-                 );
-                 buffer.writeln('return instance?.${data.name};');
-               },
              ),
-           ),
-           DartMethod(
-             name: 'of',
-             returnType: data.type,
-             isStatic: true,
-             parameters: [
-               DartArgument(
-                 name: 'context',
-                 type: 'fl.BuildContext',
-                 isNamed: false,
+             DartMethod(
+               name: 'of',
+               returnType: data.type,
+               isStatic: true,
+               parameters: [
+                 DartArgument(
+                   name: 'context',
+                   type: 'fl.BuildContext',
+                   isNamed: false,
+                 ),
+               ],
+               body: DartBody(
+                 build: (buffer) {
+                   buffer.writeln('final data = maybeOf(context);');
+                   buffer.writeln(
+                     "assert(data != null, 'No $name found in context');",
+                   );
+                   buffer.writeln('return data!;');
+                 },
                ),
-             ],
-             body: DartBody(
-               build: (buffer) {
-                 buffer.writeln('final data = maybeOf(context);');
-                 buffer.writeln(
-                   "assert(data != null, 'No $name found in context');",
-                 );
-                 buffer.writeln('return data!;');
-               },
              ),
-           ),
+           ].where((x) => !methods.any((m) => m.name == x.name)),
          ],
        );
 }

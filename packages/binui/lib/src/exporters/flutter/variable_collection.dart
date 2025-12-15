@@ -51,9 +51,32 @@ class VariableCollectionDartExporter {
     buffer.writeClass(propertiesClass);
 
     // Provider
+    final providerName = '${baseTypeName}Provider';
     final providerClass = InheritedWidgetClass(
-      name: '${baseTypeName}Provider',
+      name: providerName,
       data: DartField(name: 'data', type: propertiesClass.name),
+      methods: [
+        DartMethod(
+          name: 'maybeOf',
+          returnType: '${propertiesClass.name}?',
+          isStatic: true,
+          parameters: [
+            DartArgument(
+              name: 'context',
+              type: 'fl.BuildContext',
+              isNamed: false,
+            ),
+          ],
+          body: DartBody(
+            build: (buffer) {
+              buffer.writeln(
+                'final instance = context.dependOnInheritedWidgetOfExactType<$providerName>();',
+              );
+              buffer.writeln('return instance?.${data.name};');
+            },
+          ),
+        ),
+      ],
     );
     buffer.writeClass(providerClass);
   }
