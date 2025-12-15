@@ -49,7 +49,7 @@ class DartBuffer {
 
   void writeEnum(DartEnum value) {
     writeApiDocumentation(value.documentation);
-    writeln('class ${value.name} {');
+    writeln('enum ${value.name} {');
     indented(() {
       // Values
       for (var i = 0; i < value.values.length; i++) {
@@ -59,7 +59,7 @@ class DartBuffer {
         } else if (value.methods.isNotEmpty) {
           write(';');
         }
-        write('\n');
+        writeln();
       }
 
       // Methods
@@ -72,22 +72,50 @@ class DartBuffer {
     writeln('}');
   }
 
-  void writeMethod(DartMethod value) {
-    if (value.isOverride) writeln('@override');
-    write('${value.returnType} ');
-    write('${value.name}(');
-    if (value.parameters.isNotEmpty) {
-      write('\n');
-      writeIndent();
-      for (var p in value.parameters) {
+  void writeArguments(List<DartArgument> args) {
+    final positionalArgs = args.where((arg) => !arg.isNamed).toList();
+    if (positionalArgs.isNotEmpty) {
+      for (var p in positionalArgs) {
         writeArgument(p);
       }
     }
-    write('){\n');
+
+    final namedArgs = args.where((arg) => arg.isNamed).toList();
+    if (namedArgs.isNotEmpty) {
+      write('{');
+      write('\n');
+      writeIndent();
+      for (var p in namedArgs) {
+        writeArgument(p);
+      }
+      write('}');
+    }
+  }
+
+  void writeGetter(DartGetter value) {
+    if (value.isOverride) writeln('@override');
+    write('${value.type} get ');
+    write(value.name);
+    write(' {');
+    writeln();
     indented(() {
       value.body.build(this);
     });
-    write('}');
+    writeln('}');
+  }
+
+  void writeMethod(DartMethod value) {
+    if (value.isOverride) writeln('@override');
+    if (value.isStatic) write('static ');
+    write('${value.returnType} ');
+    write('${value.name}(');
+    writeArguments(value.parameters);
+    write('){');
+    writeln();
+    indented(() {
+      value.body.build(this);
+    });
+    writeln('}');
   }
 
   void writeConstructor(DartConstructor constructor) {
@@ -96,7 +124,8 @@ class DartBuffer {
     if (constructor.name case final name?) write('.$name');
     write('(');
     if (constructor.args.isNotEmpty) {
-      write('{\n');
+      write('{');
+      writeln();
       indented(() {
         for (var arg in constructor.args) {
           writeArgument(arg);
@@ -104,16 +133,23 @@ class DartBuffer {
       });
       write('}');
     }
-    write(');');
+    writeln(');');
   }
 
   void writeArgument(DartArgument arg) {
-    if (arg.defaultValue == null) write('required ');
+    if (arg.isRequired && arg.isNamed) write('required ');
     if (arg.isSuper) {
       write('super.');
     } else if (arg.isThis) {
       write('this.');
     }
+    if (arg.isCovariant) {
+      write('covariant ');
+    }
+    if (arg.type case final type?) {
+      write('$type ');
+    }
+
     write(arg.name);
     if (arg.defaultValue case final value?) {
       write('= $value');
@@ -133,7 +169,12 @@ class DartBuffer {
 
   void writeClass(DartClass value) {
     writeApiDocumentation(value.documentation);
-    writeln('class ${value.name} {');
+    writeln('class ${value.name}');
+    if (value.extend != null) {
+      write(' extends ${value.extend}');
+    }
+    write(' {');
+    writeln();
     indented(() {
       // Constructors
       for (var constructor in value.constructors) {
@@ -143,6 +184,11 @@ class DartBuffer {
       // Fields
       for (var field in value.fields) {
         writeField(field);
+      }
+
+      // Getters
+      for (var getter in value.getters) {
+        writeGetter(getter);
       }
 
       // Methods

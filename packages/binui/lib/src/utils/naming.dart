@@ -4,18 +4,21 @@ abstract class Naming {
   static String typeName(String name) {
     name = _leadingDigits(name);
     name = ReCase(name).pascalCase;
+    name = name.replaceAll('=', '');
     return _keyword(name);
   }
 
   static String fieldName(String name) {
     name = _leadingDigits(name);
     name = ReCase(name).camelCase;
+    name = name.replaceAll('=', '');
     return _keyword(name);
   }
 
   static String fileName(String name) {
     name = _leadingDigits(name);
     name = ReCase(name).snakeCase;
+    name = name.replaceAll('=', '');
     return _keyword(name);
   }
 

@@ -6,6 +6,7 @@ class DartClass {
     required this.fields,
     required this.constructors,
     this.methods = const [],
+    this.getters = const [],
     this.extend,
     this.documentation,
   });
@@ -15,17 +16,21 @@ class DartClass {
     required this.fields,
     this.extend,
     this.documentation,
+    List<DartGetter> getters = const [],
     List<DartMethod> methods = const [],
   }) : methods = [
          DartMethod.equals(typeName: name, props: fields),
-         DartMethod.hashCode(props: fields),
          DartMethod.toString(typeName: name, props: fields),
+         DartMethod.copyWith(typeName: name, props: fields),
          ...methods,
        ],
+       getters = [DartGetter.hashCode(props: fields), ...getters],
        constructors = [
          DartConstructor(
            type: name,
-           args: fields.map((x) => x.toArgument()).toList(),
+           args: fields
+               .map((x) => DartArgument(name: x.name, isThis: true))
+               .toList(),
          ),
        ];
 
@@ -34,6 +39,7 @@ class DartClass {
   final String? extend;
   final List<DartField> fields;
   final List<DartMethod> methods;
+  final List<DartGetter> getters;
   final List<DartConstructor> constructors;
 }
 
@@ -68,6 +74,47 @@ class DartConstructor {
   final String type;
   final String? name;
   final List<DartArgument> args;
+}
+
+class DartGetter {
+  const DartGetter({
+    required this.name,
+    required this.body,
+    required this.type,
+    this.documentation,
+    this.isOverride = false,
+  });
+
+  factory DartGetter.hashCode({required List<DartField> props}) {
+    return DartGetter(
+      name: 'hashCode',
+      type: 'int',
+      body: DartBody(
+        build: (buffer) {
+          if (props.isEmpty) {
+            buffer.writeln('return 0;');
+          } else {
+            buffer.write('return Object.hashAll([');
+            for (var i = 0; i < props.length; i++) {
+              final propName = props[i].name;
+              buffer.write(propName);
+              if (i < props.length - 1) {
+                buffer.writeln(',');
+              }
+            }
+            buffer.writeln(']);');
+          }
+        },
+      ),
+      isOverride: true,
+    );
+  }
+
+  final String name;
+  final String? documentation;
+  final String type;
+  final DartBody body;
+  final bool isOverride;
 }
 
 class DartMethod {
@@ -133,31 +180,6 @@ class DartMethod {
     );
   }
 
-  factory DartMethod.hashCode({required List<DartField> props}) {
-    return DartMethod(
-      name: 'hashCode',
-      returnType: 'int',
-      body: DartBody(
-        build: (buffer) {
-          if (props.isEmpty) {
-            buffer.writeln('return 0;');
-          } else {
-            buffer.write('return Object.hashAll([');
-            for (var i = 0; i < props.length; i++) {
-              final propName = props[i].name;
-              buffer.write(propName);
-              if (i < props.length - 1) {
-                buffer.writeln(',');
-              }
-            }
-            buffer.writeln(']);');
-          }
-        },
-      ),
-      isOverride: true,
-    );
-  }
-
   factory DartMethod.equals({
     required String typeName,
     required List<DartField> props,
@@ -165,7 +187,7 @@ class DartMethod {
     return DartMethod(
       name: 'operator ==',
       returnType: 'bool',
-      parameters: [DartArgument(name: 'other', type: 'Object')],
+      parameters: [DartArgument(name: 'other', type: 'Object', isNamed: false)],
       body: DartBody(
         build: (buffer) {
           buffer.writeln('if (identical(this, other)) return true;');
@@ -206,6 +228,8 @@ class DartArgument {
     this.isCovariant = false,
     this.isThis = false,
     this.isSuper = false,
+    this.isNamed = true,
+    this.isRequired = true,
   });
   final String name;
   final String? type;
@@ -213,6 +237,8 @@ class DartArgument {
   final bool isCovariant;
   final bool isThis;
   final bool isSuper;
+  final bool isNamed;
+  final bool isRequired;
 }
 
 class DartBody {

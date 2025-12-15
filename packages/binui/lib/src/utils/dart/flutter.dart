@@ -12,7 +12,8 @@ class InheritedWidgetClass extends DartClass {
            DartConstructor(
              type: name,
              args: [
-               DartArgument(name: 'key', isSuper: true),
+               DartArgument(name: 'key', isSuper: true, isRequired: false),
+               DartArgument(name: 'child', isSuper: true),
                DartArgument(name: data.name, isThis: true),
              ],
            ),
@@ -34,20 +35,45 @@ class InheritedWidgetClass extends DartClass {
                },
              ),
            ),
+
            DartMethod(
-             name: 'of',
-             returnType: name,
+             name: 'maybeOf',
+             returnType: '${data.type}?',
              isStatic: true,
              parameters: [
-               DartArgument(name: 'context', type: 'fl.BuildContext'),
+               DartArgument(
+                 name: 'context',
+                 type: 'fl.BuildContext',
+                 isNamed: false,
+               ),
              ],
              body: DartBody(
                build: (buffer) {
-                 buffer.writeln('final instance = maybeOf(context);');
                  buffer.writeln(
-                   "assert(instance != null, 'No $name found in context');",
+                   'final instance = context.dependOnInheritedWidgetOfExactType<$name>();',
                  );
-                 buffer.writeln('return instance!?.${data.name};');
+                 buffer.writeln('return instance?.${data.name};');
+               },
+             ),
+           ),
+           DartMethod(
+             name: 'of',
+             returnType: data.type,
+             isStatic: true,
+             parameters: [
+               DartArgument(
+                 name: 'context',
+                 type: 'fl.BuildContext',
+                 isNamed: false,
+               ),
+             ],
+             body: DartBody(
+               build: (buffer) {
+                 buffer.writeln('final data = maybeOf(context);');
+                 buffer.writeln(
+                   "assert(data != null, 'No $name found in context');",
+                 );
+                 buffer.writeln('return data!;');
                },
              ),
            ),

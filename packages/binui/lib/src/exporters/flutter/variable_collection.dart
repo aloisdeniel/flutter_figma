@@ -11,6 +11,7 @@ class VariableCollectionDartExporter {
 
   String serialize(FlutterExportContext context, VariableCollection value) {
     final buffer = DartBuffer();
+    buffer.writeln('import \'package:flutter/widgets.dart\' as fl;');
     write(buffer, context, value);
     return buffer.toString();
   }
@@ -44,14 +45,14 @@ class VariableCollectionDartExporter {
     }
 
     final propertiesClass = DartClass.data(
-      name: '${baseTypeName}Properties',
+      name: '${baseTypeName}Data',
       fields: fields,
     );
     buffer.writeClass(propertiesClass);
 
     // Provider
     final providerClass = InheritedWidgetClass(
-      name: '${baseTypeName}Properties',
+      name: '${baseTypeName}Provider',
       data: DartField(name: 'data', type: propertiesClass.name),
     );
     buffer.writeClass(providerClass);
