@@ -1,32 +1,39 @@
 {
-  "id": 3,
+  "id": 25,
   "name": "Demo-Theme",
   "variables": [
     {
+      "id": 26,
       "name": "Background",
       "documentation": ""
     },
     {
+      "id": 27,
       "name": "Foreground",
       "documentation": ""
     },
     {
+      "id": 28,
       "name": "Button/Background",
       "documentation": ""
     },
     {
+      "id": 29,
       "name": "Button/Foreground",
       "documentation": ""
     },
     {
+      "id": 30,
       "name": "Tag/Background",
       "documentation": ""
     },
     {
+      "id": 31,
       "name": "Tag/Foreground",
       "documentation": ""
     },
     {
+      "id": 32,
       "name": "BackgroundTransparent",
       "documentation": ""
     }
@@ -38,56 +45,56 @@
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 9
+              "collectionId": 8,
+              "variableId": 18
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 4
-            }
-          }
-        },
-        {
-          "alias": {
-            "variable": {
-              "collectionId": 2,
-              "variableId": 5
-            }
-          }
-        },
-        {
-          "alias": {
-            "variable": {
-              "collectionId": 2,
-              "variableId": 10
-            }
-          }
-        },
-        {
-          "alias": {
-            "variable": {
-              "collectionId": 2,
-              "variableId": 5
-            }
-          }
-        },
-        {
-          "alias": {
-            "variable": {
-              "collectionId": 2,
-              "variableId": 10
-            }
-          }
-        },
-        {
-          "alias": {
-            "variable": {
-              "collectionId": 2,
+              "collectionId": 8,
               "variableId": 13
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 8,
+              "variableId": 14
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 8,
+              "variableId": 19
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 8,
+              "variableId": 14
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 8,
+              "variableId": 19
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 8,
+              "variableId": 22
             }
           }
         }
@@ -99,56 +106,56 @@
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 2
+              "collectionId": 8,
+              "variableId": 11
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 3
+              "collectionId": 8,
+              "variableId": 12
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 3
+              "collectionId": 8,
+              "variableId": 12
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 1
+              "collectionId": 8,
+              "variableId": 10
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 0
+              "collectionId": 8,
+              "variableId": 9
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 3
+              "collectionId": 8,
+              "variableId": 12
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 2
+              "collectionId": 8,
+              "variableId": 11
             }
           }
         }
@@ -160,56 +167,56 @@
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 14
+              "collectionId": 8,
+              "variableId": 23
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 15
+              "collectionId": 8,
+              "variableId": 24
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 14
+              "collectionId": 8,
+              "variableId": 23
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 15
+              "collectionId": 8,
+              "variableId": 24
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 14
+              "collectionId": 8,
+              "variableId": 23
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 15
+              "collectionId": 8,
+              "variableId": 24
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 14
+              "collectionId": 8,
+              "variableId": 23
             }
           }
         }
@@ -221,56 +228,56 @@
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 11
+              "collectionId": 8,
+              "variableId": 20
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 8
+              "collectionId": 8,
+              "variableId": 17
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 7
+              "collectionId": 8,
+              "variableId": 16
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 8
+              "collectionId": 8,
+              "variableId": 17
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 7
+              "collectionId": 8,
+              "variableId": 16
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 8
+              "collectionId": 8,
+              "variableId": 17
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 12
+              "collectionId": 8,
+              "variableId": 21
             }
           }
         }
@@ -282,56 +289,56 @@
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 9
+              "collectionId": 8,
+              "variableId": 18
             }
           }
         },
         {
           "alias": {
             "variable": {
-              "collectionId": 2,
-              "variableId": 4
-            }
-          }
-        },
-        {
-          "alias": {
-            "variable": {
-              "collectionId": 2,
-              "variableId": 6
-            }
-          }
-        },
-        {
-          "alias": {
-            "variable": {
-              "collectionId": 2,
-              "variableId": 10
-            }
-          }
-        },
-        {
-          "alias": {
-            "variable": {
-              "collectionId": 2,
-              "variableId": 7
-            }
-          }
-        },
-        {
-          "alias": {
-            "variable": {
-              "collectionId": 2,
-              "variableId": 8
-            }
-          }
-        },
-        {
-          "alias": {
-            "variable": {
-              "collectionId": 2,
+              "collectionId": 8,
               "variableId": 13
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 8,
+              "variableId": 15
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 8,
+              "variableId": 19
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 8,
+              "variableId": 16
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 8,
+              "variableId": 17
+            }
+          }
+        },
+        {
+          "alias": {
+            "variable": {
+              "collectionId": 8,
+              "variableId": 22
             }
           }
         }

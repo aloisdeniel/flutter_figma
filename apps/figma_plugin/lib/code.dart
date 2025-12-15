@@ -68,7 +68,7 @@ Future<void> _generateCode() async {
   print('Generating code...');
 
   final importer = FigmaPluginImporter();
-  final library = await importer.import(_currentImportOptions);
+  final library = await importer.import(ImporterContext(_currentImportOptions));
 
   final Bundle code;
   switch (_currentFormat) {
