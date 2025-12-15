@@ -1,12 +1,12 @@
 import 'package:flutter/widgets.dart' as fl;
 
-import 'package:example/src/variables/demo_theme.dart';
 import 'package:example/src/variables/demo_tokens.dart';
+import 'package:example/src/variables/demo_theme.dart';
 
 typedef VariableMode = ({DemoTokensMode demoTokens, DemoThemeMode demoTheme});
 
 class VariablesData {
-  const VariablesData._({required this.demoTheme, required this.demoTokens});
+  const VariablesData._({required this.demoTokens, required this.demoTheme});
 
   factory VariablesData.fromModes(VariableMode mode) {
     final demoTokens = DemoTokensData.fromMode(mode.demoTokens);
@@ -15,11 +15,11 @@ class VariablesData {
     // Resolving aliases
     demoTheme.alias = (demoTokens: demoTokens);
 
-    return VariablesData._(demoTheme: demoTheme, demoTokens: demoTokens);
+    return VariablesData._(demoTokens: demoTokens, demoTheme: demoTheme);
   }
 
-  final DemoThemeData demoTheme;
   final DemoTokensData demoTokens;
+  final DemoThemeData demoTheme;
 }
 
 class Variables extends fl.InheritedWidget {

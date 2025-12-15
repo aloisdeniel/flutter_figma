@@ -6,6 +6,7 @@ import 'package:binui/src/exporters/flutter/component.dart';
 import 'package:binui/src/exporters/flutter/metadata.dart';
 import 'package:binui/src/exporters/flutter/pubspec.dart';
 import 'package:binui/src/exporters/flutter/values/value.dart';
+import 'package:binui/src/exporters/flutter/variables.dart';
 
 import '../../utils/naming.dart';
 import 'options.dart';
@@ -42,6 +43,15 @@ class FlutterExporter extends Exporter<FlutterExportContext> {
       final fileName = Naming.fileName(collection.name);
       final content = variableCollectionExporter.serialize(context, collection);
       files.add(StringBundleFile('lib/src/variables/$fileName.dart', content));
+    }
+
+    // Export aggregated variables file (if there are variable collections)
+    if (library.variables.isNotEmpty) {
+      final variablesExporter = VariablesDartExporter();
+      final variablesContent = variablesExporter.serialize(context);
+      files.add(
+        StringBundleFile('lib/src/variables/variables.dart', variablesContent),
+      );
     }
 
     // Export components

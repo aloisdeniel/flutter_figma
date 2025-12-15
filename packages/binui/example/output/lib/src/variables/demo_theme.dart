@@ -1,14 +1,7 @@
 import 'package:example/src/variables/demo_tokens.dart' as demoTokens;
-import 'dart:ui' as ui;
 import 'package:flutter/widgets.dart' as fl;
 
-enum DemoThemeMode {
-  white,
-  red,
-  orange,
-  blue,
-  whitePressed,
-}
+enum DemoThemeMode { white, red, orange, blue, whitePressed }
 
 sealed class DemoThemeData {
   DemoThemeData();
@@ -136,7 +129,8 @@ class _Blue extends DemoThemeData {
   get tagForeground => alias.demoTokens.tokensBlueOverlayForeground;
 
   @override
-  get backgroundTransparent => alias.demoTokens.tokensBlueBackgroundAccentTransparent;
+  get backgroundTransparent =>
+      alias.demoTokens.tokensBlueBackgroundAccentTransparent;
 }
 
 class _WhitePressed extends DemoThemeData {
@@ -163,4 +157,3 @@ class _WhitePressed extends DemoThemeData {
   @override
   get backgroundTransparent => alias.demoTokens.tokensBlueBackgroundTransparent;
 }
-
