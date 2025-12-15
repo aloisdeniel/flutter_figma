@@ -11,8 +11,8 @@ class ColorDartExporter {
         ' alpha: ${color.alpha},';
     final colorSpace = switch (color.colorSpace) {
       ColorSpace.displayP3 => 'colorSpace: ui.ColorSpace.displayP3',
-      ColorSpace.srgb => 'colorSpace: ui.ColorSpace.srgb',
-      ColorSpace.extendedSrgb => 'colorSpace: ui.ColorSpace.extendedSrgb',
+      ColorSpace.srgb => 'colorSpace: ui.ColorSpace.sRGB',
+      ColorSpace.extendedSrgb => 'colorSpace: ui.ColorSpace.extendedSRGB',
       _ => throw Exception(),
     };
     return 'const fl.Color.from($components$colorSpace)';

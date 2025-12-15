@@ -53,6 +53,7 @@ class DartBuffer {
     indented(() {
       // Values
       for (var i = 0; i < value.values.length; i++) {
+        writeIndent();
         write(value.values[i]);
         if (value.methods.isEmpty || i < value.values.length - 1) {
           write(',');
