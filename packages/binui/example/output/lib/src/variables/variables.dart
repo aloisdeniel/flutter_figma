@@ -4,7 +4,7 @@ import 'package:example/src/variables/demo_tokens.dart';
 import 'package:example/src/variables/demo_theme.dart';
 import 'package:example/src/variables/styles.dart';
 
-typedef VariableMode = ({DemoTokensMode demoTokens, DemoThemeMode demoTheme, StylesMode styles});
+typedef VariableMode = ({DemoTokensMode demoTokens, DemoThemeMode demoTheme});
 
 class VariableCollections {
   const VariableCollections._({required this.demoTokens, required this.demoTheme, required this.styles});
@@ -12,7 +12,7 @@ class VariableCollections {
   factory VariableCollections.fromModes(VariableMode mode) {
     final demoTokens = DemoTokensData.fromMode(mode.demoTokens);
     final demoTheme = DemoThemeData.fromMode(mode.demoTheme);
-    final styles = StylesData.fromMode(mode.styles);
+    final styles = StylesData();
 
     // Resolving aliases
     demoTheme.alias = (demoTokens: demoTokens);

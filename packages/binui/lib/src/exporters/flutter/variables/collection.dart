@@ -27,7 +27,14 @@ class VariableCollectionDartExporter {
     buffer.writeln("import 'dart:ui' as ui;");
     buffer.writeln("import 'package:flutter/widgets.dart' as fl;");
     buffer.writeln();
-    write(buffer, context, value);
+
+    // Choose generation strategy based on number of variants
+    if (value.variants.length == 1) {
+      _writeSingleModeClass(buffer, context, value);
+    } else {
+      _writeMultiModeClasses(buffer, context, value);
+    }
+
     return buffer.toString();
   }
 
@@ -51,7 +58,84 @@ class VariableCollectionDartExporter {
     return collectionIds;
   }
 
-  static void write(
+  /// Generates a simple class for collections with only one mode/variant.
+  void _writeSingleModeClass(
+    DartBuffer buffer,
+    FlutterExportContext context,
+    VariableCollection definition,
+  ) {
+    final baseTypeName = Naming.typeName(definition.name);
+    final dataClassName = '${baseTypeName}Data';
+    final variant = definition.variants.first;
+
+    // Collect alias information
+    final aliasedCollections = _collectAliasedCollectionsMap(
+      context,
+      definition,
+    );
+
+    // Simple class (not sealed)
+    buffer.writeln('class $dataClassName {');
+    buffer.indent();
+
+    // Constructor
+    buffer.writeln('$dataClassName();');
+    buffer.writeln();
+
+    // Alias record type (if there are aliased collections)
+    if (aliasedCollections.isNotEmpty) {
+      final aliasFields = <String>[];
+      for (final entry in aliasedCollections.entries) {
+        final collectionName = entry.value;
+        final prefix = Naming.fieldName(collectionName);
+        final typeName = '${Naming.typeName(collectionName)}Data';
+        final fieldName = Naming.fieldName(collectionName);
+        aliasFields.add('$prefix.$typeName $fieldName');
+      }
+      buffer.writeln('late ({${aliasFields.join(', ')}}) alias;');
+      buffer.writeln();
+    }
+
+    // Fields for each variable
+    for (var i = 0; i < definition.variables.length; i++) {
+      final variable = definition.variables[i];
+      final value = variant.values[i];
+      final name = Naming.fieldName(variable.name);
+
+      if (value.whichType() == Value_Type.alias &&
+          value.alias.whichType() == Alias_Type.variable) {
+        // This is an alias to another collection's variable
+        final alias = value.alias.variable;
+        final targetCollection = context.library.findVariableCollection(
+          alias.collectionId,
+        );
+        if (targetCollection != null) {
+          final targetVariable = targetCollection.findEntry(alias.variableId);
+          if (targetVariable != null) {
+            final collectionFieldName = Naming.fieldName(targetCollection.name);
+            final variableFieldName = Naming.fieldName(targetVariable.name);
+            buffer.writeln(
+              'get $name => alias.$collectionFieldName.$variableFieldName;',
+            );
+          }
+        }
+      } else {
+        // This is a constant value
+        final serializedValue = const FlutterValueExporter().serialize(
+          context.library,
+          value,
+        );
+        buffer.writeln('final $name = $serializedValue;');
+      }
+    }
+
+    buffer.unindent();
+    buffer.writeln('}');
+    buffer.writeln();
+  }
+
+  /// Generates sealed class with enum and variant classes for multiple modes.
+  void _writeMultiModeClasses(
     DartBuffer buffer,
     FlutterExportContext context,
     VariableCollection definition,
@@ -70,25 +154,10 @@ class VariableCollectionDartExporter {
     buffer.writeln();
 
     // Collect alias information
-    final aliasedCollections = <int, String>{};
-    for (final variant in definition.variants) {
-      for (var i = 0; i < variant.values.length; i++) {
-        final value = variant.values[i];
-        if (value.whichType() == Value_Type.alias &&
-            value.alias.whichType() == Alias_Type.variable) {
-          final collectionId = value.alias.variable.collectionId;
-          if (collectionId != definition.id &&
-              !aliasedCollections.containsKey(collectionId)) {
-            final collection = context.library.findVariableCollection(
-              collectionId,
-            );
-            if (collection != null) {
-              aliasedCollections[collectionId] = collection.name;
-            }
-          }
-        }
-      }
-    }
+    final aliasedCollections = _collectAliasedCollectionsMap(
+      context,
+      definition,
+    );
 
     // Sealed base class
     buffer.writeln('sealed class $dataClassName {');
@@ -200,5 +269,32 @@ class VariableCollectionDartExporter {
       buffer.writeln('}');
       buffer.writeln();
     }
+  }
+
+  /// Collects aliased collections as a map of collectionId -> collectionName.
+  Map<int, String> _collectAliasedCollectionsMap(
+    FlutterExportContext context,
+    VariableCollection definition,
+  ) {
+    final aliasedCollections = <int, String>{};
+    for (final variant in definition.variants) {
+      for (var i = 0; i < variant.values.length; i++) {
+        final value = variant.values[i];
+        if (value.whichType() == Value_Type.alias &&
+            value.alias.whichType() == Alias_Type.variable) {
+          final collectionId = value.alias.variable.collectionId;
+          if (collectionId != definition.id &&
+              !aliasedCollections.containsKey(collectionId)) {
+            final collection = context.library.findVariableCollection(
+              collectionId,
+            );
+            if (collection != null) {
+              aliasedCollections[collectionId] = collection.name;
+            }
+          }
+        }
+      }
+    }
+    return aliasedCollections;
   }
 }
