@@ -1,7 +1,9 @@
 part of 'importer.dart';
 
 /// Imports Figma styles (paint, text, effect) as a "Styles" variable collection.
-Future<VariableCollection?> _importStyles() async {
+Future<VariableCollection?> _importStyles(
+  ImporterContext<FigmaImportOptions> context,
+) async {
   final entries = <VariableCollectionEntry>[];
   final values = <Value>[];
 
@@ -16,6 +18,7 @@ Future<VariableCollection?> _importStyles() async {
       if (value != null) {
         entries.add(
           VariableCollectionEntry(
+            id: context.identifiers.get('style/${style.id}'),
             name: style.name,
             documentation: style.description,
           ),
@@ -31,6 +34,7 @@ Future<VariableCollection?> _importStyles() async {
   for (final style in textStyles) {
     entries.add(
       VariableCollectionEntry(
+        id: context.identifiers.get('style/${style.id}'),
         name: style.name,
         documentation: style.description,
       ),
@@ -58,6 +62,7 @@ Future<VariableCollection?> _importStyles() async {
       if (value != null) {
         entries.add(
           VariableCollectionEntry(
+            id: context.identifiers.get('style/${style.id}'),
             name: style.name,
             documentation: style.description,
           ),
@@ -72,6 +77,7 @@ Future<VariableCollection?> _importStyles() async {
   }
 
   return VariableCollection(
+    id: context.identifiers.get('variable_collection/styles'),
     name: 'Styles',
     variables: entries,
     variants: [VariableCollectionVariant(name: 'default', values: values)],

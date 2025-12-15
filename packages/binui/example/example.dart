@@ -6,15 +6,16 @@ import 'package:binui/binui.dart';
 void main() async {
   print('Tokens');
   final tokens = await importVariableCollection('tokens');
-  print(tokens);
 
   print('Theme');
   final theme = await importVariableCollection('theme');
-  print(theme);
+
+  print('Styles');
+  final styles = await importVariableCollection('styles');
 
   final library = Library()
     ..name = 'Example'
-    ..variables.addAll([tokens, theme]);
+    ..variables.addAll([tokens, theme, styles]);
   final exporter = FlutterExporter();
 
   final dart = await exporter.export(

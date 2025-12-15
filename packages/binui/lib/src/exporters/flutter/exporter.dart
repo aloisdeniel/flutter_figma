@@ -6,11 +6,11 @@ import 'package:binui/src/exporters/flutter/component.dart';
 import 'package:binui/src/exporters/flutter/metadata.dart';
 import 'package:binui/src/exporters/flutter/pubspec.dart';
 import 'package:binui/src/exporters/flutter/values/value.dart';
-import 'package:binui/src/exporters/flutter/variables.dart';
+import 'package:binui/src/exporters/flutter/variables/variables.dart';
+import 'package:binui/src/exporters/flutter/variables/collection.dart';
 
 import '../../utils/naming.dart';
 import 'options.dart';
-import 'variable_collection.dart';
 
 class FlutterExportContext extends ExportContext {
   const FlutterExportContext(super.library, this.options);

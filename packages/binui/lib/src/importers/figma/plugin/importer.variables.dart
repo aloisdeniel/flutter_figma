@@ -23,7 +23,7 @@ Future<List<VariableCollection>> _importVariableCollections(
     for (var k = 0; k < variableIds.length; k++) {
       final figmaId = variableIds[k].toDart;
       final variableId = context.identifiers.get(
-        'variable_collection/${collection.id}/$figmaId',
+        'variable_collection/${collection.id}/variable/$figmaId',
       );
       figmaVariableIdToAlias[figmaId] = (collectionId, variableId);
     }
@@ -69,7 +69,15 @@ Future<List<VariableCollection>> _importVariableCollections(
         }
       }
 
-      variants.add(VariableCollectionVariant(name: modeName, values: values));
+      variants.add(
+        VariableCollectionVariant(
+          id: context.identifiers.get(
+            'variable_collection/${collection.id}/mode/$modeId',
+          ),
+          name: modeName,
+          values: values,
+        ),
+      );
     }
 
     // Create variable entries
@@ -79,7 +87,7 @@ Future<List<VariableCollection>> _importVariableCollections(
       final figmaId = variableIds[k].toDart;
 
       final variableId = context.identifiers.get(
-        'variable_collection/${collection.id}/$figmaId',
+        'variable_collection/${collection.id}/variable/$figmaId',
       );
       final variable = await figma_api.figma.variables
           .getVariableByIdAsync(figmaId)
@@ -141,7 +149,6 @@ Value _convertVariableValue(
   // Handle direct values
   switch (resolvedType) {
     case 'COLOR':
-      // Value is already dartified, so it's a Map with r, g, b, a keys
       if (value is Map) {
         return Value(
           color: Color(
@@ -149,6 +156,7 @@ Value _convertVariableValue(
             green: (value['g'] as num).toDouble(),
             blue: (value['b'] as num).toDouble(),
             alpha: (value['a'] as num).toDouble(),
+            colorSpace: ColorSpace.displayP3,
           ),
         );
       }

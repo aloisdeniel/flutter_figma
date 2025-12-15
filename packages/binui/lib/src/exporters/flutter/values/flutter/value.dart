@@ -1,9 +1,12 @@
 import 'package:binui/src/definitions.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/alias.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/border.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/color.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/gradient.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/label.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/radius.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/text_style.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/transform2d.dart';
 import 'package:binui/src/utils/naming.dart';
 
 class FlutterValueExporter {
@@ -22,8 +25,10 @@ class FlutterValueExporter {
       Value_Type.boolean => value.boolean.toString(),
       Value_Type.size => 'fl.Size(${value.size.width}, ${value.size.height})',
       Value_Type.color => const ColorDartExporter().serialize(value.color),
-      Value_Type.border => _serializeBorder(library, value.border),
-      Value_Type.borderSide => _serializeBorderSide(library, value.borderSide),
+      Value_Type.border => const BorderDartExporter().serialize(value.border),
+      Value_Type.borderSide => const BorderSideDartExporter().serialize(
+        value.borderSide,
+      ),
       Value_Type.gradient => GradientDartExporter().serialize(
         library,
         value.gradient,
@@ -38,8 +43,12 @@ class FlutterValueExporter {
       ).serialize(value.borderRadius),
       Value_Type.rect =>
         'fl.Rect.fromLTWH(${value.rect.position.x}, ${value.rect.position.y}, ${value.rect.size.width}, ${value.rect.size.height})',
-      Value_Type.textStyle => _serializeTextStyle(value.textStyle),
-      Value_Type.transform2D => _serializeTransform2D(value.transform2D),
+      Value_Type.textStyle => const TextStyleDartExporter().serialize(
+        value.textStyle,
+      ),
+      Value_Type.transform2D => const Transform2DDartExporter().serialize(
+        value.transform2D,
+      ),
       Value_Type.variantValue => _serializeVariantValue(
         library,
         value.variantValue,
@@ -53,49 +62,6 @@ class FlutterValueExporter {
       ),
       Value_Type.notSet => throw Exception('Value type not set'),
     };
-  }
-
-  String _serializeBorder(Library library, Border border) {
-    final top = _serializeBorderSide(library, border.top);
-    final right = _serializeBorderSide(library, border.right);
-    final bottom = _serializeBorderSide(library, border.bottom);
-    final left = _serializeBorderSide(library, border.left);
-    return 'fl.Border(top: $top, right: $right, bottom: $bottom, left: $left)';
-  }
-
-  String _serializeBorderSide(Library library, BorderSide borderSide) {
-    final color = const ColorDartExporter().serialize(borderSide.color);
-    return 'fl.BorderSide(color: $color, width: ${borderSide.width})';
-  }
-
-  String _serializeTextStyle(TextStyle textStyle) {
-    final buffer = StringBuffer('fl.TextStyle(');
-    buffer.write("fontFamily: '${textStyle.fontFamily}'");
-    buffer.write(', fontSize: ${textStyle.fontSize}');
-    buffer.write(', fontWeight: fl.FontWeight.w${textStyle.fontWeight}');
-    if (textStyle.letterSpacing != 0) {
-      buffer.write(', letterSpacing: ${textStyle.letterSpacing}');
-    }
-    if (textStyle.wordSpacing != 0) {
-      buffer.write(', wordSpacing: ${textStyle.wordSpacing}');
-    }
-    if (textStyle.lineHeight != 0) {
-      buffer.write(', height: ${textStyle.lineHeight}');
-    }
-    buffer.write(')');
-    return buffer.toString();
-  }
-
-  String _serializeTransform2D(Transform2D transform) {
-    final rows = transform.rows.map((row) => row.values.toList()).toList();
-    if (rows.isEmpty) return 'fl.Matrix4.identity()';
-
-    // Flutter Matrix4 is column-major, but we'll use the convenience constructor
-    if (rows.length == 3 && rows[0].length == 3) {
-      // 2D transformation matrix
-      return 'fl.Matrix4(${rows[0][0]}, ${rows[1][0]}, 0, 0, ${rows[0][1]}, ${rows[1][1]}, 0, 0, 0, 0, 1, 0, ${rows[0][2]}, ${rows[1][2]}, 0, 1)';
-    }
-    return 'fl.Matrix4.identity()';
   }
 
   String _serializeVariantValue(Library library, VariantValue variantValue) {

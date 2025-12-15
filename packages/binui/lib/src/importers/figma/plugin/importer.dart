@@ -32,7 +32,7 @@ class FigmaPluginImporter extends Importer<FigmaImportOptions> {
 
     // Import styles as a dedicated variable collection
     if (options.styles) {
-      final stylesCollection = await _importStyles();
+      final stylesCollection = await _importStyles(context);
       if (stylesCollection != null) {
         variableCollections.add(stylesCollection);
       }

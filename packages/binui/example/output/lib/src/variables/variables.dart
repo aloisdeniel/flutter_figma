@@ -2,46 +2,49 @@ import 'package:flutter/widgets.dart' as fl;
 
 import 'package:example/src/variables/demo_tokens.dart';
 import 'package:example/src/variables/demo_theme.dart';
+import 'package:example/src/variables/styles.dart';
 
-typedef VariableMode = ({DemoTokensMode demoTokens, DemoThemeMode demoTheme});
+typedef VariableMode = ({DemoTokensMode demoTokens, DemoThemeMode demoTheme, StylesMode styles});
 
-class VariablesData {
-  const VariablesData._({required this.demoTokens, required this.demoTheme});
+class VariableCollections {
+  const VariableCollections._({required this.demoTokens, required this.demoTheme, required this.styles});
 
-  factory VariablesData.fromModes(VariableMode mode) {
+  factory VariableCollections.fromModes(VariableMode mode) {
     final demoTokens = DemoTokensData.fromMode(mode.demoTokens);
     final demoTheme = DemoThemeData.fromMode(mode.demoTheme);
+    final styles = StylesData.fromMode(mode.styles);
 
     // Resolving aliases
     demoTheme.alias = (demoTokens: demoTokens);
 
-    return VariablesData._(demoTokens: demoTokens, demoTheme: demoTheme);
+    return VariableCollections._(demoTokens: demoTokens, demoTheme: demoTheme, styles: styles);
   }
 
   final DemoTokensData demoTokens;
   final DemoThemeData demoTheme;
+  final StylesData styles;
 }
 
 class Variables extends fl.InheritedWidget {
   Variables({super.key, required super.child, required this.mode})
-    : data = VariablesData.fromModes(mode);
+    : data = VariableCollections.fromModes(mode);
 
   final VariableMode mode;
-  final VariablesData data;
+  final VariableCollections data;
 
   @override
   bool updateShouldNotify(covariant Variables oldWidget) {
     return mode != oldWidget.mode;
   }
 
-  static VariablesData? maybeOf(fl.BuildContext context) {
+  static VariableCollections? maybeOf(fl.BuildContext context) {
     final instance = context.dependOnInheritedWidgetOfExactType<Variables>();
     return instance?.data;
   }
 
-  static VariablesData of(fl.BuildContext context) {
+  static VariableCollections of(fl.BuildContext context) {
     final data = maybeOf(context);
-    assert(data != null, 'No VariablesProvider found in context');
+    assert(data != null, 'No Variables found in context');
     return data!;
   }
 
