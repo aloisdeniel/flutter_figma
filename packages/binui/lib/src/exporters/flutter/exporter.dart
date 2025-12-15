@@ -1,6 +1,8 @@
 import 'dart:async';
 
-import 'package:binui/binui.dart';
+import 'package:binui/src/definitions.pb.dart';
+import 'package:binui/src/exporters/bundle.dart';
+import 'package:binui/src/exporters/exporter.dart';
 import 'package:binui/src/exporters/flutter/barrel.dart';
 import 'package:binui/src/exporters/flutter/component.dart';
 import 'package:binui/src/exporters/flutter/metadata.dart';

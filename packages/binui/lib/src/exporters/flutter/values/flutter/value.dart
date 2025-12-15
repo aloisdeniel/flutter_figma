@@ -4,7 +4,10 @@ import 'package:binui/src/exporters/flutter/values/flutter/border.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/color.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/gradient.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/label.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/offset.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/radius.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/rect.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/size.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/text_style.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/transform2d.dart';
 import 'package:binui/src/utils/naming.dart';
@@ -23,7 +26,7 @@ class FlutterValueExporter {
       Value_Type.stringValue => "'${value.stringValue.replaceAll("'", "\\'")}'",
       Value_Type.doubleValue => value.doubleValue.toString(),
       Value_Type.boolean => value.boolean.toString(),
-      Value_Type.size => 'fl.Size(${value.size.width}, ${value.size.height})',
+      Value_Type.size => const SizeDartExporter().serialize(value.size),
       Value_Type.color => const ColorDartExporter().serialize(value.color),
       Value_Type.border => const BorderDartExporter().serialize(value.border),
       Value_Type.borderSide => const BorderSideDartExporter().serialize(
@@ -36,13 +39,12 @@ class FlutterValueExporter {
       Value_Type.label => LabelDartExporter(
         valueSerializer: this,
       ).serialize(library, value.label),
-      Value_Type.offset => 'fl.Offset(${value.offset.x}, ${value.offset.y})',
+      Value_Type.offset => const OffsetDartExporter().serialize(value.offset),
       Value_Type.radius => const RadiusDartExporter().serialize(value.radius),
       Value_Type.borderRadius => const BorderRadiusDartExporter(
         radiusSerializer: RadiusDartExporter(),
       ).serialize(value.borderRadius),
-      Value_Type.rect =>
-        'fl.Rect.fromLTWH(${value.rect.position.x}, ${value.rect.position.y}, ${value.rect.size.width}, ${value.rect.size.height})',
+      Value_Type.rect => const RectDartExporter().serialize(value.rect),
       Value_Type.textStyle => const TextStyleDartExporter().serialize(
         value.textStyle,
       ),
