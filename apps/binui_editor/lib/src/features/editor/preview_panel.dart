@@ -1,6 +1,10 @@
 import 'package:binui/binui.dart' as b;
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_binui/flutter_binui.dart';
+
+/// View mode for the preview panel
+enum PreviewMode { preview, code }
 
 /// Manages selected variant indices for all variable collections.
 /// This allows alias resolution to look up the currently selected variant
@@ -45,12 +49,26 @@ class _PreviewPanelState extends State<PreviewPanel> {
   /// Tracks selected variant index for each collection by collection ID
   Map<int, int> _selectedVariants = {};
 
+  /// Current view mode
+  PreviewMode _mode = PreviewMode.preview;
+
+  /// Cached generated code bundle
+  b.Bundle? _cachedBundle;
+
+  /// Whether code generation is in progress
+  bool _isGenerating = false;
+
+  /// Error message if code generation failed
+  String? _generationError;
+
   @override
   void didUpdateWidget(PreviewPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
-    // Reset selections when library changes
+    // Reset selections and cache when library changes
     if (widget.library != oldWidget.library) {
       _selectedVariants = {};
+      _cachedBundle = null;
+      _generationError = null;
     }
   }
 
@@ -61,6 +79,42 @@ class _PreviewPanelState extends State<PreviewPanel> {
     });
   }
 
+  void _setMode(PreviewMode mode) {
+    setState(() => _mode = mode);
+    if (mode == PreviewMode.code && _cachedBundle == null && !_isGenerating) {
+      _generateCode();
+    }
+  }
+
+  Future<void> _generateCode() async {
+    setState(() {
+      _isGenerating = true;
+      _generationError = null;
+    });
+
+    try {
+      final exporter = b.FlutterExporter();
+      final context = b.FlutterExportContext(
+        widget.library,
+        const b.FlutterExportOptions(),
+      );
+      final bundle = await exporter.export(context);
+      if (mounted) {
+        setState(() {
+          _cachedBundle = bundle;
+          _isGenerating = false;
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          _generationError = e.toString();
+          _isGenerating = false;
+        });
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return _VariantSelectionScope(
@@ -69,84 +123,414 @@ class _PreviewPanelState extends State<PreviewPanel> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
-              border: Border(
-                bottom: BorderSide(
-                  color: Theme.of(context).colorScheme.outlineVariant,
-                ),
+          _buildHeader(context),
+          Expanded(
+            child: _mode == PreviewMode.preview
+                ? _buildPreviewContent()
+                : _buildCodeContent(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        border: Border(
+          bottom: BorderSide(
+            color: Theme.of(context).colorScheme.outlineVariant,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          // Mode switcher
+          SegmentedButton<PreviewMode>(
+            segments: const [
+              ButtonSegment<PreviewMode>(
+                value: PreviewMode.preview,
+                label: Text('Preview', style: TextStyle(fontSize: 12)),
+                icon: Icon(Icons.preview, size: 16),
+              ),
+              ButtonSegment<PreviewMode>(
+                value: PreviewMode.code,
+                label: Text('Code', style: TextStyle(fontSize: 12)),
+                icon: Icon(Icons.code, size: 16),
+              ),
+            ],
+            selected: {_mode},
+            onSelectionChanged: (selected) => _setMode(selected.first),
+            showSelectedIcon: false,
+            style: ButtonStyle(
+              visualDensity: VisualDensity.compact,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: WidgetStateProperty.all(
+                const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
               ),
             ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.preview,
-                  size: 18,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Preview',
-                  style: Theme.of(
-                    context,
-                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-                ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 8,
-                    vertical: 4,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.secondaryContainer,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                  child: Text(
-                    '${widget.library.components.length} components',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Theme.of(context).colorScheme.onSecondaryContainer,
-                    ),
-                  ),
-                ),
-              ],
-            ),
           ),
-          Expanded(
-            child: BinuiProvider(
-              config: BinuiConfig(widget.library),
-              child: ListView(
-                padding: const EdgeInsets.all(16),
-                children: [
-                  if (widget.library.components.isNotEmpty) ...[
-                    _SectionHeader(title: 'Components'),
-                    const SizedBox(height: 12),
-                    ...widget.library.components.map(
-                      (component) => _ComponentPreview(
-                        component: component,
-                        library: widget.library,
-                      ),
-                    ),
-                  ],
-                  if (widget.library.variables.isNotEmpty) ...[
-                    const SizedBox(height: 24),
-                    _SectionHeader(title: 'Variable Collections'),
-                    const SizedBox(height: 12),
-                    ...widget.library.variables.map(
-                      (collection) => _VariableCollectionPreview(
-                        collection: collection,
-                        library: widget.library,
-                      ),
-                    ),
-                  ],
-                ],
+          const Spacer(),
+          if (_mode == PreviewMode.code && _cachedBundle != null)
+            IconButton(
+              icon: const Icon(Icons.refresh, size: 18),
+              tooltip: 'Regenerate code',
+              onPressed: _isGenerating ? null : _generateCode,
+              visualDensity: VisualDensity.compact,
+            ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              '${widget.library.components.length} components',
+              style: TextStyle(
+                fontSize: 12,
+                color: Theme.of(context).colorScheme.onSecondaryContainer,
               ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildPreviewContent() {
+    return BinuiProvider(
+      config: BinuiConfig(widget.library),
+      child: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          if (widget.library.components.isNotEmpty) ...[
+            _SectionHeader(title: 'Components'),
+            const SizedBox(height: 12),
+            ...widget.library.components.map(
+              (component) => _ComponentPreview(
+                component: component,
+                library: widget.library,
+              ),
+            ),
+          ],
+          if (widget.library.variables.isNotEmpty) ...[
+            const SizedBox(height: 24),
+            _SectionHeader(title: 'Variable Collections'),
+            const SizedBox(height: 12),
+            ...widget.library.variables.map(
+              (collection) => _VariableCollectionPreview(
+                collection: collection,
+                library: widget.library,
+              ),
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCodeContent() {
+    if (_isGenerating) {
+      return const Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 16),
+            Text('Generating Flutter code...'),
+          ],
+        ),
+      );
+    }
+
+    if (_generationError != null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.error_outline,
+                size: 48,
+                color: Theme.of(context).colorScheme.error,
+              ),
+              const SizedBox(height: 16),
+              Text(
+                'Code Generation Error',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                _generationError!,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontFamily: 'monospace',
+                  color: Theme.of(context).colorScheme.error,
+                ),
+              ),
+              const SizedBox(height: 16),
+              FilledButton.icon(
+                onPressed: _generateCode,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    if (_cachedBundle == null) {
+      return const Center(child: Text('No code generated yet'));
+    }
+
+    return _CodeBundleView(bundle: _cachedBundle!);
+  }
+}
+
+class _CodeBundleView extends StatefulWidget {
+  const _CodeBundleView({required this.bundle});
+
+  final b.Bundle bundle;
+
+  @override
+  State<_CodeBundleView> createState() => _CodeBundleViewState();
+}
+
+class _CodeBundleViewState extends State<_CodeBundleView> {
+  int _selectedFileIndex = 0;
+
+  List<b.StringBundleFile> get _dartFiles => widget.bundle.files
+      .whereType<b.StringBundleFile>()
+      .where((f) => f.path.endsWith('.dart') || f.path.endsWith('.yaml'))
+      .toList();
+
+  @override
+  Widget build(BuildContext context) {
+    final files = _dartFiles;
+
+    if (files.isEmpty) {
+      return const Center(child: Text('No code files generated'));
+    }
+
+    // Clamp selected index if files changed
+    if (_selectedFileIndex >= files.length) {
+      _selectedFileIndex = 0;
+    }
+
+    final selectedFile = files[_selectedFileIndex];
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // File tree
+        Container(
+          width: 220,
+          decoration: BoxDecoration(
+            border: Border(
+              right: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
+            ),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surfaceContainerLow,
+                  border: Border(
+                    bottom: BorderSide(
+                      color: Theme.of(context).colorScheme.outlineVariant,
+                    ),
+                  ),
+                ),
+                child: Text(
+                  'Files (${files.length})',
+                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: ListView.builder(
+                  itemCount: files.length,
+                  itemBuilder: (context, index) {
+                    final file = files[index];
+                    final isSelected = index == _selectedFileIndex;
+                    return _FileListItem(
+                      file: file,
+                      isSelected: isSelected,
+                      onTap: () => setState(() => _selectedFileIndex = index),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Code view
+        Expanded(child: _CodeFileView(file: selectedFile)),
+      ],
+    );
+  }
+}
+
+class _FileListItem extends StatelessWidget {
+  const _FileListItem({
+    required this.file,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final b.StringBundleFile file;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final fileName = file.path.split('/').last;
+    final dirPath = file.path.contains('/')
+        ? file.path.substring(0, file.path.lastIndexOf('/'))
+        : '';
+
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+        decoration: BoxDecoration(
+          color: isSelected
+              ? Theme.of(context).colorScheme.primaryContainer.withAlpha(100)
+              : null,
+          border: Border(
+            left: BorderSide(
+              color: isSelected
+                  ? Theme.of(context).colorScheme.primary
+                  : Colors.transparent,
+              width: 3,
+            ),
+          ),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(
+                  file.path.endsWith('.yaml')
+                      ? Icons.settings
+                      : Icons.description,
+                  size: 14,
+                  color: isSelected
+                      ? Theme.of(context).colorScheme.primary
+                      : Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    fileName,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: isSelected ? FontWeight.w600 : null,
+                      color: isSelected
+                          ? Theme.of(context).colorScheme.primary
+                          : null,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
+            ),
+            if (dirPath.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(left: 20, top: 2),
+                child: Text(
+                  dirPath,
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: Theme.of(context).colorScheme.outline,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CodeFileView extends StatelessWidget {
+  const _CodeFileView({required this.file});
+
+  final b.StringBundleFile file;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // File header
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surfaceContainerLow,
+            border: Border(
+              bottom: BorderSide(
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
+            ),
+          ),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  file.path,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.labelMedium?.copyWith(fontFamily: 'monospace'),
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.copy, size: 16),
+                tooltip: 'Copy to clipboard',
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: file.content));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Copied to clipboard'),
+                      duration: Duration(seconds: 2),
+                    ),
+                  );
+                },
+                visualDensity: VisualDensity.compact,
+              ),
+            ],
+          ),
+        ),
+        // Code content
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.all(16),
+            child: SelectableText(
+              file.content,
+              style: TextStyle(
+                fontSize: 12,
+                fontFamily: 'monospace',
+                height: 1.5,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
