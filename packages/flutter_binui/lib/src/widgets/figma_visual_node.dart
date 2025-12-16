@@ -13,7 +13,9 @@ class FigmaVisualNodeWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final config = BinuiProvider.of(context);
     return switch (node.whichType()) {
-      b.VisualNode_Type.text => FigmaText(config.resolve(node.text.characters)),
+      b.VisualNode_Type.text => FigmaText(
+        config.resolve(node.text.characters, ''),
+      ),
       b.VisualNode_Type.frame => FigmaFrame(
         layout: node.frame.layout.toFlutter(),
         size: ChildSize(width: node.frame.width, height: node.frame.height),
@@ -21,7 +23,7 @@ class FigmaVisualNodeWidget extends StatelessWidget {
             .map((p) => p.toFigmaFlutter(config.library))
             .toList(),
         //TODO effects: node.frame.effects,
-        opacity: config.resolve<double>(node.frame.opacity),
+        opacity: config.resolve<double>(node.frame.opacity, 1.0),
         visible: node.frame.visible,
         blendMode: node.frame.blendMode.toFigmaFlutter(),
         clipContent: node.frame.clipContent,

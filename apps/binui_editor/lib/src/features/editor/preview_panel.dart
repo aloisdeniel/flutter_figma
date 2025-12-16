@@ -2,90 +2,151 @@ import 'package:binui/binui.dart' as b;
 import 'package:flutter/material.dart';
 import 'package:flutter_binui/flutter_binui.dart';
 
-class PreviewPanel extends StatelessWidget {
+/// Manages selected variant indices for all variable collections.
+/// This allows alias resolution to look up the currently selected variant
+/// for any referenced collection.
+class _VariantSelectionScope extends InheritedWidget {
+  const _VariantSelectionScope({
+    required this.selectedVariants,
+    required this.onVariantChanged,
+    required super.child,
+  });
+
+  /// Map of collection ID to selected variant index
+  final Map<int, int> selectedVariants;
+
+  /// Callback to update the selected variant for a collection
+  final void Function(int collectionId, int variantIndex) onVariantChanged;
+
+  static _VariantSelectionScope? of(BuildContext context) {
+    return context.dependOnInheritedWidgetOfExactType<_VariantSelectionScope>();
+  }
+
+  int getSelectedVariantIndex(int collectionId) {
+    return selectedVariants[collectionId] ?? 0;
+  }
+
+  @override
+  bool updateShouldNotify(_VariantSelectionScope oldWidget) {
+    return selectedVariants != oldWidget.selectedVariants;
+  }
+}
+
+class PreviewPanel extends StatefulWidget {
   const PreviewPanel({super.key, required this.library});
 
   final b.Library library;
 
   @override
+  State<PreviewPanel> createState() => _PreviewPanelState();
+}
+
+class _PreviewPanelState extends State<PreviewPanel> {
+  /// Tracks selected variant index for each collection by collection ID
+  Map<int, int> _selectedVariants = {};
+
+  @override
+  void didUpdateWidget(PreviewPanel oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Reset selections when library changes
+    if (widget.library != oldWidget.library) {
+      _selectedVariants = {};
+    }
+  }
+
+  void _onVariantChanged(int collectionId, int variantIndex) {
+    setState(() {
+      _selectedVariants = Map.from(_selectedVariants)
+        ..[collectionId] = variantIndex;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          padding: const EdgeInsets.all(12),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surfaceContainerHighest,
-            border: Border(
-              bottom: BorderSide(
-                color: Theme.of(context).colorScheme.outlineVariant,
+    return _VariantSelectionScope(
+      selectedVariants: _selectedVariants,
+      onVariantChanged: _onVariantChanged,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              border: Border(
+                bottom: BorderSide(
+                  color: Theme.of(context).colorScheme.outlineVariant,
+                ),
               ),
             ),
-          ),
-          child: Row(
-            children: [
-              Icon(
-                Icons.preview,
-                size: 18,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(width: 8),
-              Text(
-                'Preview',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  '${library.components.length} components',
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Theme.of(context).colorScheme.onSecondaryContainer,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        Expanded(
-          child: BinuiProvider(
-            config: BinuiConfig(library),
-            child: ListView(
-              padding: const EdgeInsets.all(16),
+            child: Row(
               children: [
-                if (library.components.isNotEmpty) ...[
-                  _SectionHeader(title: 'Components'),
-                  const SizedBox(height: 12),
-                  ...library.components.map(
-                    (component) => _ComponentPreview(
-                      component: component,
-                      library: library,
+                Icon(
+                  Icons.preview,
+                  size: 18,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  'Preview',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
+                ),
+                const Spacer(),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    '${widget.library.components.length} components',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Theme.of(context).colorScheme.onSecondaryContainer,
                     ),
                   ),
-                ],
-                if (library.variables.isNotEmpty) ...[
-                  const SizedBox(height: 24),
-                  _SectionHeader(title: 'Variable Collections'),
-                  const SizedBox(height: 12),
-                  ...library.variables.map(
-                    (collection) => _VariableCollectionPreview(
-                      collection: collection,
-                      library: library,
-                    ),
-                  ),
-                ],
+                ),
               ],
             ),
           ),
-        ),
-      ],
+          Expanded(
+            child: BinuiProvider(
+              config: BinuiConfig(widget.library),
+              child: ListView(
+                padding: const EdgeInsets.all(16),
+                children: [
+                  if (widget.library.components.isNotEmpty) ...[
+                    _SectionHeader(title: 'Components'),
+                    const SizedBox(height: 12),
+                    ...widget.library.components.map(
+                      (component) => _ComponentPreview(
+                        component: component,
+                        library: widget.library,
+                      ),
+                    ),
+                  ],
+                  if (widget.library.variables.isNotEmpty) ...[
+                    const SizedBox(height: 24),
+                    _SectionHeader(title: 'Variable Collections'),
+                    const SizedBox(height: 12),
+                    ...widget.library.variables.map(
+                      (collection) => _VariableCollectionPreview(
+                        collection: collection,
+                        library: widget.library,
+                      ),
+                    ),
+                  ],
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -178,6 +239,7 @@ class _ComponentPreviewState extends State<_ComponentPreview> {
           if (_expanded)
             Container(
               width: double.infinity,
+              constraints: BoxConstraints(maxHeight: 600),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.surfaceContainerLow,
@@ -427,13 +489,17 @@ class _VariableCollectionPreview extends StatefulWidget {
 class _VariableCollectionPreviewState
     extends State<_VariableCollectionPreview> {
   bool _expanded = false;
-  int _selectedVariantIndex = 0;
 
   @override
   Widget build(BuildContext context) {
+    final scope = _VariantSelectionScope.of(context);
+    final selectedVariantIndex =
+        scope?.getSelectedVariantIndex(widget.collection.id) ?? 0;
+
     final hasVariants = widget.collection.variants.isNotEmpty;
-    final selectedVariant = hasVariants
-        ? widget.collection.variants[_selectedVariantIndex]
+    final selectedVariant =
+        hasVariants && selectedVariantIndex < widget.collection.variants.length
+        ? widget.collection.variants[selectedVariantIndex]
         : null;
 
     return Card(
@@ -517,9 +583,12 @@ class _VariableCollectionPreviewState
                         Expanded(
                           child: _VariantSelector(
                             variants: widget.collection.variants,
-                            selectedIndex: _selectedVariantIndex,
+                            selectedIndex: selectedVariantIndex,
                             onChanged: (index) {
-                              setState(() => _selectedVariantIndex = index);
+                              scope?.onVariantChanged(
+                                widget.collection.id,
+                                index,
+                              );
                             },
                           ),
                         ),
@@ -803,32 +872,28 @@ class _AliasValuePreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String aliasText;
+    final scope = _VariantSelectionScope.of(context);
 
     switch (alias.whichType()) {
       case b.Alias_Type.variable:
-        final varAlias = alias.variable;
-        final collection = library.variables
-            .where((c) => c.id == varAlias.collectionId)
-            .firstOrNull;
-        final variable = collection?.variables
-            .where((v) => v.id == varAlias.variableId)
-            .firstOrNull;
-        aliasText = variable != null
-            ? '${collection?.name ?? 'Unknown'}/${variable.name}'
-            : 'Unknown variable (${varAlias.collectionId}:${varAlias.variableId})';
-        break;
+        return _VariableAliasPreview(
+          alias: alias.variable,
+          library: library,
+          scope: scope,
+        );
       case b.Alias_Type.property:
-        aliasText = 'Property: ${alias.property.propertyId}';
-        break;
+        return _buildAliasLabel(
+          context,
+          'Property: ${alias.property.propertyId}',
+        );
       case b.Alias_Type.constant:
-        aliasText = 'Constant value';
-        break;
+        return _buildAliasLabel(context, 'Constant value');
       case b.Alias_Type.notSet:
-        aliasText = 'Unset alias';
-        break;
+        return _buildAliasLabel(context, 'Unset alias');
     }
+  }
 
+  Widget _buildAliasLabel(BuildContext context, String text) {
     return Row(
       children: [
         Icon(
@@ -839,7 +904,7 @@ class _AliasValuePreview extends StatelessWidget {
         const SizedBox(width: 6),
         Expanded(
           child: Text(
-            aliasText,
+            text,
             style: TextStyle(
               fontSize: 12,
               color: Theme.of(context).colorScheme.secondary,
@@ -848,5 +913,176 @@ class _AliasValuePreview extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class _VariableAliasPreview extends StatelessWidget {
+  const _VariableAliasPreview({
+    required this.alias,
+    required this.library,
+    required this.scope,
+  });
+
+  final b.VariableAlias alias;
+  final b.Library library;
+  final _VariantSelectionScope? scope;
+
+  @override
+  Widget build(BuildContext context) {
+    // Find the referenced collection
+    final collection = library.variables
+        .where((c) => c.id == alias.collectionId)
+        .firstOrNull;
+
+    if (collection == null) {
+      return _buildUnresolvedAlias(
+        context,
+        'Unknown collection (${alias.collectionId})',
+      );
+    }
+
+    // Find the variable entry within the collection
+    final variableIndex = collection.variables.indexWhere(
+      (v) => v.id == alias.variableId,
+    );
+
+    if (variableIndex < 0) {
+      return _buildUnresolvedAlias(
+        context,
+        'Unknown variable (${alias.variableId}) in ${collection.name}',
+      );
+    }
+
+    final variable = collection.variables[variableIndex];
+
+    // Get the selected variant for the referenced collection
+    final selectedVariantIndex =
+        scope?.getSelectedVariantIndex(collection.id) ?? 0;
+
+    // Get the resolved value from the selected variant
+    b.Value? resolvedValue;
+    if (collection.variants.isNotEmpty &&
+        selectedVariantIndex < collection.variants.length) {
+      final variant = collection.variants[selectedVariantIndex];
+      if (variableIndex < variant.values.length) {
+        resolvedValue = variant.values[variableIndex];
+      }
+    }
+
+    final aliasPath = '${collection.name}/${variable.name}';
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Show alias reference
+        Row(
+          children: [
+            Icon(
+              Icons.link,
+              size: 14,
+              color: Theme.of(context).colorScheme.secondary,
+            ),
+            const SizedBox(width: 6),
+            Expanded(
+              child: Text(
+                aliasPath,
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Theme.of(context).colorScheme.secondary,
+                ),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        // Show resolved value
+        if (resolvedValue != null)
+          _ResolvedValuePreview(value: resolvedValue, library: library)
+        else
+          Text(
+            'No value for selected variant',
+            style: TextStyle(
+              fontSize: 11,
+              color: Theme.of(context).colorScheme.outline,
+              fontStyle: FontStyle.italic,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _buildUnresolvedAlias(BuildContext context, String message) {
+    return Row(
+      children: [
+        Icon(
+          Icons.link_off,
+          size: 14,
+          color: Theme.of(context).colorScheme.error,
+        ),
+        const SizedBox(width: 6),
+        Expanded(
+          child: Text(
+            message,
+            style: TextStyle(
+              fontSize: 12,
+              color: Theme.of(context).colorScheme.error,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Shows the resolved value from an alias, with recursive alias resolution
+class _ResolvedValuePreview extends StatelessWidget {
+  const _ResolvedValuePreview({required this.value, required this.library});
+
+  final b.Value value;
+  final b.Library library;
+
+  @override
+  Widget build(BuildContext context) {
+    final valueType = value.whichType();
+
+    switch (valueType) {
+      case b.Value_Type.color:
+        return _ColorValuePreview(color: value.color);
+      case b.Value_Type.stringValue:
+        return _TextValuePreview(
+          label: 'String',
+          value: '"${value.stringValue}"',
+        );
+      case b.Value_Type.doubleValue:
+        return _TextValuePreview(
+          label: 'Number',
+          value: value.doubleValue.toString(),
+        );
+      case b.Value_Type.boolean:
+        return _TextValuePreview(
+          label: 'Boolean',
+          value: value.boolean.toString(),
+        );
+      case b.Value_Type.size:
+        return _TextValuePreview(
+          label: 'Size',
+          value: '${value.size.width} x ${value.size.height}',
+        );
+      case b.Value_Type.alias:
+        // Recursive alias - resolve it too
+        return _AliasValuePreview(alias: value.alias, library: library);
+      case b.Value_Type.notSet:
+        return Text(
+          'Not set',
+          style: TextStyle(
+            fontSize: 11,
+            color: Theme.of(context).colorScheme.outline,
+            fontStyle: FontStyle.italic,
+          ),
+        );
+      default:
+        return _TextValuePreview(label: 'Unknown', value: valueType.name);
+    }
   }
 }

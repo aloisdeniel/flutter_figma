@@ -10,7 +10,10 @@ class BinuiConfig {
   final BinuiRenderMode renderMode;
   final Library library;
 
-  T resolve<T>(Alias alias) {
+  T resolve<T>(Alias alias, T defaultValue) {
+    if (alias.whichType() == Alias_Type.notSet) {
+      return defaultValue;
+    }
     final value = library.resolveAlias(alias);
     if (value == null) throw Exception('Unable to resolve alias: $alias');
     return value.toFlutter<T>();
