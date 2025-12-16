@@ -297,13 +297,19 @@
       if (msg.type === 'code-generated') {
         currentFiles = msg.files || [];
         
-        if (currentFiles.length > 0) {
+        if (currentFiles.length > 1) {
           selectedFileIndex = 0;
           renderFileList();
           displayFile(selectedFileIndex);
           document.getElementById('sidebar').classList.remove('hidden');
           document.getElementById('copy-btn').style.display = 'block';
-          updateStatus(`${currentFiles.length} file(s) generated`, true);
+          updateStatus(`${currentFiles.length} files generated`, true);
+        } else if (currentFiles.length === 1) {
+          selectedFileIndex = 0;
+          displayFile(selectedFileIndex);
+          document.getElementById('sidebar').classList.add('hidden');
+          document.getElementById('copy-btn').style.display = 'block';
+          updateStatus('Code generated', true);
         } else {
           // Fallback for old format (single 'code' property)
           currentCode = msg.code || '';
