@@ -1,5 +1,26 @@
 part of 'importer.dart';
 
+Future<List<Component>> _importSelectedComponents() async {
+  final selection = figma_api.figma.currentPage.selection.toDart;
+
+  if (selection.isEmpty) {
+    return [];
+  }
+
+  final components = <Component>[];
+  for (final node in selection) {
+    if (node.type == 'COMPONENT_SET') {
+      final componentSet = node as figma_api.ComponentSetNode;
+      components.add(await _createComponentFromSet(componentSet));
+    } else if (node.type == 'COMPONENT') {
+      final component = node as figma_api.ComponentNode;
+      components.add(_createComponentFromNode(component));
+    }
+  }
+
+  return components;
+}
+
 Future<List<Component>> _importComponents() async {
   final components = <Component>[];
   final pages = figma_api.figma.root.children;

@@ -227,153 +227,6 @@
       opacity: 1;
     }
 
-    /* Import Options Step */
-    .options-step {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      padding: 32px;
-    }
-
-    .options-card {
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 8px;
-      padding: 24px;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-    }
-
-    .options-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: var(--text-primary);
-      margin-bottom: 8px;
-    }
-
-    .options-description {
-      font-size: 12px;
-      color: var(--text-secondary);
-      margin-bottom: 20px;
-    }
-
-    .option-item {
-      display: flex;
-      align-items: flex-start;
-      padding: 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      margin-bottom: 8px;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .option-item:hover {
-      background: var(--bg-tertiary);
-      border-color: #666;
-    }
-
-    .option-item.checked {
-      background: var(--item-selected);
-      border-color: var(--accent-color);
-    }
-
-    .option-checkbox {
-      width: 18px;
-      height: 18px;
-      border: 2px solid var(--text-secondary);
-      border-radius: 4px;
-      margin-right: 12px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.15s ease;
-    }
-
-    .option-item.checked .option-checkbox {
-      background: var(--accent-color);
-      border-color: var(--accent-color);
-    }
-
-    .option-checkbox svg {
-      width: 12px;
-      height: 12px;
-      opacity: 0;
-    }
-
-    .option-item.checked .option-checkbox svg {
-      opacity: 1;
-    }
-
-    .option-content {
-      flex: 1;
-    }
-
-    .option-label {
-      font-size: 13px;
-      font-weight: 500;
-      color: var(--text-primary);
-      margin-bottom: 2px;
-    }
-
-    .option-hint {
-      font-size: 11px;
-      color: var(--text-secondary);
-    }
-
-    .options-actions {
-      margin-top: 20px;
-      display: flex;
-      gap: 8px;
-      justify-content: flex-end;
-    }
-
-    .btn-primary {
-      background: var(--accent-color);
-      color: white;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: background 0.15s ease;
-    }
-
-    .btn-primary:hover {
-      background: var(--accent-hover);
-    }
-
-    .btn-primary:disabled {
-      background: #2c3b49;
-      color: #aaa;
-      cursor: not-allowed;
-    }
-
-    .btn-secondary {
-      background: var(--bg-secondary);
-      color: var(--text-primary);
-      border: 1px solid var(--border-color);
-      padding: 8px 16px;
-      border-radius: 6px;
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.15s ease;
-    }
-
-    .btn-secondary:hover {
-      background: var(--bg-tertiary);
-    }
-
-    .step-hidden {
-      display: none !important;
-    }
-
     .status-indicator {
       font-size: 11px;
       color: var(--text-secondary);
@@ -410,73 +263,11 @@
         <span id="status-text">Listening for selection...</span>
       </div>
       <button id="copy-btn" style="display: none;">Copy Code</button>
-      <button id="back-btn" class="btn-secondary" style="display: none;">Back to Options</button>
     </div>
   </div>
 
   <div class="main-content">
-    <!-- Step 1: Import Options -->
-    <div class="options-step" id="options_step">
-      <div class="options-card">
-        <div class="options-title">Import Options</div>
-        <div class="options-description">Choose what to import from your Figma selection</div>
-        
-        <div class="option-item checked" data-option="visualNodes">
-          <div class="option-checkbox">
-            <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2">
-              <path d="M2 6l3 3 5-5"/>
-            </svg>
-          </div>
-          <div class="option-content">
-            <div class="option-label">Visual Nodes</div>
-            <div class="option-hint">Import the selected layers and their visual properties</div>
-          </div>
-        </div>
-
-        <div class="option-item checked" data-option="components">
-          <div class="option-checkbox">
-            <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2">
-              <path d="M2 6l3 3 5-5"/>
-            </svg>
-          </div>
-          <div class="option-content">
-            <div class="option-label">Components</div>
-            <div class="option-hint">Import reusable component definitions</div>
-          </div>
-        </div>
-
-        <div class="option-item checked" data-option="variables">
-          <div class="option-checkbox">
-            <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2">
-              <path d="M2 6l3 3 5-5"/>
-            </svg>
-          </div>
-          <div class="option-content">
-            <div class="option-label">Variables</div>
-            <div class="option-hint">Import design tokens and variable collections</div>
-          </div>
-        </div>
-
-        <div class="option-item checked" data-option="styles">
-          <div class="option-checkbox">
-            <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2">
-              <path d="M2 6l3 3 5-5"/>
-            </svg>
-          </div>
-          <div class="option-content">
-            <div class="option-label">Styles</div>
-            <div class="option-hint">Import paint, text, and effect styles</div>
-          </div>
-        </div>
-
-        <div class="options-actions">
-          <button class="btn-primary" id="generate_btn">Generate Code</button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Step 2: Code Output -->
-    <div class="code-container step-hidden" id="code_container">
+    <div class="code-container" id="code_container">
       <div class="placeholder">
         <div class="placeholder-content">
           <div class="placeholder-icon">🎨</div>
@@ -498,56 +289,14 @@
     let currentFiles = [];
     let selectedFileIndex = 0;
     let currentFormat = 'dart';
-    let importOptions = {
-      components: true,
-      variables: true,
-      visualNodes: true,
-      styles: true
-    };
-    let currentStep = 'options'; // 'options' or 'code'
 
-    // Initialize option item click handlers
-    document.querySelectorAll('.option-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const option = item.dataset.option;
-        item.classList.toggle('checked');
-        importOptions[option] = item.classList.contains('checked');
-      });
-    });
-
-    // Generate button handler
-    document.getElementById('generate_btn').addEventListener('click', () => {
-      showCodeStep();
+    // Auto-generate code on load
+    window.addEventListener('load', () => {
+      updateStatus('Generating code...', false);
       parent.postMessage({ 
-        pluginMessage: { 
-          type: 'generate', 
-          options: importOptions 
-        } 
+        pluginMessage: { type: 'generate' } 
       }, '*');
     });
-
-    // Back button handler
-    document.getElementById('back-btn').addEventListener('click', () => {
-      showOptionsStep();
-    });
-
-    function showOptionsStep() {
-      currentStep = 'options';
-      document.getElementById('options_step').classList.remove('step-hidden');
-      document.getElementById('code_container').classList.add('step-hidden');
-      document.getElementById('sidebar').classList.add('hidden');
-      document.getElementById('copy-btn').style.display = 'none';
-      document.getElementById('back-btn').style.display = 'none';
-      updateStatus('Configure import options', false);
-    }
-
-    function showCodeStep() {
-      currentStep = 'code';
-      document.getElementById('options_step').classList.add('step-hidden');
-      document.getElementById('code_container').classList.remove('step-hidden');
-      document.getElementById('back-btn').style.display = 'block';
-      updateStatus('Generating code...', false);
-    }
 
     window.onmessage = (event) => {
       const msg = event.data.pluginMessage;
@@ -674,16 +423,13 @@
         // Update current format
         currentFormat = option.dataset.format;
         
-        // Request regeneration with new format (only if we're on the code step)
-        if (currentStep === 'code') {
-          parent.postMessage({ 
-            pluginMessage: { 
-              type: 'format-changed', 
-              format: currentFormat,
-              options: importOptions 
-            } 
-          }, '*');
-        }
+        // Request regeneration with new format
+        parent.postMessage({ 
+          pluginMessage: { 
+            type: 'format-changed', 
+            format: currentFormat
+          } 
+        }, '*');
       });
     });
   </script>

@@ -15,28 +15,31 @@ class FigmaPluginImporter extends Importer<FigmaImportOptions> {
 
   @override
   Future<Library> import(ImporterContext<FigmaImportOptions> context) async {
-    final options = context.options;
-
     final fileKey = figma_api.figma.fileKey ?? 'unknown';
     final fileName = figma_api.figma.root.name;
 
-    final components = options.components
-        ? await _importComponents()
-        : <Component>[];
-    final variableCollections = options.variables
-        ? await _importVariableCollections(context)
-        : <VariableCollection>[];
-    final visualNodes = options.visualNodes
-        ? await _importSelectedVisualNodes()
-        : <VisualNode>[];
+    // Check if the selected node is a component declaration
+    final selection = figma_api.figma.currentPage.selection.toDart;
+    final isComponentDeclaration =
+        selection.isNotEmpty &&
+        selection.every(
+          (node) => node.type == 'COMPONENT' || node.type == 'COMPONENT_SET',
+        );
 
-    // Import styles as a dedicated variable collection
-    if (options.styles) {
-      final stylesCollection = await _importStyles(context);
-      if (stylesCollection != null) {
-        variableCollections.add(stylesCollection);
-      }
+    // Always import styles and variables
+    final variableCollections = await _importVariableCollections(context);
+    final stylesCollection = await _importStyles(context);
+    if (stylesCollection != null) {
+      variableCollections.add(stylesCollection);
     }
+
+    // Import as component or visual node based on selection type
+    final components = isComponentDeclaration
+        ? await _importSelectedComponents()
+        : <Component>[];
+    final visualNodes = isComponentDeclaration
+        ? <VisualNode>[]
+        : await _importSelectedVisualNodes();
 
     return Library(
       name: fileName,
