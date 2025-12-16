@@ -42,7 +42,7 @@ VisualNode? _convertSceneNodeToVisualNode(figma_api.SceneNode node) {
       return VisualNode(text: _convertTextNode(node as figma_api.TextNode));
     case 'COMPONENT':
       return VisualNode(
-        component: _convertComponentNode(node as figma_api.ComponentNode),
+        frame: _convertComponentNode(node as figma_api.ComponentNode),
       );
     case 'INSTANCE':
       return VisualNode(
@@ -220,8 +220,8 @@ TextNode _convertTextNode(figma_api.TextNode node) {
   );
 }
 
-ComponentNode _convertComponentNode(figma_api.ComponentNode node) {
-  return ComponentNode(
+FrameNode _convertComponentNode(figma_api.ComponentNode node) {
+  return FrameNode(
     id: node.id,
     name: node.name,
     visible: node.visible,

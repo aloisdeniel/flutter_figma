@@ -8,13 +8,36 @@ Future<List<Component>> _importSelectedComponents() async {
   }
 
   final components = <Component>[];
+  final processedSetIds = <String>{};
+
   for (final node in selection) {
     if (node.type == 'COMPONENT_SET') {
       final componentSet = node as figma_api.ComponentSetNode;
-      components.add(await _createComponentFromSet(componentSet));
+      if (!processedSetIds.contains(componentSet.id)) {
+        processedSetIds.add(componentSet.id);
+        components.add(await _createComponentFromSet(componentSet));
+      }
     } else if (node.type == 'COMPONENT') {
       final component = node as figma_api.ComponentNode;
-      components.add(_createComponentFromNode(component));
+      // Check if the component's parent is a COMPONENT_SET
+      final parent = component.parent.dartify();
+      if (parent is Map && parent['type'] == 'COMPONENT_SET') {
+        // Import the whole parent component set instead
+        final parentId = parent['id'] as String;
+        if (!processedSetIds.contains(parentId)) {
+          processedSetIds.add(parentId);
+          final parentNode = await figma_api.figma
+              .getNodeByIdAsync(parentId)
+              .toDart;
+          if (parentNode != null) {
+            final componentSet = parentNode as figma_api.ComponentSetNode;
+            components.add(await _createComponentFromSet(componentSet));
+          }
+        }
+      } else {
+        // Standalone component - import as single-variant component
+        components.add(_createComponentFromNode(component));
+      }
     }
   }
 
@@ -69,6 +92,7 @@ Future<Component> _createComponentFromSet(
   final name = componentSet.name;
   final variantDefinitions = <ComponentVariantDefinition>[];
   final properties = <ComponentProperty>[];
+  final variants = <ComponentVariant>[];
 
   final children = componentSet.children;
 
@@ -80,9 +104,18 @@ Future<Component> _createComponentFromSet(
     final figProperties = componentSet.componentPropertyDefinitions.dartify();
 
     if (figProperties is! Map) {
+      // No properties defined, but still create variants with visual nodes
+      for (var i = 0; i < children.length; i++) {
+        final childNode = children[i] as figma_api.ComponentNode;
+        final visualNode = _convertSceneNodeToVisualNode(childNode);
+        variants.add(
+          ComponentVariant(id: i, name: childNode.name, root: visualNode),
+        );
+      }
       return Component(
         name: name,
         documentation: 'https://www.figma.com/file/${figma_api.figma.fileKey}',
+        variants: variants,
       );
     }
 
@@ -131,6 +164,27 @@ Future<Component> _createComponentFromSet(
         );
       }
     }
+
+    // Create variants with visual nodes for each child component
+    for (var i = 0; i < children.length; i++) {
+      final childNode = children[i] as figma_api.ComponentNode;
+      final visualNode = _convertSceneNodeToVisualNode(childNode);
+
+      // Parse variant values from component name (e.g., "Size=Large, State=Active")
+      final variantValues = _parseVariantValues(
+        childNode.name,
+        variantDefinitions,
+      );
+
+      variants.add(
+        ComponentVariant(
+          id: i,
+          name: childNode.name,
+          variants: variantValues,
+          root: visualNode,
+        ),
+      );
+    }
   }
 
   return Component(
@@ -138,14 +192,58 @@ Future<Component> _createComponentFromSet(
     documentation: 'https://www.figma.com/file/${figma_api.figma.fileKey}',
     variantDefinitions: variantDefinitions,
     properties: properties,
+    variants: variants,
   );
+}
+
+/// Parses variant values from a component name like "Size=Large, State=Active"
+List<ComponentVariantValue> _parseVariantValues(
+  String componentName,
+  List<ComponentVariantDefinition> variantDefinitions,
+) {
+  final variantValues = <ComponentVariantValue>[];
+
+  // Split by comma and parse key=value pairs
+  final pairs = componentName.split(',').map((s) => s.trim());
+
+  for (final pair in pairs) {
+    final parts = pair.split('=');
+    if (parts.length == 2) {
+      final key = parts[0].trim();
+      final value = parts[1].trim();
+
+      // Find matching variant definition
+      for (var i = 0; i < variantDefinitions.length; i++) {
+        final definition = variantDefinitions[i];
+        if (definition.name == key) {
+          // Find matching value definition
+          for (final valueDef in definition.values) {
+            if (valueDef.name == value) {
+              variantValues.add(
+                ComponentVariantValue(componentId: i, variantId: valueDef.id),
+              );
+              break;
+            }
+          }
+          break;
+        }
+      }
+    }
+  }
+
+  return variantValues;
 }
 
 Component _createComponentFromNode(figma_api.ComponentNode component) {
   final name = component.name;
+  final visualNode = _convertSceneNodeToVisualNode(component);
+
+  // Create a single variant with the component's visual tree
+  final variant = ComponentVariant(id: 0, name: name, root: visualNode);
 
   return Component(
     name: name,
     documentation: 'https://www.figma.com/file/${figma_api.figma.fileKey}',
+    variants: [variant],
   );
 }

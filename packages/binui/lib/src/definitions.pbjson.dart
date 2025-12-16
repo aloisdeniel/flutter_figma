@@ -4042,17 +4042,8 @@ const VisualNode$json = {
       '10': 'text'
     },
     {
-      '1': 'component',
-      '3': 8,
-      '5': 11,
-      '6': '.binui.ComponentNode',
-      '8': {},
-      '9': 0,
-      '10': 'component'
-    },
-    {
       '1': 'instance',
-      '3': 9,
+      '3': 8,
       '5': 11,
       '6': '.binui.InstanceNode',
       '8': {},
@@ -4061,7 +4052,7 @@ const VisualNode$json = {
     },
     {
       '1': 'booleanOperation',
-      '3': 10,
+      '3': 9,
       '5': 11,
       '6': '.binui.BooleanOperationNode',
       '8': {},
@@ -4081,11 +4072,10 @@ final $typed_data.Uint8List visualNodeDescriptor = $convert.base64Decode(
     'KAsyFC5iaW51aS5SZWN0YW5nbGVOb2RlQgBIAFIJcmVjdGFuZ2xlEi4KB2VsbGlwc2UYBCgLMh'
     'IuYmludWkuRWxsaXBzZU5vZGVCAEgAUgdlbGxpcHNlEiUKBGxpbmUYBSgLMg8uYmludWkuTGlu'
     'ZU5vZGVCAEgAUgRsaW5lEisKBnZlY3RvchgGKAsyES5iaW51aS5WZWN0b3JOb2RlQgBIAFIGdm'
-    'VjdG9yEiUKBHRleHQYBygLMg8uYmludWkuVGV4dE5vZGVCAEgAUgR0ZXh0EjQKCWNvbXBvbmVu'
-    'dBgIKAsyFC5iaW51aS5Db21wb25lbnROb2RlQgBIAFIJY29tcG9uZW50EjEKCGluc3RhbmNlGA'
-    'koCzITLmJpbnVpLkluc3RhbmNlTm9kZUIASABSCGluc3RhbmNlEkkKEGJvb2xlYW5PcGVyYXRp'
-    'b24YCigLMhsuYmludWkuQm9vbGVhbk9wZXJhdGlvbk5vZGVCAEgAUhBib29sZWFuT3BlcmF0aW'
-    '9uQgYKBHR5cGU=');
+    'VjdG9yEiUKBHRleHQYBygLMg8uYmludWkuVGV4dE5vZGVCAEgAUgR0ZXh0EjEKCGluc3RhbmNl'
+    'GAgoCzITLmJpbnVpLkluc3RhbmNlTm9kZUIASABSCGluc3RhbmNlEkkKEGJvb2xlYW5PcGVyYX'
+    'Rpb24YCSgLMhsuYmludWkuQm9vbGVhbk9wZXJhdGlvbk5vZGVCAEgAUhBib29sZWFuT3BlcmF0'
+    'aW9uQgYKBHR5cGU=');
 
 @$core.Deprecated('Use baseNodePropertiesDescriptor instead')
 const BaseNodeProperties$json = {
@@ -5347,181 +5337,6 @@ final $typed_data.Uint8List textNodeDescriptor = $convert.base64Decode(
     'bnMYHCABKAsyFi5iaW51aS5UZXh0TGlzdE9wdGlvbnNCAFILbGlzdE9wdGlvbnMSNgoJaHlwZX'
     'JsaW5rGB0gASgLMhYuYmludWkuSHlwZXJsaW5rVGFyZ2V0QgBSCWh5cGVybGluaxI2CgtsZWFk'
     'aW5nVHJpbRgeIAEoDjISLmJpbnVpLkxlYWRpbmdUcmltQgBSC2xlYWRpbmdUcmlt');
-
-@$core.Deprecated('Use componentNodeDescriptor instead')
-const ComponentNode$json = {
-  '1': 'ComponentNode',
-  '2': [
-    {'1': 'id', '3': 1, '5': 9, '8': {}, '10': 'id'},
-    {'1': 'name', '3': 2, '5': 9, '8': {}, '10': 'name'},
-    {'1': 'visible', '3': 3, '5': 8, '8': {}, '10': 'visible'},
-    {
-      '1': 'opacity',
-      '3': 4,
-      '5': 11,
-      '6': '.binui.Alias',
-      '8': {},
-      '10': 'opacity'
-    },
-    {
-      '1': 'blendMode',
-      '3': 5,
-      '5': 14,
-      '6': '.binui.BlendMode',
-      '8': {},
-      '10': 'blendMode'
-    },
-    {'1': 'x', '3': 6, '5': 1, '8': {}, '10': 'x'},
-    {'1': 'y', '3': 7, '5': 1, '8': {}, '10': 'y'},
-    {'1': 'width', '3': 8, '5': 1, '8': {}, '10': 'width'},
-    {'1': 'height', '3': 9, '5': 1, '8': {}, '10': 'height'},
-    {
-      '1': 'relativeTransform',
-      '3': 10,
-      '5': 11,
-      '6': '.binui.Transform',
-      '8': {},
-      '10': 'relativeTransform'
-    },
-    {
-      '1': 'absoluteTransform',
-      '3': 11,
-      '4': 1,
-      '5': 11,
-      '6': '.binui.Transform',
-      '8': {},
-      '10': 'absoluteTransform'
-    },
-    {
-      '1': 'absoluteBoundingBox',
-      '3': 12,
-      '4': 1,
-      '5': 11,
-      '6': '.binui.Rect',
-      '8': {},
-      '10': 'absoluteBoundingBox'
-    },
-    {'1': 'rotation', '3': 13, '5': 1, '8': {}, '10': 'rotation'},
-    {
-      '1': 'constraints',
-      '3': 14,
-      '4': 1,
-      '5': 11,
-      '6': '.binui.LayoutConstraints',
-      '8': {},
-      '10': 'constraints'
-    },
-    {
-      '1': 'layoutData',
-      '3': 15,
-      '4': 1,
-      '5': 11,
-      '6': '.binui.ChildLayoutData',
-      '8': {},
-      '10': 'layoutData'
-    },
-    {
-      '1': 'layout',
-      '3': 16,
-      '5': 11,
-      '6': '.binui.LayoutProperties',
-      '8': {},
-      '10': 'layout'
-    },
-    {
-      '1': 'size',
-      '3': 17,
-      '4': 1,
-      '5': 11,
-      '6': '.binui.ChildSize',
-      '8': {},
-      '10': 'size'
-    },
-    {
-      '1': 'fills',
-      '3': 18,
-      '4': 3,
-      '5': 11,
-      '6': '.binui.Paint',
-      '8': {},
-      '10': 'fills'
-    },
-    {
-      '1': 'strokes',
-      '3': 19,
-      '4': 3,
-      '5': 11,
-      '6': '.binui.Paint',
-      '8': {},
-      '10': 'strokes'
-    },
-    {
-      '1': 'effects',
-      '3': 20,
-      '4': 3,
-      '5': 11,
-      '6': '.binui.Effect',
-      '8': {},
-      '10': 'effects'
-    },
-    {
-      '1': 'stroke',
-      '3': 21,
-      '5': 11,
-      '6': '.binui.Stroke',
-      '8': {},
-      '10': 'stroke'
-    },
-    {
-      '1': 'cornerRadius',
-      '3': 22,
-      '5': 11,
-      '6': '.binui.CornerRadius',
-      '8': {},
-      '10': 'cornerRadius'
-    },
-    {'1': 'clipContent', '3': 23, '5': 8, '8': {}, '10': 'clipContent'},
-    {
-      '1': 'children',
-      '3': 24,
-      '4': 3,
-      '5': 11,
-      '6': '.binui.VisualNode',
-      '8': {},
-      '10': 'children'
-    },
-    {
-      '1': 'componentSetId',
-      '3': 25,
-      '4': 1,
-      '5': 9,
-      '8': {},
-      '10': 'componentSetId'
-    },
-  ],
-};
-
-/// Descriptor for `ComponentNode`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List componentNodeDescriptor = $convert.base64Decode(
-    'Cg1Db21wb25lbnROb2RlEg4KAmlkGAEoCUIAUgJpZBISCgRuYW1lGAIoCUIAUgRuYW1lEhgKB3'
-    'Zpc2libGUYAygIQgBSB3Zpc2libGUSJgoHb3BhY2l0eRgEKAsyDC5iaW51aS5BbGlhc0IAUgdv'
-    'cGFjaXR5Ei4KCWJsZW5kTW9kZRgFKA4yEC5iaW51aS5CbGVuZE1vZGVCAFIJYmxlbmRNb2RlEg'
-    'wKAXgYBigBQgBSAXgSDAoBeRgHKAFCAFIBeRIUCgV3aWR0aBgIKAFCAFIFd2lkdGgSFgoGaGVp'
-    'Z2h0GAkoAUIAUgZoZWlnaHQSPgoRcmVsYXRpdmVUcmFuc2Zvcm0YCigLMhAuYmludWkuVHJhbn'
-    'Nmb3JtQgBSEXJlbGF0aXZlVHJhbnNmb3JtEkAKEWFic29sdXRlVHJhbnNmb3JtGAsgASgLMhAu'
-    'YmludWkuVHJhbnNmb3JtQgBSEWFic29sdXRlVHJhbnNmb3JtEj8KE2Fic29sdXRlQm91bmRpbm'
-    'dCb3gYDCABKAsyCy5iaW51aS5SZWN0QgBSE2Fic29sdXRlQm91bmRpbmdCb3gSGgoIcm90YXRp'
-    'b24YDSgBQgBSCHJvdGF0aW9uEjwKC2NvbnN0cmFpbnRzGA4gASgLMhguYmludWkuTGF5b3V0Q2'
-    '9uc3RyYWludHNCAFILY29uc3RyYWludHMSOAoKbGF5b3V0RGF0YRgPIAEoCzIWLmJpbnVpLkNo'
-    'aWxkTGF5b3V0RGF0YUIAUgpsYXlvdXREYXRhEi8KBmxheW91dBgQKAsyFy5iaW51aS5MYXlvdX'
-    'RQcm9wZXJ0aWVzQgBSBmxheW91dBImCgRzaXplGBEgASgLMhAuYmludWkuQ2hpbGRTaXplQgBS'
-    'BHNpemUSJAoFZmlsbHMYEiADKAsyDC5iaW51aS5QYWludEIAUgVmaWxscxIoCgdzdHJva2VzGB'
-    'MgAygLMgwuYmludWkuUGFpbnRCAFIHc3Ryb2tlcxIpCgdlZmZlY3RzGBQgAygLMg0uYmludWku'
-    'RWZmZWN0QgBSB2VmZmVjdHMSJQoGc3Ryb2tlGBUoCzINLmJpbnVpLlN0cm9rZUIAUgZzdHJva2'
-    'USNwoMY29ybmVyUmFkaXVzGBYoCzITLmJpbnVpLkNvcm5lclJhZGl1c0IAUgxjb3JuZXJSYWRp'
-    'dXMSIAoLY2xpcENvbnRlbnQYFygIQgBSC2NsaXBDb250ZW50Ei8KCGNoaWxkcmVuGBggAygLMh'
-    'EuYmludWkuVmlzdWFsTm9kZUIAUghjaGlsZHJlbhIoCg5jb21wb25lbnRTZXRJZBgZIAEoCUIA'
-    'Ug5jb21wb25lbnRTZXRJZA==');
 
 @$core.Deprecated('Use instanceNodeDescriptor instead')
 const InstanceNode$json = {

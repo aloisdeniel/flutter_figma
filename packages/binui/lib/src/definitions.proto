@@ -1081,9 +1081,8 @@ message VisualNode {
     LineNode line = 5;
     VectorNode vector = 6;
     TextNode text = 7;
-    ComponentNode component = 8;
-    InstanceNode instance = 9;
-    BooleanOperationNode booleanOperation = 10;
+    InstanceNode instance = 8;
+    BooleanOperationNode booleanOperation = 9;
   }
 }
 
@@ -1368,47 +1367,6 @@ message TextNode {
   optional TextListOptions listOptions = 28;
   optional HyperlinkTarget hyperlink = 29;
   optional LeadingTrim leadingTrim = 30;
-}
-
-message ComponentNode {
-  // Base properties
-  string id = 1;
-  string name = 2;
-  bool visible = 3;
-  Alias opacity = 4;
-  BlendMode blendMode = 5;
-  
-  // Geometry
-  double x = 6;
-  double y = 7;
-  double width = 8;
-  double height = 9;
-  Transform relativeTransform = 10;
-  optional Transform absoluteTransform = 11;
-  optional Rect absoluteBoundingBox = 12;
-  double rotation = 13;
-  optional LayoutConstraints constraints = 14;
-  
-  // Child layout data
-  optional ChildLayoutData layoutData = 15;
-  
-  // Layout
-  LayoutProperties layout = 16;
-  optional ChildSize size = 17;
-  
-  // Decoration
-  repeated Paint fills = 18;
-  repeated Paint strokes = 19;
-  repeated Effect effects = 20;
-  Stroke stroke = 21;
-  CornerRadius cornerRadius = 22;
-  
-  // Frame-specific
-  bool clipContent = 23;
-  repeated VisualNode children = 24;
-  
-  // Component-specific
-  optional string componentSetId = 25;
 }
 
 message InstanceNode {

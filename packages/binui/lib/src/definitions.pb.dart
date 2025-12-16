@@ -9662,7 +9662,6 @@ enum VisualNode_Type {
   line,
   vector,
   text,
-  component,
   instance,
   booleanOperation,
   notSet
@@ -9677,7 +9676,6 @@ class VisualNode extends $pb.GeneratedMessage {
     LineNode? line,
     VectorNode? vector,
     TextNode? text,
-    ComponentNode? component,
     InstanceNode? instance,
     BooleanOperationNode? booleanOperation,
   }) {
@@ -9689,7 +9687,6 @@ class VisualNode extends $pb.GeneratedMessage {
     if (line != null) result.line = line;
     if (vector != null) result.vector = vector;
     if (text != null) result.text = text;
-    if (component != null) result.component = component;
     if (instance != null) result.instance = instance;
     if (booleanOperation != null) result.booleanOperation = booleanOperation;
     return result;
@@ -9712,16 +9709,15 @@ class VisualNode extends $pb.GeneratedMessage {
     5: VisualNode_Type.line,
     6: VisualNode_Type.vector,
     7: VisualNode_Type.text,
-    8: VisualNode_Type.component,
-    9: VisualNode_Type.instance,
-    10: VisualNode_Type.booleanOperation,
+    8: VisualNode_Type.instance,
+    9: VisualNode_Type.booleanOperation,
     0: VisualNode_Type.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
       _omitMessageNames ? '' : 'VisualNode',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'binui'),
       createEmptyInstance: create)
-    ..oo(0, [1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+    ..oo(0, [1, 2, 3, 4, 5, 6, 7, 8, 9])
     ..aOM<FrameNode>(1, _omitFieldNames ? '' : 'frame',
         subBuilder: FrameNode.create)
     ..aOM<GroupNode>(2, _omitFieldNames ? '' : 'group',
@@ -9736,11 +9732,9 @@ class VisualNode extends $pb.GeneratedMessage {
         subBuilder: VectorNode.create)
     ..aOM<TextNode>(7, _omitFieldNames ? '' : 'text',
         subBuilder: TextNode.create)
-    ..aOM<ComponentNode>(8, _omitFieldNames ? '' : 'component',
-        subBuilder: ComponentNode.create)
-    ..aOM<InstanceNode>(9, _omitFieldNames ? '' : 'instance',
+    ..aOM<InstanceNode>(8, _omitFieldNames ? '' : 'instance',
         subBuilder: InstanceNode.create)
-    ..aOM<BooleanOperationNode>(10, _omitFieldNames ? '' : 'booleanOperation',
+    ..aOM<BooleanOperationNode>(9, _omitFieldNames ? '' : 'booleanOperation',
         protoName: 'booleanOperation', subBuilder: BooleanOperationNode.create)
     ..hasRequiredFields = false;
 
@@ -9771,7 +9765,6 @@ class VisualNode extends $pb.GeneratedMessage {
   @$pb.TagNumber(7)
   @$pb.TagNumber(8)
   @$pb.TagNumber(9)
-  @$pb.TagNumber(10)
   VisualNode_Type whichType() => _VisualNode_TypeByTag[$_whichOneof(0)]!;
   @$pb.TagNumber(1)
   @$pb.TagNumber(2)
@@ -9782,7 +9775,6 @@ class VisualNode extends $pb.GeneratedMessage {
   @$pb.TagNumber(7)
   @$pb.TagNumber(8)
   @$pb.TagNumber(9)
-  @$pb.TagNumber(10)
   void clearType() => $_clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
@@ -9863,37 +9855,26 @@ class VisualNode extends $pb.GeneratedMessage {
   TextNode ensureText() => $_ensure(6);
 
   @$pb.TagNumber(8)
-  ComponentNode get component => $_getN(7);
+  InstanceNode get instance => $_getN(7);
   @$pb.TagNumber(8)
-  set component(ComponentNode value) => $_setField(8, value);
+  set instance(InstanceNode value) => $_setField(8, value);
   @$pb.TagNumber(8)
-  $core.bool hasComponent() => $_has(7);
+  $core.bool hasInstance() => $_has(7);
   @$pb.TagNumber(8)
-  void clearComponent() => $_clearField(8);
+  void clearInstance() => $_clearField(8);
   @$pb.TagNumber(8)
-  ComponentNode ensureComponent() => $_ensure(7);
+  InstanceNode ensureInstance() => $_ensure(7);
 
   @$pb.TagNumber(9)
-  InstanceNode get instance => $_getN(8);
+  BooleanOperationNode get booleanOperation => $_getN(8);
   @$pb.TagNumber(9)
-  set instance(InstanceNode value) => $_setField(9, value);
+  set booleanOperation(BooleanOperationNode value) => $_setField(9, value);
   @$pb.TagNumber(9)
-  $core.bool hasInstance() => $_has(8);
+  $core.bool hasBooleanOperation() => $_has(8);
   @$pb.TagNumber(9)
-  void clearInstance() => $_clearField(9);
+  void clearBooleanOperation() => $_clearField(9);
   @$pb.TagNumber(9)
-  InstanceNode ensureInstance() => $_ensure(8);
-
-  @$pb.TagNumber(10)
-  BooleanOperationNode get booleanOperation => $_getN(9);
-  @$pb.TagNumber(10)
-  set booleanOperation(BooleanOperationNode value) => $_setField(10, value);
-  @$pb.TagNumber(10)
-  $core.bool hasBooleanOperation() => $_has(9);
-  @$pb.TagNumber(10)
-  void clearBooleanOperation() => $_clearField(10);
-  @$pb.TagNumber(10)
-  BooleanOperationNode ensureBooleanOperation() => $_ensure(9);
+  BooleanOperationNode ensureBooleanOperation() => $_ensure(8);
 }
 
 class BaseNodeProperties extends $pb.GeneratedMessage {
@@ -12497,358 +12478,6 @@ class TextNode extends $pb.GeneratedMessage {
   $core.bool hasLeadingTrim() => $_has(29);
   @$pb.TagNumber(30)
   void clearLeadingTrim() => $_clearField(30);
-}
-
-class ComponentNode extends $pb.GeneratedMessage {
-  factory ComponentNode({
-    $core.String? id,
-    $core.String? name,
-    $core.bool? visible,
-    Alias? opacity,
-    BlendMode? blendMode,
-    $core.double? x,
-    $core.double? y,
-    $core.double? width,
-    $core.double? height,
-    Transform? relativeTransform,
-    Transform? absoluteTransform,
-    Rect? absoluteBoundingBox,
-    $core.double? rotation,
-    LayoutConstraints? constraints,
-    ChildLayoutData? layoutData,
-    LayoutProperties? layout,
-    ChildSize? size,
-    $core.Iterable<Paint>? fills,
-    $core.Iterable<Paint>? strokes,
-    $core.Iterable<Effect>? effects,
-    Stroke? stroke,
-    CornerRadius? cornerRadius,
-    $core.bool? clipContent,
-    $core.Iterable<VisualNode>? children,
-    $core.String? componentSetId,
-  }) {
-    final result = create();
-    if (id != null) result.id = id;
-    if (name != null) result.name = name;
-    if (visible != null) result.visible = visible;
-    if (opacity != null) result.opacity = opacity;
-    if (blendMode != null) result.blendMode = blendMode;
-    if (x != null) result.x = x;
-    if (y != null) result.y = y;
-    if (width != null) result.width = width;
-    if (height != null) result.height = height;
-    if (relativeTransform != null) result.relativeTransform = relativeTransform;
-    if (absoluteTransform != null) result.absoluteTransform = absoluteTransform;
-    if (absoluteBoundingBox != null)
-      result.absoluteBoundingBox = absoluteBoundingBox;
-    if (rotation != null) result.rotation = rotation;
-    if (constraints != null) result.constraints = constraints;
-    if (layoutData != null) result.layoutData = layoutData;
-    if (layout != null) result.layout = layout;
-    if (size != null) result.size = size;
-    if (fills != null) result.fills.addAll(fills);
-    if (strokes != null) result.strokes.addAll(strokes);
-    if (effects != null) result.effects.addAll(effects);
-    if (stroke != null) result.stroke = stroke;
-    if (cornerRadius != null) result.cornerRadius = cornerRadius;
-    if (clipContent != null) result.clipContent = clipContent;
-    if (children != null) result.children.addAll(children);
-    if (componentSetId != null) result.componentSetId = componentSetId;
-    return result;
-  }
-
-  ComponentNode._();
-
-  factory ComponentNode.fromBuffer($core.List<$core.int> data,
-          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(data, registry);
-  factory ComponentNode.fromJson($core.String json,
-          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromJson(json, registry);
-
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'ComponentNode',
-      package: const $pb.PackageName(_omitMessageNames ? '' : 'binui'),
-      createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'id')
-    ..aOS(2, _omitFieldNames ? '' : 'name')
-    ..aOB(3, _omitFieldNames ? '' : 'visible')
-    ..aOM<Alias>(4, _omitFieldNames ? '' : 'opacity', subBuilder: Alias.create)
-    ..aE<BlendMode>(5, _omitFieldNames ? '' : 'blendMode',
-        protoName: 'blendMode', enumValues: BlendMode.values)
-    ..aD(6, _omitFieldNames ? '' : 'x')
-    ..aD(7, _omitFieldNames ? '' : 'y')
-    ..aD(8, _omitFieldNames ? '' : 'width')
-    ..aD(9, _omitFieldNames ? '' : 'height')
-    ..aOM<Transform>(10, _omitFieldNames ? '' : 'relativeTransform',
-        protoName: 'relativeTransform', subBuilder: Transform.create)
-    ..aOM<Transform>(11, _omitFieldNames ? '' : 'absoluteTransform',
-        protoName: 'absoluteTransform', subBuilder: Transform.create)
-    ..aOM<Rect>(12, _omitFieldNames ? '' : 'absoluteBoundingBox',
-        protoName: 'absoluteBoundingBox', subBuilder: Rect.create)
-    ..aD(13, _omitFieldNames ? '' : 'rotation')
-    ..aOM<LayoutConstraints>(14, _omitFieldNames ? '' : 'constraints',
-        subBuilder: LayoutConstraints.create)
-    ..aOM<ChildLayoutData>(15, _omitFieldNames ? '' : 'layoutData',
-        protoName: 'layoutData', subBuilder: ChildLayoutData.create)
-    ..aOM<LayoutProperties>(16, _omitFieldNames ? '' : 'layout',
-        subBuilder: LayoutProperties.create)
-    ..aOM<ChildSize>(17, _omitFieldNames ? '' : 'size',
-        subBuilder: ChildSize.create)
-    ..pPM<Paint>(18, _omitFieldNames ? '' : 'fills', subBuilder: Paint.create)
-    ..pPM<Paint>(19, _omitFieldNames ? '' : 'strokes', subBuilder: Paint.create)
-    ..pPM<Effect>(20, _omitFieldNames ? '' : 'effects',
-        subBuilder: Effect.create)
-    ..aOM<Stroke>(21, _omitFieldNames ? '' : 'stroke',
-        subBuilder: Stroke.create)
-    ..aOM<CornerRadius>(22, _omitFieldNames ? '' : 'cornerRadius',
-        protoName: 'cornerRadius', subBuilder: CornerRadius.create)
-    ..aOB(23, _omitFieldNames ? '' : 'clipContent', protoName: 'clipContent')
-    ..pPM<VisualNode>(24, _omitFieldNames ? '' : 'children',
-        subBuilder: VisualNode.create)
-    ..aOS(25, _omitFieldNames ? '' : 'componentSetId',
-        protoName: 'componentSetId')
-    ..hasRequiredFields = false;
-
-  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  ComponentNode clone() => deepCopy();
-  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  ComponentNode copyWith(void Function(ComponentNode) updates) =>
-      super.copyWith((message) => updates(message as ComponentNode))
-          as ComponentNode;
-
-  @$core.override
-  $pb.BuilderInfo get info_ => _i;
-
-  @$core.pragma('dart2js:noInline')
-  static ComponentNode create() => ComponentNode._();
-  @$core.override
-  ComponentNode createEmptyInstance() => create();
-  @$core.pragma('dart2js:noInline')
-  static ComponentNode getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<ComponentNode>(create);
-  static ComponentNode? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get id => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set id($core.String value) => $_setString(0, value);
-  @$pb.TagNumber(1)
-  $core.bool hasId() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearId() => $_clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.String get name => $_getSZ(1);
-  @$pb.TagNumber(2)
-  set name($core.String value) => $_setString(1, value);
-  @$pb.TagNumber(2)
-  $core.bool hasName() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearName() => $_clearField(2);
-
-  @$pb.TagNumber(3)
-  $core.bool get visible => $_getBF(2);
-  @$pb.TagNumber(3)
-  set visible($core.bool value) => $_setBool(2, value);
-  @$pb.TagNumber(3)
-  $core.bool hasVisible() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearVisible() => $_clearField(3);
-
-  @$pb.TagNumber(4)
-  Alias get opacity => $_getN(3);
-  @$pb.TagNumber(4)
-  set opacity(Alias value) => $_setField(4, value);
-  @$pb.TagNumber(4)
-  $core.bool hasOpacity() => $_has(3);
-  @$pb.TagNumber(4)
-  void clearOpacity() => $_clearField(4);
-  @$pb.TagNumber(4)
-  Alias ensureOpacity() => $_ensure(3);
-
-  @$pb.TagNumber(5)
-  BlendMode get blendMode => $_getN(4);
-  @$pb.TagNumber(5)
-  set blendMode(BlendMode value) => $_setField(5, value);
-  @$pb.TagNumber(5)
-  $core.bool hasBlendMode() => $_has(4);
-  @$pb.TagNumber(5)
-  void clearBlendMode() => $_clearField(5);
-
-  @$pb.TagNumber(6)
-  $core.double get x => $_getN(5);
-  @$pb.TagNumber(6)
-  set x($core.double value) => $_setDouble(5, value);
-  @$pb.TagNumber(6)
-  $core.bool hasX() => $_has(5);
-  @$pb.TagNumber(6)
-  void clearX() => $_clearField(6);
-
-  @$pb.TagNumber(7)
-  $core.double get y => $_getN(6);
-  @$pb.TagNumber(7)
-  set y($core.double value) => $_setDouble(6, value);
-  @$pb.TagNumber(7)
-  $core.bool hasY() => $_has(6);
-  @$pb.TagNumber(7)
-  void clearY() => $_clearField(7);
-
-  @$pb.TagNumber(8)
-  $core.double get width => $_getN(7);
-  @$pb.TagNumber(8)
-  set width($core.double value) => $_setDouble(7, value);
-  @$pb.TagNumber(8)
-  $core.bool hasWidth() => $_has(7);
-  @$pb.TagNumber(8)
-  void clearWidth() => $_clearField(8);
-
-  @$pb.TagNumber(9)
-  $core.double get height => $_getN(8);
-  @$pb.TagNumber(9)
-  set height($core.double value) => $_setDouble(8, value);
-  @$pb.TagNumber(9)
-  $core.bool hasHeight() => $_has(8);
-  @$pb.TagNumber(9)
-  void clearHeight() => $_clearField(9);
-
-  @$pb.TagNumber(10)
-  Transform get relativeTransform => $_getN(9);
-  @$pb.TagNumber(10)
-  set relativeTransform(Transform value) => $_setField(10, value);
-  @$pb.TagNumber(10)
-  $core.bool hasRelativeTransform() => $_has(9);
-  @$pb.TagNumber(10)
-  void clearRelativeTransform() => $_clearField(10);
-  @$pb.TagNumber(10)
-  Transform ensureRelativeTransform() => $_ensure(9);
-
-  @$pb.TagNumber(11)
-  Transform get absoluteTransform => $_getN(10);
-  @$pb.TagNumber(11)
-  set absoluteTransform(Transform value) => $_setField(11, value);
-  @$pb.TagNumber(11)
-  $core.bool hasAbsoluteTransform() => $_has(10);
-  @$pb.TagNumber(11)
-  void clearAbsoluteTransform() => $_clearField(11);
-  @$pb.TagNumber(11)
-  Transform ensureAbsoluteTransform() => $_ensure(10);
-
-  @$pb.TagNumber(12)
-  Rect get absoluteBoundingBox => $_getN(11);
-  @$pb.TagNumber(12)
-  set absoluteBoundingBox(Rect value) => $_setField(12, value);
-  @$pb.TagNumber(12)
-  $core.bool hasAbsoluteBoundingBox() => $_has(11);
-  @$pb.TagNumber(12)
-  void clearAbsoluteBoundingBox() => $_clearField(12);
-  @$pb.TagNumber(12)
-  Rect ensureAbsoluteBoundingBox() => $_ensure(11);
-
-  @$pb.TagNumber(13)
-  $core.double get rotation => $_getN(12);
-  @$pb.TagNumber(13)
-  set rotation($core.double value) => $_setDouble(12, value);
-  @$pb.TagNumber(13)
-  $core.bool hasRotation() => $_has(12);
-  @$pb.TagNumber(13)
-  void clearRotation() => $_clearField(13);
-
-  @$pb.TagNumber(14)
-  LayoutConstraints get constraints => $_getN(13);
-  @$pb.TagNumber(14)
-  set constraints(LayoutConstraints value) => $_setField(14, value);
-  @$pb.TagNumber(14)
-  $core.bool hasConstraints() => $_has(13);
-  @$pb.TagNumber(14)
-  void clearConstraints() => $_clearField(14);
-  @$pb.TagNumber(14)
-  LayoutConstraints ensureConstraints() => $_ensure(13);
-
-  @$pb.TagNumber(15)
-  ChildLayoutData get layoutData => $_getN(14);
-  @$pb.TagNumber(15)
-  set layoutData(ChildLayoutData value) => $_setField(15, value);
-  @$pb.TagNumber(15)
-  $core.bool hasLayoutData() => $_has(14);
-  @$pb.TagNumber(15)
-  void clearLayoutData() => $_clearField(15);
-  @$pb.TagNumber(15)
-  ChildLayoutData ensureLayoutData() => $_ensure(14);
-
-  @$pb.TagNumber(16)
-  LayoutProperties get layout => $_getN(15);
-  @$pb.TagNumber(16)
-  set layout(LayoutProperties value) => $_setField(16, value);
-  @$pb.TagNumber(16)
-  $core.bool hasLayout() => $_has(15);
-  @$pb.TagNumber(16)
-  void clearLayout() => $_clearField(16);
-  @$pb.TagNumber(16)
-  LayoutProperties ensureLayout() => $_ensure(15);
-
-  @$pb.TagNumber(17)
-  ChildSize get size => $_getN(16);
-  @$pb.TagNumber(17)
-  set size(ChildSize value) => $_setField(17, value);
-  @$pb.TagNumber(17)
-  $core.bool hasSize() => $_has(16);
-  @$pb.TagNumber(17)
-  void clearSize() => $_clearField(17);
-  @$pb.TagNumber(17)
-  ChildSize ensureSize() => $_ensure(16);
-
-  @$pb.TagNumber(18)
-  $pb.PbList<Paint> get fills => $_getList(17);
-
-  @$pb.TagNumber(19)
-  $pb.PbList<Paint> get strokes => $_getList(18);
-
-  @$pb.TagNumber(20)
-  $pb.PbList<Effect> get effects => $_getList(19);
-
-  @$pb.TagNumber(21)
-  Stroke get stroke => $_getN(20);
-  @$pb.TagNumber(21)
-  set stroke(Stroke value) => $_setField(21, value);
-  @$pb.TagNumber(21)
-  $core.bool hasStroke() => $_has(20);
-  @$pb.TagNumber(21)
-  void clearStroke() => $_clearField(21);
-  @$pb.TagNumber(21)
-  Stroke ensureStroke() => $_ensure(20);
-
-  @$pb.TagNumber(22)
-  CornerRadius get cornerRadius => $_getN(21);
-  @$pb.TagNumber(22)
-  set cornerRadius(CornerRadius value) => $_setField(22, value);
-  @$pb.TagNumber(22)
-  $core.bool hasCornerRadius() => $_has(21);
-  @$pb.TagNumber(22)
-  void clearCornerRadius() => $_clearField(22);
-  @$pb.TagNumber(22)
-  CornerRadius ensureCornerRadius() => $_ensure(21);
-
-  @$pb.TagNumber(23)
-  $core.bool get clipContent => $_getBF(22);
-  @$pb.TagNumber(23)
-  set clipContent($core.bool value) => $_setBool(22, value);
-  @$pb.TagNumber(23)
-  $core.bool hasClipContent() => $_has(22);
-  @$pb.TagNumber(23)
-  void clearClipContent() => $_clearField(23);
-
-  @$pb.TagNumber(24)
-  $pb.PbList<VisualNode> get children => $_getList(23);
-
-  @$pb.TagNumber(25)
-  $core.String get componentSetId => $_getSZ(24);
-  @$pb.TagNumber(25)
-  set componentSetId($core.String value) => $_setString(24, value);
-  @$pb.TagNumber(25)
-  $core.bool hasComponentSetId() => $_has(24);
-  @$pb.TagNumber(25)
-  void clearComponentSetId() => $_clearField(25);
 }
 
 class InstanceNode extends $pb.GeneratedMessage {

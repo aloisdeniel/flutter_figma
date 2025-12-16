@@ -29,7 +29,7 @@ class FigmaVisualNodeWidget extends StatelessWidget {
             .map((child) => child.toFigmaFlutter())
             .toList(),
       ),
-      _ => Text('Unsupported node type'),
+      _ => Text('Unsupported node type ${node.whichType()}'),
     };
   }
 }

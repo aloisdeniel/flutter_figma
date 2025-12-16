@@ -24,10 +24,6 @@ class VisualNodeDartExporter {
       VisualNode_Type.line => _serializeLineNode(library, node.line),
       VisualNode_Type.vector => _serializeVectorNode(library, node.vector),
       VisualNode_Type.text => _serializeTextNode(library, node.text),
-      VisualNode_Type.component => _serializeComponentNode(
-        library,
-        node.component,
-      ),
       VisualNode_Type.instance => _serializeInstanceNode(
         library,
         node.instance,
@@ -279,14 +275,6 @@ class VisualNodeDartExporter {
         'fl.TextAlign.justify',
       _ => 'fl.TextAlign.left',
     };
-  }
-
-  String _serializeComponentNode(Library library, ComponentNode component) {
-    if (!component.visible) return 'fl.SizedBox.shrink()';
-
-    // Component nodes reference a component definition
-    final componentName = Naming.typeName(component.name);
-    return '$componentName()';
   }
 
   String _serializeInstanceNode(Library library, InstanceNode instance) {
