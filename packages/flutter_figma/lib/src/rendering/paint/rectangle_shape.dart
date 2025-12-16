@@ -82,47 +82,29 @@ extension FigmaRectangleShapeFlutterExtensions on FigmaRectangleShape {
     void Function(RRect value)? rRect,
     void Function(RSuperellipse value)? rSuperellipse,
   }) {
-    switch (this) {
-      case FigmaRectangleShape(
-          topLeftRadius: 0,
-          topRightRadius: 0,
-          bottomLeftRadius: 0,
-          bottomRightRadius: 0
-        ):
-        rect?.call(bounds);
-
-      case FigmaRectangleShape(
-          :final topRightRadius,
-          :final topLeftRadius,
-          :final bottomLeftRadius,
-          :final bottomRightRadius,
-          smoothing: <= 0,
-        ):
-        rRect?.call(
-          RRect.fromRectAndCorners(
-            bounds,
-            topLeft: Radius.circular(topLeftRadius),
-            topRight: Radius.circular(topRightRadius),
-            bottomRight: Radius.circular(bottomRightRadius),
-            bottomLeft: Radius.circular(bottomLeftRadius),
-          ),
-        );
-
-      case FigmaRectangleShape(
-          :final topRightRadius,
-          :final topLeftRadius,
-          :final bottomLeftRadius,
-          :final bottomRightRadius,
-        ):
-        rSuperellipse?.call(
-          RSuperellipse.fromRectAndCorners(
-            bounds,
-            topLeft: Radius.circular(topLeftRadius),
-            topRight: Radius.circular(topRightRadius),
-            bottomRight: Radius.circular(bottomRightRadius),
-            bottomLeft: Radius.circular(bottomLeftRadius),
-          ),
-        );
+    final cr = cornerRadius;
+    if (cr.isZero) {
+      rect?.call(bounds);
+    } else if (cr.smoothing <= 0) {
+      rRect?.call(
+        RRect.fromRectAndCorners(
+          bounds,
+          topLeft: Radius.circular(cr.topLeft),
+          topRight: Radius.circular(cr.topRight),
+          bottomRight: Radius.circular(cr.bottomRight),
+          bottomLeft: Radius.circular(cr.bottomLeft),
+        ),
+      );
+    } else {
+      rSuperellipse?.call(
+        RSuperellipse.fromRectAndCorners(
+          bounds,
+          topLeft: Radius.circular(cr.topLeft),
+          topRight: Radius.circular(cr.topRight),
+          bottomRight: Radius.circular(cr.bottomRight),
+          bottomLeft: Radius.circular(cr.bottomLeft),
+        ),
+      );
     }
   }
 }

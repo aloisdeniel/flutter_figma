@@ -25,7 +25,7 @@ void main() {
               ),
               children: [
                 FigmaDecorated(
-                  shape: FigmaRectangleShape(
+                  shape: FigmaRectangleShape.corners(
                     topLeftRadius: 15,
                     topRightRadius: 15,
                     bottomLeftRadius: 15,
@@ -42,7 +42,7 @@ void main() {
                   child: const SizedBox(width: 80, height: 80),
                 ),
                 FigmaDecorated(
-                  shape: FigmaRectangleShape(
+                  shape: FigmaRectangleShape.corners(
                     topLeftRadius: 15,
                     topRightRadius: 15,
                     bottomLeftRadius: 15,
@@ -69,7 +69,7 @@ void main() {
                   child: const SizedBox(width: 80, height: 80),
                 ),
                 FigmaDecorated(
-                  shape: FigmaRectangleShape(
+                  shape: FigmaRectangleShape.corners(
                     topLeftRadius: 15,
                     topRightRadius: 15,
                     bottomLeftRadius: 15,
@@ -118,7 +118,7 @@ void main() {
             child: FigmaTransformed(
               transform: FigmaTransform(cos, sin, 0, -sin, cos, 0),
               child: FigmaDecorated(
-                shape: FigmaRectangleShape(
+                shape: FigmaRectangleShape.corners(
                   topLeftRadius: 20,
                   topRightRadius: 20,
                   bottomLeftRadius: 20,
@@ -269,7 +269,7 @@ void main() {
                     FigmaTransformed(
                       transform: FigmaTransform(cos, sin, 0, -sin, cos, 0),
                       child: FigmaDecorated(
-                        shape: FigmaRectangleShape(
+                        shape: FigmaRectangleShape.corners(
                           topLeftRadius: 12,
                           topRightRadius: 12,
                           bottomLeftRadius: 12,
@@ -287,7 +287,7 @@ void main() {
                       ),
                     ),
                     FigmaDecorated(
-                      shape: FigmaRectangleShape(
+                      shape: FigmaRectangleShape.corners(
                         topLeftRadius: 12,
                         topRightRadius: 12,
                         bottomLeftRadius: 12,
@@ -318,7 +318,7 @@ void main() {
                 FigmaTransformed(
                   transform: const FigmaTransform(1.2, 0, 0, 0, 1.2, 0),
                   child: FigmaDecorated(
-                    shape: FigmaRectangleShape(
+                    shape: FigmaRectangleShape.corners(
                       topLeftRadius: 20,
                       topRightRadius: 20,
                       bottomLeftRadius: 20,
@@ -389,7 +389,7 @@ void main() {
           backgroundColor: Colors.white,
           body: Center(
             child: FigmaDecorated(
-              shape: FigmaRectangleShape(
+              shape: FigmaRectangleShape.corners(
                 topLeftRadius: 25,
                 topRightRadius: 25,
                 bottomLeftRadius: 25,
@@ -422,7 +422,7 @@ void main() {
                   ),
                   children: [
                     FigmaDecorated(
-                      shape: FigmaRectangleShape(
+                      shape: FigmaRectangleShape.corners(
                         topLeftRadius: 15,
                         topRightRadius: 15,
                         bottomLeftRadius: 15,
@@ -475,7 +475,7 @@ void main() {
                           transform:
                               FigmaTransform(cos30, sin30, 0, -sin30, cos30, 0),
                           child: FigmaDecorated(
-                            shape: FigmaRectangleShape(
+                            shape: FigmaRectangleShape.corners(
                               topLeftRadius: 10,
                               topRightRadius: 10,
                               bottomLeftRadius: 10,
@@ -495,7 +495,7 @@ void main() {
                         FigmaTransformed(
                           transform: const FigmaTransform(1, 0, 0, 0, -1, 0),
                           child: FigmaDecorated(
-                            shape: FigmaRectangleShape(
+                            shape: FigmaRectangleShape.corners(
                               topLeftRadius: 10,
                               topRightRadius: 10,
                               bottomLeftRadius: 10,
@@ -526,7 +526,7 @@ void main() {
                           ),
                         ),
                         FigmaDecorated(
-                          shape: FigmaRectangleShape(
+                          shape: FigmaRectangleShape.corners(
                             topLeftRadius: 30,
                             topRightRadius: 30,
                             bottomLeftRadius: 30,
@@ -559,7 +559,7 @@ void main() {
                       ],
                     ),
                     FigmaDecorated(
-                      shape: FigmaRectangleShape(
+                      shape: FigmaRectangleShape.corners(
                         topLeftRadius: 15,
                         topRightRadius: 15,
                         bottomLeftRadius: 15,
@@ -622,7 +622,7 @@ void main() {
             child: FigmaTransformed(
               transform: FigmaTransform(cos, sin, 0, -sin, cos, 0),
               child: FigmaDecorated(
-                shape: FigmaRectangleShape(
+                shape: FigmaRectangleShape.corners(
                   topLeftRadius: 20,
                   topRightRadius: 20,
                   bottomLeftRadius: 20,
@@ -667,7 +667,7 @@ void main() {
                         ),
                         children: [
                           FigmaDecorated(
-                            shape: FigmaRectangleShape(
+                            shape: FigmaRectangleShape.corners(
                               topLeftRadius: 25,
                               topRightRadius: 25,
                               bottomLeftRadius: 25,
@@ -735,7 +735,7 @@ void main() {
                             transform:
                                 const FigmaTransform(1.1, 0, 0, 0, 1.1, 0),
                             child: FigmaDecorated(
-                              shape: FigmaRectangleShape(
+                              shape: FigmaRectangleShape.corners(
                                 topLeftRadius: 8,
                                 topRightRadius: 8,
                                 bottomLeftRadius: 8,
@@ -753,7 +753,7 @@ void main() {
                             ),
                           ),
                           FigmaDecorated(
-                            shape: FigmaRectangleShape(
+                            shape: FigmaRectangleShape.corners(
                               topLeftRadius: 8,
                               topRightRadius: 8,
                               bottomLeftRadius: 8,
@@ -770,7 +770,7 @@ void main() {
                             child: const SizedBox(width: 30, height: 30),
                           ),
                           FigmaDecorated(
-                            shape: FigmaRectangleShape(
+                            shape: FigmaRectangleShape.corners(
                               topLeftRadius: 8,
                               topRightRadius: 8,
                               bottomLeftRadius: 8,
@@ -789,7 +789,7 @@ void main() {
                         ],
                       ),
                       FigmaDecorated(
-                        shape: FigmaRectangleShape(
+                        shape: FigmaRectangleShape.corners(
                           topLeftRadius: 12,
                           topRightRadius: 12,
                           bottomLeftRadius: 12,

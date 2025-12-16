@@ -12,6 +12,16 @@ extension LibraryExtension on Library {
   }
 
   Value_Type? resolveAliasType(Alias alias) {
+    final result = resolveAlias(alias);
+    if (result == null) print('Could not resolve alias type for alias: $alias');
+    return result?.whichType();
+  }
+
+  Value? resolveAlias(
+    Alias alias, {
+    Map<int, int>? variableCollectionVariants,
+    Map<int, Value>? properties,
+  }) {
     final result = () {
       switch (alias.whichType()) {
         case Alias_Type.variable:
@@ -19,24 +29,32 @@ extension LibraryExtension on Library {
             alias.variable.collectionId,
           );
           if (collection != null) {
+            final variantId = variableCollectionVariants != null
+                ? variableCollectionVariants[collection.id] ??
+                      collection.variants.first.id
+                : collection.variants.first.id;
             return collection.findVariantValue(
               alias.variable.variableId,
-              collection.variants.first.id,
+              variantId,
             );
           }
         case Alias_Type.constant:
           return alias.constant.value;
         case Alias_Type.property:
+          if (properties != null) {
+            if (properties.containsKey(alias.property.propertyId)) {
+              return properties[alias.property.propertyId];
+            }
+          }
           return alias.property.defaultValue;
         case Alias_Type.notSet:
           return null;
       }
     }();
     if (result?.whichType() == Value_Type.alias) {
-      return resolveAliasType(result!.alias);
+      return resolveAlias(result!.alias);
     }
-    if (result == null) print('Could not resolve alias type for alias: $alias');
-    return result?.whichType();
+    return result;
   }
 }
 

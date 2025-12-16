@@ -10,6 +10,7 @@ import 'package:binui/src/exporters/flutter/values/flutter/rect.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/size.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/text_style.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/transform2d.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/visual_node/visual_node.dart';
 import 'package:binui/src/utils/naming.dart';
 
 class FlutterValueExporter {
@@ -59,9 +60,9 @@ class FlutterValueExporter {
         "'${value.vectorGraphics.svg.data.replaceAll("'", "\\'")}'",
       Value_Type.version =>
         '(${value.version.major}, ${value.version.minor}, ${value.version.patch})',
-      Value_Type.visualNode => throw UnimplementedError(
-        'VisualNode serialization requires VisualNodeDartExporter',
-      ),
+      Value_Type.visualNode => VisualNodeDartExporter(
+        valueSerializer: this,
+      ).serialize(library, value.visualNode),
       Value_Type.notSet => throw Exception('Value type not set'),
     };
   }

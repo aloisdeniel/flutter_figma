@@ -1,3 +1,4 @@
+import 'package:flutter_figma/src/foundation/corner_radius.dart';
 import 'package:flutter_figma/src/foundation/text.dart';
 import 'package:flutter_figma/src/foundation/vector.dart';
 
@@ -7,54 +8,55 @@ sealed class FigmaShape {
 
 class FigmaRectangleShape extends FigmaShape {
   const FigmaRectangleShape({
-    this.topLeftRadius = 0.0,
-    this.topRightRadius = 0.0,
-    this.bottomLeftRadius = 0.0,
-    this.bottomRightRadius = 0.0,
-    this.smoothing = 0.0,
+    this.cornerRadius = CornerRadius.zero,
   });
 
-  const FigmaRectangleShape.all(
-    double radius, {
-    this.smoothing = 0.0,
-  })  : topLeftRadius = radius,
-        topRightRadius = radius,
-        bottomLeftRadius = radius,
-        bottomRightRadius = radius;
+  /// Creates a rectangle shape with individual corner radius values.
+  FigmaRectangleShape.corners({
+    double topLeftRadius = 0.0,
+    double topRightRadius = 0.0,
+    double bottomLeftRadius = 0.0,
+    double bottomRightRadius = 0.0,
+    double smoothing = 0.0,
+  }) : cornerRadius = CornerRadius(
+          topLeft: topLeftRadius,
+          topRight: topRightRadius,
+          bottomLeft: bottomLeftRadius,
+          bottomRight: bottomRightRadius,
+          smoothing: smoothing,
+        );
 
-  const FigmaRectangleShape.symmetric({
+  /// Creates a rectangle shape where all corners have the same radius.
+  FigmaRectangleShape.all(
+    double radius, {
+    double smoothing = 0.0,
+  }) : cornerRadius = CornerRadius.all(radius, smoothing: smoothing);
+
+  /// Creates a rectangle shape with symmetric top and bottom radii.
+  FigmaRectangleShape.symmetric({
     double topRadius = 0.0,
     double bottomRadius = 0.0,
-    this.smoothing = 0.0,
-  })  : topLeftRadius = topRadius,
-        topRightRadius = topRadius,
-        bottomLeftRadius = bottomRadius,
-        bottomRightRadius = bottomRadius;
+    double smoothing = 0.0,
+  }) : cornerRadius = CornerRadius.symmetric(
+          topRadius: topRadius,
+          bottomRadius: bottomRadius,
+          smoothing: smoothing,
+        );
 
-  final double topLeftRadius;
-  final double topRightRadius;
-  final double bottomLeftRadius;
-  final double bottomRightRadius;
-  final double smoothing;
+  final CornerRadius cornerRadius;
 
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is FigmaRectangleShape &&
           runtimeType == other.runtimeType &&
-          topLeftRadius == other.topLeftRadius &&
-          topRightRadius == other.topRightRadius &&
-          bottomLeftRadius == other.bottomLeftRadius &&
-          bottomRightRadius == other.bottomRightRadius &&
-          smoothing == other.smoothing;
+          cornerRadius == other.cornerRadius;
 
   @override
-  int get hashCode => Object.hash(topLeftRadius, topRightRadius,
-      bottomLeftRadius, bottomRightRadius, smoothing);
+  int get hashCode => cornerRadius.hashCode;
 
   @override
-  String toString() =>
-      'FigmaRectangleShape(topLeftRadius: $topLeftRadius, topRightRadius: $topRightRadius, bottomLeftRadius: $bottomLeftRadius, bottomRightRadius: $bottomRightRadius, smoothing: $smoothing)';
+  String toString() => 'FigmaRectangleShape(cornerRadius: $cornerRadius)';
 }
 
 class FigmaVectorPathsShape extends FigmaShape {

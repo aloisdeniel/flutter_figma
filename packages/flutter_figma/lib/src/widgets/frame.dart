@@ -11,12 +11,13 @@ class FigmaFrame extends StatelessWidget {
     super.key,
     required this.layout,
     this.size,
-    this.decoration,
+    this.fills = const [],
+    this.strokes = const [],
     this.effects = const [],
     this.opacity = 1.0,
     this.visible = true,
     this.blendMode = BlendMode.passThrough,
-    this.shape = const FigmaRectangleShape(),
+    this.cornerRadius = const CornerRadius.all(0),
     this.stroke = const FigmaStroke.uniform(weight: 1),
     this.clipContent = true,
     this.children = const [],
@@ -24,9 +25,10 @@ class FigmaFrame extends StatelessWidget {
 
   final ChildSize? size;
   final FigmaLayoutProperties layout;
-  final FigmaRectangleShape shape;
+  final CornerRadius cornerRadius;
   final FigmaStroke stroke;
-  final FigmaDecoration? decoration;
+  final List<FigmaPaint> fills;
+  final List<FigmaPaint> strokes;
   final List<FigmaEffect> effects;
   final double opacity;
   final bool visible;
@@ -40,6 +42,8 @@ class FigmaFrame extends StatelessWidget {
       return const SizedBox.shrink();
     }
 
+    final shape = FigmaRectangleShape(cornerRadius: cornerRadius);
+
     Widget result = FigmaLayout(
       layout: layout,
       children: children,
@@ -52,15 +56,18 @@ class FigmaFrame extends StatelessWidget {
       );
     }
 
-    if (decoration case final decoration?) {
+    if (fills.isNotEmpty || strokes.isNotEmpty) {
       result = FigmaDecorated(
-        decoration: decoration,
+        decoration: FigmaDecoration(
+          fills: fills,
+          strokes: strokes,
+        ),
         shape: shape,
         child: result,
       );
     }
 
-    if (effects.isNotEmpty && decoration != null) {
+    if (effects.isNotEmpty && fills.isNotEmpty) {
       result = FigmaFiltered(
         effects: effects,
         shape: shape,

@@ -46,7 +46,7 @@ void main() {
               width: 200,
               height: 150,
               child: FigmaDecorated(
-                shape: FigmaRectangleShape(
+                shape: FigmaRectangleShape.corners(
                   topLeftRadius: 20,
                   topRightRadius: 20,
                   bottomLeftRadius: 20,
@@ -83,7 +83,7 @@ void main() {
               width: 200,
               height: 150,
               child: FigmaDecorated(
-                shape: FigmaRectangleShape(
+                shape: FigmaRectangleShape.corners(
                   topLeftRadius: 40,
                   topRightRadius: 10,
                   bottomLeftRadius: 10,
@@ -122,7 +122,7 @@ void main() {
                   width: 150,
                   height: 150,
                   child: FigmaDecorated(
-                    shape: FigmaRectangleShape(
+                    shape: FigmaRectangleShape.corners(
                       topLeftRadius: 40,
                       topRightRadius: 40,
                       bottomLeftRadius: 40,
@@ -143,7 +143,7 @@ void main() {
                   width: 150,
                   height: 150,
                   child: FigmaDecorated(
-                    shape: FigmaRectangleShape(
+                    shape: FigmaRectangleShape.corners(
                       topLeftRadius: 40,
                       topRightRadius: 40,
                       bottomLeftRadius: 40,
@@ -183,7 +183,7 @@ void main() {
               width: 200,
               height: 150,
               child: FigmaDecorated(
-                shape: FigmaRectangleShape(
+                shape: FigmaRectangleShape.corners(
                   topLeftRadius: 15,
                   topRightRadius: 15,
                   bottomLeftRadius: 15,
@@ -225,7 +225,7 @@ void main() {
               width: 200,
               height: 150,
               child: FigmaDecorated(
-                shape: FigmaRectangleShape(
+                shape: FigmaRectangleShape.corners(
                   topLeftRadius: 20,
                   topRightRadius: 20,
                   bottomLeftRadius: 20,
@@ -312,7 +312,7 @@ void main() {
               width: 200,
               height: 200,
               child: FigmaDecorated(
-                shape: FigmaRectangleShape(
+                shape: FigmaRectangleShape.corners(
                   topLeftRadius: 100,
                   topRightRadius: 100,
                   bottomLeftRadius: 100,
@@ -366,7 +366,7 @@ void main() {
               width: 200,
               height: 150,
               child: FigmaDecorated(
-                shape: FigmaRectangleShape(
+                shape: FigmaRectangleShape.corners(
                   topLeftRadius: 20,
                   topRightRadius: 20,
                   bottomLeftRadius: 20,
@@ -411,7 +411,7 @@ void main() {
                   width: 100,
                   height: 100,
                   child: FigmaDecorated(
-                    shape: FigmaRectangleShape(
+                    shape: FigmaRectangleShape.corners(
                       topLeftRadius: 15,
                       topRightRadius: 15,
                       bottomLeftRadius: 15,
@@ -431,7 +431,7 @@ void main() {
                   width: 100,
                   height: 100,
                   child: FigmaDecorated(
-                    shape: FigmaRectangleShape(
+                    shape: FigmaRectangleShape.corners(
                       topLeftRadius: 15,
                       topRightRadius: 15,
                       bottomLeftRadius: 15,
@@ -451,7 +451,7 @@ void main() {
                   width: 100,
                   height: 100,
                   child: FigmaDecorated(
-                    shape: FigmaRectangleShape(
+                    shape: FigmaRectangleShape.corners(
                       topLeftRadius: 15,
                       topRightRadius: 15,
                       bottomLeftRadius: 15,
@@ -490,7 +490,7 @@ void main() {
               width: 250,
               height: 100,
               child: FigmaDecorated(
-                shape: FigmaRectangleShape(
+                shape: FigmaRectangleShape.corners(
                   topLeftRadius: 25,
                   topRightRadius: 25,
                   bottomLeftRadius: 25,

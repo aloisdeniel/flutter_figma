@@ -22,7 +22,7 @@ class CombinedExample extends StatelessWidget implements Example {
         children: [
           // Dashboard Card with gradient header
           FigmaDecorated(
-            shape: const FigmaRectangleShape.all(20),
+            shape: FigmaRectangleShape.all(20),
             decoration: const FigmaDecoration(
               fills: [SolidPaint(color: Color.fromRGBO(255, 255, 255, 1.0))],
             ),
@@ -79,7 +79,7 @@ class CombinedExample extends StatelessWidget implements Example {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 24.0),
                   child: FigmaDecorated(
-                    shape: const FigmaRectangleShape.all(16),
+                    shape: FigmaRectangleShape.all(16),
                     decoration: const FigmaDecoration(
                       fills: [
                         SolidPaint(color: Color.fromRGBO(249, 250, 251, 1.0)),
@@ -166,7 +166,7 @@ class ExampleStatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FigmaDecorated(
-      shape: const FigmaRectangleShape.all(12),
+      shape: FigmaRectangleShape.all(12),
       decoration: FigmaDecoration(
         fills: [SolidPaint(color: color.withValues(alpha: 0.1))],
       ),
@@ -219,7 +219,7 @@ class ExampleRotatedBoxes extends StatelessWidget {
         FigmaTransformed(
           transform: const FigmaTransform(0.866, 0.5, 0, -0.5, 0.866, 0),
           child: FigmaDecorated(
-            shape: const FigmaRectangleShape.all(12),
+            shape: FigmaRectangleShape.all(12),
             decoration: const FigmaDecoration(
               fills: [SolidPaint(color: Color.fromRGBO(239, 68, 68, 1.0))],
             ),
@@ -227,7 +227,7 @@ class ExampleRotatedBoxes extends StatelessWidget {
           ),
         ),
         FigmaDecorated(
-          shape: const FigmaRectangleShape.all(12),
+          shape: FigmaRectangleShape.all(12),
           decoration: const FigmaDecoration(
             fills: [
               RadialGradientPaint(
@@ -249,7 +249,7 @@ class ExampleRotatedBoxes extends StatelessWidget {
         FigmaTransformed(
           transform: const FigmaTransform(1, 0, 0, 0, -1, 0),
           child: FigmaDecorated(
-            shape: const FigmaRectangleShape.all(12),
+            shape: FigmaRectangleShape.all(12),
             decoration: const FigmaDecoration(
               fills: [
                 AngularGradientPaint(
@@ -284,7 +284,7 @@ class ExampleHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FigmaDecorated(
-      shape: const FigmaRectangleShape(
+      shape: FigmaRectangleShape.corners(
         topLeftRadius: 20,
         topRightRadius: 20,
         bottomLeftRadius: 0,
@@ -387,7 +387,7 @@ class ExampleButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FigmaDecorated(
-      shape: const FigmaRectangleShape.all(8),
+      shape: FigmaRectangleShape.all(8),
       stroke: isPrimary
           ? const FigmaStroke.uniform(weight: 0)
           : const FigmaStroke.uniform(weight: 2),

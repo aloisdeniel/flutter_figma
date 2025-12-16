@@ -8,37 +8,28 @@ extension FlutterFigmaPathExtension on FigmaShape {
     var path = ui.Path();
 
     switch (this) {
-      case FigmaRectangleShape(
-          :final topLeftRadius,
-          :final topRightRadius,
-          :final bottomLeftRadius,
-          :final bottomRightRadius,
-          :final smoothing
-        ):
-        if (topLeftRadius == 0 &&
-            topRightRadius == 0 &&
-            bottomLeftRadius == 0 &&
-            bottomRightRadius == 0) {
+      case FigmaRectangleShape(:final cornerRadius):
+        if (cornerRadius.isZero) {
           path.addRect(rect);
-        } else if (smoothing > 0) {
+        } else if (cornerRadius.smoothing > 0) {
           // FIXME Smoothing isn't dynamic for performance reason
           path.addRSuperellipse(
             RSuperellipse.fromRectAndCorners(
               rect,
-              topLeft: Radius.circular(topLeftRadius),
-              topRight: Radius.circular(topRightRadius),
-              bottomRight: Radius.circular(bottomRightRadius),
-              bottomLeft: Radius.circular(bottomLeftRadius),
+              topLeft: Radius.circular(cornerRadius.topLeft),
+              topRight: Radius.circular(cornerRadius.topRight),
+              bottomRight: Radius.circular(cornerRadius.bottomRight),
+              bottomLeft: Radius.circular(cornerRadius.bottomLeft),
             ),
           );
         } else {
           path.addRRect(
             RRect.fromRectAndCorners(
               rect,
-              topLeft: Radius.circular(topLeftRadius),
-              topRight: Radius.circular(topRightRadius),
-              bottomRight: Radius.circular(bottomRightRadius),
-              bottomLeft: Radius.circular(bottomLeftRadius),
+              topLeft: Radius.circular(cornerRadius.topLeft),
+              topRight: Radius.circular(cornerRadius.topRight),
+              bottomRight: Radius.circular(cornerRadius.bottomRight),
+              bottomLeft: Radius.circular(cornerRadius.bottomLeft),
             ),
           );
         }
@@ -57,37 +48,28 @@ extension FlutterFigmaPathExtension on FigmaShape {
     var path = ui.Path();
 
     switch (this) {
-      case FigmaRectangleShape(
-          :final topLeftRadius,
-          :final topRightRadius,
-          :final bottomLeftRadius,
-          :final bottomRightRadius,
-          :final smoothing
-        ):
-        if (topLeftRadius == 0 &&
-            topRightRadius == 0 &&
-            bottomLeftRadius == 0 &&
-            bottomRightRadius == 0) {
+      case FigmaRectangleShape(:final cornerRadius):
+        if (cornerRadius.isZero) {
           path.addRect(rect);
-        } else if (smoothing > 0) {
+        } else if (cornerRadius.smoothing > 0) {
           // FIXME Smoothing isn't dynamic for performance reason
           path.addRSuperellipse(
             RSuperellipse.fromRectAndCorners(
               rect,
-              topLeft: Radius.circular(topLeftRadius),
-              topRight: Radius.circular(topRightRadius),
-              bottomRight: Radius.circular(bottomRightRadius),
-              bottomLeft: Radius.circular(bottomLeftRadius),
+              topLeft: Radius.circular(cornerRadius.topLeft),
+              topRight: Radius.circular(cornerRadius.topRight),
+              bottomRight: Radius.circular(cornerRadius.bottomRight),
+              bottomLeft: Radius.circular(cornerRadius.bottomLeft),
             ),
           );
         } else {
           path.addRRect(
             RRect.fromRectAndCorners(
               rect,
-              topLeft: Radius.circular(topLeftRadius),
-              topRight: Radius.circular(topRightRadius),
-              bottomRight: Radius.circular(bottomRightRadius),
-              bottomLeft: Radius.circular(bottomLeftRadius),
+              topLeft: Radius.circular(cornerRadius.topLeft),
+              topRight: Radius.circular(cornerRadius.topRight),
+              bottomRight: Radius.circular(cornerRadius.bottomRight),
+              bottomLeft: Radius.circular(cornerRadius.bottomLeft),
             ),
           );
         }
