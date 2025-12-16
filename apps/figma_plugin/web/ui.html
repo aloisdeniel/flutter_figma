@@ -4,6 +4,20 @@
   <meta charset="utf-8">
   <title>Flutter Figma Code Generator</title>
   <style>
+    :root {
+      --bg-primary: #1e1e1e;
+      --bg-secondary: #2c2c2c;
+      --bg-tertiary: #383838;
+      --text-primary: #e0e0e0;
+      --text-secondary: #a0a0a0;
+      --text-muted: #757575;
+      --border-color: #444444;
+      --accent-color: #18a0fb;
+      --accent-hover: #0d8ee0;
+      --item-hover: #383838;
+      --item-selected: #2c3b49;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -15,8 +29,8 @@
       height: 100vh;
       display: flex;
       flex-direction: column;
-      background: #ffffff;
-      color: #333;
+      background: var(--bg-primary);
+      color: var(--text-primary);
       overflow: hidden;
     }
 
@@ -28,17 +42,17 @@
 
     .header {
       padding: 12px 16px;
-      border-bottom: 1px solid #e5e5e5;
+      border-bottom: 1px solid var(--border-color);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: #f8f8f8;
+      background: var(--bg-secondary);
     }
 
     .header h1 {
       font-size: 13px;
       font-weight: 600;
-      color: #333;
+      color: var(--text-primary);
     }
 
     .header-actions {
@@ -50,8 +64,8 @@
     .format-picker {
       display: flex;
       gap: 4px;
-      background: white;
-      border: 1px solid #d1d1d1;
+      background: var(--bg-primary);
+      border: 1px solid var(--border-color);
       border-radius: 4px;
       padding: 2px;
     }
@@ -64,52 +78,52 @@
       cursor: pointer;
       font-size: 11px;
       font-weight: 500;
-      color: #666;
+      color: var(--text-secondary);
       transition: all 0.15s ease;
     }
 
     .format-option:hover {
-      background: #f0f0f0;
-      color: #333;
+      background: var(--bg-tertiary);
+      color: var(--text-primary);
     }
 
     .format-option.active {
-      background: #18a0fb;
+      background: var(--accent-color);
       color: white;
     }
 
     button {
       padding: 6px 12px;
-      border: 1px solid #d1d1d1;
+      border: 1px solid var(--border-color);
       border-radius: 4px;
-      background: white;
+      background: var(--bg-secondary);
       cursor: pointer;
       font-size: 11px;
       font-weight: 500;
-      color: #333;
+      color: var(--text-primary);
       transition: all 0.15s ease;
     }
 
     button:hover {
-      background: #f0f0f0;
-      border-color: #b8b8b8;
+      background: var(--bg-tertiary);
+      border-color: #666;
     }
 
     button:active {
-      background: #e8e8e8;
+      background: #444;
     }
 
     .code-container {
       flex: 1;
       overflow: auto;
       padding: 16px;
-      background: #fafafa;
+      background: var(--bg-primary);
     }
 
     .sidebar {
       width: 250px;
-      border-left: 1px solid #e5e5e5;
-      background: #f8f8f8;
+      border-left: 1px solid var(--border-color);
+      background: var(--bg-secondary);
       display: flex;
       flex-direction: column;
       overflow: hidden;
@@ -117,10 +131,10 @@
 
     .sidebar-header {
       padding: 12px 16px;
-      border-bottom: 1px solid #e5e5e5;
+      border-bottom: 1px solid var(--border-color);
       font-size: 11px;
       font-weight: 600;
-      color: #666;
+      color: var(--text-secondary);
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -138,17 +152,19 @@
       transition: background 0.1s ease;
       border-left: 3px solid transparent;
       word-break: break-word;
+      color: var(--text-secondary);
     }
 
     .file-item:hover {
-      background: #ececec;
+      background: var(--item-hover);
+      color: var(--text-primary);
     }
 
     .file-item.selected {
-      background: #e3f2fd;
-      border-left-color: #18a0fb;
+      background: var(--item-selected);
+      border-left-color: var(--accent-color);
       font-weight: 500;
-      color: #18a0fb;
+      color: var(--accent-color);
     }
 
     .sidebar.hidden {
@@ -162,11 +178,12 @@
       line-height: 1.6;
       white-space: pre-wrap;
       word-wrap: break-word;
-      background: white;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
       padding: 16px;
       border-radius: 6px;
-      border: 1px solid #e5e5e5;
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.04);
+      border: 1px solid var(--border-color);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
     }
 
     .placeholder {
@@ -174,7 +191,7 @@
       align-items: center;
       justify-content: center;
       height: 100%;
-      color: #999;
+      color: var(--text-muted);
       font-size: 13px;
       text-align: center;
       padding: 32px;
@@ -194,7 +211,7 @@
       position: fixed;
       top: 16px;
       right: 16px;
-      background: #18a0fb;
+      background: var(--accent-color);
       color: white;
       padding: 8px 16px;
       border-radius: 4px;
@@ -203,7 +220,7 @@
       opacity: 0;
       transition: opacity 0.2s ease;
       pointer-events: none;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
     }
 
     .copy-notification.show {
@@ -221,25 +238,25 @@
     }
 
     .options-card {
-      background: white;
-      border: 1px solid #e5e5e5;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
       border-radius: 8px;
       padding: 24px;
       max-width: 400px;
       width: 100%;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .options-title {
       font-size: 15px;
       font-weight: 600;
-      color: #333;
+      color: var(--text-primary);
       margin-bottom: 8px;
     }
 
     .options-description {
       font-size: 12px;
-      color: #666;
+      color: var(--text-secondary);
       margin-bottom: 20px;
     }
 
@@ -247,7 +264,7 @@
       display: flex;
       align-items: flex-start;
       padding: 12px;
-      border: 1px solid #e5e5e5;
+      border: 1px solid var(--border-color);
       border-radius: 6px;
       margin-bottom: 8px;
       cursor: pointer;
@@ -255,19 +272,19 @@
     }
 
     .option-item:hover {
-      background: #f8f8f8;
-      border-color: #d1d1d1;
+      background: var(--bg-tertiary);
+      border-color: #666;
     }
 
     .option-item.checked {
-      background: #e8f4fd;
-      border-color: #18a0fb;
+      background: var(--item-selected);
+      border-color: var(--accent-color);
     }
 
     .option-checkbox {
       width: 18px;
       height: 18px;
-      border: 2px solid #d1d1d1;
+      border: 2px solid var(--text-secondary);
       border-radius: 4px;
       margin-right: 12px;
       flex-shrink: 0;
@@ -278,8 +295,8 @@
     }
 
     .option-item.checked .option-checkbox {
-      background: #18a0fb;
-      border-color: #18a0fb;
+      background: var(--accent-color);
+      border-color: var(--accent-color);
     }
 
     .option-checkbox svg {
@@ -299,13 +316,13 @@
     .option-label {
       font-size: 13px;
       font-weight: 500;
-      color: #333;
+      color: var(--text-primary);
       margin-bottom: 2px;
     }
 
     .option-hint {
       font-size: 11px;
-      color: #888;
+      color: var(--text-secondary);
     }
 
     .options-actions {
@@ -316,7 +333,7 @@
     }
 
     .btn-primary {
-      background: #18a0fb;
+      background: var(--accent-color);
       color: white;
       border: none;
       padding: 8px 16px;
@@ -328,18 +345,19 @@
     }
 
     .btn-primary:hover {
-      background: #0d8ee0;
+      background: var(--accent-hover);
     }
 
     .btn-primary:disabled {
-      background: #a0d4f7;
+      background: #2c3b49;
+      color: #aaa;
       cursor: not-allowed;
     }
 
     .btn-secondary {
-      background: white;
-      color: #333;
-      border: 1px solid #d1d1d1;
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border-color);
       padding: 8px 16px;
       border-radius: 6px;
       font-size: 13px;
@@ -349,7 +367,7 @@
     }
 
     .btn-secondary:hover {
-      background: #f0f0f0;
+      background: var(--bg-tertiary);
     }
 
     .step-hidden {
@@ -358,7 +376,7 @@
 
     .status-indicator {
       font-size: 11px;
-      color: #666;
+      color: var(--text-secondary);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -368,7 +386,7 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: #18a0fb;
+      background: var(--accent-color);
       animation: pulse 2s infinite;
     }
 
