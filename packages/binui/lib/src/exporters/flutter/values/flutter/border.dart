@@ -1,5 +1,4 @@
 import 'package:binui/src/definitions.dart';
-import 'package:binui/src/exporters/flutter/values/flutter/color.dart';
 
 class BorderDartExporter {
   const BorderDartExporter();
@@ -18,7 +17,7 @@ class BorderSideDartExporter {
   const BorderSideDartExporter();
 
   String serialize(BorderSide value) {
-    final color = const ColorDartExporter().serialize(value.color);
-    return 'fl.BorderSide(color: $color, width: ${value.width})';
+    // BorderSide in protobuf only has width and strokeAlign, no color
+    return 'fl.BorderSide(width: ${value.width})';
   }
 }

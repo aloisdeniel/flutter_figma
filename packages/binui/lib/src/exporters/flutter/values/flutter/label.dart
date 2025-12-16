@@ -16,7 +16,9 @@ class LabelDartExporter {
         library,
         segment.styled,
       ),
-      LabelSegment_Type.static => _serializeStaticSegment(segment.static),
+      LabelSegment_Type.staticSegment => _serializeStaticSegment(
+        segment.staticSegment,
+      ),
       LabelSegment_Type.variable => _serializeVariableSegment(segment.variable),
       LabelSegment_Type.notSet => throw Exception('Label segment type not set'),
     };

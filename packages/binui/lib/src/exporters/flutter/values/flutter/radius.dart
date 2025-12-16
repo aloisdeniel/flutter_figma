@@ -12,25 +12,18 @@ class RadiusDartExporter {
 }
 
 class BorderRadiusDartExporter {
-  const BorderRadiusDartExporter({required this.radiusSerializer});
-  final RadiusDartExporter radiusSerializer;
+  const BorderRadiusDartExporter();
 
-  String serialize(BorderRadius value) {
+  String serialize(CornerRadius value) {
     final allSame =
         value.topLeft == value.topRight &&
         value.topRight == value.bottomRight &&
         value.bottomRight == value.bottomLeft;
 
     if (allSame) {
-      final radius = radiusSerializer.serialize(value.topLeft);
-      return 'const fl.BorderRadius.all($radius)';
+      return 'fl.BorderRadius.all(fl.Radius.circular(${value.topLeft}))';
     }
 
-    final topLeft = radiusSerializer.serialize(value.topLeft);
-    final topRight = radiusSerializer.serialize(value.topRight);
-    final bottomRight = radiusSerializer.serialize(value.bottomRight);
-    final bottomLeft = radiusSerializer.serialize(value.bottomLeft);
-
-    return 'const fl.BorderRadius(topLeft: $topLeft, topRight: $topRight, bottomRight: $bottomRight, bottomLeft: $bottomLeft)';
+    return 'fl.BorderRadius.only(topLeft: fl.Radius.circular(${value.topLeft}), topRight: fl.Radius.circular(${value.topRight}), bottomRight: fl.Radius.circular(${value.bottomRight}), bottomLeft: fl.Radius.circular(${value.bottomLeft}))';
   }
 }

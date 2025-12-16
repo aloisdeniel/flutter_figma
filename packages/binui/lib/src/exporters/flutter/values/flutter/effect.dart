@@ -20,7 +20,16 @@ class EffectDartExporter {
         library,
         effect.innerShadow,
       ),
-      Effect_Type.blur => _serializeBlur(library, effect.blur),
+      Effect_Type.layerBlur => _serializeLayerBlur(effect.layerBlur),
+      Effect_Type.backgroundBlur => _serializeBackgroundBlur(
+        effect.backgroundBlur,
+      ),
+      Effect_Type.progressiveBlur ||
+      Effect_Type.monotoneNoise ||
+      Effect_Type.duotoneNoise ||
+      Effect_Type.multitoneNoise ||
+      Effect_Type.texture ||
+      Effect_Type.glass ||
       Effect_Type.notSet => 'null',
     };
   }
@@ -54,15 +63,12 @@ class EffectDartExporter {
     return 'fl.BoxShadow(color: $color, offset: fl.Offset($offsetX, $offsetY), blurRadius: $blurRadius) /* inner shadow - requires custom implementation */';
   }
 
-  String _serializeBlur(Library library, BlurEffect blur) {
-    // Blur effects in Flutter typically use BackdropFilter or ImageFilter
-    return switch (blur.type) {
-      BlurType.layer =>
-        'fl.ImageFilter.blur(sigmaX: ${blur.radius}, sigmaY: ${blur.radius})',
-      BlurType.background =>
-        'fl.ImageFilter.blur(sigmaX: ${blur.radius}, sigmaY: ${blur.radius})',
-      _ => 'null',
-    };
+  String _serializeLayerBlur(LayerBlurEffect blur) {
+    return 'fl.ImageFilter.blur(sigmaX: ${blur.radius}, sigmaY: ${blur.radius})';
+  }
+
+  String _serializeBackgroundBlur(BackgroundBlurEffect blur) {
+    return 'fl.ImageFilter.blur(sigmaX: ${blur.radius}, sigmaY: ${blur.radius})';
   }
 
   /// Generates a list of BoxShadow widgets for effects
@@ -70,7 +76,12 @@ class EffectDartExporter {
     if (effects.isEmpty) return '[]';
 
     final shadows = effects
-        .where((e) => e.visible && e.whichType() != Effect_Type.blur)
+        .where(
+          (e) =>
+              e.visible &&
+              e.whichType() != Effect_Type.layerBlur &&
+              e.whichType() != Effect_Type.backgroundBlur,
+        )
         .map((e) => serialize(library, e))
         .where((s) => s != 'null')
         .toList();

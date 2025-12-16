@@ -42,7 +42,7 @@ Future<VariableCollection?> _importStyles(
     values.add(
       Value(
         textStyle: TextStyle(
-          fontFamily: style.fontName.family,
+          fontName: FontName(family: style.fontName.family),
           fontSize: style.fontSize.toDouble(),
         ),
       ),

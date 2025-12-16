@@ -42,15 +42,15 @@ class FlutterValueExporter {
       ).serialize(library, value.label),
       Value_Type.offset => const OffsetDartExporter().serialize(value.offset),
       Value_Type.radius => const RadiusDartExporter().serialize(value.radius),
-      Value_Type.borderRadius => const BorderRadiusDartExporter(
-        radiusSerializer: RadiusDartExporter(),
-      ).serialize(value.borderRadius),
+      Value_Type.borderRadius => const BorderRadiusDartExporter().serialize(
+        value.borderRadius,
+      ),
       Value_Type.rect => const RectDartExporter().serialize(value.rect),
       Value_Type.textStyle => const TextStyleDartExporter().serialize(
         value.textStyle,
       ),
-      Value_Type.transform2D => const Transform2DDartExporter().serialize(
-        value.transform2D,
+      Value_Type.transform => const TransformDartExporter().serialize(
+        value.transform,
       ),
       Value_Type.variantValue => _serializeVariantValue(
         library,
@@ -116,7 +116,7 @@ class FlutterValueExporter {
       Value_Type.textStyle => 'fl.TextStyle',
       Value_Type.version => '(int,int,int)',
       Value_Type.vectorGraphics => 'String',
-      Value_Type.transform2D => 'List<List<double>>',
+      Value_Type.transform => 'fl.Matrix4',
       Value_Type.visualNode => 'Widget',
       Value_Type.notSet ||
       Value_Type.alias ||

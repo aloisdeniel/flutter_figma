@@ -2,6 +2,7 @@ import 'package:binui/src/definitions.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/alias.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/effect.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/paint.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/radius.dart';
 import 'package:binui/src/exporters/flutter/values/flutter/value.dart';
 import 'package:binui/src/utils/naming.dart';
 
@@ -48,13 +49,19 @@ class VisualNodeDartExporter {
     final buffer = StringBuffer();
 
     // Determine widget type based on layout mode
-    final String widget = switch (frame.layoutMode) {
-      LayoutMode.horizontal => 'fl.Row',
-      LayoutMode.vertical => 'fl.Column',
-      LayoutMode.none => 'fl.Stack',
-      LayoutMode.grid => 'fl.Wrap', // Simplified grid layout
-      _ => 'fl.Container',
-    };
+    final String widget;
+    if (frame.hasLayout()) {
+      final layoutType = frame.layout.whichType();
+      widget = switch (layoutType) {
+        LayoutProperties_Type.freeform => 'fl.Stack',
+        LayoutProperties_Type.autoLayout =>
+          frame.layout.autoLayout.isVertical ? 'fl.Column' : 'fl.Row',
+        LayoutProperties_Type.grid => 'fl.Wrap',
+        LayoutProperties_Type.notSet => 'fl.Container',
+      };
+    } else {
+      widget = 'fl.Container';
+    }
 
     buffer.write('$widget(');
 
@@ -113,10 +120,7 @@ class VisualNodeDartExporter {
 
     final paintExporter = PaintDartExporter(valueSerializer: valueSerializer);
     final effectExporter = EffectDartExporter(valueSerializer: valueSerializer);
-    final aliasExporter = AliasDartExporter(
-      valueSerializer: valueSerializer,
-      alwaysFallback: true,
-    );
+    final borderRadiusExporter = const BorderRadiusDartExporter();
 
     final buffer = StringBuffer('fl.Container(');
 
@@ -133,11 +137,15 @@ class VisualNodeDartExporter {
       // Fills
       if (rectangle.fills.isNotEmpty) {
         final firstFill = rectangle.fills.first;
-        if (firstFill.whichType() == Paint_Type.solid) {
+        final fillType = firstFill.whichType();
+        if (fillType == Paint_Type.solid) {
           buffer.write(
             'color: ${paintExporter.serialize(library, firstFill)}, ',
           );
-        } else if (firstFill.whichType() == Paint_Type.gradient) {
+        } else if (fillType == Paint_Type.linearGradient ||
+            fillType == Paint_Type.radialGradient ||
+            fillType == Paint_Type.angularGradient ||
+            fillType == Paint_Type.diamondGradient) {
           buffer.write(
             'gradient: ${paintExporter.serialize(library, firstFill)}, ',
           );
@@ -146,8 +154,8 @@ class VisualNodeDartExporter {
 
       // Corner radius
       if (rectangle.hasCornerRadius()) {
-        final radius = aliasExporter.serialize(library, rectangle.cornerRadius);
-        buffer.write('borderRadius: fl.BorderRadius.circular($radius), ');
+        final radius = borderRadiusExporter.serialize(rectangle.cornerRadius);
+        buffer.write('borderRadius: $radius, ');
       }
 
       // Effects (shadows)
@@ -220,26 +228,35 @@ class VisualNodeDartExporter {
 
     // Text style
     buffer.write('style: fl.TextStyle(');
-    buffer.write("fontFamily: '${text.fontFamily}', ");
 
-    if (text.hasFontSize()) {
-      final fontSize = aliasExporter.serialize(library, text.fontSize);
-      buffer.write('fontSize: $fontSize, ');
+    if (text.hasStyle()) {
+      final style = text.style;
+      if (style.hasFontName()) {
+        buffer.write("fontFamily: '${style.fontName.family}', ");
+        if (style.fontName.weight != 0) {
+          buffer.write('fontWeight: fl.FontWeight.w${style.fontName.weight}, ');
+        }
+      }
+      if (style.hasFontSize()) {
+        buffer.write('fontSize: ${style.fontSize}, ');
+      }
+      if (style.hasLetterSpacing() && style.letterSpacing.value != 0) {
+        buffer.write('letterSpacing: ${style.letterSpacing.value}, ');
+      }
+      if (style.hasLineHeight()) {
+        final lineHeight = style.lineHeight;
+        if (lineHeight.hasPixels() && style.fontSize > 0) {
+          final height = lineHeight.pixels / style.fontSize;
+          buffer.write('height: $height, ');
+        } else if (lineHeight.hasPercent()) {
+          buffer.write('height: ${lineHeight.percent / 100}, ');
+        }
+      }
     }
-
-    buffer.write('fontWeight: fl.FontWeight.w${text.fontWeight}, ');
 
     if (text.fills.isNotEmpty) {
       final color = paintExporter.serialize(library, text.fills.first);
       buffer.write('color: $color, ');
-    }
-
-    if (text.hasLetterSpacing()) {
-      buffer.write('letterSpacing: ${text.letterSpacing}, ');
-    }
-
-    if (text.hasLineHeight()) {
-      buffer.write('height: ${text.lineHeight}, ');
     }
 
     buffer.write('), ');
@@ -255,10 +272,11 @@ class VisualNodeDartExporter {
 
   String _serializeTextAlign(TextAlignHorizontal align) {
     return switch (align) {
-      TextAlignHorizontal.left => 'fl.TextAlign.left',
-      TextAlignHorizontal.center => 'fl.TextAlign.center',
-      TextAlignHorizontal.right => 'fl.TextAlign.right',
-      TextAlignHorizontal.justified => 'fl.TextAlign.justify',
+      TextAlignHorizontal.TEXT_ALIGN_HORIZONTAL_LEFT => 'fl.TextAlign.left',
+      TextAlignHorizontal.TEXT_ALIGN_HORIZONTAL_CENTER => 'fl.TextAlign.center',
+      TextAlignHorizontal.TEXT_ALIGN_HORIZONTAL_RIGHT => 'fl.TextAlign.right',
+      TextAlignHorizontal.TEXT_ALIGN_HORIZONTAL_JUSTIFIED =>
+        'fl.TextAlign.justify',
       _ => 'fl.TextAlign.left',
     };
   }

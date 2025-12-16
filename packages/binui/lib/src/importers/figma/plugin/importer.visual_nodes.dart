@@ -61,6 +61,26 @@ VisualNode? _convertSceneNodeToVisualNode(figma_api.SceneNode node) {
 }
 
 FrameNode _convertFrameNode(figma_api.FrameNode node) {
+  // Convert layout properties based on layout mode
+  LayoutProperties? layout;
+  final layoutModeStr = node.layoutMode.toUpperCase();
+  if (layoutModeStr == 'HORIZONTAL' || layoutModeStr == 'VERTICAL') {
+    layout = LayoutProperties(
+      autoLayout: AutoLayoutProperties(
+        isVertical: layoutModeStr == 'VERTICAL',
+        padding: EdgeInsets(
+          left: (node.paddingLeft as num?)?.toDouble() ?? 0,
+          right: (node.paddingRight as num?)?.toDouble() ?? 0,
+          top: (node.paddingTop as num?)?.toDouble() ?? 0,
+          bottom: (node.paddingBottom as num?)?.toDouble() ?? 0,
+        ),
+        itemSpacing: (node.itemSpacing as num?)?.toDouble() ?? 0,
+      ),
+    );
+  } else {
+    layout = LayoutProperties(freeform: FreeformLayoutProperties());
+  }
+
   return FrameNode(
     id: node.id,
     name: node.name,
@@ -73,15 +93,9 @@ FrameNode _convertFrameNode(figma_api.FrameNode node) {
     children: _convertChildren(node.children.toDart),
     fills: _convertPaints(node.fills.toDart),
     strokes: _convertPaints(node.strokes.toDart),
-    strokeWeight: _convertNumericAlias(node.strokeWeight),
-    clipsContent: node.clipsContent,
+    clipContent: node.clipsContent,
     effects: _convertEffects(node.effects.toDart),
-    layoutMode: _convertLayoutMode(node.layoutMode),
-    paddingLeft: _convertNumericAlias(node.paddingLeft),
-    paddingRight: _convertNumericAlias(node.paddingRight),
-    paddingTop: _convertNumericAlias(node.paddingTop),
-    paddingBottom: _convertNumericAlias(node.paddingBottom),
-    itemSpacing: _convertNumericAlias(node.itemSpacing),
+    layout: layout,
   );
 }
 
@@ -111,10 +125,12 @@ RectangleNode _convertRectangleNode(figma_api.RectangleNode node) {
     rotation: node.rotation.toDouble(),
     fills: _convertPaints(node.fills.toDart),
     strokes: _convertPaints(node.strokes.toDart),
-    topLeftRadius: _convertNumericAlias(node.topLeftRadius),
-    topRightRadius: _convertNumericAlias(node.topRightRadius),
-    bottomLeftRadius: _convertNumericAlias(node.bottomLeftRadius),
-    bottomRightRadius: _convertNumericAlias(node.bottomRightRadius),
+    cornerRadius: CornerRadius(
+      topLeft: (node.topLeftRadius as num?)?.toDouble() ?? 0,
+      topRight: (node.topRightRadius as num?)?.toDouble() ?? 0,
+      bottomLeft: (node.bottomLeftRadius as num?)?.toDouble() ?? 0,
+      bottomRight: (node.bottomRightRadius as num?)?.toDouble() ?? 0,
+    ),
   );
 }
 
@@ -160,16 +176,25 @@ VectorNode _convertVectorNode(figma_api.VectorNode node) {
 TextNode _convertTextNode(figma_api.TextNode node) {
   // Extract font information
   String? fontFamily;
-  String? fontStyle;
+  String? fontStyleStr;
   int? fontWeight;
 
   if (node.fontName != figma_api.figma.mixed) {
     final fontName = node.fontName as figma_api.FontName;
     fontFamily = fontName.family;
-    fontStyle = fontName.style;
+    fontStyleStr = fontName.style;
     // Parse font weight from style (e.g., "Bold" -> 700)
     fontWeight = _parseFontWeight(fontName.style);
   }
+
+  // Get fontSize safely
+  double? fontSize;
+  if (node.fontSize != figma_api.figma.mixed) {
+    fontSize = (node.fontSize as num?)?.toDouble();
+  }
+
+  // TODO: Add letterSpacing and lineHeight conversion when needed
+  // These require more complex handling of the Figma API types
 
   return TextNode(
     id: node.id,
@@ -182,16 +207,15 @@ TextNode _convertTextNode(figma_api.TextNode node) {
     rotation: node.rotation.toDouble(),
     characters: _createStringAlias(node.characters),
     fills: _convertPaints(node.fills.toDart),
-
     style: TextStyle(
       fontName: FontName(
         family: fontFamily ?? 'Default',
-        style: _parseFontStyle(fontStyle ?? 'Regular'),
+        style: _parseFontStyle(fontStyleStr ?? 'Regular'),
         weight: fontWeight ?? 400,
       ),
-      fontSize: node.fontSize?.toDouble(),
-      lineHeight: node.height?.toDouble(),
-      letterSpacing: node.sty?.toDouble(),
+      fontSize: fontSize ?? 14,
+      //letterSpacing: letterSpacing,
+      //lineHeight: lineHeight,
     ),
   );
 }
@@ -344,12 +368,14 @@ Effect _convertEffect(figma_api.Effect effect) {
       ),
       visible: effect.visible,
     );
-  } else if (effectType == 'LAYER_BLUR' || effectType == 'BACKGROUND_BLUR') {
+  } else if (effectType == 'LAYER_BLUR') {
     return Effect(
-      blur: BlurEffect(
-        type: effectType == 'LAYER_BLUR' ? BlurType.layer : BlurType.background,
-        radius: effect.radius?.toDouble(),
-      ),
+      layerBlur: LayerBlurEffect(radius: effect.radius?.toDouble()),
+      visible: effect.visible,
+    );
+  } else if (effectType == 'BACKGROUND_BLUR') {
+    return Effect(
+      backgroundBlur: BackgroundBlurEffect(radius: effect.radius?.toDouble()),
       visible: effect.visible,
     );
   }
@@ -372,45 +398,19 @@ Alias _convertRGBAToAlias(figma_api.RGBA color) {
   );
 }
 
-LayoutMode? _convertLayoutMode(String layoutMode) {
-  switch (layoutMode.toUpperCase()) {
-    case 'NONE':
-      return LayoutMode.none;
-    case 'HORIZONTAL':
-      return LayoutMode.horizontal;
-    case 'VERTICAL':
-      return LayoutMode.vertical;
-    default:
-      return LayoutMode.none;
-  }
-}
-
 BooleanOperation? _convertBooleanOperation(String operation) {
   switch (operation.toUpperCase()) {
     case 'UNION':
-      return BooleanOperation.union;
+      return BooleanOperation.BOOLEAN_OPERATION_UNION;
     case 'INTERSECT':
-      return BooleanOperation.intersect;
+      return BooleanOperation.BOOLEAN_OPERATION_INTERSECT;
     case 'SUBTRACT':
-      return BooleanOperation.subtract;
+      return BooleanOperation.BOOLEAN_OPERATION_SUBTRACT;
     case 'EXCLUDE':
-      return BooleanOperation.exclude;
+      return BooleanOperation.BOOLEAN_OPERATION_EXCLUDE;
     default:
-      return BooleanOperation.union;
+      return BooleanOperation.BOOLEAN_OPERATION_UNION;
   }
-}
-
-Alias? _convertNumericAlias(dynamic value) {
-  if (value == null) return null;
-
-  // If it's a number, create a constant alias with a numeric value
-  if (value is num) {
-    return Alias(
-      constant: ConstantAlias(value: Value(doubleValue: value.toDouble())),
-    );
-  }
-
-  return null;
 }
 
 Alias _createStringAlias(String value) {

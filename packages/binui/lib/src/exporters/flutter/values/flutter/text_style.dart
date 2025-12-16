@@ -5,20 +5,28 @@ class TextStyleDartExporter {
 
   String serialize(TextStyle value) {
     final buffer = StringBuffer('fl.TextStyle(');
-    buffer.write("fontFamily: '${value.fontFamily}'");
+    if (value.hasFontName()) {
+      buffer.write("fontFamily: '${value.fontName.family}'");
+    }
     buffer.write(', fontSize: ${value.fontSize}');
-    if (value.fontWeight != 0) {
-      final fw = const FontWeightDartExporter().serialize(value.fontWeight);
+    if (value.hasFontName() && value.fontName.weight != 0) {
+      final fw = const FontWeightDartExporter().serialize(
+        value.fontName.weight,
+      );
       buffer.write(', fontWeight: $fw');
     }
-    if (value.letterSpacing != 0) {
-      buffer.write(', letterSpacing: ${value.letterSpacing}');
+    if (value.hasLetterSpacing() && value.letterSpacing.value != 0) {
+      buffer.write(', letterSpacing: ${value.letterSpacing.value}');
     }
-    if (value.wordSpacing != 0) {
-      buffer.write(', wordSpacing: ${value.wordSpacing}');
-    }
-    if (value.lineHeight != 0) {
-      buffer.write(', height: ${value.lineHeight}');
+    if (value.hasLineHeight()) {
+      final lineHeight = value.lineHeight;
+      if (lineHeight.hasPixels()) {
+        // Convert pixel line height to a multiplier based on fontSize
+        final height = lineHeight.pixels / value.fontSize;
+        buffer.write(', height: $height');
+      } else if (lineHeight.hasPercent()) {
+        buffer.write(', height: ${lineHeight.percent / 100}');
+      }
     }
     buffer.write(')');
     return buffer.toString();
