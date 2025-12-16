@@ -156,7 +156,7 @@ Value _convertVariableValue(
             green: (value['g'] as num).toDouble(),
             blue: (value['b'] as num).toDouble(),
             alpha: (value['a'] as num).toDouble(),
-            colorSpace: ColorSpace.displayP3,
+            colorSpace: ColorSpace.COLOR_SPACE_DISPLAY_P3,
           ),
         );
       }

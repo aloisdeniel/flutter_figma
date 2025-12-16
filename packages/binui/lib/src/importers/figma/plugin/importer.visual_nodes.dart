@@ -182,12 +182,17 @@ TextNode _convertTextNode(figma_api.TextNode node) {
     rotation: node.rotation.toDouble(),
     characters: _createStringAlias(node.characters),
     fills: _convertPaints(node.fills.toDart),
-    fontSize: node.fontSize != figma_api.figma.mixed
-        ? _convertNumericAlias(node.fontSize)
-        : null,
-    fontFamily: fontFamily,
-    fontStyle: fontStyle,
-    fontWeight: fontWeight,
+
+    style: TextStyle(
+      fontName: FontName(
+        family: fontFamily ?? 'Default',
+        style: _parseFontStyle(fontStyle ?? 'Regular'),
+        weight: fontWeight ?? 400,
+      ),
+      fontSize: node.fontSize?.toDouble(),
+      lineHeight: node.height?.toDouble(),
+      letterSpacing: node.sty?.toDouble(),
+    ),
   );
 }
 
@@ -300,15 +305,16 @@ BlendMode? _convertBlendMode(String? blendMode) {
 
   switch (blendMode.toUpperCase()) {
     case 'NORMAL':
-      return BlendMode.normal;
+      return BlendMode.BLEND_MODE_NORMAL;
     case 'MULTIPLY':
-      return BlendMode.multiply;
+      return BlendMode.BLEND_MODE_MULTIPLY;
     case 'SCREEN':
-      return BlendMode.screen;
+      return BlendMode.BLEND_MODE_SCREEN;
     case 'OVERLAY':
-      return BlendMode.overlay;
+      return BlendMode.BLEND_MODE_OVERLAY;
+    // TODO
     default:
-      return BlendMode.normal;
+      return BlendMode.BLEND_MODE_NORMAL;
   }
 }
 
@@ -432,4 +438,12 @@ int _parseFontWeight(String style) {
   }
   if (styleLower.contains('black') || styleLower.contains('heavy')) return 900;
   return 400; // Regular/Normal
+}
+
+FontStyle _parseFontStyle(String style) {
+  final styleLower = style.toLowerCase();
+  if (styleLower.contains('italic') || styleLower.contains('oblique')) {
+    return FontStyle.FONT_STYLE_ITALIC;
+  }
+  return FontStyle.FONT_STYLE_REGULAR;
 }

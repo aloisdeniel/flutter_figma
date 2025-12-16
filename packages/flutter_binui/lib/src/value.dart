@@ -3,7 +3,6 @@ import 'dart:ui' show ColorSpace;
 import 'package:binui/binui.dart' as b;
 import 'package:flutter/widgets.dart';
 import 'package:flutter/widgets.dart' as f;
-import 'package:flutter_binui/src/widgets/visual_node.dart';
 import 'package:flutter_figma/widgets.dart';
 
 import 'widgets/figma_visual_node.dart';
@@ -46,7 +45,7 @@ extension ValueConversionExtension on b.Value {
 
       case <Widget>[]:
         if (whichType() == b.Value_Type.visualNode) {
-          return visualNode.toFlutter() as T;
+          return visualNode.toFigmaFlutter() as T;
         }
       default:
     }
@@ -84,9 +83,9 @@ extension ColorConversionExtension on b.Color {
       red: red,
       green: green,
       colorSpace: switch (colorSpace) {
-        b.ColorSpace.displayP3 => ColorSpace.displayP3,
-        b.ColorSpace.srgb => ColorSpace.sRGB,
-        b.ColorSpace.extendedSrgb => ColorSpace.extendedSRGB,
+        b.ColorSpace.COLOR_SPACE_DISPLAY_P3 => ColorSpace.displayP3,
+        b.ColorSpace.COLOR_SPACE_SRGB => ColorSpace.sRGB,
+        b.ColorSpace.COLOR_SPACE_EXTENDED_SRGB => ColorSpace.extendedSRGB,
         _ => throw Exception(),
       },
     );
@@ -100,22 +99,23 @@ extension RadiusConversionExtension on b.Radius {
   }
 }
 
-extension BorderRadiusConversionExtension on b.BorderRadius {
+extension BorderRadiusConversionExtension on b.CornerRadius {
   BorderRadius toFlutter() {
     return BorderRadius.only(
-      topLeft: topLeft.toFlutter(),
-      topRight: topRight.toFlutter(),
-      bottomLeft: bottomLeft.toFlutter(),
-      bottomRight: bottomRight.toFlutter(),
+      topLeft: Radius.circular(topLeft),
+      topRight: Radius.circular(topRight),
+      bottomLeft: Radius.circular(bottomLeft),
+      bottomRight: Radius.circular(bottomRight),
     );
   }
 
   CornerRadius toFigmaFlutter() {
     return CornerRadius(
-      topLeft: topLeft.x,
-      topRight: topRight.x,
-      bottomLeft: bottomLeft.x,
-      bottomRight: bottomRight.x,
+      topLeft: topLeft,
+      topRight: topRight,
+      bottomLeft: bottomLeft,
+      bottomRight: bottomRight,
+      smoothing: smoothing,
     );
   }
 }
@@ -124,14 +124,26 @@ extension TextStyleConversionExtension on b.TextStyle {
   TextStyle toFlutter() {
     return TextStyle(
       fontSize: fontSize,
-      fontWeight: FontWeight.values.firstWhere((fw) => fw.index == fontWeight),
+      fontWeight: FontWeight.values.firstWhere(
+        (fw) => fw.value == fontName.weight,
+      ),
     );
   }
 
   FigmaTextStyle toFigmaFlutter() {
     return FigmaTextStyle(
       fontSize: fontSize,
-      fontName: FontName(family: fontFamily),
+      fontName: FontName(
+        family: fontName.family,
+        style: switch (fontName.style) {
+          b.FontStyle.FONT_STYLE_ITALIC => FigmaFontStyle.italic,
+          b.FontStyle.FONT_STYLE_REGULAR => FigmaFontStyle.regular,
+          _ => throw UnimplementedError(),
+        },
+        weight: FontWeight.values.firstWhere(
+          (fw) => fw.value == fontName.weight,
+        ),
+      ),
     );
   }
 }
@@ -177,10 +189,6 @@ extension SolidPaintConversionExtension on b.SolidPaint {
 }
 
 extension VisualNodeConversionExtension on b.VisualNode {
-  Widget toFlutter() {
-    return VisualNodeWidget(node: this);
-  }
-
   Widget toFigmaFlutter() {
     return FigmaVisualNodeWidget(node: this);
   }
@@ -189,42 +197,42 @@ extension VisualNodeConversionExtension on b.VisualNode {
 extension BlendModeConversionExtension on b.BlendMode {
   f.BlendMode toFlutter() {
     return switch (this) {
-      b.BlendMode.screen => f.BlendMode.screen,
-      b.BlendMode.overlay => f.BlendMode.overlay,
-      b.BlendMode.darken => f.BlendMode.darken,
-      b.BlendMode.lighten => f.BlendMode.lighten,
-      b.BlendMode.colorDodge => f.BlendMode.colorDodge,
-      b.BlendMode.colorBurn => f.BlendMode.colorBurn,
-      b.BlendMode.hardLight => f.BlendMode.hardLight,
-      b.BlendMode.softLight => f.BlendMode.softLight,
-      b.BlendMode.difference => f.BlendMode.difference,
-      b.BlendMode.exclusion => f.BlendMode.exclusion,
-      b.BlendMode.multiply => f.BlendMode.multiply,
-      b.BlendMode.hue => f.BlendMode.hue,
-      b.BlendMode.saturation => f.BlendMode.saturation,
-      b.BlendMode.color => f.BlendMode.color,
-      b.BlendMode.luminosity => f.BlendMode.luminosity,
+      b.BlendMode.BLEND_MODE_SCREEN => f.BlendMode.screen,
+      b.BlendMode.BLEND_MODE_OVERLAY => f.BlendMode.overlay,
+      b.BlendMode.BLEND_MODE_DARKEN => f.BlendMode.darken,
+      b.BlendMode.BLEND_MODE_LIGHTEN => f.BlendMode.lighten,
+      b.BlendMode.BLEND_MODE_COLOR_DODGE => f.BlendMode.colorDodge,
+      b.BlendMode.BLEND_MODE_COLOR_BURN => f.BlendMode.colorBurn,
+      b.BlendMode.BLEND_MODE_HARD_LIGHT => f.BlendMode.hardLight,
+      b.BlendMode.BLEND_MODE_SOFT_LIGHT => f.BlendMode.softLight,
+      b.BlendMode.BLEND_MODE_DIFFERENCE => f.BlendMode.difference,
+      b.BlendMode.BLEND_MODE_EXCLUSION => f.BlendMode.exclusion,
+      b.BlendMode.BLEND_MODE_MULTIPLY => f.BlendMode.multiply,
+      b.BlendMode.BLEND_MODE_HUE => f.BlendMode.hue,
+      b.BlendMode.BLEND_MODE_SATURATION => f.BlendMode.saturation,
+      b.BlendMode.BLEND_MODE_COLOR => f.BlendMode.color,
+      b.BlendMode.BLEND_MODE_LUMINOSITY => f.BlendMode.luminosity,
       _ => f.BlendMode.srcOver,
     };
   }
 
   BlendMode toFigmaFlutter() {
     return switch (this) {
-      b.BlendMode.screen => BlendMode.screen,
-      b.BlendMode.overlay => BlendMode.overlay,
-      b.BlendMode.darken => BlendMode.darken,
-      b.BlendMode.lighten => BlendMode.lighten,
-      b.BlendMode.colorDodge => BlendMode.colorDodge,
-      b.BlendMode.colorBurn => BlendMode.colorBurn,
-      b.BlendMode.hardLight => BlendMode.hardLight,
-      b.BlendMode.softLight => BlendMode.softLight,
-      b.BlendMode.difference => BlendMode.difference,
-      b.BlendMode.exclusion => BlendMode.exclusion,
-      b.BlendMode.multiply => BlendMode.multiply,
-      b.BlendMode.hue => BlendMode.hue,
-      b.BlendMode.saturation => BlendMode.saturation,
-      b.BlendMode.color => BlendMode.color,
-      b.BlendMode.luminosity => BlendMode.luminosity,
+      b.BlendMode.BLEND_MODE_SCREEN => BlendMode.screen,
+      b.BlendMode.BLEND_MODE_OVERLAY => BlendMode.overlay,
+      b.BlendMode.BLEND_MODE_DARKEN => BlendMode.darken,
+      b.BlendMode.BLEND_MODE_LIGHTEN => BlendMode.lighten,
+      b.BlendMode.BLEND_MODE_COLOR_DODGE => BlendMode.colorDodge,
+      b.BlendMode.BLEND_MODE_COLOR_BURN => BlendMode.colorBurn,
+      b.BlendMode.BLEND_MODE_HARD_LIGHT => BlendMode.hardLight,
+      b.BlendMode.BLEND_MODE_SOFT_LIGHT => BlendMode.softLight,
+      b.BlendMode.BLEND_MODE_DIFFERENCE => BlendMode.difference,
+      b.BlendMode.BLEND_MODE_EXCLUSION => BlendMode.exclusion,
+      b.BlendMode.BLEND_MODE_MULTIPLY => BlendMode.multiply,
+      b.BlendMode.BLEND_MODE_HUE => BlendMode.hue,
+      b.BlendMode.BLEND_MODE_SATURATION => BlendMode.saturation,
+      b.BlendMode.BLEND_MODE_COLOR => BlendMode.color,
+      b.BlendMode.BLEND_MODE_LUMINOSITY => BlendMode.luminosity,
       _ => BlendMode.passThrough,
     };
   }
