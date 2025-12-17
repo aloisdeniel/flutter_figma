@@ -205,16 +205,6 @@ class _PreviewPanelState extends State<PreviewPanel> {
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          if (widget.library.components.isNotEmpty) ...[
-            _SectionHeader(title: 'Components'),
-            const SizedBox(height: 12),
-            ...widget.library.components.map(
-              (component) => _ComponentPreview(
-                component: component,
-                library: widget.library,
-              ),
-            ),
-          ],
           if (widget.library.variables.isNotEmpty) ...[
             const SizedBox(height: 24),
             _SectionHeader(title: 'Variable Collections'),
@@ -222,6 +212,16 @@ class _PreviewPanelState extends State<PreviewPanel> {
             ...widget.library.variables.map(
               (collection) => _VariableCollectionPreview(
                 collection: collection,
+                library: widget.library,
+              ),
+            ),
+          ],
+          if (widget.library.components.isNotEmpty) ...[
+            _SectionHeader(title: 'Components'),
+            const SizedBox(height: 12),
+            ...widget.library.components.map(
+              (component) => _ComponentPreview(
+                component: component,
                 library: widget.library,
               ),
             ),

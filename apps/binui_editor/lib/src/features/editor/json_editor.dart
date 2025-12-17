@@ -5,11 +5,13 @@ class JsonEditor extends StatelessWidget {
     super.key,
     required this.controller,
     this.onChanged,
+    this.onClear,
     this.errorMessage,
   });
 
   final TextEditingController controller;
   final ValueChanged<String>? onChanged;
+  final VoidCallback? onClear;
   final String? errorMessage;
 
   @override
@@ -42,6 +44,16 @@ class JsonEditor extends StatelessWidget {
                 ).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w600),
               ),
               const Spacer(),
+              if (onClear != null)
+                IconButton(
+                  icon: const Icon(Icons.clear, size: 18),
+                  tooltip: 'Clear',
+                  onPressed: onClear,
+                  visualDensity: VisualDensity.compact,
+                  padding: EdgeInsets.zero,
+                  constraints: const BoxConstraints(),
+                ),
+              if (onClear != null) const SizedBox(width: 12),
               if (errorMessage != null)
                 Container(
                   padding: const EdgeInsets.symmetric(

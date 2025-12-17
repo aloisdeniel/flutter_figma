@@ -13,10 +13,14 @@ class EditorScreen extends StatefulWidget {
   State<EditorScreen> createState() => _EditorScreenState();
 }
 
+const double _compactBreakpoint = 700;
+
 class _EditorScreenState extends State<EditorScreen> {
   final TextEditingController _jsonController = TextEditingController();
   b.Library? _library;
   String? _errorMessage;
+  bool _showEditor = true;
+  bool _showPreview = true;
 
   @override
   void initState() {
@@ -56,57 +60,176 @@ class _EditorScreenState extends State<EditorScreen> {
     }
   }
 
+  void _toggleEditor(bool isCompact) {
+    setState(() {
+      if (isCompact) {
+        _showEditor = true;
+        _showPreview = false;
+      } else {
+        _showEditor = !_showEditor;
+        if (!_showEditor && !_showPreview) {
+          _showPreview = true;
+        }
+      }
+    });
+  }
+
+  void _togglePreview(bool isCompact) {
+    setState(() {
+      if (isCompact) {
+        _showPreview = true;
+        _showEditor = false;
+      } else {
+        _showPreview = !_showPreview;
+        if (!_showEditor && !_showPreview) {
+          _showEditor = true;
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Binui Editor'),
-        elevation: 1,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: 'Reparse JSON',
-            onPressed: () => _parseJson(_jsonController.text),
-          ),
-          IconButton(
-            icon: const Icon(Icons.clear),
-            tooltip: 'Clear',
-            onPressed: () {
-              _jsonController.clear();
-              setState(() {
-                _library = null;
-                _errorMessage = null;
-              });
-            },
-          ),
-          const SizedBox(width: 8),
-        ],
-      ),
-      body: Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Expanded(
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border(
-                  right: BorderSide(
-                    color: Theme.of(context).colorScheme.outlineVariant,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isCompact = constraints.maxWidth < _compactBreakpoint;
+        final showEditor = isCompact ? _showEditor : _showEditor;
+        final showPreview = isCompact ? !_showEditor : _showPreview;
+
+        return Scaffold(
+          body: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _NavigationRail(
+                showEditor: _showEditor,
+                showPreview: isCompact ? !_showEditor : _showPreview,
+                onEditorTap: () => _toggleEditor(isCompact),
+                onPreviewTap: () => _togglePreview(isCompact),
+              ),
+              VerticalDivider(
+                width: 1,
+                thickness: 1,
+                color: Theme.of(context).colorScheme.outlineVariant,
+              ),
+              if (showEditor)
+                Expanded(
+                  child: Container(
+                    decoration: showPreview
+                        ? BoxDecoration(
+                            border: Border(
+                              right: BorderSide(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.outlineVariant,
+                              ),
+                            ),
+                          )
+                        : null,
+                    child: JsonEditor(
+                      controller: _jsonController,
+                      onChanged: _parseJson,
+                      onClear: () {
+                        _jsonController.clear();
+                        setState(() {
+                          _library = null;
+                          _errorMessage = null;
+                        });
+                      },
+                      errorMessage: _errorMessage,
+                    ),
                   ),
                 ),
-              ),
-              child: JsonEditor(
-                controller: _jsonController,
-                onChanged: _parseJson,
-                errorMessage: _errorMessage,
-              ),
-            ),
+              if (showPreview)
+                Expanded(
+                  child: _library != null
+                      ? PreviewPanel(library: _library!)
+                      : _EmptyPreview(hasError: _errorMessage != null),
+                ),
+            ],
           ),
-          Expanded(
-            child: _library != null
-                ? PreviewPanel(library: _library!)
-                : _EmptyPreview(hasError: _errorMessage != null),
+        );
+      },
+    );
+  }
+}
+
+class _NavigationRail extends StatelessWidget {
+  const _NavigationRail({
+    required this.showEditor,
+    required this.showPreview,
+    required this.onEditorTap,
+    required this.onPreviewTap,
+  });
+
+  final bool showEditor;
+  final bool showPreview;
+  final VoidCallback onEditorTap;
+  final VoidCallback onPreviewTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 56,
+      color: Theme.of(context).colorScheme.surfaceContainerLow,
+      child: Column(
+        children: [
+          const SizedBox(height: 8),
+          _RailButton(
+            icon: Icons.code,
+            label: 'Editor',
+            isSelected: showEditor,
+            onTap: onEditorTap,
+          ),
+          const SizedBox(height: 4),
+          _RailButton(
+            icon: Icons.preview,
+            label: 'Preview',
+            isSelected: showPreview,
+            onTap: onPreviewTap,
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _RailButton extends StatelessWidget {
+  const _RailButton({
+    required this.icon,
+    required this.label,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final String label;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return Tooltip(
+      message: label,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(8),
+        child: Container(
+          width: 48,
+          height: 48,
+          decoration: BoxDecoration(
+            color: isSelected
+                ? colorScheme.primaryContainer
+                : Colors.transparent,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Icon(
+            icon,
+            color: isSelected
+                ? colorScheme.onPrimaryContainer
+                : colorScheme.onSurfaceVariant,
+          ),
+        ),
       ),
     );
   }
