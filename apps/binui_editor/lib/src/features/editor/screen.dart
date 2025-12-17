@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:binui/binui.dart' as b;
 import 'package:flutter/material.dart';
 
+import '../../services/library_manager.dart';
 import 'json_editor.dart';
+import 'library_picker_modal.dart';
 import 'preview_panel.dart';
 
 class EditorScreen extends StatefulWidget {
@@ -17,21 +19,60 @@ const double _compactBreakpoint = 700;
 
 class _EditorScreenState extends State<EditorScreen> {
   final TextEditingController _jsonController = TextEditingController();
+  final LibraryManager _libraryManager = LibraryManager();
   b.Library? _library;
   String? _errorMessage;
   bool _showEditor = true;
   bool _showPreview = true;
+  bool _isInitialized = false;
+  String? _lastSelectedLibraryId;
 
   @override
   void initState() {
     super.initState();
-    final json = JsonEncoder.withIndent('  ').convert(jsonDecode(_sampleJson));
-    _jsonController.text = json;
-    _parseJson(json);
+    _libraryManager.addListener(_onLibraryManagerChanged);
+  }
+
+  void _onLibraryManagerChanged() {
+    if (!_isInitialized && !_libraryManager.isLoading) {
+      _isInitialized = true;
+      _lastSelectedLibraryId = _libraryManager.selectedLibraryId;
+      _loadCurrentLibrary();
+    } else if (_isInitialized &&
+        _lastSelectedLibraryId != _libraryManager.selectedLibraryId) {
+      // Library selection changed
+      _lastSelectedLibraryId = _libraryManager.selectedLibraryId;
+      _loadCurrentLibrary();
+    }
+    setState(() {});
+  }
+
+  void _loadCurrentLibrary() {
+    final library = _libraryManager.currentLibrary;
+    if (library != null) {
+      final json = JsonEncoder.withIndent('  ').convert(library.toProto3Json());
+      _jsonController.text = json;
+      _library = library;
+      _errorMessage = null;
+    } else if (_libraryManager.libraries.isEmpty) {
+      // No libraries exist, show sample
+      final json = JsonEncoder.withIndent(
+        '  ',
+      ).convert(jsonDecode(_sampleJson));
+      _jsonController.text = json;
+      _parseJson(json);
+    } else {
+      // Libraries exist but none selected
+      _jsonController.clear();
+      _library = null;
+      _errorMessage = null;
+    }
   }
 
   @override
   void dispose() {
+    _libraryManager.removeListener(_onLibraryManagerChanged);
+    _libraryManager.dispose();
     _jsonController.dispose();
     super.dispose();
   }
@@ -42,6 +83,7 @@ class _EditorScreenState extends State<EditorScreen> {
         _library = null;
         _errorMessage = null;
       });
+      _libraryManager.updateCurrentLibrary(null);
       return;
     }
 
@@ -52,6 +94,7 @@ class _EditorScreenState extends State<EditorScreen> {
         _library = library;
         _errorMessage = null;
       });
+      _libraryManager.updateCurrentLibrary(library);
     } catch (e) {
       setState(() {
         _library = null;
@@ -105,6 +148,9 @@ class _EditorScreenState extends State<EditorScreen> {
                 showPreview: isCompact ? !_showEditor : _showPreview,
                 onEditorTap: () => _toggleEditor(isCompact),
                 onPreviewTap: () => _togglePreview(isCompact),
+                onLibraryTap: () =>
+                    LibraryPickerModal.show(context, _libraryManager),
+                libraryManager: _libraryManager,
               ),
               VerticalDivider(
                 width: 1,
@@ -134,6 +180,7 @@ class _EditorScreenState extends State<EditorScreen> {
                           _library = null;
                           _errorMessage = null;
                         });
+                        _libraryManager.updateCurrentLibrary(null);
                       },
                       errorMessage: _errorMessage,
                     ),
@@ -159,12 +206,16 @@ class _NavigationRail extends StatelessWidget {
     required this.showPreview,
     required this.onEditorTap,
     required this.onPreviewTap,
+    required this.onLibraryTap,
+    required this.libraryManager,
   });
 
   final bool showEditor;
   final bool showPreview;
   final VoidCallback onEditorTap;
   final VoidCallback onPreviewTap;
+  final VoidCallback onLibraryTap;
+  final LibraryManager libraryManager;
 
   @override
   Widget build(BuildContext context) {
@@ -187,6 +238,22 @@ class _NavigationRail extends StatelessWidget {
             isSelected: showPreview,
             onTap: onPreviewTap,
           ),
+          const Spacer(),
+          AnimatedBuilder(
+            animation: libraryManager,
+            builder: (context, child) {
+              final metadata = libraryManager.currentLibraryMetadata;
+              return _RailButton(
+                icon: Icons.folder,
+                label: metadata?.name ?? 'Libraries',
+                isSelected: false,
+                onTap: onLibraryTap,
+                showBadge: libraryManager.libraries.isNotEmpty,
+                badgeCount: libraryManager.libraries.length,
+              );
+            },
+          ),
+          const SizedBox(height: 8),
         ],
       ),
     );
@@ -199,12 +266,16 @@ class _RailButton extends StatelessWidget {
     required this.label,
     required this.isSelected,
     required this.onTap,
+    this.showBadge = false,
+    this.badgeCount,
   });
 
   final IconData icon;
   final String label;
   final bool isSelected;
   final VoidCallback onTap;
+  final bool showBadge;
+  final int? badgeCount;
 
   @override
   Widget build(BuildContext context) {
@@ -223,11 +294,41 @@ class _RailButton extends StatelessWidget {
                 : Colors.transparent,
             borderRadius: BorderRadius.circular(8),
           ),
-          child: Icon(
-            icon,
-            color: isSelected
-                ? colorScheme.onPrimaryContainer
-                : colorScheme.onSurfaceVariant,
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              Icon(
+                icon,
+                color: isSelected
+                    ? colorScheme.onPrimaryContainer
+                    : colorScheme.onSurfaceVariant,
+              ),
+              if (showBadge && badgeCount != null && badgeCount! > 0)
+                Positioned(
+                  top: 6,
+                  right: 6,
+                  child: Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primary,
+                      shape: BoxShape.circle,
+                    ),
+                    constraints: const BoxConstraints(
+                      minWidth: 16,
+                      minHeight: 16,
+                    ),
+                    child: Text(
+                      badgeCount.toString(),
+                      style: TextStyle(
+                        fontSize: 10,
+                        color: colorScheme.onPrimary,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+            ],
           ),
         ),
       ),
