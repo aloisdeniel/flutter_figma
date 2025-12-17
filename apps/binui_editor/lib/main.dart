@@ -19,6 +19,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
         useMaterial3: true,
+        splashFactory: NoSplash.splashFactory,
       ),
       darkTheme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
@@ -26,6 +27,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
         useMaterial3: true,
+        splashFactory: NoSplash.splashFactory,
       ),
       themeMode: ThemeMode.system,
       home: const EditorScreen(),
