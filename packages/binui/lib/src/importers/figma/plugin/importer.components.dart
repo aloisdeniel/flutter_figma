@@ -1,6 +1,9 @@
 part of 'importer.dart';
 
-Future<List<Component>> _importSelectedComponents() async {
+Future<List<Component>> _importSelectedComponents(
+  ImporterContext<FigmaImportOptions> context,
+  VariableIdMap variableIdMap,
+) async {
   final selection = figma_api.figma.currentPage.selection.toDart;
 
   if (selection.isEmpty) {
@@ -15,7 +18,9 @@ Future<List<Component>> _importSelectedComponents() async {
       final componentSet = node as figma_api.ComponentSetNode;
       if (!processedSetIds.contains(componentSet.id)) {
         processedSetIds.add(componentSet.id);
-        components.add(await _createComponentFromSet(componentSet));
+        components.add(
+          await _createComponentFromSet(context, componentSet, variableIdMap),
+        );
       }
     } else if (node.type == 'COMPONENT') {
       final component = node as figma_api.ComponentNode;
@@ -31,12 +36,20 @@ Future<List<Component>> _importSelectedComponents() async {
               .toDart;
           if (parentNode != null) {
             final componentSet = parentNode as figma_api.ComponentSetNode;
-            components.add(await _createComponentFromSet(componentSet));
+            components.add(
+              await _createComponentFromSet(
+                context,
+                componentSet,
+                variableIdMap,
+              ),
+            );
           }
         }
       } else {
         // Standalone component - import as single-variant component
-        components.add(_createComponentFromNode(component));
+        components.add(
+          _createComponentFromNode(context, component, variableIdMap),
+        );
       }
     }
   }
@@ -45,7 +58,9 @@ Future<List<Component>> _importSelectedComponents() async {
 }
 
 Future<Component> _createComponentFromSet(
+  ImporterContext<FigmaImportOptions> context,
   figma_api.ComponentSetNode componentSet,
+  VariableIdMap variableIdMap,
 ) async {
   final name = componentSet.name;
   final variantDefinitions = <ComponentVariantDefinition>[];
@@ -58,6 +73,9 @@ Future<Component> _createComponentFromSet(
       ? children[0] as figma_api.ComponentNode
       : null;
 
+  // Build property ID map for this component
+  final propertyIdMap = <String, int>{};
+
   if (firstChild != null) {
     final figProperties = componentSet.componentPropertyDefinitions.dartify();
 
@@ -65,7 +83,11 @@ Future<Component> _createComponentFromSet(
       // No properties defined, but still create variants with visual nodes
       for (var i = 0; i < children.length; i++) {
         final childNode = children[i] as figma_api.ComponentNode;
-        final visualNode = _convertSceneNodeToVisualNode(childNode);
+        final visualNode = _convertSceneNodeToVisualNode(
+          childNode,
+          variableIdMap,
+          propertyIdMap,
+        );
         variants.add(
           ComponentVariant(id: i, name: childNode.name, root: visualNode),
         );
@@ -77,6 +99,7 @@ Future<Component> _createComponentFromSet(
       );
     }
 
+    var propertyIndex = 0;
     for (final entry in figProperties.entries) {
       final key = entry.key as String;
       final prop = entry.value as Map;
@@ -100,33 +123,46 @@ Future<Component> _createComponentFromSet(
         );
         properties.add(
           ComponentProperty(
+            id: propertyIndex,
             name: key,
             defaultValue: Value(stringValue: defaultValue),
           ),
         );
+        propertyIdMap[key] = propertyIndex;
+        propertyIndex++;
       } else if (propType == 'TEXT') {
         final defaultValue = prop['defaultValue'] as String;
         properties.add(
           ComponentProperty(
+            id: propertyIndex,
             name: key,
             defaultValue: Value(stringValue: defaultValue),
           ),
         );
+        propertyIdMap[key] = propertyIndex;
+        propertyIndex++;
       } else if (propType == 'BOOLEAN') {
         final defaultValue = prop['defaultValue'] as bool;
         properties.add(
           ComponentProperty(
+            id: propertyIndex,
             name: key,
             defaultValue: Value(boolean: defaultValue),
           ),
         );
+        propertyIdMap[key] = propertyIndex;
+        propertyIndex++;
       }
     }
 
     // Create variants with visual nodes for each child component
     for (var i = 0; i < children.length; i++) {
       final childNode = children[i] as figma_api.ComponentNode;
-      final visualNode = _convertSceneNodeToVisualNode(childNode);
+      final visualNode = _convertSceneNodeToVisualNode(
+        childNode,
+        variableIdMap,
+        propertyIdMap,
+      );
 
       // Parse variant values from component name (e.g., "Size=Large, State=Active")
       final variantValues = _parseVariantValues(
@@ -192,9 +228,18 @@ List<ComponentVariantValue> _parseVariantValues(
   return variantValues;
 }
 
-Component _createComponentFromNode(figma_api.ComponentNode component) {
+Component _createComponentFromNode(
+  ImporterContext<FigmaImportOptions> context,
+  figma_api.ComponentNode component,
+  VariableIdMap variableIdMap,
+) {
   final name = component.name;
-  final visualNode = _convertSceneNodeToVisualNode(component);
+  final propertyIdMap = <String, int>{};
+  final visualNode = _convertSceneNodeToVisualNode(
+    component,
+    variableIdMap,
+    propertyIdMap,
+  );
 
   // Create a single variant with the component's visual tree
   final variant = ComponentVariant(id: 0, name: name, root: visualNode);

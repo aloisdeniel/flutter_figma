@@ -1,14 +1,36 @@
 part of 'importer.dart';
 
-VisualNode? _convertSceneNodeToVisualNode(figma_api.SceneNode node) {
+/// Maps component property name to property ID
+typedef PropertyIdMap = Map<String, int>;
+
+VisualNode? _convertSceneNodeToVisualNode(
+  figma_api.SceneNode node,
+  VariableIdMap variableIdMap,
+  PropertyIdMap propertyIdMap,
+) {
   switch (node.type) {
     case 'FRAME':
-      return VisualNode(frame: _convertFrameNode(node as figma_api.FrameNode));
+      return VisualNode(
+        frame: _convertFrameNode(
+          node as figma_api.FrameNode,
+          variableIdMap,
+          propertyIdMap,
+        ),
+      );
     case 'GROUP':
-      return VisualNode(group: _convertGroupNode(node as figma_api.GroupNode));
+      return VisualNode(
+        group: _convertGroupNode(
+          node as figma_api.GroupNode,
+          variableIdMap,
+          propertyIdMap,
+        ),
+      );
     case 'RECTANGLE':
       return VisualNode(
-        rectangle: _convertRectangleNode(node as figma_api.RectangleNode),
+        rectangle: _convertRectangleNode(
+          node as figma_api.RectangleNode,
+          variableIdMap,
+        ),
       );
     case 'ELLIPSE':
       return VisualNode(
@@ -21,19 +43,35 @@ VisualNode? _convertSceneNodeToVisualNode(figma_api.SceneNode node) {
         vector: _convertVectorNode(node as figma_api.VectorNode),
       );
     case 'TEXT':
-      return VisualNode(text: _convertTextNode(node as figma_api.TextNode));
+      return VisualNode(
+        text: _convertTextNode(
+          node as figma_api.TextNode,
+          variableIdMap,
+          propertyIdMap,
+        ),
+      );
     case 'COMPONENT':
       return VisualNode(
-        frame: _convertComponentNode(node as figma_api.ComponentNode),
+        frame: _convertComponentNode(
+          node as figma_api.ComponentNode,
+          variableIdMap,
+          propertyIdMap,
+        ),
       );
     case 'INSTANCE':
       return VisualNode(
-        instance: _convertInstanceNode(node as figma_api.InstanceNode),
+        instance: _convertInstanceNode(
+          node as figma_api.InstanceNode,
+          variableIdMap,
+          propertyIdMap,
+        ),
       );
     case 'BOOLEAN_OPERATION':
       return VisualNode(
         booleanOperation: _convertBooleanOperationNode(
           node as figma_api.BooleanOperationNode,
+          variableIdMap,
+          propertyIdMap,
         ),
       );
     default:
@@ -42,7 +80,11 @@ VisualNode? _convertSceneNodeToVisualNode(figma_api.SceneNode node) {
   }
 }
 
-FrameNode _convertFrameNode(figma_api.FrameNode node) {
+FrameNode _convertFrameNode(
+  figma_api.FrameNode node,
+  VariableIdMap variableIdMap,
+  PropertyIdMap propertyIdMap,
+) {
   // Convert layout properties based on layout mode
   LayoutProperties? layout;
   final layoutModeStr = node.layoutMode.toUpperCase();
@@ -72,16 +114,32 @@ FrameNode _convertFrameNode(figma_api.FrameNode node) {
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
-    children: _convertChildren(node.children.toDart),
-    fills: _convertPaints(node.fills.toDart),
-    strokes: _convertPaints(node.strokes.toDart),
+    children: _convertChildren(
+      node.children.toDart,
+      variableIdMap,
+      propertyIdMap,
+    ),
+    fills: _convertPaintsWithBoundVariables(
+      node,
+      node.fills.toDart,
+      variableIdMap,
+    ),
+    strokes: _convertPaintsWithBoundVariables(
+      node,
+      node.strokes.toDart,
+      variableIdMap,
+    ),
     clipContent: node.clipsContent,
     effects: _convertEffects(node.effects.toDart),
     layout: layout,
   );
 }
 
-GroupNode _convertGroupNode(figma_api.GroupNode node) {
+GroupNode _convertGroupNode(
+  figma_api.GroupNode node,
+  VariableIdMap variableIdMap,
+  PropertyIdMap propertyIdMap,
+) {
   return GroupNode(
     id: node.id,
     name: node.name,
@@ -91,11 +149,18 @@ GroupNode _convertGroupNode(figma_api.GroupNode node) {
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
-    children: _convertChildren(node.children.toDart),
+    children: _convertChildren(
+      node.children.toDart,
+      variableIdMap,
+      propertyIdMap,
+    ),
   );
 }
 
-RectangleNode _convertRectangleNode(figma_api.RectangleNode node) {
+RectangleNode _convertRectangleNode(
+  figma_api.RectangleNode node,
+  VariableIdMap variableIdMap,
+) {
   return RectangleNode(
     id: node.id,
     name: node.name,
@@ -105,8 +170,16 @@ RectangleNode _convertRectangleNode(figma_api.RectangleNode node) {
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
-    fills: _convertPaints(node.fills.toDart),
-    strokes: _convertPaints(node.strokes.toDart),
+    fills: _convertPaintsWithBoundVariables(
+      node,
+      node.fills.toDart,
+      variableIdMap,
+    ),
+    strokes: _convertPaintsWithBoundVariables(
+      node,
+      node.strokes.toDart,
+      variableIdMap,
+    ),
     cornerRadius: CornerRadius(
       topLeft: (node.topLeftRadius as num?)?.toDouble() ?? 0,
       topRight: (node.topRightRadius as num?)?.toDouble() ?? 0,
@@ -155,7 +228,11 @@ VectorNode _convertVectorNode(figma_api.VectorNode node) {
   );
 }
 
-TextNode _convertTextNode(figma_api.TextNode node) {
+TextNode _convertTextNode(
+  figma_api.TextNode node,
+  VariableIdMap variableIdMap,
+  PropertyIdMap propertyIdMap,
+) {
   // Extract font information
   String? fontFamily;
   String? fontStyleStr;
@@ -175,8 +252,8 @@ TextNode _convertTextNode(figma_api.TextNode node) {
     fontSize = (node.fontSize as num?)?.toDouble();
   }
 
-  // TODO: Add letterSpacing and lineHeight conversion when needed
-  // These require more complex handling of the Figma API types
+  // Check for component property reference on the text content
+  final characters = _createTextAlias(node, propertyIdMap);
 
   return TextNode(
     id: node.id,
@@ -187,8 +264,12 @@ TextNode _convertTextNode(figma_api.TextNode node) {
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
-    characters: _createStringAlias(node.characters),
-    fills: _convertPaints(node.fills.toDart),
+    characters: characters,
+    fills: _convertPaintsWithBoundVariables(
+      node,
+      node.fills.toDart,
+      variableIdMap,
+    ),
     style: TextStyle(
       fontName: FontName(
         family: fontFamily ?? 'Default',
@@ -202,7 +283,11 @@ TextNode _convertTextNode(figma_api.TextNode node) {
   );
 }
 
-FrameNode _convertComponentNode(figma_api.ComponentNode node) {
+FrameNode _convertComponentNode(
+  figma_api.ComponentNode node,
+  VariableIdMap variableIdMap,
+  PropertyIdMap propertyIdMap,
+) {
   return FrameNode(
     id: node.id,
     name: node.name,
@@ -212,11 +297,19 @@ FrameNode _convertComponentNode(figma_api.ComponentNode node) {
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
-    children: _convertChildren(node.children.toDart),
+    children: _convertChildren(
+      node.children.toDart,
+      variableIdMap,
+      propertyIdMap,
+    ),
   );
 }
 
-InstanceNode _convertInstanceNode(figma_api.InstanceNode node) {
+InstanceNode _convertInstanceNode(
+  figma_api.InstanceNode node,
+  VariableIdMap variableIdMap,
+  PropertyIdMap propertyIdMap,
+) {
   return InstanceNode(
     id: node.id,
     name: node.name,
@@ -226,13 +319,19 @@ InstanceNode _convertInstanceNode(figma_api.InstanceNode node) {
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
-    children: _convertChildren(node.children.toDart),
+    children: _convertChildren(
+      node.children.toDart,
+      variableIdMap,
+      propertyIdMap,
+    ),
     mainComponentId: node.mainComponent?.id,
   );
 }
 
 BooleanOperationNode _convertBooleanOperationNode(
   figma_api.BooleanOperationNode node,
+  VariableIdMap variableIdMap,
+  PropertyIdMap propertyIdMap,
 ) {
   return BooleanOperationNode(
     id: node.id,
@@ -243,17 +342,29 @@ BooleanOperationNode _convertBooleanOperationNode(
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
-    children: _convertChildren(node.children.toDart),
+    children: _convertChildren(
+      node.children.toDart,
+      variableIdMap,
+      propertyIdMap,
+    ),
     booleanOperation: _convertBooleanOperation(node.booleanOperation),
   );
 }
 
 // Helper functions
 
-List<VisualNode> _convertChildren(List<figma_api.SceneNode> children) {
+List<VisualNode> _convertChildren(
+  List<figma_api.SceneNode> children,
+  VariableIdMap variableIdMap,
+  PropertyIdMap propertyIdMap,
+) {
   final visualNodes = <VisualNode>[];
   for (final child in children) {
-    final visualNode = _convertSceneNodeToVisualNode(child);
+    final visualNode = _convertSceneNodeToVisualNode(
+      child,
+      variableIdMap,
+      propertyIdMap,
+    );
     if (visualNode != null) {
       visualNodes.add(visualNode);
     }
@@ -261,22 +372,73 @@ List<VisualNode> _convertChildren(List<figma_api.SceneNode> children) {
   return visualNodes;
 }
 
-List<Paint> _convertPaints(List<figma_api.Paint> paints) {
+/// Converts paints while checking for bound variables on the node
+List<Paint> _convertPaintsWithBoundVariables(
+  figma_api.SceneNode node,
+  List<figma_api.Paint> paints,
+  VariableIdMap variableIdMap,
+) {
+  final boundVariables = node.boundVariables?.dartify() as Map?;
+
   return paints
-      .where((paint) => paint.visible ?? true)
-      .map((paint) => _convertPaint(paint))
+      .asMap()
+      .entries
+      .where((entry) {
+        final paint = entry.value;
+        return paint.visible ?? true;
+      })
+      .map((entry) {
+        final index = entry.key;
+        final paint = entry.value;
+        return _convertPaintWithBoundVariable(
+          paint,
+          boundVariables,
+          index,
+          variableIdMap,
+        );
+      })
       .toList();
 }
 
-Paint _convertPaint(figma_api.Paint paint) {
+Paint _convertPaintWithBoundVariable(
+  figma_api.Paint paint,
+  Map? boundVariables,
+  int paintIndex,
+  VariableIdMap variableIdMap,
+) {
   final paintType = paint.type.toUpperCase();
 
-  // Convert based on type
+  // Check if this paint has a bound variable for color
+  Alias? colorAlias;
+
   if (paintType == 'SOLID') {
+    // Check for bound variable on fills[index].color
+    final fillsBindings = boundVariables?['fills'] as List?;
+    if (fillsBindings != null && paintIndex < fillsBindings.length) {
+      final fillBinding = fillsBindings[paintIndex] as Map?;
+      final colorBinding = fillBinding?['color'] as Map?;
+      if (colorBinding != null && colorBinding['type'] == 'VARIABLE_ALIAS') {
+        final variableId = colorBinding['id'] as String;
+        final indices = variableIdMap[variableId];
+        if (indices != null) {
+          final (collectionId, varId) = indices;
+          colorAlias = Alias(
+            variable: VariableAlias(
+              collectionId: collectionId,
+              variableId: varId,
+            ),
+          );
+        }
+      }
+    }
+
+    // Fall back to constant color if no variable binding
+    colorAlias ??= paint.color != null
+        ? _convertColorToAlias(paint.color!)
+        : null;
+
     return Paint(
-      solid: SolidPaint(
-        color: paint.color != null ? _convertColorToAlias(paint.color!) : null,
-      ),
+      solid: SolidPaint(color: colorAlias),
       visible: paint.visible ?? true,
       opacity: paint.opacity?.toDouble(),
       blendMode: _convertBlendMode(paint.blendMode),
@@ -303,6 +465,33 @@ Alias _convertColorToAlias(figma_api.RGB color) {
         ),
       ),
     ),
+  );
+}
+
+/// Creates a text alias, checking for component property references
+Alias _createTextAlias(figma_api.TextNode node, PropertyIdMap propertyIdMap) {
+  // Check for component property reference on characters
+  final propRefs = node.componentPropertyReferences?.dartify() as Map?;
+  if (propRefs != null) {
+    final charactersRef = propRefs['characters'] as String?;
+    if (charactersRef != null) {
+      // The reference format is typically the property name
+      // Look it up in our property map
+      final propertyId = propertyIdMap[charactersRef];
+      if (propertyId != null) {
+        return Alias(
+          property: PropertyAlias(
+            propertyId: propertyId,
+            defaultValue: Value(stringValue: node.characters),
+          ),
+        );
+      }
+    }
+  }
+
+  // Fall back to constant string
+  return Alias(
+    constant: ConstantAlias(value: Value(stringValue: node.characters)),
   );
 }
 
@@ -393,12 +582,6 @@ BooleanOperation? _convertBooleanOperation(String operation) {
     default:
       return BooleanOperation.BOOLEAN_OPERATION_UNION;
   }
-}
-
-Alias _createStringAlias(String value) {
-  return Alias(
-    constant: ConstantAlias(value: Value(stringValue: value)),
-  );
 }
 
 int _parseFontWeight(String style) {

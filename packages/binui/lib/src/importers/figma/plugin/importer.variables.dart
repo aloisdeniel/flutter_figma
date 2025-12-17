@@ -1,6 +1,9 @@
 part of 'importer.dart';
 
-Future<List<VariableCollection>> _importVariableCollections(
+/// Maps Figma variable ID to (collectionId, variableId) for alias resolution
+typedef VariableIdMap = Map<String, (int, int)>;
+
+Future<(List<VariableCollection>, VariableIdMap)> _importVariableCollections(
   ImporterContext<FigmaImportOptions> context,
 ) async {
   final collections = <VariableCollection>[];
@@ -116,7 +119,7 @@ Future<List<VariableCollection>> _importVariableCollections(
     );
   }
 
-  return collections;
+  return (collections, figmaVariableIdToAlias);
 }
 
 Value _convertVariableValue(
