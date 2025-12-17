@@ -139,7 +139,7 @@ class _VariableCollectionPreview extends StatefulWidget {
 
 class _VariableCollectionPreviewState
     extends State<_VariableCollectionPreview> {
-  bool _expanded = true; // Default to expanded in modal
+  bool _expanded = false;
 
   @override
   Widget build(BuildContext context) {
@@ -230,6 +230,29 @@ class _VariableCollectionPreviewState
               ),
             ),
           ),
+
+          Row(
+            children: [
+              Text(
+                'Variant:',
+                style: Theme.of(
+                  context,
+                ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _VariantSelector(
+                  variants: widget.collection.variants,
+                  selectedIndex: selectedVariantIndex,
+                  onChanged: (index) {
+                    scope?.onVariantChanged(widget.collection.id, index);
+                  },
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          const Divider(height: 1),
           if (_expanded)
             Container(
               width: double.infinity,
@@ -244,33 +267,7 @@ class _VariableCollectionPreviewState
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (hasVariants) ...[
-                    Row(
-                      children: [
-                        Text(
-                          'Variant:',
-                          style: Theme.of(context).textTheme.labelMedium
-                              ?.copyWith(fontWeight: FontWeight.w600),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: _VariantSelector(
-                            variants: widget.collection.variants,
-                            selectedIndex: selectedVariantIndex,
-                            onChanged: (index) {
-                              scope?.onVariantChanged(
-                                widget.collection.id,
-                                index,
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    const Divider(height: 1),
-                    const SizedBox(height: 16),
-                  ],
+                  if (hasVariants) ...[const SizedBox(height: 16)],
                   Text(
                     'Variables:',
                     style: Theme.of(context).textTheme.labelMedium?.copyWith(

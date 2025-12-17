@@ -314,7 +314,7 @@ class _NavigationRail extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           _RailButton(
-            icon: Icons.file_download,
+            icon: Icons.folder_special,
             label: 'Code',
             isSelected: showCode,
             onTap: onCodeTap,

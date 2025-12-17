@@ -103,22 +103,7 @@ class _PreviewPanelState extends State<PreviewPanel> {
               onPressed: _openVariablesModal,
               visualDensity: VisualDensity.compact,
             ),
-            const SizedBox(width: 12),
           ],
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              '${widget.library.components.length} components',
-              style: TextStyle(
-                fontSize: 12,
-                color: Theme.of(context).colorScheme.onSecondaryContainer,
-              ),
-            ),
-          ),
         ],
       ),
     );
@@ -177,8 +162,6 @@ class _PreviewPanelState extends State<PreviewPanel> {
         padding: const EdgeInsets.all(16),
         children: [
           if (widget.library.components.isNotEmpty) ...[
-            _SectionHeader(title: 'Components'),
-            const SizedBox(height: 12),
             ...widget.library.components.map(
               (component) => _ComponentPreview(
                 component: component,
