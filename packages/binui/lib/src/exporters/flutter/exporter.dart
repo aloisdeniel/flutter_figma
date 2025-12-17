@@ -10,9 +10,12 @@ import 'package:binui/src/exporters/flutter/pubspec.dart';
 import 'package:binui/src/exporters/flutter/values/value.dart';
 import 'package:binui/src/exporters/flutter/variables/variables.dart';
 import 'package:binui/src/exporters/flutter/variables/collection.dart';
-import 'package:dart_style/dart_style.dart';
 
 import '../../utils/naming.dart';
+import 'formatter/formatter.dart';
+import 'formatter/formatter_native.dart'
+    if (dart.library.js_interop) 'formatter/formatter_web.dart'
+    as platform;
 import 'options.dart';
 
 class FlutterExportContext extends ExportContext {
@@ -23,27 +26,12 @@ class FlutterExportContext extends ExportContext {
 class FlutterExporter extends Exporter<FlutterExportContext> {
   const FlutterExporter();
 
-  /// Creates a DartFormatter if possible.
-  /// Returns null if the formatter cannot be created (e.g., in environments
-  /// where Uri.base is not available, like Figma plugins).
-  static DartFormatter? _createFormatter() {
-    try {
-      return DartFormatter(
-        languageVersion: DartFormatter.latestLanguageVersion,
-      );
-    } catch (_) {
-      // Formatter creation may fail in certain environments (e.g., Figma plugins)
-      // where Uri.base is not available.
-      return null;
-    }
-  }
-
   @override
   FutureOr<Bundle> export(FlutterExportContext context) {
     final library = context.library;
 
     final files = <BundleFile>[];
-    final formatter = _createFormatter();
+    final DartCodeFormatter formatter = platform.createFormatter();
 
     // Export visual nodes
     final valueExporter = ValueDartExporter();
@@ -56,7 +44,7 @@ class FlutterExporter extends Exporter<FlutterExportContext> {
       files.add(
         StringBundleFile(
           'lib/src/selected/widget_$i.dart',
-          _formatDartCode(formatter, content),
+          formatter.format(content),
         ),
       );
     }
@@ -69,7 +57,7 @@ class FlutterExporter extends Exporter<FlutterExportContext> {
       files.add(
         StringBundleFile(
           'lib/src/variables/$fileName.dart',
-          _formatDartCode(formatter, content),
+          formatter.format(content),
         ),
       );
     }
@@ -81,7 +69,7 @@ class FlutterExporter extends Exporter<FlutterExportContext> {
       files.add(
         StringBundleFile(
           'lib/src/variables/variables.dart',
-          _formatDartCode(formatter, variablesContent),
+          formatter.format(variablesContent),
         ),
       );
     }
@@ -94,7 +82,7 @@ class FlutterExporter extends Exporter<FlutterExportContext> {
       files.add(
         StringBundleFile(
           'lib/src/components/$fileName.dart',
-          _formatDartCode(formatter, content),
+          formatter.format(content),
         ),
       );
     }
@@ -105,7 +93,7 @@ class FlutterExporter extends Exporter<FlutterExportContext> {
     files.add(
       StringBundleFile(
         'lib/src/metadata.dart',
-        _formatDartCode(formatter, metadataContent),
+        formatter.format(metadataContent),
       ),
     );
 
@@ -116,7 +104,7 @@ class FlutterExporter extends Exporter<FlutterExportContext> {
     files.add(
       StringBundleFile(
         'lib/$libraryName.dart',
-        _formatDartCode(formatter, barrelContent),
+        formatter.format(barrelContent),
       ),
     );
 
@@ -126,17 +114,5 @@ class FlutterExporter extends Exporter<FlutterExportContext> {
     files.add(StringBundleFile('pubspec.yaml', pubspecContent));
 
     return Bundle(name: libraryName, files: files);
-  }
-
-  /// Formats Dart code using dart_style.
-  /// Returns the original code if formatting fails or if formatter is null.
-  String _formatDartCode(DartFormatter? formatter, String code) {
-    if (formatter == null) return code;
-    try {
-      return formatter.format(code);
-    } catch (_) {
-      // If formatting fails for any reason, return the original code
-      return code;
-    }
   }
 }
