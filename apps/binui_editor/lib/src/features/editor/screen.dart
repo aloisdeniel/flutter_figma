@@ -107,13 +107,17 @@ class _EditorScreenState extends State<EditorScreen> {
 
   void _toggleEditor(bool isCompact) {
     setState(() {
-      if (isCompact) {
-        _showEditor = true;
-        _showPreview = false;
+      if (_showCode) {
         _showCode = false;
+        _showEditor = true;
+        // If we're coming from Code view, we might want to just show Editor,
+        // or potentially restore previous state if we tracked it.
+        // For now, let's just show Editor.
       } else {
         _showEditor = !_showEditor;
-        if (!_showEditor && !_showPreview && !_showCode) {
+        // If turning off Editor and Preview is also off, force Preview on
+        // so we don't have an empty screen.
+        if (!_showEditor && !_showPreview) {
           _showPreview = true;
         }
       }
@@ -122,13 +126,13 @@ class _EditorScreenState extends State<EditorScreen> {
 
   void _togglePreview(bool isCompact) {
     setState(() {
-      if (isCompact) {
-        _showPreview = true;
-        _showEditor = false;
+      if (_showCode) {
         _showCode = false;
+        _showPreview = true;
       } else {
         _showPreview = !_showPreview;
-        if (!_showEditor && !_showPreview && !_showCode) {
+        // If turning off Preview and Editor is also off, force Editor on
+        if (!_showPreview && !_showEditor) {
           _showEditor = true;
         }
       }
@@ -137,15 +141,16 @@ class _EditorScreenState extends State<EditorScreen> {
 
   void _toggleCode(bool isCompact) {
     setState(() {
-      if (isCompact) {
+      if (_showCode) {
+        // Toggle off - go back to split view (defaulting to Editor)
+        _showCode = false;
+        _showEditor = true;
+        _showPreview = true;
+      } else {
+        // Toggle on - full screen
         _showCode = true;
         _showEditor = false;
         _showPreview = false;
-      } else {
-        _showCode = !_showCode;
-        if (!_showEditor && !_showPreview && !_showCode) {
-          _showEditor = true;
-        }
       }
     });
   }
@@ -273,22 +278,43 @@ class _NavigationRail extends StatelessWidget {
       child: Column(
         children: [
           const SizedBox(height: 8),
-          _RailButton(
-            icon: Icons.code,
-            label: 'Editor',
-            isSelected: showEditor,
-            onTap: onEditorTap,
+          // JSON and Preview group
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 4),
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.surfaceContainer,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: Theme.of(
+                  context,
+                ).colorScheme.outlineVariant.withAlpha(100),
+              ),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 4),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                _RailButton(
+                  icon: Icons.data_object,
+                  label: 'JSON',
+                  isSelected: showEditor && !showCode,
+                  onTap: onEditorTap,
+                  isGrouped: true,
+                ),
+                const SizedBox(height: 2),
+                _RailButton(
+                  icon: Icons.preview,
+                  label: 'Preview',
+                  isSelected: showPreview && !showCode,
+                  onTap: onPreviewTap,
+                  isGrouped: true,
+                ),
+              ],
+            ),
           ),
-          const SizedBox(height: 4),
+          const SizedBox(height: 8),
           _RailButton(
-            icon: Icons.preview,
-            label: 'Preview',
-            isSelected: showPreview,
-            onTap: onPreviewTap,
-          ),
-          const SizedBox(height: 4),
-          _RailButton(
-            icon: Icons.integration_instructions,
+            icon: Icons.file_download,
             label: 'Code',
             isSelected: showCode,
             onTap: onCodeTap,
@@ -323,6 +349,7 @@ class _RailButton extends StatelessWidget {
     required this.onTap,
     this.showBadge = false,
     this.badgeCount,
+    this.isGrouped = false,
   });
 
   final IconData icon;
@@ -331,18 +358,23 @@ class _RailButton extends StatelessWidget {
   final VoidCallback onTap;
   final bool showBadge;
   final int? badgeCount;
+  final bool isGrouped;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    // When grouped, the button itself is smaller/tighter to fit the visual style
+    final double buttonSize = isGrouped ? 40 : 48;
+
     return Tooltip(
       message: label,
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(8),
         child: Container(
-          width: 48,
-          height: 48,
+          width: buttonSize,
+          height: buttonSize,
+          margin: isGrouped ? const EdgeInsets.symmetric(horizontal: 2) : null,
           decoration: BoxDecoration(
             color: isSelected
                 ? colorScheme.primaryContainer
@@ -354,6 +386,7 @@ class _RailButton extends StatelessWidget {
             children: [
               Icon(
                 icon,
+                size: isGrouped ? 20 : 24,
                 color: isSelected
                     ? colorScheme.onPrimaryContainer
                     : colorScheme.onSurfaceVariant,

@@ -124,50 +124,7 @@ class _CodePanelState extends State<CodePanel> {
       return const Center(child: Text('No code generated yet'));
     }
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _buildHeader(context),
-        Expanded(child: _CodeBundleView(bundle: _cachedBundle!)),
-      ],
-    );
-  }
-
-  Widget _buildHeader(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surfaceContainerHighest,
-        border: Border(
-          bottom: BorderSide(
-            color: Theme.of(context).colorScheme.outlineVariant,
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Icon(
-            Icons.code,
-            size: 18,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          const SizedBox(width: 8),
-          Text(
-            'Generated Code',
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-          ),
-          const Spacer(),
-          IconButton(
-            icon: const Icon(Icons.refresh, size: 18),
-            tooltip: 'Regenerate code',
-            onPressed: _isGenerating ? null : _generateCode,
-            visualDensity: VisualDensity.compact,
-          ),
-        ],
-      ),
-    );
+    return _CodeBundleView(bundle: _cachedBundle!);
   }
 }
 
