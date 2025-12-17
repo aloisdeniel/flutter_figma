@@ -189,8 +189,8 @@ extension SolidPaintConversionExtension on b.SolidPaint {
 }
 
 extension VisualNodeConversionExtension on b.VisualNode {
-  Widget toFigmaFlutter() {
-    return FigmaVisualNodeWidget(node: this);
+  Widget toFigmaFlutter({bool isRoot = true}) {
+    return FigmaVisualNodeWidget(node: this, isRoot: isRoot);
   }
 }
 

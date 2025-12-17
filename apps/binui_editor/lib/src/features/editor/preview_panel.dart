@@ -456,7 +456,7 @@ class _VisualNodeRenderer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     try {
-      return node.toFigmaFlutter();
+      return node.toFigmaFlutter(isRoot: true);
     } catch (e) {
       return Container(
         padding: const EdgeInsets.all(12),

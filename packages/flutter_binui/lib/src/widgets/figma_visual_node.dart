@@ -5,9 +5,14 @@ import 'package:flutter_binui/src/value.dart';
 import 'package:flutter_figma/widgets.dart';
 
 class FigmaVisualNodeWidget extends StatelessWidget {
-  const FigmaVisualNodeWidget({super.key, required this.node});
+  const FigmaVisualNodeWidget({
+    super.key,
+    required this.node,
+    this.isRoot = true,
+  });
 
   final b.VisualNode node;
+  final bool isRoot;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +23,9 @@ class FigmaVisualNodeWidget extends StatelessWidget {
       ),
       b.VisualNode_Type.frame => FigmaFrame(
         layout: node.frame.layout.toFlutter(),
-        size: ChildSize(width: node.frame.width, height: node.frame.height),
+        size: isRoot
+            ? null
+            : ChildSize(width: node.frame.width, height: node.frame.height),
         strokes: node.frame.strokes
             .map((p) => p.toFigmaFlutter(config.library))
             .toList(),
@@ -28,7 +35,7 @@ class FigmaVisualNodeWidget extends StatelessWidget {
         blendMode: node.frame.blendMode.toFigmaFlutter(),
         clipContent: node.frame.clipContent,
         children: node.frame.children
-            .map((child) => child.toFigmaFlutter())
+            .map((child) => child.toFigmaFlutter(isRoot: false))
             .toList(),
       ),
       _ => Text('Unsupported node type ${node.whichType()}'),
