@@ -285,7 +285,12 @@ class RenderFigmaLayout extends RenderBox
           child = childParentData.nextSibling;
         }
 
-        size = constraints.biggest;
+        size = Size(
+          constraints.hasBoundedWidth ? constraints.maxWidth : referenceWidth,
+          constraints.hasBoundedHeight
+              ? constraints.maxHeight
+              : referenceHeight,
+        );
         positionAbsoluteChildren(
           children,
           Size(referenceWidth, referenceHeight),

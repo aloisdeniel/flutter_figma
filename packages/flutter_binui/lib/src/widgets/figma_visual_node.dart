@@ -9,15 +9,17 @@ class FigmaVisualNodeWidget extends StatelessWidget {
     super.key,
     required this.node,
     this.isRoot = true,
+    this.parentLayoutType = b.LayoutProperties_Type.notSet,
   });
 
   final b.VisualNode node;
   final bool isRoot;
+  final b.LayoutProperties_Type parentLayoutType;
 
   @override
   Widget build(BuildContext context) {
     final config = BinuiProvider.of(context);
-    return switch (node.whichType()) {
+    Widget child = switch (node.whichType()) {
       b.VisualNode_Type.text => FigmaText(
         config.resolve(node.text.characters, ''),
       ),
@@ -25,7 +27,16 @@ class FigmaVisualNodeWidget extends StatelessWidget {
         layout: node.frame.layout.toFlutter(),
         size: isRoot
             ? null
-            : ChildSize(width: node.frame.width, height: node.frame.height),
+            : ChildSize(
+                width: node.frame.width,
+                height: node.frame.height,
+                primaryAxisSizing: node.frame.size.hasPrimaryAxisSizing()
+                    ? node.frame.size.primaryAxisSizing.toFigmaFlutter()
+                    : null,
+                counterAxisSizing: node.frame.size.hasCounterAxisSizing()
+                    ? node.frame.size.counterAxisSizing.toFigmaFlutter()
+                    : null,
+              ),
         strokes: node.frame.strokes
             .map((p) => p.toFigmaFlutter(config.library))
             .toList(),
@@ -35,11 +46,138 @@ class FigmaVisualNodeWidget extends StatelessWidget {
         blendMode: node.frame.blendMode.toFigmaFlutter(),
         clipContent: node.frame.clipContent,
         children: node.frame.children
-            .map((child) => child.toFigmaFlutter(isRoot: false))
+            .map(
+              (child) => child.toFigmaFlutter(
+                isRoot: false,
+                parentLayoutType: node.frame.layout.whichType(),
+              ),
+            )
             .toList(),
       ),
       _ => Text('Unsupported node type ${node.whichType()}'),
     };
+
+    if (isRoot) return child;
+
+    return _wrapWithPositioning(child);
+  }
+
+  Widget _wrapWithPositioning(Widget child) {
+    // Get layout data from node if available
+    double? x, y, width, height;
+    b.LayoutConstraints? constraints;
+    b.ChildLayoutData? layoutData;
+
+    switch (node.whichType()) {
+      case b.VisualNode_Type.frame:
+        x = node.frame.x;
+        y = node.frame.y;
+        width = node.frame.width;
+        height = node.frame.height;
+        constraints = node.frame.constraints;
+        layoutData = node.frame.layoutData;
+        break;
+      case b.VisualNode_Type.text:
+        x = node.text.x;
+        y = node.text.y;
+        width = node.text.width;
+        height = node.text.height;
+        constraints = node.text.constraints;
+        layoutData = node.text.layoutData;
+        break;
+      case b.VisualNode_Type.rectangle:
+        x = node.rectangle.x;
+        y = node.rectangle.y;
+        width = node.rectangle.width;
+        height = node.rectangle.height;
+        constraints = node.rectangle.constraints;
+        layoutData = node.rectangle.layoutData;
+        break;
+      case b.VisualNode_Type.ellipse:
+        x = node.ellipse.x;
+        y = node.ellipse.y;
+        width = node.ellipse.width;
+        height = node.ellipse.height;
+        constraints = node.ellipse.constraints;
+        layoutData = node.ellipse.layoutData;
+        break;
+      case b.VisualNode_Type.line:
+        x = node.line.x;
+        y = node.line.y;
+        width = node.line.width;
+        height = node.line.height;
+        constraints = node.line.constraints;
+        layoutData = node.line.layoutData;
+        break;
+      case b.VisualNode_Type.vector:
+        x = node.vector.x;
+        y = node.vector.y;
+        width = node.vector.width;
+        height = node.vector.height;
+        constraints = node.vector.constraints;
+        layoutData = node.vector.layoutData;
+        break;
+      case b.VisualNode_Type.group:
+        x = node.group.x;
+        y = node.group.y;
+        width = node.group.width;
+        height = node.group.height;
+        constraints = node.group.constraints;
+        layoutData = node.group.layoutData;
+        break;
+      default:
+        return child;
+    }
+
+    // Determine if absolute positioning is needed
+    // 1. Parent is freeform -> Always absolute
+    // 2. Child has layoutData.mode == ABSOLUTE -> Absolute
+    final isAbsolute =
+        parentLayoutType == b.LayoutProperties_Type.freeform ||
+        parentLayoutType == b.LayoutProperties_Type.notSet ||
+        (layoutData?.mode == b.PositioningMode.POSITIONING_MODE_ABSOLUTE);
+
+    if (isAbsolute) {
+      return FigmaPositioned.freeform(
+        x: x ?? 0,
+        y: y ?? 0,
+        width: width ?? 0,
+        height: height ?? 0,
+        horizontalConstraint:
+            constraints?.horizontal.toFigmaFlutter() ?? ConstraintType.min,
+        verticalConstraint:
+            constraints?.vertical.toFigmaFlutter() ?? ConstraintType.min,
+        child: child,
+      );
+    }
+
+    // If parent is Auto Layout (and not absolute child)
+    if (parentLayoutType == b.LayoutProperties_Type.autoLayout) {
+      return FigmaPositioned.auto(
+        width: width ?? 0,
+        height: height ?? 0,
+        primaryAxisSizing:
+            layoutData?.primaryAxisSizing.toFigmaFlutter() ??
+            ChildSizingMode.fixed,
+        counterAxisSizing:
+            layoutData?.counterAxisSizing.toFigmaFlutter() ??
+            ChildSizingMode.fixed,
+        child: child,
+      );
+    }
+
+    // Grid support if needed
+    if (parentLayoutType == b.LayoutProperties_Type.grid) {
+      return FigmaPositioned.grid(
+        column: layoutData?.gridColumn ?? 0,
+        row: layoutData?.gridRow ?? 0,
+        columnSpan: layoutData?.gridColumnSpan ?? 1,
+        rowSpan: layoutData?.gridRowSpan ?? 1,
+        child: child,
+      );
+    }
+
+    return child;
   }
 }
 

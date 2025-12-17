@@ -188,9 +188,29 @@ extension SolidPaintConversionExtension on b.SolidPaint {
   }
 }
 
+extension ConstraintTypeConversionExtension on b.ConstraintType {
+  ConstraintType toFigmaFlutter() {
+    return switch (this) {
+      b.ConstraintType.CONSTRAINT_TYPE_MIN => ConstraintType.min,
+      b.ConstraintType.CONSTRAINT_TYPE_CENTER => ConstraintType.center,
+      b.ConstraintType.CONSTRAINT_TYPE_MAX => ConstraintType.max,
+      b.ConstraintType.CONSTRAINT_TYPE_STRETCH => ConstraintType.stretch,
+      b.ConstraintType.CONSTRAINT_TYPE_SCALE => ConstraintType.scale,
+      _ => ConstraintType.min,
+    };
+  }
+}
+
 extension VisualNodeConversionExtension on b.VisualNode {
-  Widget toFigmaFlutter({bool isRoot = true}) {
-    return FigmaVisualNodeWidget(node: this, isRoot: isRoot);
+  Widget toFigmaFlutter({
+    bool isRoot = true,
+    b.LayoutProperties_Type parentLayoutType = b.LayoutProperties_Type.notSet,
+  }) {
+    return FigmaVisualNodeWidget(
+      node: this,
+      isRoot: isRoot,
+      parentLayoutType: parentLayoutType,
+    );
   }
 }
 
@@ -234,6 +254,15 @@ extension BlendModeConversionExtension on b.BlendMode {
       b.BlendMode.BLEND_MODE_COLOR => BlendMode.color,
       b.BlendMode.BLEND_MODE_LUMINOSITY => BlendMode.luminosity,
       _ => BlendMode.passThrough,
+    };
+  }
+}
+
+extension ChildSizingModeConversionExtension on b.ChildSizingMode {
+  ChildSizingMode toFigmaFlutter() {
+    return switch (this) {
+      b.ChildSizingMode.CHILD_SIZING_HUG => ChildSizingMode.hug,
+      _ => ChildSizingMode.fixed,
     };
   }
 }
