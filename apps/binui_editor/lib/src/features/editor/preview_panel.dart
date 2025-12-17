@@ -175,23 +175,6 @@ class _PreviewPanelState extends State<PreviewPanel> {
   }
 }
 
-class _SectionHeader extends StatelessWidget {
-  const _SectionHeader({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      title,
-      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-        fontWeight: FontWeight.w700,
-        color: Theme.of(context).colorScheme.primary,
-      ),
-    );
-  }
-}
-
 class _ComponentPreview extends StatefulWidget {
   const _ComponentPreview({required this.component, required this.library});
 

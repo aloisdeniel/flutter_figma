@@ -2,6 +2,52 @@ import 'package:binui/src/definitions.pb.dart';
 
 export 'definitions.pb.dart';
 
+class VariableCollectionVariantValue {
+  const VariableCollectionVariantValue({
+    required this.collectionId,
+    required this.variantId,
+  });
+
+  final int collectionId;
+  final int variantId;
+
+  @override
+  int get hashCode {
+    return Object.hash(collectionId, variantId);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! VariableCollectionVariantValue) return false;
+    return other.collectionId == collectionId && other.variantId == variantId;
+  }
+}
+
+class PropertyValue {
+  const PropertyValue({
+    required this.componentId,
+    required this.propertyId,
+    required this.value,
+  });
+
+  final int componentId;
+  final int propertyId;
+  final Value value;
+
+  @override
+  int get hashCode {
+    return Object.hash(componentId, propertyId, value);
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (other is! PropertyValue) return false;
+    return other.componentId == componentId &&
+        other.propertyId == propertyId &&
+        other.value == value;
+  }
+}
+
 extension LibraryExtension on Library {
   Component? findComponent(int id) {
     return components.where((x) => x.id == id).firstOrNull;
@@ -19,34 +65,40 @@ extension LibraryExtension on Library {
 
   Value? resolveAlias(
     Alias alias, {
-    Map<int, int>? variableCollectionVariants,
-    Map<int, Value>? properties,
+    List<VariableCollectionVariantValue> variableCollectionVariants = const [],
+    List<PropertyValue> properties = const [],
   }) {
     final result = () {
       switch (alias.whichType()) {
+        case Alias_Type.constant:
+          return alias.constant.value;
         case Alias_Type.variable:
           final collection = findVariableCollection(
             alias.variable.collectionId,
           );
           if (collection != null) {
-            final variantId = variableCollectionVariants != null
-                ? variableCollectionVariants[collection.id] ??
-                      collection.variants.first.id
-                : collection.variants.first.id;
+            final variantValue = variableCollectionVariants
+                .where((x) => x.collectionId == alias.variable.collectionId)
+                .firstOrNull;
+
+            final variantId =
+                variantValue?.variantId ?? collection.variants.first.id;
+
             return collection.findVariantValue(
               alias.variable.variableId,
               variantId,
             );
           }
-        case Alias_Type.constant:
-          return alias.constant.value;
         case Alias_Type.property:
-          if (properties != null) {
-            if (properties.containsKey(alias.property.propertyId)) {
-              return properties[alias.property.propertyId];
-            }
-          }
-          return alias.property.defaultValue;
+          final value = properties
+              .where(
+                (x) =>
+                    x.componentId == alias.property.componentId &&
+                    x.propertyId == alias.property.propertyId,
+              )
+              .firstOrNull;
+
+          return value?.value ?? alias.property.defaultValue;
         case Alias_Type.notSet:
           return null;
       }

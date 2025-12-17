@@ -5,7 +5,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter/widgets.dart' as f;
 import 'package:flutter_figma/widgets.dart';
 
-import 'widgets/figma_visual_node.dart';
+import 'widgets/visual_node.dart';
 
 extension ValueConversionExtension on b.Value {
   T toFlutter<T>() {
@@ -206,7 +206,7 @@ extension VisualNodeConversionExtension on b.VisualNode {
     bool isRoot = true,
     b.LayoutProperties_Type parentLayoutType = b.LayoutProperties_Type.notSet,
   }) {
-    return FigmaVisualNodeWidget(
+    return BinuiVisualNode(
       node: this,
       isRoot: isRoot,
       parentLayoutType: parentLayoutType,
@@ -264,5 +264,96 @@ extension ChildSizingModeConversionExtension on b.ChildSizingMode {
       b.ChildSizingMode.CHILD_SIZING_HUG => ChildSizingMode.hug,
       _ => ChildSizingMode.fixed,
     };
+  }
+}
+
+extension LayoutPropertiesConversionExtension on b.LayoutProperties {
+  FigmaLayoutProperties toFlutter() {
+    return switch (whichType()) {
+      b.LayoutProperties_Type.autoLayout => autoLayout.toFlutter(),
+      b.LayoutProperties_Type.grid => grid.toFlutter(),
+      _ => freeform.toFlutter(),
+    };
+  }
+}
+
+extension FreeformLayoutPropertiesConversionExtension
+    on b.FreeformLayoutProperties {
+  FigmaLayoutProperties toFlutter() {
+    return FigmaLayoutProperties.freeform(
+      referenceWidth: referenceWidth,
+      referenceHeight: referenceHeight,
+    );
+  }
+}
+
+extension AutoLayoutPropertiesConversionExtension on b.AutoLayoutProperties {
+  FigmaLayoutProperties toFlutter() {
+    return FigmaLayoutProperties.auto(
+      axis: isVertical ? Axis.vertical : Axis.horizontal,
+      itemSpacing: itemSpacing,
+      primaryAxisSizingMode: switch (primaryAxisSizingMode) {
+        b.PrimaryAxisSizingMode.PRIMARY_AXIS_SIZING_FIXED =>
+          PrimaryAxisSizingMode.fixed,
+        _ => PrimaryAxisSizingMode.auto,
+      },
+      counterAxisSizingMode: switch (counterAxisSizingMode) {
+        b.CounterAxisSizingMode.COUNTER_AXIS_SIZING_FIXED =>
+          CounterAxisSizingMode.fixed,
+        _ => CounterAxisSizingMode.auto,
+      },
+      primaryAxisAlignItems: switch (primaryAxisAlignItems) {
+        b.LayoutAlign.LAYOUT_ALIGN_CENTER => LayoutAlign.center,
+        b.LayoutAlign.LAYOUT_ALIGN_MAX => LayoutAlign.max,
+        b.LayoutAlign.LAYOUT_ALIGN_SPACE_BETWEEN => LayoutAlign.spaceBetween,
+        _ => LayoutAlign.min,
+      },
+      counterAxisAlignItems: switch (counterAxisAlignItems) {
+        b.LayoutAlign.LAYOUT_ALIGN_CENTER => LayoutAlign.center,
+        b.LayoutAlign.LAYOUT_ALIGN_MAX => LayoutAlign.max,
+        b.LayoutAlign.LAYOUT_ALIGN_SPACE_BETWEEN => LayoutAlign.spaceBetween,
+        _ => LayoutAlign.min,
+      },
+      layoutWrap: switch (layoutWrap) {
+        b.LayoutWrap.LAYOUT_WRAP_WRAP => LayoutWrap.wrap,
+        _ => LayoutWrap.noWrap,
+      },
+      referenceWidth: referenceWidth,
+      referenceHeight: referenceHeight,
+    );
+  }
+}
+
+extension GridLayoutPropertiesConversionExtension on b.GridLayoutProperties {
+  FigmaLayoutProperties toFlutter() {
+    return FigmaLayoutProperties.grid(
+      columnCount: columnCount,
+      rowCount: rowCount,
+      columns: columns
+          .map(
+            (c) => GridTrack(
+              size: c.size,
+              sizingMode: switch (c.sizingMode) {
+                b.GridTrackSizingMode.GRID_TRACK_SIZING_FIXED =>
+                  GridTrackSizingMode.fixed,
+                _ => GridTrackSizingMode.auto,
+              },
+            ),
+          )
+          .toList(),
+
+      rows: rows
+          .map(
+            (c) => GridTrack(
+              size: c.size,
+              sizingMode: switch (c.sizingMode) {
+                b.GridTrackSizingMode.GRID_TRACK_SIZING_FIXED =>
+                  GridTrackSizingMode.fixed,
+                _ => GridTrackSizingMode.auto,
+              },
+            ),
+          )
+          .toList(),
+    );
   }
 }

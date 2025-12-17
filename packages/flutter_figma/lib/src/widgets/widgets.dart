@@ -1,3 +1,4 @@
+export 'appearance.dart';
 export 'clip.dart';
 export 'decorated.dart';
 export 'filtered.dart';
