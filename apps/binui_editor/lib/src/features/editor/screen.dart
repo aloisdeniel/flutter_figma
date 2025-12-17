@@ -4,6 +4,7 @@ import 'package:binui/binui.dart' as b;
 import 'package:flutter/material.dart';
 
 import '../../services/library_manager.dart';
+import 'code_panel.dart';
 import 'json_editor.dart';
 import 'library_picker_modal.dart';
 import 'preview_panel.dart';
@@ -24,6 +25,7 @@ class _EditorScreenState extends State<EditorScreen> {
   String? _errorMessage;
   bool _showEditor = true;
   bool _showPreview = true;
+  bool _showCode = false;
   bool _isInitialized = false;
   String? _lastSelectedLibraryId;
 
@@ -108,9 +110,10 @@ class _EditorScreenState extends State<EditorScreen> {
       if (isCompact) {
         _showEditor = true;
         _showPreview = false;
+        _showCode = false;
       } else {
         _showEditor = !_showEditor;
-        if (!_showEditor && !_showPreview) {
+        if (!_showEditor && !_showPreview && !_showCode) {
           _showPreview = true;
         }
       }
@@ -122,9 +125,25 @@ class _EditorScreenState extends State<EditorScreen> {
       if (isCompact) {
         _showPreview = true;
         _showEditor = false;
+        _showCode = false;
       } else {
         _showPreview = !_showPreview;
-        if (!_showEditor && !_showPreview) {
+        if (!_showEditor && !_showPreview && !_showCode) {
+          _showEditor = true;
+        }
+      }
+    });
+  }
+
+  void _toggleCode(bool isCompact) {
+    setState(() {
+      if (isCompact) {
+        _showCode = true;
+        _showEditor = false;
+        _showPreview = false;
+      } else {
+        _showCode = !_showCode;
+        if (!_showEditor && !_showPreview && !_showCode) {
           _showEditor = true;
         }
       }
@@ -137,17 +156,23 @@ class _EditorScreenState extends State<EditorScreen> {
       builder: (context, constraints) {
         final isCompact = constraints.maxWidth < _compactBreakpoint;
         final showEditor = isCompact ? _showEditor : _showEditor;
-        final showPreview = isCompact ? !_showEditor : _showPreview;
+        final showPreview = isCompact ? _showPreview : _showPreview;
+        final showCode = isCompact ? _showCode : _showCode;
+
+        // Ensure at least one is shown on compact if nothing is selected (fallback)
+        // Though _toggle methods handle this, initial state might need check.
 
         return Scaffold(
           body: Row(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _NavigationRail(
-                showEditor: _showEditor,
-                showPreview: isCompact ? !_showEditor : _showPreview,
+                showEditor: showEditor,
+                showPreview: showPreview,
+                showCode: showCode,
                 onEditorTap: () => _toggleEditor(isCompact),
                 onPreviewTap: () => _togglePreview(isCompact),
+                onCodeTap: () => _toggleCode(isCompact),
                 onLibraryTap: () =>
                     LibraryPickerModal.show(context, _libraryManager),
                 libraryManager: _libraryManager,
@@ -160,7 +185,7 @@ class _EditorScreenState extends State<EditorScreen> {
               if (showEditor)
                 Expanded(
                   child: Container(
-                    decoration: showPreview
+                    decoration: (showPreview || showCode)
                         ? BoxDecoration(
                             border: Border(
                               right: BorderSide(
@@ -188,9 +213,28 @@ class _EditorScreenState extends State<EditorScreen> {
                 ),
               if (showPreview)
                 Expanded(
+                  child: Container(
+                    decoration: showCode
+                        ? BoxDecoration(
+                            border: Border(
+                              right: BorderSide(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.outlineVariant,
+                              ),
+                            ),
+                          )
+                        : null,
+                    child: _library != null
+                        ? PreviewPanel(library: _library!)
+                        : _EmptyPreview(hasError: _errorMessage != null),
+                  ),
+                ),
+              if (showCode)
+                Expanded(
                   child: _library != null
-                      ? PreviewPanel(library: _library!)
-                      : _EmptyPreview(hasError: _errorMessage != null),
+                      ? CodePanel(library: _library!)
+                      : const Center(child: Text('No library loaded')),
                 ),
             ],
           ),
@@ -204,16 +248,20 @@ class _NavigationRail extends StatelessWidget {
   const _NavigationRail({
     required this.showEditor,
     required this.showPreview,
+    required this.showCode,
     required this.onEditorTap,
     required this.onPreviewTap,
+    required this.onCodeTap,
     required this.onLibraryTap,
     required this.libraryManager,
   });
 
   final bool showEditor;
   final bool showPreview;
+  final bool showCode;
   final VoidCallback onEditorTap;
   final VoidCallback onPreviewTap;
+  final VoidCallback onCodeTap;
   final VoidCallback onLibraryTap;
   final LibraryManager libraryManager;
 
@@ -237,6 +285,13 @@ class _NavigationRail extends StatelessWidget {
             label: 'Preview',
             isSelected: showPreview,
             onTap: onPreviewTap,
+          ),
+          const SizedBox(height: 4),
+          _RailButton(
+            icon: Icons.integration_instructions,
+            label: 'Code',
+            isSelected: showCode,
+            onTap: onCodeTap,
           ),
           const Spacer(),
           AnimatedBuilder(
