@@ -31,36 +31,33 @@ class VariantSelectionScope extends InheritedWidget {
 }
 
 class VariablesModal extends StatelessWidget {
-  const VariablesModal({
-    super.key,
-    required this.library,
-    required this.selectedVariants,
-    required this.onVariantChanged,
-  });
+  const VariablesModal({super.key, required this.library});
 
   final b.Library library;
-  final Map<int, int> selectedVariants;
-  final void Function(int, int) onVariantChanged;
 
   static void show(
     BuildContext context, {
     required b.Library library,
-    required Map<int, int> selectedVariants,
-    required void Function(int, int) onVariantChanged,
+    required ValueNotifier<Map<int, int>> variantsNotifier,
   }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
       showDragHandle: true,
-      builder: (context) => VariantSelectionScope(
-        selectedVariants: selectedVariants,
-        onVariantChanged: onVariantChanged,
-        child: VariablesModal(
-          library: library,
-          selectedVariants: selectedVariants,
-          onVariantChanged: onVariantChanged,
-        ),
+      builder: (context) => ValueListenableBuilder<Map<int, int>>(
+        valueListenable: variantsNotifier,
+        builder: (context, selectedVariants, _) {
+          return VariantSelectionScope(
+            selectedVariants: selectedVariants,
+            onVariantChanged: (collectionId, variantIndex) {
+              final newMap = Map<int, int>.from(variantsNotifier.value);
+              newMap[collectionId] = variantIndex;
+              variantsNotifier.value = newMap;
+            },
+            child: VariablesModal(library: library),
+          );
+        },
       ),
     );
   }

@@ -15,49 +15,60 @@ class PreviewPanel extends StatefulWidget {
 
 class _PreviewPanelState extends State<PreviewPanel> {
   /// Tracks selected variant index for each collection by collection ID
-  Map<int, int> _selectedVariants = {};
+  final ValueNotifier<Map<int, int>> _selectedVariantsNotifier = ValueNotifier(
+    {},
+  );
 
   @override
   void didUpdateWidget(PreviewPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Reset selections when library changes
     if (widget.library != oldWidget.library) {
-      _selectedVariants = {};
+      _selectedVariantsNotifier.value = {};
     }
   }
 
+  @override
+  void dispose() {
+    _selectedVariantsNotifier.dispose();
+    super.dispose();
+  }
+
   void _onVariantChanged(int collectionId, int variantIndex) {
-    setState(() {
-      _selectedVariants = Map.from(_selectedVariants)
-        ..[collectionId] = variantIndex;
-    });
+    final newMap = Map<int, int>.from(_selectedVariantsNotifier.value);
+    newMap[collectionId] = variantIndex;
+    _selectedVariantsNotifier.value = newMap;
   }
 
   void _openVariablesModal() {
     VariablesModal.show(
       context,
       library: widget.library,
-      selectedVariants: _selectedVariants,
-      onVariantChanged: _onVariantChanged,
+      variantsNotifier: _selectedVariantsNotifier,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return VariantSelectionScope(
-      selectedVariants: _selectedVariants,
-      onVariantChanged: _onVariantChanged,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          _buildHeader(context),
-          Expanded(child: _buildPreviewContent()),
-        ],
-      ),
+    return ValueListenableBuilder<Map<int, int>>(
+      valueListenable: _selectedVariantsNotifier,
+      builder: (context, selectedVariants, _) {
+        return VariantSelectionScope(
+          selectedVariants: selectedVariants,
+          onVariantChanged: _onVariantChanged,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _buildHeader(context, selectedVariants),
+              Expanded(child: _buildPreviewContent()),
+            ],
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
+  Widget _buildHeader(BuildContext context, Map<int, int> selectedVariants) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -84,7 +95,7 @@ class _PreviewPanelState extends State<PreviewPanel> {
           ),
           const Spacer(),
           if (widget.library.variables.isNotEmpty) ...[
-            _buildSelectedVariantsTags(),
+            _buildSelectedVariantsTags(selectedVariants),
             const SizedBox(width: 8),
             IconButton.filledTonal(
               icon: const Icon(Icons.tune, size: 18),
@@ -113,17 +124,15 @@ class _PreviewPanelState extends State<PreviewPanel> {
     );
   }
 
-  Widget _buildSelectedVariantsTags() {
+  Widget _buildSelectedVariantsTags(Map<int, int> selectedVariants) {
     final activeVariants = <String>[];
 
     for (final collection in widget.library.variables) {
       if (collection.variants.isEmpty) continue;
 
-      final selectedIndex = _selectedVariants[collection.id] ?? 0;
+      final selectedIndex = selectedVariants[collection.id] ?? 0;
       if (selectedIndex < collection.variants.length) {
         final variant = collection.variants[selectedIndex];
-        // Only show if it's not just "Default" or "Value" if there are multiple?
-        // Or show all active selections. Let's show all for clarity.
         activeVariants.add('${collection.name}: ${variant.name}');
       }
     }
@@ -177,10 +186,9 @@ class _PreviewPanelState extends State<PreviewPanel> {
               ),
             ),
           ] else if (widget.library.visualNodes.isNotEmpty) ...[
-            // Optional: If there are raw visual nodes but no components
             _SectionHeader(title: 'Visual Nodes'),
             const SizedBox(height: 12),
-            // ... (Logic for visual nodes if needed, or just leave as is)
+            // ... (Visual nodes logic omitted as it wasn't fully implemented in original)
           ],
         ],
       ),
