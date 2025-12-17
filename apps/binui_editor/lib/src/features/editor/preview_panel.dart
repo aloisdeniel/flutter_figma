@@ -1,7 +1,10 @@
 import 'package:binui/binui.dart' as b;
+import 'package:file_selector/file_selector.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_binui/flutter_binui.dart';
+import 'package:universal_html/html.dart' as html;
 
 /// View mode for the preview panel
 enum PreviewMode { preview, code }
@@ -311,6 +314,39 @@ class _CodeBundleViewState extends State<_CodeBundleView> {
       .where((f) => f.path.endsWith('.dart') || f.path.endsWith('.yaml'))
       .toList();
 
+  Future<void> _downloadCode() async {
+    final zipData = widget.bundle.toZip();
+    final fileName = '${widget.bundle.name}.zip';
+
+    if (kIsWeb) {
+      final blob = html.Blob([zipData]);
+      final url = html.Url.createObjectUrlFromBlob(blob);
+      final anchor = html.AnchorElement(href: url)
+        ..setAttribute('download', fileName)
+        ..click();
+      html.Url.revokeObjectUrl(url);
+    } else {
+      final location = await getSaveLocation(suggestedName: fileName);
+      if (location == null) return;
+
+      final file = XFile.fromData(
+        zipData,
+        name: fileName,
+        mimeType: 'application/zip',
+      );
+      await file.saveTo(location.path);
+    }
+
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Code downloaded successfully'),
+          duration: Duration(seconds: 2),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final files = _dartFiles;
@@ -352,11 +388,24 @@ class _CodeBundleViewState extends State<_CodeBundleView> {
                     ),
                   ),
                 ),
-                child: Text(
-                  'Files (${files.length})',
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                child: Row(
+                  children: [
+                    Text(
+                      'Files (${files.length})',
+                      style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    const Spacer(),
+                    IconButton(
+                      icon: const Icon(Icons.download, size: 16),
+                      tooltip: 'Download as ZIP',
+                      onPressed: _downloadCode,
+                      visualDensity: VisualDensity.compact,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
                 ),
               ),
               Expanded(
