@@ -234,7 +234,45 @@ Component _createComponentFromNode(
   VariableIdMap variableIdMap,
 ) {
   final name = component.name;
+  final properties = <ComponentProperty>[];
   final propertyIdMap = <String, int>{};
+
+  // Extract component properties from standalone component
+  final figProperties = component.componentPropertyDefinitions.dartify();
+  if (figProperties is Map) {
+    var propertyIndex = 0;
+    for (final entry in figProperties.entries) {
+      final key = entry.key as String;
+      final prop = entry.value as Map;
+      final propType = prop['type'] as String;
+
+      if (propType == 'TEXT') {
+        final defaultValue = prop['defaultValue'] as String;
+        properties.add(
+          ComponentProperty(
+            id: propertyIndex,
+            name: key,
+            defaultValue: Value(stringValue: defaultValue),
+          ),
+        );
+        propertyIdMap[key] = propertyIndex;
+        propertyIndex++;
+      } else if (propType == 'BOOLEAN') {
+        final defaultValue = prop['defaultValue'] as bool;
+        properties.add(
+          ComponentProperty(
+            id: propertyIndex,
+            name: key,
+            defaultValue: Value(boolean: defaultValue),
+          ),
+        );
+        propertyIdMap[key] = propertyIndex;
+        propertyIndex++;
+      }
+      // Note: VARIANT type doesn't apply to standalone components
+    }
+  }
+
   final visualNode = _convertSceneNodeToVisualNode(
     component,
     variableIdMap,
@@ -247,6 +285,7 @@ Component _createComponentFromNode(
   return Component(
     name: name,
     documentation: 'https://www.figma.com/file/${figma_api.figma.fileKey}',
+    properties: properties,
     variants: [variant],
   );
 }

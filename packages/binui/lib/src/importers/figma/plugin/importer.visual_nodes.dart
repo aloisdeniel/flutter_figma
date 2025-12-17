@@ -475,9 +475,11 @@ Alias _createTextAlias(figma_api.TextNode node, PropertyIdMap propertyIdMap) {
   if (propRefs != null) {
     final charactersRef = propRefs['characters'] as String?;
     if (charactersRef != null) {
-      // The reference format is typically the property name
+      // Figma returns property references in format "PropName#123:456"
+      // Extract just the property name part before the '#'
+      final propertyName = _extractPropertyName(charactersRef);
       // Look it up in our property map
-      final propertyId = propertyIdMap[charactersRef];
+      final propertyId = propertyIdMap[propertyName];
       if (propertyId != null) {
         return Alias(
           property: PropertyAlias(
@@ -493,6 +495,18 @@ Alias _createTextAlias(figma_api.TextNode node, PropertyIdMap propertyIdMap) {
   return Alias(
     constant: ConstantAlias(value: Value(stringValue: node.characters)),
   );
+}
+
+/// Extracts the property name from a Figma component property reference.
+/// Figma returns references in format "PropName#123:456" where:
+/// - "PropName" is the actual property name
+/// - "#123:456" is a unique identifier suffix
+String _extractPropertyName(String propertyRef) {
+  final hashIndex = propertyRef.lastIndexOf('#');
+  if (hashIndex > 0) {
+    return propertyRef.substring(0, hashIndex);
+  }
+  return propertyRef;
 }
 
 BlendMode? _convertBlendMode(String? blendMode) {
