@@ -64,7 +64,7 @@ class FigmaVisualNodeWidget extends StatelessWidget {
 
   Widget _wrapWithPositioning(Widget child) {
     // Get layout data from node if available
-    double? x, y, width, height;
+    double x = 0, y = 0, width = 0, height = 0;
     b.LayoutConstraints? constraints;
     b.ChildLayoutData? layoutData;
 
@@ -128,6 +128,56 @@ class FigmaVisualNodeWidget extends StatelessWidget {
       default:
         return child;
     }
+
+    // Determine if absolute positioning is needed
+    // 1. Parent is freeform -> Always absolute
+    // 2. Child has layoutData.mode == ABSOLUTE -> Absolute
+    final isAbsolute =
+        parentLayoutType == b.LayoutProperties_Type.freeform ||
+            parentLayoutType == b.LayoutProperties_Type.notSet ||
+            (layoutData != null && layoutData.mode == b.PositioningMode.POSITIONING_MODE_ABSOLUTE);
+
+    if (isAbsolute) {
+      return FigmaPositioned.freeform(
+        x: x,
+        y: y,
+        width: width,
+        height: height,
+        horizontalConstraint: constraints?.horizontal.toFigmaFlutter() ??
+            ConstraintType.min,
+        verticalConstraint: constraints?.vertical.toFigmaFlutter() ??
+            ConstraintType.min,
+        child: child,
+      );
+    }
+
+    // If parent is Auto Layout (and not absolute child)
+    if (parentLayoutType == b.LayoutProperties_Type.autoLayout) {
+      return FigmaPositioned.auto(
+        width: width,
+        height: height,
+        primaryAxisSizing: layoutData?.primaryAxisSizing.toFigmaFlutter() ??
+            ChildSizingMode.fixed,
+        counterAxisSizing: layoutData?.counterAxisSizing.toFigmaFlutter() ??
+            ChildSizingMode.fixed,
+        child: child,
+      );
+    }
+
+    // Grid support if needed
+    if (parentLayoutType == b.LayoutProperties_Type.grid) {
+      return FigmaPositioned.grid(
+        column: layoutData?.gridColumn ?? 0,
+        row: layoutData?.gridRow ?? 0,
+        columnSpan: layoutData?.gridColumnSpan ?? 1,
+        rowSpan: layoutData?.gridRowSpan ?? 1,
+        child: child,
+      );
+    }
+
+    return child;
+  }
+
 
     // Determine if absolute positioning is needed
     // 1. Parent is freeform -> Always absolute
