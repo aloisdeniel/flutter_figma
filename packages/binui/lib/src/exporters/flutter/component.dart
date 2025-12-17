@@ -1,5 +1,7 @@
 import 'package:binui/src/definitions.pb.dart';
 import 'package:binui/src/exporters/flutter/exporter.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/visual_node/visual_node.dart';
+import 'package:binui/src/exporters/flutter/values/flutter/value.dart';
 import 'package:binui/src/exporters/flutter/values/value.dart';
 import 'package:binui/src/utils/dart/buffer.dart';
 import 'package:binui/src/utils/dart/dart.dart';
@@ -54,5 +56,34 @@ class ComponentDefinitionDartExporter {
 
     buffer.writeClass(propertiesClass);
     buffer.writeClass(providerClass);
+
+    // Generate a StatelessWidget for each variant
+    final visualNodeExporter = VisualNodeDartExporter(
+      valueSerializer: FlutterValueExporter(),
+    );
+
+    for (final variant in definition.variants) {
+      final variantTypeName = Naming.typeName(variant.name);
+
+      final widgetClass = StatelessWidgetClass(
+        name: variantTypeName,
+        fields: const [],
+        build: DartBody(
+          build: (b) {
+            if (variant.hasRoot()) {
+              final widgetCode = visualNodeExporter.serialize(
+                context.library,
+                variant.root,
+              );
+              b.writeln('return $widgetCode;');
+            } else {
+              b.writeln('return const fl.SizedBox.shrink();');
+            }
+          },
+        ),
+      );
+
+      buffer.writeClass(widgetClass);
+    }
   }
 }

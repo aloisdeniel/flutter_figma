@@ -99,7 +99,10 @@ class StatelessWidgetClass extends DartClass {
          constructors: [
            DartConstructor(
              type: name,
-             args: [for (final f in fields) f.toArgument()],
+             args: [
+               DartArgument(name: 'key', isSuper: true, isRequired: false),
+               for (final f in fields) f.toArgument(),
+             ],
            ),
          ],
          methods: [
@@ -109,6 +112,13 @@ class StatelessWidgetClass extends DartClass {
              body: build,
              returnType: 'fl.Widget',
              isOverride: true,
+             parameters: [
+               DartArgument(
+                 name: 'context',
+                 type: 'fl.BuildContext',
+                 isNamed: false,
+               ),
+             ],
            ),
          ],
        );
