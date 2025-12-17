@@ -23,14 +23,27 @@ class FlutterExportContext extends ExportContext {
 class FlutterExporter extends Exporter<FlutterExportContext> {
   const FlutterExporter();
 
+  /// Creates a DartFormatter if possible.
+  /// Returns null if the formatter cannot be created (e.g., in environments
+  /// where Uri.base is not available, like Figma plugins).
+  static DartFormatter? _createFormatter() {
+    try {
+      return DartFormatter(
+        languageVersion: DartFormatter.latestLanguageVersion,
+      );
+    } catch (_) {
+      // Formatter creation may fail in certain environments (e.g., Figma plugins)
+      // where Uri.base is not available.
+      return null;
+    }
+  }
+
   @override
   FutureOr<Bundle> export(FlutterExportContext context) {
     final library = context.library;
 
     final files = <BundleFile>[];
-    final formatter = DartFormatter(
-      languageVersion: DartFormatter.latestLanguageVersion,
-    );
+    final formatter = _createFormatter();
 
     // Export visual nodes
     final valueExporter = ValueDartExporter();
@@ -116,12 +129,13 @@ class FlutterExporter extends Exporter<FlutterExportContext> {
   }
 
   /// Formats Dart code using dart_style.
-  /// Returns the original code if formatting fails.
-  String _formatDartCode(DartFormatter formatter, String code) {
+  /// Returns the original code if formatting fails or if formatter is null.
+  String _formatDartCode(DartFormatter? formatter, String code) {
+    if (formatter == null) return code;
     try {
       return formatter.format(code);
-    } on FormatterException {
-      // If formatting fails, return the original code
+    } catch (_) {
+      // If formatting fails for any reason, return the original code
       return code;
     }
   }
