@@ -212,6 +212,19 @@ class _EditorScreenState extends State<EditorScreen> {
                         });
                         _libraryManager.updateCurrentLibrary(null);
                       },
+                      onFormat: () {
+                        final text = _jsonController.text;
+                        if (text.trim().isEmpty) return;
+                        try {
+                          final decoded = jsonDecode(text);
+                          final formatted = const JsonEncoder.withIndent(
+                            '  ',
+                          ).convert(decoded);
+                          _jsonController.text = formatted;
+                        } catch (_) {
+                          // If JSON is invalid, don't format
+                        }
+                      },
                       errorMessage: _errorMessage,
                     ),
                   ),
