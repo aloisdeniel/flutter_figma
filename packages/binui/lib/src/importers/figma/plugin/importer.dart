@@ -37,16 +37,12 @@ class FigmaPluginImporter extends Importer<FigmaImportOptions> {
     final components = isComponentDeclaration
         ? await _importSelectedComponents()
         : <Component>[];
-    final visualNodes = isComponentDeclaration
-        ? <VisualNode>[]
-        : await _importSelectedVisualNodes();
 
     return Library(
       name: fileName,
       documentation: 'Imported from Figma file: $fileKey',
       variables: variableCollections,
       components: components,
-      visualNodes: visualNodes,
     );
   }
 }

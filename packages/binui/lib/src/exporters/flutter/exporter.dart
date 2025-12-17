@@ -1,13 +1,11 @@
 import 'dart:async';
 
-import 'package:binui/src/definitions.pb.dart';
 import 'package:binui/src/exporters/bundle.dart';
 import 'package:binui/src/exporters/exporter.dart';
 import 'package:binui/src/exporters/flutter/barrel.dart';
 import 'package:binui/src/exporters/flutter/component.dart';
 import 'package:binui/src/exporters/flutter/metadata.dart';
 import 'package:binui/src/exporters/flutter/pubspec.dart';
-import 'package:binui/src/exporters/flutter/values/value.dart';
 import 'package:binui/src/exporters/flutter/variables/variables.dart';
 import 'package:binui/src/exporters/flutter/variables/collection.dart';
 
@@ -32,22 +30,6 @@ class FlutterExporter extends Exporter<FlutterExportContext> {
 
     final files = <BundleFile>[];
     final DartCodeFormatter formatter = platform.createFormatter();
-
-    // Export visual nodes
-    final valueExporter = ValueDartExporter();
-    for (var i = 0; i < library.visualNodes.length; i++) {
-      final item = library.visualNodes[i];
-      final content = valueExporter.serialize(
-        context,
-        Value()..visualNode = item,
-      );
-      files.add(
-        StringBundleFile(
-          'lib/src/selected/widget_$i.dart',
-          formatter.format(content),
-        ),
-      );
-    }
 
     // Export variable collections
     final variableCollectionExporter = VariableCollectionDartExporter();

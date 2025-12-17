@@ -687,15 +687,6 @@ const Library$json = {
       '8': {},
       '10': 'components'
     },
-    {
-      '1': 'visualNodes',
-      '3': 7,
-      '4': 3,
-      '5': 11,
-      '6': '.binui.VisualNode',
-      '8': {},
-      '10': 'visualNodes'
-    },
   ],
 };
 
@@ -705,8 +696,7 @@ final $typed_data.Uint8List libraryDescriptor = $convert.base64Decode(
     '50YXRpb24YAyABKAlCAFINZG9jdW1lbnRhdGlvbhIoCgd2ZXJzaW9uGAQoCzIOLmJpbnVpLlZl'
     'cnNpb25CAFIHdmVyc2lvbhI5Cgl2YXJpYWJsZXMYBSADKAsyGS5iaW51aS5WYXJpYWJsZUNvbG'
     'xlY3Rpb25CAFIJdmFyaWFibGVzEjIKCmNvbXBvbmVudHMYBiADKAsyEC5iaW51aS5Db21wb25l'
-    'bnRCAFIKY29tcG9uZW50cxI1Cgt2aXN1YWxOb2RlcxgHIAMoCzIRLmJpbnVpLlZpc3VhbE5vZG'
-    'VCAFILdmlzdWFsTm9kZXM=');
+    'bnRCAFIKY29tcG9uZW50cw==');
 
 @$core.Deprecated('Use versionDescriptor instead')
 const Version$json = {

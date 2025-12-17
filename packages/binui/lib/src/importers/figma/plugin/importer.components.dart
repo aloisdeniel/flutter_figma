@@ -44,48 +44,6 @@ Future<List<Component>> _importSelectedComponents() async {
   return components;
 }
 
-Future<List<Component>> _importComponents() async {
-  final components = <Component>[];
-  final pages = figma_api.figma.root.children;
-
-  for (var i = 0; i < pages.length; i++) {
-    final page = pages[i];
-
-    await page.loadAsync().toDart;
-
-    // Find component sets
-    final componentSets = page.findAll(
-      (figma_api.SceneNode node) {
-        return node.type == 'COMPONENT_SET';
-      }.toJS,
-    );
-
-    for (var j = 0; j < componentSets.length; j++) {
-      final node = componentSets[j];
-      final componentSet = node as figma_api.ComponentSetNode;
-      components.add(await _createComponentFromSet(componentSet));
-    }
-
-    // Find single components (not in a component set)
-    final singleComponents = page.findAll(
-      (figma_api.SceneNode node) {
-        return node.type == 'COMPONENT';
-      }.toJS,
-    );
-
-    for (var j = 0; j < singleComponents.length; j++) {
-      final node = singleComponents[j];
-      final component = node as figma_api.ComponentNode;
-      final parent = component.parent.dartify();
-      if (parent is Map && parent['type'] != 'COMPONENT_SET') {
-        components.add(_createComponentFromNode(component));
-      }
-    }
-  }
-
-  return components;
-}
-
 Future<Component> _createComponentFromSet(
   figma_api.ComponentSetNode componentSet,
 ) async {

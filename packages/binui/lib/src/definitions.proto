@@ -11,7 +11,6 @@ message Library {
   Version version = 4;
   repeated VariableCollection variables = 5;
   repeated Component components = 6;
-  repeated VisualNode visualNodes = 7;
 }
 
 message Version {

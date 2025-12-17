@@ -29,7 +29,6 @@ class Library extends $pb.GeneratedMessage {
     Version? version,
     $core.Iterable<VariableCollection>? variables,
     $core.Iterable<Component>? components,
-    $core.Iterable<VisualNode>? visualNodes,
   }) {
     final result = create();
     if (id != null) result.id = id;
@@ -38,7 +37,6 @@ class Library extends $pb.GeneratedMessage {
     if (version != null) result.version = version;
     if (variables != null) result.variables.addAll(variables);
     if (components != null) result.components.addAll(components);
-    if (visualNodes != null) result.visualNodes.addAll(visualNodes);
     return result;
   }
 
@@ -64,8 +62,6 @@ class Library extends $pb.GeneratedMessage {
         subBuilder: VariableCollection.create)
     ..pPM<Component>(6, _omitFieldNames ? '' : 'components',
         subBuilder: Component.create)
-    ..pPM<VisualNode>(7, _omitFieldNames ? '' : 'visualNodes',
-        protoName: 'visualNodes', subBuilder: VisualNode.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -129,9 +125,6 @@ class Library extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(6)
   $pb.PbList<Component> get components => $_getList(5);
-
-  @$pb.TagNumber(7)
-  $pb.PbList<VisualNode> get visualNodes => $_getList(6);
 }
 
 class Version extends $pb.GeneratedMessage {

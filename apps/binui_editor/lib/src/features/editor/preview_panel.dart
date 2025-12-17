@@ -118,7 +118,7 @@ class _PreviewPanelState extends State<PreviewPanel> {
       final selectedIndex = selectedVariants[collection.id] ?? 0;
       if (selectedIndex < collection.variants.length) {
         final variant = collection.variants[selectedIndex];
-        activeVariants.add('${collection.name}: ${variant.name}');
+        activeVariants.add(variant.name);
       }
     }
 
@@ -168,10 +168,6 @@ class _PreviewPanelState extends State<PreviewPanel> {
                 library: widget.library,
               ),
             ),
-          ] else if (widget.library.visualNodes.isNotEmpty) ...[
-            _SectionHeader(title: 'Visual Nodes'),
-            const SizedBox(height: 12),
-            // ... (Visual nodes logic omitted as it wasn't fully implemented in original)
           ],
         ],
       ),

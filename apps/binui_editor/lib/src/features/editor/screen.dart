@@ -277,20 +277,19 @@ class _NavigationRail extends StatelessWidget {
       color: Theme.of(context).colorScheme.surfaceContainerLow,
       child: Column(
         children: [
-          const SizedBox(height: 8),
+          const SizedBox(height: 4),
           // JSON and Preview group
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.surfaceContainer,
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.circular(6),
               border: Border.all(
                 color: Theme.of(
                   context,
                 ).colorScheme.outlineVariant.withAlpha(100),
               ),
             ),
-            padding: const EdgeInsets.symmetric(vertical: 4),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -370,7 +369,7 @@ class _RailButton extends StatelessWidget {
       message: label,
       child: InkWell(
         onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
+        borderRadius: BorderRadius.circular(2),
         child: Container(
           width: buttonSize,
           height: buttonSize,
@@ -379,7 +378,7 @@ class _RailButton extends StatelessWidget {
             color: isSelected
                 ? colorScheme.primaryContainer
                 : Colors.transparent,
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(2),
           ),
           child: Stack(
             alignment: Alignment.center,

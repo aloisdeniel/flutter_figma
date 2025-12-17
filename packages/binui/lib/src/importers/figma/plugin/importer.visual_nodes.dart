@@ -1,23 +1,5 @@
 part of 'importer.dart';
 
-Future<List<VisualNode>> _importSelectedVisualNodes() async {
-  final selection = figma_api.figma.currentPage.selection.toDart;
-
-  if (selection.isEmpty) {
-    return [];
-  }
-
-  final visualNodes = <VisualNode>[];
-  for (final node in selection) {
-    final visualNode = _convertSceneNodeToVisualNode(node);
-    if (visualNode != null) {
-      visualNodes.add(visualNode);
-    }
-  }
-
-  return visualNodes;
-}
-
 VisualNode? _convertSceneNodeToVisualNode(figma_api.SceneNode node) {
   switch (node.type) {
     case 'FRAME':
