@@ -416,14 +416,10 @@ Paint _convertPaintWithBoundVariable(
     final fillsBindings = boundVariables?['fills'] as List?;
     if (fillsBindings != null && paintIndex < fillsBindings.length) {
       final fillBinding = fillsBindings[paintIndex] as Map?;
-      print('Fill binding for paint index $paintIndex: $fillBinding');
       if (fillBinding != null && fillBinding['type'] == 'VARIABLE_ALIAS') {
         final variableId = fillBinding['id'] as String?;
-        print('Variable ID for fill binding: $variableId');
         if (variableId != null) {
           final indices = variableIdMap[variableId];
-          print('Variable indices for ID $variableId: $indices');
-          print(variableIdMap);
           if (indices != null) {
             final (collectionId, varId) = indices;
             colorAlias = Alias(
@@ -431,6 +427,11 @@ Paint _convertPaintWithBoundVariable(
                 collectionId: collectionId,
                 variableId: varId,
               ),
+            );
+          } else {
+            // Variable reference exists but variable was not found - likely deleted
+            print(
+              'Warning: Variable $variableId referenced in fill binding but not found in any collection (may have been deleted)',
             );
           }
         }
