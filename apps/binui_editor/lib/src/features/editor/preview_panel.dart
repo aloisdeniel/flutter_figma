@@ -14,17 +14,16 @@ class PreviewPanel extends StatefulWidget {
 }
 
 class _PreviewPanelState extends State<PreviewPanel> {
-  /// Tracks selected variant index for each collection by collection ID
-  final ValueNotifier<Map<int, int>> _selectedVariantsNotifier = ValueNotifier(
-    {},
-  );
+  /// Tracks selected variant values for each collection
+  final ValueNotifier<List<b.VariableCollectionVariantValue>>
+  _selectedVariantsNotifier = ValueNotifier([]);
 
   @override
   void didUpdateWidget(PreviewPanel oldWidget) {
     super.didUpdateWidget(oldWidget);
     // Reset selections when library changes
     if (widget.library != oldWidget.library) {
-      _selectedVariantsNotifier.value = {};
+      _selectedVariantsNotifier.value = [];
     }
   }
 
@@ -34,10 +33,12 @@ class _PreviewPanelState extends State<PreviewPanel> {
     super.dispose();
   }
 
-  void _onVariantChanged(int collectionId, int variantIndex) {
-    final newMap = Map<int, int>.from(_selectedVariantsNotifier.value);
-    newMap[collectionId] = variantIndex;
-    _selectedVariantsNotifier.value = newMap;
+  void _onVariantChanged(b.VariableCollectionVariantValue value) {
+    final newList = _selectedVariantsNotifier.value
+        .where((x) => x.collectionId != value.collectionId)
+        .toList();
+    newList.add(value);
+    _selectedVariantsNotifier.value = newList;
   }
 
   void _openVariablesModal() {
@@ -50,7 +51,7 @@ class _PreviewPanelState extends State<PreviewPanel> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<Map<int, int>>(
+    return ValueListenableBuilder<List<b.VariableCollectionVariantValue>>(
       valueListenable: _selectedVariantsNotifier,
       builder: (context, selectedVariants, _) {
         return VariantSelectionScope(
@@ -60,7 +61,7 @@ class _PreviewPanelState extends State<PreviewPanel> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               _buildHeader(context, selectedVariants),
-              Expanded(child: _buildPreviewContent()),
+              Expanded(child: _buildPreviewContent(selectedVariants)),
             ],
           ),
         );
@@ -68,7 +69,10 @@ class _PreviewPanelState extends State<PreviewPanel> {
     );
   }
 
-  Widget _buildHeader(BuildContext context, Map<int, int> selectedVariants) {
+  Widget _buildHeader(
+    BuildContext context,
+    List<b.VariableCollectionVariantValue> selectedVariants,
+  ) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -109,17 +113,26 @@ class _PreviewPanelState extends State<PreviewPanel> {
     );
   }
 
-  Widget _buildSelectedVariantsTags(Map<int, int> selectedVariants) {
+  Widget _buildSelectedVariantsTags(
+    List<b.VariableCollectionVariantValue> selectedVariants,
+  ) {
     final activeVariants = <String>[];
 
     for (final collection in widget.library.variables) {
       if (collection.variants.isEmpty) continue;
 
-      final selectedIndex = selectedVariants[collection.id] ?? 0;
-      if (selectedIndex < collection.variants.length) {
-        final variant = collection.variants[selectedIndex];
-        activeVariants.add(variant.name);
-      }
+      final selectedValue = selectedVariants
+          .where((x) => x.collectionId == collection.id)
+          .firstOrNull;
+
+      // Find the variant by ID, or fall back to first variant
+      final variant = selectedValue != null
+          ? collection.variants
+                    .where((v) => v.id == selectedValue.variantId)
+                    .firstOrNull ??
+                collection.variants.first
+          : collection.variants.first;
+      activeVariants.add(variant.name);
     }
 
     if (activeVariants.isEmpty) return const SizedBox();
@@ -155,9 +168,14 @@ class _PreviewPanelState extends State<PreviewPanel> {
     );
   }
 
-  Widget _buildPreviewContent() {
+  Widget _buildPreviewContent(
+    List<b.VariableCollectionVariantValue> selectedVariants,
+  ) {
     return BinuiProvider(
-      config: BinuiConfig(widget.library),
+      config: BinuiConfig(
+        widget.library,
+        variableCollectionVariants: selectedVariants,
+      ),
       child: ListView(
         padding: const EdgeInsets.all(16),
         children: [

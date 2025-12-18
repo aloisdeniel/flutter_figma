@@ -1,7 +1,8 @@
 import 'package:binui/binui.dart' as b;
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-/// Manages selected variant indices for all variable collections.
+/// Manages selected variant values for all variable collections.
 class VariantSelectionScope extends InheritedWidget {
   const VariantSelectionScope({
     super.key,
@@ -10,23 +11,27 @@ class VariantSelectionScope extends InheritedWidget {
     required super.child,
   });
 
-  /// Map of collection ID to selected variant index
-  final Map<int, int> selectedVariants;
+  /// List of selected variable collection variant values
+  final List<b.VariableCollectionVariantValue> selectedVariants;
 
   /// Callback to update the selected variant for a collection
-  final void Function(int collectionId, int variantIndex) onVariantChanged;
+  final void Function(b.VariableCollectionVariantValue value) onVariantChanged;
 
   static VariantSelectionScope? of(BuildContext context) {
     return context.dependOnInheritedWidgetOfExactType<VariantSelectionScope>();
   }
 
-  int getSelectedVariantIndex(int collectionId) {
-    return selectedVariants[collectionId] ?? 0;
+  /// Gets the selected variant ID for a collection, or null if not selected
+  int? getSelectedVariantId(int collectionId) {
+    return selectedVariants
+        .where((x) => x.collectionId == collectionId)
+        .firstOrNull
+        ?.variantId;
   }
 
   @override
   bool updateShouldNotify(VariantSelectionScope oldWidget) {
-    return selectedVariants != oldWidget.selectedVariants;
+    return !listEquals(selectedVariants, oldWidget.selectedVariants);
   }
 }
 
@@ -38,27 +43,31 @@ class VariablesModal extends StatelessWidget {
   static void show(
     BuildContext context, {
     required b.Library library,
-    required ValueNotifier<Map<int, int>> variantsNotifier,
+    required ValueNotifier<List<b.VariableCollectionVariantValue>>
+    variantsNotifier,
   }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
       showDragHandle: true,
-      builder: (context) => ValueListenableBuilder<Map<int, int>>(
-        valueListenable: variantsNotifier,
-        builder: (context, selectedVariants, _) {
-          return VariantSelectionScope(
-            selectedVariants: selectedVariants,
-            onVariantChanged: (collectionId, variantIndex) {
-              final newMap = Map<int, int>.from(variantsNotifier.value);
-              newMap[collectionId] = variantIndex;
-              variantsNotifier.value = newMap;
+      builder: (context) =>
+          ValueListenableBuilder<List<b.VariableCollectionVariantValue>>(
+            valueListenable: variantsNotifier,
+            builder: (context, selectedVariants, _) {
+              return VariantSelectionScope(
+                selectedVariants: selectedVariants,
+                onVariantChanged: (value) {
+                  final newList = variantsNotifier.value
+                      .where((x) => x.collectionId != value.collectionId)
+                      .toList();
+                  newList.add(value);
+                  variantsNotifier.value = newList;
+                },
+                child: VariablesModal(library: library),
+              );
             },
-            child: VariablesModal(library: library),
-          );
-        },
-      ),
+          ),
     );
   }
 
@@ -144,14 +153,21 @@ class _VariableCollectionPreviewState
   @override
   Widget build(BuildContext context) {
     final scope = VariantSelectionScope.of(context);
-    final selectedVariantIndex =
-        scope?.getSelectedVariantIndex(widget.collection.id) ?? 0;
+    final selectedVariantId = scope?.getSelectedVariantId(widget.collection.id);
 
     final hasVariants = widget.collection.variants.isNotEmpty;
-    final selectedVariant =
-        hasVariants && selectedVariantIndex < widget.collection.variants.length
-        ? widget.collection.variants[selectedVariantIndex]
+    // Find the selected variant by ID, or fall back to first variant
+    final selectedVariant = hasVariants
+        ? (selectedVariantId != null
+              ? widget.collection.variants
+                        .where((v) => v.id == selectedVariantId)
+                        .firstOrNull ??
+                    widget.collection.variants.first
+              : widget.collection.variants.first)
         : null;
+    final selectedVariantIndex = selectedVariant != null
+        ? widget.collection.variants.indexOf(selectedVariant)
+        : 0;
 
     return Card(
       margin: const EdgeInsets.only(bottom: 12),
@@ -245,7 +261,13 @@ class _VariableCollectionPreviewState
                   variants: widget.collection.variants,
                   selectedIndex: selectedVariantIndex,
                   onChanged: (index) {
-                    scope?.onVariantChanged(widget.collection.id, index);
+                    final variant = widget.collection.variants[index];
+                    scope?.onVariantChanged(
+                      b.VariableCollectionVariantValue(
+                        collectionId: widget.collection.id,
+                        variantId: variant.id,
+                      ),
+                    );
                   },
                 ),
               ),
@@ -626,14 +648,18 @@ class _VariableAliasPreview extends StatelessWidget {
     final variable = collection.variables[variableIndex];
 
     // Get the selected variant for the referenced collection
-    final selectedVariantIndex =
-        scope?.getSelectedVariantIndex(collection.id) ?? 0;
+    final selectedVariantId = scope?.getSelectedVariantId(collection.id);
 
     // Get the resolved value from the selected variant
     b.Value? resolvedValue;
-    if (collection.variants.isNotEmpty &&
-        selectedVariantIndex < collection.variants.length) {
-      final variant = collection.variants[selectedVariantIndex];
+    if (collection.variants.isNotEmpty) {
+      // Find the selected variant by ID, or fall back to first variant
+      final variant = selectedVariantId != null
+          ? collection.variants
+                    .where((v) => v.id == selectedVariantId)
+                    .firstOrNull ??
+                collection.variants.first
+          : collection.variants.first;
       if (variableIndex < variant.values.length) {
         resolvedValue = variant.values[variableIndex];
       }
