@@ -17,9 +17,17 @@ Future<List<Component>> _importSelectedComponents(
     if (node.type == 'COMPONENT_SET') {
       final componentSet = node as figma_api.ComponentSetNode;
       if (!processedSetIds.contains(componentSet.id)) {
+        final componentId = context.identifiers.get(
+          'component_sets/${node.id}',
+        );
         processedSetIds.add(componentSet.id);
         components.add(
-          await _createComponentFromSet(context, componentSet, variableIdMap),
+          await _createComponentFromSet(
+            componentId,
+            context,
+            componentSet,
+            variableIdMap,
+          ),
         );
       }
     } else if (node.type == 'COMPONENT') {
@@ -30,6 +38,9 @@ Future<List<Component>> _importSelectedComponents(
         // Import the whole parent component set instead
         final parentId = parent['id'] as String;
         if (!processedSetIds.contains(parentId)) {
+          final componentId = context.identifiers.get(
+            'component_sets/$parentId',
+          );
           processedSetIds.add(parentId);
           final parentNode = await figma_api.figma
               .getNodeByIdAsync(parentId)
@@ -38,6 +49,7 @@ Future<List<Component>> _importSelectedComponents(
             final componentSet = parentNode as figma_api.ComponentSetNode;
             components.add(
               await _createComponentFromSet(
+                componentId,
                 context,
                 componentSet,
                 variableIdMap,
@@ -46,9 +58,15 @@ Future<List<Component>> _importSelectedComponents(
           }
         }
       } else {
+        final componentId = context.identifiers.get('components/${node.id}');
         // Standalone component - import as single-variant component
         components.add(
-          _createComponentFromNode(context, component, variableIdMap),
+          _createComponentFromNode(
+            componentId,
+            context,
+            component,
+            variableIdMap,
+          ),
         );
       }
     }
@@ -58,6 +76,7 @@ Future<List<Component>> _importSelectedComponents(
 }
 
 Future<Component> _createComponentFromSet(
+  int componentId,
   ImporterContext<FigmaImportOptions> context,
   figma_api.ComponentSetNode componentSet,
   VariableIdMap variableIdMap,
@@ -74,7 +93,7 @@ Future<Component> _createComponentFromSet(
       : null;
 
   // Build property ID map for this component
-  final propertyIdMap = <String, int>{};
+  final propertyIdMap = <String, (int, int)>{};
 
   if (firstChild != null) {
     final figProperties = componentSet.componentPropertyDefinitions.dartify();
@@ -128,7 +147,7 @@ Future<Component> _createComponentFromSet(
             defaultValue: Value(stringValue: defaultValue),
           ),
         );
-        propertyIdMap[key] = propertyIndex;
+        propertyIdMap[key] = (componentId, propertyIndex);
         propertyIndex++;
       } else if (propType == 'TEXT') {
         final defaultValue = prop['defaultValue'] as String;
@@ -139,7 +158,7 @@ Future<Component> _createComponentFromSet(
             defaultValue: Value(stringValue: defaultValue),
           ),
         );
-        propertyIdMap[key] = propertyIndex;
+        propertyIdMap[key] = (componentId, propertyIndex);
         propertyIndex++;
       } else if (propType == 'BOOLEAN') {
         final defaultValue = prop['defaultValue'] as bool;
@@ -150,7 +169,7 @@ Future<Component> _createComponentFromSet(
             defaultValue: Value(boolean: defaultValue),
           ),
         );
-        propertyIdMap[key] = propertyIndex;
+        propertyIdMap[key] = (componentId, propertyIndex);
         propertyIndex++;
       }
     }
@@ -182,6 +201,7 @@ Future<Component> _createComponentFromSet(
   }
 
   return Component(
+    id: componentId,
     name: name,
     documentation: 'https://www.figma.com/file/${figma_api.figma.fileKey}',
     variantDefinitions: variantDefinitions,
@@ -229,13 +249,14 @@ List<ComponentVariantValue> _parseVariantValues(
 }
 
 Component _createComponentFromNode(
+  int componentId,
   ImporterContext<FigmaImportOptions> context,
   figma_api.ComponentNode component,
   VariableIdMap variableIdMap,
 ) {
   final name = component.name;
   final properties = <ComponentProperty>[];
-  final propertyIdMap = <String, int>{};
+  final propertyIdMap = <String, (int, int)>{};
 
   // Extract component properties from standalone component
   final figProperties = component.componentPropertyDefinitions.dartify();
@@ -250,23 +271,25 @@ Component _createComponentFromNode(
         final defaultValue = prop['defaultValue'] as String;
         properties.add(
           ComponentProperty(
+            componentId: componentId,
             id: propertyIndex,
             name: key,
             defaultValue: Value(stringValue: defaultValue),
           ),
         );
-        propertyIdMap[key] = propertyIndex;
+        propertyIdMap[key] = (componentId, propertyIndex);
         propertyIndex++;
       } else if (propType == 'BOOLEAN') {
         final defaultValue = prop['defaultValue'] as bool;
         properties.add(
           ComponentProperty(
+            componentId: componentId,
             id: propertyIndex,
             name: key,
             defaultValue: Value(boolean: defaultValue),
           ),
         );
-        propertyIdMap[key] = propertyIndex;
+        propertyIdMap[key] = (componentId, propertyIndex);
         propertyIndex++;
       }
       // Note: VARIANT type doesn't apply to standalone components
@@ -283,6 +306,7 @@ Component _createComponentFromNode(
   final variant = ComponentVariant(id: 0, name: name, root: visualNode);
 
   return Component(
+    id: componentId,
     name: name,
     documentation: 'https://www.figma.com/file/${figma_api.figma.fileKey}',
     properties: properties,

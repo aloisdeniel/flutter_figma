@@ -1,7 +1,7 @@
 part of 'importer.dart';
 
 /// Maps component property name to property ID
-typedef PropertyIdMap = Map<String, int>;
+typedef PropertyIdMap = Map<String, (int componentId, int propertyId)>;
 
 VisualNode? _convertSceneNodeToVisualNode(
   figma_api.SceneNode node,
@@ -253,7 +253,7 @@ TextNode _convertTextNode(
   }
 
   // Check for component property reference on the text content
-  final characters = _createTextAlias(node, propertyIdMap);
+  final characters = _createCharactersAlias(node, propertyIdMap);
 
   return TextNode(
     id: node.id,
@@ -416,18 +416,23 @@ Paint _convertPaintWithBoundVariable(
     final fillsBindings = boundVariables?['fills'] as List?;
     if (fillsBindings != null && paintIndex < fillsBindings.length) {
       final fillBinding = fillsBindings[paintIndex] as Map?;
-      final colorBinding = fillBinding?['color'] as Map?;
-      if (colorBinding != null && colorBinding['type'] == 'VARIABLE_ALIAS') {
-        final variableId = colorBinding['id'] as String;
-        final indices = variableIdMap[variableId];
-        if (indices != null) {
-          final (collectionId, varId) = indices;
-          colorAlias = Alias(
-            variable: VariableAlias(
-              collectionId: collectionId,
-              variableId: varId,
-            ),
-          );
+      print('Fill binding for paint index $paintIndex: $fillBinding');
+      if (fillBinding != null && fillBinding['type'] == 'VARIABLE_ALIAS') {
+        final variableId = fillBinding['id'] as String?;
+        print('Variable ID for fill binding: $variableId');
+        if (variableId != null) {
+          final indices = variableIdMap[variableId];
+          print('Variable indices for ID $variableId: $indices');
+          print(variableIdMap);
+          if (indices != null) {
+            final (collectionId, varId) = indices;
+            colorAlias = Alias(
+              variable: VariableAlias(
+                collectionId: collectionId,
+                variableId: varId,
+              ),
+            );
+          }
         }
       }
     }
@@ -469,21 +474,27 @@ Alias _convertColorToAlias(figma_api.RGB color) {
 }
 
 /// Creates a text alias, checking for component property references
-Alias _createTextAlias(figma_api.TextNode node, PropertyIdMap propertyIdMap) {
-  // Check for component property reference on characters
-  final propRefs = node.componentPropertyReferences?.dartify() as Map?;
-  if (propRefs != null) {
-    final charactersRef = propRefs['characters'] as String?;
+Alias _createCharactersAlias(
+  figma_api.TextNode node,
+  PropertyIdMap propertyIdMap,
+) {
+  print('Bound for text node ${node.name}');
+  print(node.componentPropertyReferences?.dartify());
+  print(node.boundVariables?.dartify());
+  print(propertyIdMap);
+
+  // Check for component property references on characters
+  final propertyReferences =
+      node.componentPropertyReferences?.dartify() as Map?;
+  if (propertyReferences != null) {
+    final charactersRef = propertyReferences['characters'] as String?;
     if (charactersRef != null) {
-      // Figma returns property references in format "PropName#123:456"
-      // Extract just the property name part before the '#'
-      final propertyName = _extractPropertyName(charactersRef);
-      // Look it up in our property map
-      final propertyId = propertyIdMap[propertyName];
+      final propertyId = propertyIdMap[charactersRef];
       if (propertyId != null) {
         return Alias(
           property: PropertyAlias(
-            propertyId: propertyId,
+            componentId: propertyId.$1,
+            propertyId: propertyId.$2,
             defaultValue: Value(stringValue: node.characters),
           ),
         );
@@ -495,18 +506,6 @@ Alias _createTextAlias(figma_api.TextNode node, PropertyIdMap propertyIdMap) {
   return Alias(
     constant: ConstantAlias(value: Value(stringValue: node.characters)),
   );
-}
-
-/// Extracts the property name from a Figma component property reference.
-/// Figma returns references in format "PropName#123:456" where:
-/// - "PropName" is the actual property name
-/// - "#123:456" is a unique identifier suffix
-String _extractPropertyName(String propertyRef) {
-  final hashIndex = propertyRef.lastIndexOf('#');
-  if (hashIndex > 0) {
-    return propertyRef.substring(0, hashIndex);
-  }
-  return propertyRef;
 }
 
 BlendMode? _convertBlendMode(String? blendMode) {
