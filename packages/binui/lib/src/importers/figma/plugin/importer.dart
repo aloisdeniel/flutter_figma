@@ -26,9 +26,8 @@ class FigmaPluginImporter extends Importer<FigmaImportOptions> {
           (node) => node.type == 'COMPONENT' || node.type == 'COMPONENT_SET',
         );
 
-    // Always import styles and variables - this also builds the variable ID map
-    final (variableCollections, variableIdMap) =
-        await _importVariableCollections(context);
+    // Always import styles and variables
+    final variableCollections = await _importVariableCollections(context);
     final stylesCollection = await _importStyles(context);
     if (stylesCollection != null) {
       variableCollections.add(stylesCollection);
@@ -36,7 +35,7 @@ class FigmaPluginImporter extends Importer<FigmaImportOptions> {
 
     // Import as component or visual node based on selection type
     final components = isComponentDeclaration
-        ? await _importSelectedComponents(context, variableIdMap)
+        ? await _importSelectedComponents(context)
         : <Component>[];
 
     return Library(

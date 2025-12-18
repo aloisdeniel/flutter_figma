@@ -2,7 +2,6 @@ part of 'importer.dart';
 
 Future<List<Component>> _importSelectedComponents(
   ImporterContext<FigmaImportOptions> context,
-  VariableIdMap variableIdMap,
 ) async {
   final selection = figma_api.figma.currentPage.selection.toDart;
 
@@ -22,12 +21,7 @@ Future<List<Component>> _importSelectedComponents(
         );
         processedSetIds.add(componentSet.id);
         components.add(
-          await _createComponentFromSet(
-            componentId,
-            context,
-            componentSet,
-            variableIdMap,
-          ),
+          await _createComponentFromSet(componentId, context, componentSet),
         );
       }
     } else if (node.type == 'COMPONENT') {
@@ -48,12 +42,7 @@ Future<List<Component>> _importSelectedComponents(
           if (parentNode != null) {
             final componentSet = parentNode as figma_api.ComponentSetNode;
             components.add(
-              await _createComponentFromSet(
-                componentId,
-                context,
-                componentSet,
-                variableIdMap,
-              ),
+              await _createComponentFromSet(componentId, context, componentSet),
             );
           }
         }
@@ -61,12 +50,7 @@ Future<List<Component>> _importSelectedComponents(
         final componentId = context.identifiers.get('components/${node.id}');
         // Standalone component - import as single-variant component
         components.add(
-          await _createComponentFromNode(
-            componentId,
-            context,
-            component,
-            variableIdMap,
-          ),
+          await _createComponentFromNode(componentId, context, component),
         );
       }
     }
@@ -79,7 +63,6 @@ Future<Component> _createComponentFromSet(
   int componentId,
   ImporterContext<FigmaImportOptions> context,
   figma_api.ComponentSetNode componentSet,
-  VariableIdMap variableIdMap,
 ) async {
   final name = componentSet.name;
   final variantDefinitions = <ComponentVariantDefinition>[];
@@ -263,7 +246,6 @@ Future<Component> _createComponentFromNode(
   int componentId,
   ImporterContext<FigmaImportOptions> context,
   figma_api.ComponentNode component,
-  VariableIdMap variableIdMap,
 ) async {
   final name = component.name;
   final properties = <ComponentProperty>[];

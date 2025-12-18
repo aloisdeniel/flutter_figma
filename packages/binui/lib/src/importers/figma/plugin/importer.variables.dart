@@ -1,9 +1,6 @@
 part of 'importer.dart';
 
-/// Maps Figma variable ID to (collectionId, variableId) for alias resolution
-typedef VariableIdMap = Map<String, (int, int)>;
-
-Future<(List<VariableCollection>, VariableIdMap)> _importVariableCollections(
+Future<List<VariableCollection>> _importVariableCollections(
   ImporterContext<FigmaImportOptions> context,
 ) async {
   final collections = <VariableCollection>[];
@@ -11,27 +8,6 @@ Future<(List<VariableCollection>, VariableIdMap)> _importVariableCollections(
       .getLocalVariableCollectionsAsync()
       .toDart;
 
-  // Build maps for resolving variable aliases
-  // Maps Figma variable ID to (collectionIndex, variableIndex)
-  final figmaVariableIdToAlias = <String, (int, int)>{};
-
-  // First pass: build the index maps
-  for (var i = 0; i < figmaCollections.length; i++) {
-    final collection = figmaCollections[i];
-    final collectionId = context.identifiers.get(
-      'variable_collection/${collection.id}',
-    );
-
-    final variableIds = collection.variableIds;
-    for (var k = 0; k < variableIds.length; k++) {
-      final figmaId = variableIds[k].toDart;
-      // Use consistent key format for variable IDs
-      final variableId = context.identifiers.get('variable/$figmaId');
-      figmaVariableIdToAlias[figmaId] = (collectionId, variableId);
-    }
-  }
-
-  // Second pass: import the collections with alias resolution
   for (var i = 0; i < figmaCollections.length; i++) {
     final collection = figmaCollections[i];
     final collectionName = collection.name;
@@ -61,10 +37,10 @@ Future<(List<VariableCollection>, VariableIdMap)> _importVariableCollections(
 
           if (value != null) {
             values.add(
-              _convertVariableValue(
+              await _convertVariableValue(
                 value,
                 variable.resolvedType,
-                figmaVariableIdToAlias,
+                context,
               ),
             );
           }
@@ -116,33 +92,43 @@ Future<(List<VariableCollection>, VariableIdMap)> _importVariableCollections(
     );
   }
 
-  return (collections, figmaVariableIdToAlias);
+  return collections;
 }
 
-Value _convertVariableValue(
+Future<Value> _convertVariableValue(
   dynamic value,
   String resolvedType,
-  Map<String, (int, int)> figmaIdToVariableIds,
-) {
+  ImporterContext<FigmaImportOptions> context,
+) async {
   // Check if the value is a variable alias
   if (value is Map) {
     final type = value['type'];
     if (type == 'VARIABLE_ALIAS') {
-      final aliasId = value['id'] as String;
-      final indices = figmaIdToVariableIds[aliasId];
-      if (indices != null) {
-        final (collectionIndex, variableIndex) = indices;
-        return Value(
-          alias: Alias(
-            variable: VariableAlias(
-              collectionId: collectionIndex,
-              variableId: variableIndex,
-            ),
-          ),
-        );
+      final figmaVariableId = value['id'] as String;
+
+      // Look up the variable to find its collection
+      final variable = await figma_api.figma.variables
+          .getVariableByIdAsync(figmaVariableId)
+          .toDart;
+
+      if (variable == null) {
+        return Value(stringValue: 'unresolved alias: $figmaVariableId');
       }
-      // Fallback if alias target not found
-      return Value(stringValue: 'unresolved alias: $aliasId');
+
+      // Use consistent key format for collection and variable IDs
+      final collectionId = context.identifiers.get(
+        'variable_collection/${variable.variableCollectionId}',
+      );
+      final variableId = context.identifiers.get('variable/$figmaVariableId');
+
+      return Value(
+        alias: Alias(
+          variable: VariableAlias(
+            collectionId: collectionId,
+            variableId: variableId,
+          ),
+        ),
+      );
     }
   }
 
