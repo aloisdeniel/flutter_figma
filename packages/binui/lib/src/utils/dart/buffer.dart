@@ -75,13 +75,24 @@ class DartBuffer {
 
   void writeArguments(List<DartArgument> args) {
     final positionalArgs = args.where((arg) => !arg.isNamed).toList();
-    if (positionalArgs.isNotEmpty) {
-      for (var p in positionalArgs) {
-        writeArgument(p);
+    final namedArgs = args.where((arg) => arg.isNamed).toList();
+
+    // Write positional args inline
+    for (var i = 0; i < positionalArgs.length; i++) {
+      final p = positionalArgs[i];
+      if (p.isCovariant) {
+        write('covariant ');
+      }
+      if (p.type case final type?) {
+        write('$type ');
+      }
+      write(p.name);
+      if (i < positionalArgs.length - 1 || namedArgs.isNotEmpty) {
+        write(', ');
       }
     }
 
-    final namedArgs = args.where((arg) => arg.isNamed).toList();
+    // Write named args in braces
     if (namedArgs.isNotEmpty) {
       write('{');
       writeln();
@@ -136,10 +147,10 @@ class DartBuffer {
           writeArgument(arg);
         }
       });
-      writeIndent();
-      write('}');
+      writeln('});');
+    } else {
+      writeln(');');
     }
-    writeln(');');
   }
 
   void writeArgument(DartArgument arg) {
@@ -179,12 +190,11 @@ class DartBuffer {
 
   void writeClass(DartClass value) {
     writeApiDocumentation(value.documentation);
-    writeln('class ${value.name}');
+    write('class ${value.name}');
     if (value.extend != null) {
       write(' extends ${value.extend}');
     }
-    write(' {');
-    writeln();
+    writeln(' {');
     indented(() {
       // Constructors
       for (var constructor in value.constructors) {
@@ -209,6 +219,7 @@ class DartBuffer {
       }
     });
     writeln('}');
+    writeln(); // Add blank line after class
   }
 
   @override

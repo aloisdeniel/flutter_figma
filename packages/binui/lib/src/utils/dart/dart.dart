@@ -98,9 +98,7 @@ class DartGetter {
             buffer.indent();
             for (var i = 0; i < props.length; i++) {
               final propName = props[i].name;
-              buffer.writeIndent();
-              buffer.write(propName);
-              buffer.writeln(',');
+              buffer.writeln('$propName,');
             }
             buffer.unindent();
             buffer.writeln(']);');
