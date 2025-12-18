@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-class JsonEditor extends StatelessWidget {
+import 'syntax_highlighter.dart';
+
+class JsonEditor extends StatefulWidget {
   const JsonEditor({
     super.key,
     required this.controller,
@@ -15,6 +17,48 @@ class JsonEditor extends StatelessWidget {
   final VoidCallback? onClear;
   final VoidCallback? onFormat;
   final String? errorMessage;
+
+  @override
+  State<JsonEditor> createState() => _JsonEditorState();
+}
+
+class _JsonEditorState extends State<JsonEditor> {
+  late SyntaxHighlightingController _highlightingController;
+
+  @override
+  void initState() {
+    super.initState();
+    _highlightingController = SyntaxHighlightingController(
+      text: widget.controller.text,
+      language: 'json',
+    );
+    // Sync with external controller
+    widget.controller.addListener(_syncFromExternal);
+  }
+
+  @override
+  void dispose() {
+    widget.controller.removeListener(_syncFromExternal);
+    _highlightingController.dispose();
+    super.dispose();
+  }
+
+  void _syncFromExternal() {
+    if (_highlightingController.text != widget.controller.text) {
+      _highlightingController.text = widget.controller.text;
+    }
+  }
+
+  void _onChanged(String value) {
+    widget.controller.text = value;
+    widget.onChanged?.call(value);
+  }
+
+  TextEditingController get controller => widget.controller;
+  ValueChanged<String>? get onChanged => widget.onChanged;
+  VoidCallback? get onClear => widget.onClear;
+  VoidCallback? get onFormat => widget.onFormat;
+  String? get errorMessage => widget.errorMessage;
 
   @override
   Widget build(BuildContext context) {
@@ -120,8 +164,8 @@ class JsonEditor extends StatelessWidget {
           ),
         Expanded(
           child: TextField(
-            controller: controller,
-            onChanged: onChanged,
+            controller: _highlightingController,
+            onChanged: _onChanged,
             maxLines: null,
             expands: true,
             textAlignVertical: TextAlignVertical.top,

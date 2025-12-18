@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:universal_html/html.dart' as html;
 
+import 'syntax_highlighter.dart';
+
 class CodePanel extends StatefulWidget {
   const CodePanel({super.key, required this.library});
 
@@ -54,7 +56,9 @@ class _CodePanelState extends State<CodePanel> {
           _isGenerating = false;
         });
       }
-    } catch (e) {
+    } catch (e, st) {
+      print(e);
+      print(st);
       if (mounted) {
         setState(() {
           _generationError = e.toString();
@@ -395,22 +399,26 @@ class _CodeFileView extends StatelessWidget {
             ],
           ),
         ),
-        // Code content
+        // Code content with syntax highlighting
         Expanded(
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(16),
-            child: SelectableText(
-              file.content,
-              style: TextStyle(
-                fontSize: 12,
-                fontFamily: 'monospace',
-                height: 1.5,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
+            child: SyntaxHighlightedCode(
+              code: file.content,
+              language: _getLanguageForFile(file.path),
+              fontSize: 12,
+              showLineNumbers: true,
             ),
           ),
         ),
       ],
     );
+  }
+
+  String _getLanguageForFile(String path) {
+    if (path.endsWith('.dart')) return 'dart';
+    if (path.endsWith('.yaml') || path.endsWith('.yml')) return 'yaml';
+    if (path.endsWith('.json')) return 'json';
+    return 'plaintext';
   }
 }

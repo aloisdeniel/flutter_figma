@@ -63,7 +63,7 @@ class FlutterValueExporter {
       Value_Type.visualNode => VisualNodeDartExporter(
         valueSerializer: this,
       ).serialize(library, value.visualNode),
-      Value_Type.notSet => throw Exception('Value type not set'),
+      Value_Type.notSet => 'null', //throw Exception('Value type not set'),
     };
   }
 
