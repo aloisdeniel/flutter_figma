@@ -147,6 +147,7 @@ Future<FrameNode> _convertFrameNode(
     clipContent: node.clipsContent,
     effects: _convertEffects(node.effects.toDart),
     layout: layout,
+    cornerRadius: _convertFrameCornerRadius(node),
   );
 }
 
@@ -196,12 +197,73 @@ Future<RectangleNode> _convertRectangleNode(
       node.strokes.toDart,
       context,
     ),
-    cornerRadius: CornerRadius(
-      topLeft: (node.topLeftRadius as num?)?.toDouble() ?? 0,
-      topRight: (node.topRightRadius as num?)?.toDouble() ?? 0,
-      bottomLeft: (node.bottomLeftRadius as num?)?.toDouble() ?? 0,
-      bottomRight: (node.bottomRightRadius as num?)?.toDouble() ?? 0,
-    ),
+    cornerRadius: _convertRectangleCornerRadius(node),
+  );
+}
+
+/// Converts corner radius from Figma node properties.
+/// Handles both uniform corner radius and individual corner radii.
+///
+/// In Figma:
+/// - When all corners have the same radius, `cornerRadius` is a number
+/// - When corners differ, `cornerRadius` is `figma.mixed` and individual properties are set
+CornerRadius _convertCornerRadiusFromValues({
+  required num? uniformRadius,
+  required num? topLeft,
+  required num? topRight,
+  required num? bottomLeft,
+  required num? bottomRight,
+}) {
+  // Try to get individual corner values first
+  final tl = topLeft?.toDouble();
+  final tr = topRight?.toDouble();
+  final bl = bottomLeft?.toDouble();
+  final br = bottomRight?.toDouble();
+
+  // If individual values are available and non-zero, use them
+  if (tl != null || tr != null || bl != null || br != null) {
+    // Check if any individual value is non-zero
+    if ((tl ?? 0) > 0 || (tr ?? 0) > 0 || (bl ?? 0) > 0 || (br ?? 0) > 0) {
+      return CornerRadius(
+        topLeft: tl ?? 0,
+        topRight: tr ?? 0,
+        bottomLeft: bl ?? 0,
+        bottomRight: br ?? 0,
+      );
+    }
+  }
+
+  // Fall back to uniform corner radius
+  // The cornerRadius property might be figma.mixed (a symbol) when corners differ,
+  // so we need to check if it's a valid number
+  final radius = uniformRadius?.toDouble() ?? 0;
+  return CornerRadius(
+    topLeft: radius,
+    topRight: radius,
+    bottomLeft: radius,
+    bottomRight: radius,
+  );
+}
+
+/// Converts corner radius from a Figma rectangle node.
+CornerRadius _convertRectangleCornerRadius(figma_api.RectangleNode node) {
+  return _convertCornerRadiusFromValues(
+    uniformRadius: node.cornerRadius,
+    topLeft: node.topLeftRadius,
+    topRight: node.topRightRadius,
+    bottomLeft: node.bottomLeftRadius,
+    bottomRight: node.bottomRightRadius,
+  );
+}
+
+/// Converts corner radius from a Figma frame node.
+CornerRadius _convertFrameCornerRadius(figma_api.FrameNode node) {
+  return _convertCornerRadiusFromValues(
+    uniformRadius: node.cornerRadius,
+    topLeft: node.topLeftRadius,
+    topRight: node.topRightRadius,
+    bottomLeft: node.bottomLeftRadius,
+    bottomRight: node.bottomRightRadius,
   );
 }
 

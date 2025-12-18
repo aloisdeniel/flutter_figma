@@ -491,8 +491,8 @@ class _ComponentVariantPreviewState extends State<_ComponentVariantPreview> {
               margin: const EdgeInsets.fromLTRB(12, 0, 12, 12),
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(8),
+                color: Colors.white.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(2),
                 border: Border.all(
                   color: Theme.of(context).colorScheme.outline,
                 ),

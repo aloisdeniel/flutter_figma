@@ -599,6 +599,16 @@ extension type FrameNode._(JSObject _) implements SceneNode {
   external set layoutGrow(num value);
   external bool get expanded;
   external set expanded(bool value);
+  external num get cornerRadius;
+  external set cornerRadius(num value);
+  external num get topLeftRadius;
+  external set topLeftRadius(num value);
+  external num get topRightRadius;
+  external set topRightRadius(num value);
+  external num get bottomLeftRadius;
+  external set bottomLeftRadius(num value);
+  external num get bottomRightRadius;
+  external set bottomRightRadius(num value);
 }
 
 extension type GroupNode._(JSObject _) implements SceneNode {
