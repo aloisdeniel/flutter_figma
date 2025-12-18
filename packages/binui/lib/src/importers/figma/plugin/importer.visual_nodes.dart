@@ -561,10 +561,19 @@ Future<Alias?> _createVariableAliasAsync(
   }
 
   // Use consistent key format for collection and variable IDs
-  final collectionId = context.identifiers.get(
-    'variable_collection/${variable.variableCollectionId}',
-  );
-  final variableId = context.identifiers.get('variable/$figmaVariableId');
+  final collectionKey = 'variable_collection/${variable.variableCollectionId}';
+  final collectionId = context.identifiers.get(collectionKey);
+  final variableKey = 'variable/$figmaVariableId';
+  final variableId = context.identifiers.get(variableKey);
+
+  print('Creating variable alias:');
+  print('  variable.variableCollectionId: ${variable.variableCollectionId}');
+  print('  figmaId: $figmaVariableId');
+  print('  figmaCollectionId: ${variable.variableCollectionId}');
+  print('  variableKey: $variableKey');
+  print('  collectionKey: $collectionKey');
+  print('  -> collectionId: $collectionId');
+  print('  -> variableId: $variableId');
 
   return Alias(
     variable: VariableAlias(collectionId: collectionId, variableId: variableId),

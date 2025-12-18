@@ -192,11 +192,19 @@ class _VariableCollectionPreviewState
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    child: Text(
-                      widget.collection.name,
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          widget.collection.name,
+                          style: Theme.of(context).textTheme.titleSmall
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
+                        Text(
+                          'ID:${widget.collection.id}',
+                          style: const TextStyle(fontSize: 10),
+                        ),
+                      ],
                     ),
                   ),
                   if (selectedVariant != null) ...[
@@ -374,7 +382,13 @@ class _VariableValueRow extends StatelessWidget {
         children: [
           Expanded(
             flex: 2,
-            child: Text(variable.name, style: const TextStyle(fontSize: 13)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(variable.name, style: const TextStyle(fontSize: 13)),
+                Text('ID:${variable.id}', style: const TextStyle(fontSize: 10)),
+              ],
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(

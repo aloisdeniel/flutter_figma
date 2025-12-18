@@ -168,16 +168,6 @@ extension PaintConversionExtension on b.Paint {
 }
 
 extension SolidPaintConversionExtension on b.SolidPaint {
-  f.Paint toFlutter(b.Library library) {
-    final colorValue = library.resolveAlias(this.color);
-    final color = colorValue?.whichType() == b.Value_Type.color
-        ? colorValue!.color.toFlutter()
-        : const Color(0x00000000); // Fallback to transparent
-    return f.Paint()
-      ..color = color
-      ..style = f.PaintingStyle.fill;
-  }
-
   FigmaPaint toFigmaFlutter(
     b.Library library, {
     required double opacity,
@@ -185,9 +175,11 @@ extension SolidPaintConversionExtension on b.SolidPaint {
     required BlendMode mode,
   }) {
     final colorValue = library.resolveAlias(this.color);
+
     final color = colorValue?.whichType() == b.Value_Type.color
         ? colorValue!.color.toFlutter()
         : const Color(0x00000000); // Fallback to transparent
+    print('Resolved value: ${color}');
     return SolidPaint(
       color: color,
       opacity: opacity,

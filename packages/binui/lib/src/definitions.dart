@@ -76,6 +76,7 @@ extension LibraryExtension on Library {
           final collection = findVariableCollection(
             alias.variable.collectionId,
           );
+          print('Resolved collection: ${collection}');
           if (collection != null) {
             final variantValue = variableCollectionVariants
                 .where((x) => x.collectionId == alias.variable.collectionId)
@@ -83,6 +84,9 @@ extension LibraryExtension on Library {
 
             final variantId =
                 variantValue?.variantId ?? collection.variants.first.id;
+            print(
+              'Resolved variantId: ${alias.variable.variableId} -> $variantId',
+            );
 
             return collection.findVariantValue(
               alias.variable.variableId,
@@ -104,7 +108,11 @@ extension LibraryExtension on Library {
       }
     }();
     if (result?.whichType() == Value_Type.alias) {
-      return resolveAlias(result!.alias);
+      return resolveAlias(
+        result!.alias,
+        variableCollectionVariants: variableCollectionVariants,
+        properties: properties,
+      );
     }
     return result;
   }

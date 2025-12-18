@@ -587,12 +587,18 @@ class _PropertyEditor extends StatelessWidget {
         children: [
           SizedBox(
             width: 120,
-            child: Text(
-              property.name,
-              style: Theme.of(
-                context,
-              ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
-              overflow: TextOverflow.ellipsis,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  property.name,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w500),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text('ID:${property.id}', style: const TextStyle(fontSize: 10)),
+              ],
             ),
           ),
           const SizedBox(width: 8),
