@@ -61,7 +61,7 @@ Future<List<Component>> _importSelectedComponents(
         final componentId = context.identifiers.get('components/${node.id}');
         // Standalone component - import as single-variant component
         components.add(
-          _createComponentFromNode(
+          await _createComponentFromNode(
             componentId,
             context,
             component,
@@ -102,7 +102,7 @@ Future<Component> _createComponentFromSet(
       // No properties defined, but still create variants with visual nodes
       for (var i = 0; i < children.length; i++) {
         final childNode = children[i] as figma_api.ComponentNode;
-        final visualNode = _convertSceneNodeToVisualNode(
+        final visualNode = await _convertSceneNodeToVisualNode(
           childNode,
           variableIdMap,
           propertyIdMap,
@@ -177,7 +177,7 @@ Future<Component> _createComponentFromSet(
     // Create variants with visual nodes for each child component
     for (var i = 0; i < children.length; i++) {
       final childNode = children[i] as figma_api.ComponentNode;
-      final visualNode = _convertSceneNodeToVisualNode(
+      final visualNode = await _convertSceneNodeToVisualNode(
         childNode,
         variableIdMap,
         propertyIdMap,
@@ -248,12 +248,12 @@ List<ComponentVariantValue> _parseVariantValues(
   return variantValues;
 }
 
-Component _createComponentFromNode(
+Future<Component> _createComponentFromNode(
   int componentId,
   ImporterContext<FigmaImportOptions> context,
   figma_api.ComponentNode component,
   VariableIdMap variableIdMap,
-) {
+) async {
   final name = component.name;
   final properties = <ComponentProperty>[];
   final propertyIdMap = <String, (int, int)>{};
@@ -296,7 +296,7 @@ Component _createComponentFromNode(
     }
   }
 
-  final visualNode = _convertSceneNodeToVisualNode(
+  final visualNode = await _convertSceneNodeToVisualNode(
     component,
     variableIdMap,
     propertyIdMap,

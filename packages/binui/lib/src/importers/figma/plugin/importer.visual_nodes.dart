@@ -3,15 +3,15 @@ part of 'importer.dart';
 /// Maps component property name to property ID
 typedef PropertyIdMap = Map<String, (int componentId, int propertyId)>;
 
-VisualNode? _convertSceneNodeToVisualNode(
+Future<VisualNode?> _convertSceneNodeToVisualNode(
   figma_api.SceneNode node,
   VariableIdMap variableIdMap,
   PropertyIdMap propertyIdMap,
-) {
+) async {
   switch (node.type) {
     case 'FRAME':
       return VisualNode(
-        frame: _convertFrameNode(
+        frame: await _convertFrameNode(
           node as figma_api.FrameNode,
           variableIdMap,
           propertyIdMap,
@@ -19,7 +19,7 @@ VisualNode? _convertSceneNodeToVisualNode(
       );
     case 'GROUP':
       return VisualNode(
-        group: _convertGroupNode(
+        group: await _convertGroupNode(
           node as figma_api.GroupNode,
           variableIdMap,
           propertyIdMap,
@@ -52,7 +52,7 @@ VisualNode? _convertSceneNodeToVisualNode(
       );
     case 'COMPONENT':
       return VisualNode(
-        frame: _convertComponentNode(
+        frame: await _convertComponentNode(
           node as figma_api.ComponentNode,
           variableIdMap,
           propertyIdMap,
@@ -60,7 +60,7 @@ VisualNode? _convertSceneNodeToVisualNode(
       );
     case 'INSTANCE':
       return VisualNode(
-        instance: _convertInstanceNode(
+        instance: await _convertInstanceNode(
           node as figma_api.InstanceNode,
           variableIdMap,
           propertyIdMap,
@@ -68,7 +68,7 @@ VisualNode? _convertSceneNodeToVisualNode(
       );
     case 'BOOLEAN_OPERATION':
       return VisualNode(
-        booleanOperation: _convertBooleanOperationNode(
+        booleanOperation: await _convertBooleanOperationNode(
           node as figma_api.BooleanOperationNode,
           variableIdMap,
           propertyIdMap,
@@ -80,11 +80,11 @@ VisualNode? _convertSceneNodeToVisualNode(
   }
 }
 
-FrameNode _convertFrameNode(
+Future<FrameNode> _convertFrameNode(
   figma_api.FrameNode node,
   VariableIdMap variableIdMap,
   PropertyIdMap propertyIdMap,
-) {
+) async {
   // Convert layout properties based on layout mode
   LayoutProperties? layout;
   final layoutModeStr = node.layoutMode.toUpperCase();
@@ -114,7 +114,7 @@ FrameNode _convertFrameNode(
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
-    children: _convertChildren(
+    children: await _convertChildren(
       node.children.toDart,
       variableIdMap,
       propertyIdMap,
@@ -135,11 +135,11 @@ FrameNode _convertFrameNode(
   );
 }
 
-GroupNode _convertGroupNode(
+Future<GroupNode> _convertGroupNode(
   figma_api.GroupNode node,
   VariableIdMap variableIdMap,
   PropertyIdMap propertyIdMap,
-) {
+) async {
   return GroupNode(
     id: node.id,
     name: node.name,
@@ -149,7 +149,7 @@ GroupNode _convertGroupNode(
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
-    children: _convertChildren(
+    children: await _convertChildren(
       node.children.toDart,
       variableIdMap,
       propertyIdMap,
@@ -283,11 +283,11 @@ TextNode _convertTextNode(
   );
 }
 
-FrameNode _convertComponentNode(
+Future<FrameNode> _convertComponentNode(
   figma_api.ComponentNode node,
   VariableIdMap variableIdMap,
   PropertyIdMap propertyIdMap,
-) {
+) async {
   return FrameNode(
     id: node.id,
     name: node.name,
@@ -297,7 +297,7 @@ FrameNode _convertComponentNode(
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
-    children: _convertChildren(
+    children: await _convertChildren(
       node.children.toDart,
       variableIdMap,
       propertyIdMap,
@@ -305,11 +305,14 @@ FrameNode _convertComponentNode(
   );
 }
 
-InstanceNode _convertInstanceNode(
+Future<InstanceNode> _convertInstanceNode(
   figma_api.InstanceNode node,
   VariableIdMap variableIdMap,
   PropertyIdMap propertyIdMap,
-) {
+) async {
+  // Use async API to get main component to avoid documentAccess errors
+  final mainComponent = await node.getMainComponentAsync().toDart;
+
   return InstanceNode(
     id: node.id,
     name: node.name,
@@ -319,20 +322,20 @@ InstanceNode _convertInstanceNode(
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
-    children: _convertChildren(
+    children: await _convertChildren(
       node.children.toDart,
       variableIdMap,
       propertyIdMap,
     ),
-    mainComponentId: node.mainComponent?.id,
+    mainComponentId: mainComponent?.id,
   );
 }
 
-BooleanOperationNode _convertBooleanOperationNode(
+Future<BooleanOperationNode> _convertBooleanOperationNode(
   figma_api.BooleanOperationNode node,
   VariableIdMap variableIdMap,
   PropertyIdMap propertyIdMap,
-) {
+) async {
   return BooleanOperationNode(
     id: node.id,
     name: node.name,
@@ -342,7 +345,7 @@ BooleanOperationNode _convertBooleanOperationNode(
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
-    children: _convertChildren(
+    children: await _convertChildren(
       node.children.toDart,
       variableIdMap,
       propertyIdMap,
@@ -353,14 +356,14 @@ BooleanOperationNode _convertBooleanOperationNode(
 
 // Helper functions
 
-List<VisualNode> _convertChildren(
+Future<List<VisualNode>> _convertChildren(
   List<figma_api.SceneNode> children,
   VariableIdMap variableIdMap,
   PropertyIdMap propertyIdMap,
-) {
+) async {
   final visualNodes = <VisualNode>[];
   for (final child in children) {
-    final visualNode = _convertSceneNodeToVisualNode(
+    final visualNode = await _convertSceneNodeToVisualNode(
       child,
       variableIdMap,
       propertyIdMap,
