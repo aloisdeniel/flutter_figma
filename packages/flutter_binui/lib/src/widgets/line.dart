@@ -15,7 +15,13 @@ class BinuiLine extends StatelessWidget {
     return FigmaDecorated(
       decoration: FigmaDecoration(
         strokes: node.strokes
-            .map((p) => p.toFigmaFlutter(config.library))
+            .map(
+              (p) => p.toFigmaFlutter(
+                config.library,
+                variableCollectionVariants: config.variableCollectionVariants,
+                properties: config.componentProperties,
+              ),
+            )
             .nonNulls
             .toList(),
       ),

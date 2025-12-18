@@ -97,6 +97,7 @@ Value? _convertPaintToValue(figma_api.Paint paint) {
           green: color.g.toDouble(),
           blue: color.b.toDouble(),
           alpha: opacity.toDouble(),
+          colorSpace: ColorSpace.COLOR_SPACE_SRGB,
         ),
       );
     }
@@ -123,6 +124,7 @@ Value? _convertEffectToValue(figma_api.Effect effect) {
           green: color.g.toDouble(),
           blue: color.b.toDouble(),
           alpha: color.a.toDouble(),
+          colorSpace: ColorSpace.COLOR_SPACE_SRGB,
         ),
       );
     }

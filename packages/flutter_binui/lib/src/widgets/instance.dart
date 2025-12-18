@@ -16,11 +16,23 @@ class BinuiInstance extends StatelessWidget {
     return FigmaFrame(
       layout: node.layout.toFlutter(),
       fills: node.fills
-          .map((p) => p.toFigmaFlutter(config.library))
+          .map(
+            (p) => p.toFigmaFlutter(
+              config.library,
+              variableCollectionVariants: config.variableCollectionVariants,
+              properties: config.componentProperties,
+            ),
+          )
           .nonNulls
           .toList(),
       strokes: node.strokes
-          .map((p) => p.toFigmaFlutter(config.library))
+          .map(
+            (p) => p.toFigmaFlutter(
+              config.library,
+              variableCollectionVariants: config.variableCollectionVariants,
+              properties: config.componentProperties,
+            ),
+          )
           .nonNulls
           .toList(),
       cornerRadius: node.cornerRadius.toFigmaFlutter(),

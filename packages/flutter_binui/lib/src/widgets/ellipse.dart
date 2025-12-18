@@ -15,11 +15,23 @@ class BinuiEllipse extends StatelessWidget {
     return FigmaDecorated(
       decoration: FigmaDecoration(
         fills: node.fills
-            .map((p) => p.toFigmaFlutter(config.library))
+            .map(
+              (p) => p.toFigmaFlutter(
+                config.library,
+                variableCollectionVariants: config.variableCollectionVariants,
+                properties: config.componentProperties,
+              ),
+            )
             .nonNulls
             .toList(),
         strokes: node.strokes
-            .map((p) => p.toFigmaFlutter(config.library))
+            .map(
+              (p) => p.toFigmaFlutter(
+                config.library,
+                variableCollectionVariants: config.variableCollectionVariants,
+                properties: config.componentProperties,
+              ),
+            )
             .nonNulls
             .toList(),
       ),

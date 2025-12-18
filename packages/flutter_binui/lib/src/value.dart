@@ -86,7 +86,8 @@ extension ColorConversionExtension on b.Color {
         b.ColorSpace.COLOR_SPACE_DISPLAY_P3 => ColorSpace.displayP3,
         b.ColorSpace.COLOR_SPACE_SRGB => ColorSpace.sRGB,
         b.ColorSpace.COLOR_SPACE_EXTENDED_SRGB => ColorSpace.extendedSRGB,
-        _ => throw Exception(),
+        // Default to sRGB for unset or unknown color spaces
+        _ => ColorSpace.sRGB,
       },
     );
   }
@@ -149,7 +150,12 @@ extension TextStyleConversionExtension on b.TextStyle {
 }
 
 extension PaintConversionExtension on b.Paint {
-  FigmaPaint? toFigmaFlutter(b.Library library) {
+  FigmaPaint? toFigmaFlutter(
+    b.Library library, {
+    List<b.VariableCollectionVariantValue> variableCollectionVariants =
+        const [],
+    List<b.PropertyValue> properties = const [],
+  }) {
     switch (whichType()) {
       case b.Paint_Type.solid:
         return solid.toFigmaFlutter(
@@ -157,6 +163,8 @@ extension PaintConversionExtension on b.Paint {
           opacity: opacity,
           visible: visible,
           mode: blendMode.toFigmaFlutter(),
+          variableCollectionVariants: variableCollectionVariants,
+          properties: properties,
         );
       case b.Paint_Type.notSet:
         return null;
@@ -173,8 +181,15 @@ extension SolidPaintConversionExtension on b.SolidPaint {
     required double opacity,
     required bool visible,
     required BlendMode mode,
+    List<b.VariableCollectionVariantValue> variableCollectionVariants =
+        const [],
+    List<b.PropertyValue> properties = const [],
   }) {
-    final colorValue = library.resolveAlias(this.color);
+    final colorValue = library.resolveAlias(
+      this.color,
+      variableCollectionVariants: variableCollectionVariants,
+      properties: properties,
+    );
 
     final color = colorValue?.whichType() == b.Value_Type.color
         ? colorValue!.color.toFlutter()
