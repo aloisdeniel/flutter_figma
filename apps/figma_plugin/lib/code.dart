@@ -65,7 +65,9 @@ Future<void> _generateCode() async {
       break;
     case OutputFormat.json:
       final generator = JsonExporter();
-      code = await generator.export(ExportContext(library));
+      code = await generator.export(
+        JsonExportContext(library, const JsonExportOptions(prettyPrint: true)),
+      );
       break;
     case OutputFormat.binary:
       final generator = BinaryExporter(format: BinaryFormat.base64);
