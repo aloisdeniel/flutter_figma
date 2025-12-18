@@ -11,9 +11,14 @@ Future<List<VariableCollection>> _importVariableCollections(
   for (var i = 0; i < figmaCollections.length; i++) {
     final collection = figmaCollections[i];
     final collectionName = collection.name;
-    final collectionId = context.identifiers.get(
-      'variable_collection/${collection.id}',
-    );
+    final collectionKey = 'variable_collection/${collection.id}';
+    final collectionId = context.identifiers.get(collectionKey);
+
+    print('Creating collection: $collectionName');
+    print('  figma id: ${collection.id}');
+    print('  collectionKey: $collectionKey');
+    print('  -> collectionId: $collectionId');
+
     final modes = collection.modes;
     final variants = <VariableCollectionVariant>[];
 
@@ -60,16 +65,21 @@ Future<List<VariableCollection>> _importVariableCollections(
 
     // Create variable entries
     final variableEntries = <VariableCollectionEntry>[];
-    final variableIds = collection.variableIds;
-    for (var k = 0; k < variableIds.length; k++) {
-      final figmaId = variableIds[k].toDart;
-
-      final variableId = context.identifiers.get('variable/$figmaId');
+    final variableIdsInCollection = collection.variableIds;
+    for (var k = 0; k < variableIdsInCollection.length; k++) {
+      final figmaId = variableIdsInCollection[k].toDart;
+      final variableKey = 'variable/$figmaId';
+      final variableId = context.identifiers.get(variableKey);
       final variable = await figma_api.figma.variables
           .getVariableByIdAsync(figmaId)
           .toDart;
 
       if (variable != null) {
+        print('  Creating variable entry: ${variable.name}');
+        print('    figmaId: $figmaId');
+        print('    variableKey: $variableKey');
+        print('    -> variableId: $variableId');
+
         variableEntries.add(
           VariableCollectionEntry(
             id: variableId,
@@ -112,14 +122,28 @@ Future<Value> _convertVariableValue(
           .toDart;
 
       if (variable == null) {
+        print('WARNING: Variable alias target not found: $figmaVariableId');
         return Value(stringValue: 'unresolved alias: $figmaVariableId');
       }
 
       // Use consistent key format for collection and variable IDs
-      final collectionId = context.identifiers.get(
-        'variable_collection/${variable.variableCollectionId}',
+      final collectionKey =
+          'variable_collection/${variable.variableCollectionId}';
+      final variableKey = 'variable/$figmaVariableId';
+
+      print('Resolving alias:');
+      print('  figmaVariableId: $figmaVariableId');
+      print(
+        '  variable.variableCollectionId: ${variable.variableCollectionId}',
       );
-      final variableId = context.identifiers.get('variable/$figmaVariableId');
+      print('  collectionKey: $collectionKey');
+      print('  variableKey: $variableKey');
+
+      final collectionId = context.identifiers.get(collectionKey);
+      final variableId = context.identifiers.get(variableKey);
+
+      print('  -> collectionId: $collectionId');
+      print('  -> variableId: $variableId');
 
       return Value(
         alias: Alias(
