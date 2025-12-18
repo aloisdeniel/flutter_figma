@@ -102,13 +102,20 @@ Future<Component> _createComponentFromSet(
       // No properties defined, but still create variants with visual nodes
       for (var i = 0; i < children.length; i++) {
         final childNode = children[i] as figma_api.ComponentNode;
+        final variantId = context.identifiers.get(
+          'component_sets/${componentSet.id}/variant/${childNode.id}',
+        );
         final visualNode = await _convertSceneNodeToVisualNode(
           childNode,
-          variableIdMap,
+          context,
           propertyIdMap,
         );
         variants.add(
-          ComponentVariant(id: i, name: childNode.name, root: visualNode),
+          ComponentVariant(
+            id: variantId,
+            name: childNode.name,
+            root: visualNode,
+          ),
         );
       }
       return Component(
@@ -118,23 +125,27 @@ Future<Component> _createComponentFromSet(
       );
     }
 
-    var propertyIndex = 0;
     for (final entry in figProperties.entries) {
       final key = entry.key as String;
       final prop = entry.value as Map;
       final propType = prop['type'] as String;
+
+      // Use context.identifiers.get to get a stable property ID
+      final propertyId = context.identifiers.get(
+        'component_sets/${componentSet.id}/property/$key',
+      );
 
       if (propType == 'VARIANT') {
         final defaultValue = prop['defaultValue'] as String;
         final variantOptions = prop['variantOptions'] as List;
         final enumValues = <ComponentVariantValueDefinition>[];
         for (var i = 0; i < variantOptions.length; i++) {
-          final variantOption = variantOptions[i];
+          final variantOption = variantOptions[i] as String;
+          final valueId = context.identifiers.get(
+            'component_sets/${componentSet.id}/property/$key/value/$variantOption',
+          );
           enumValues.add(
-            ComponentVariantValueDefinition(
-              name: variantOption as String,
-              id: i,
-            ),
+            ComponentVariantValueDefinition(name: variantOption, id: valueId),
           );
         }
         variantDefinitions.add(
@@ -142,44 +153,44 @@ Future<Component> _createComponentFromSet(
         );
         properties.add(
           ComponentProperty(
-            id: propertyIndex,
+            id: propertyId,
             name: key,
             defaultValue: Value(stringValue: defaultValue),
           ),
         );
-        propertyIdMap[key] = (componentId, propertyIndex);
-        propertyIndex++;
+        propertyIdMap[key] = (componentId, propertyId);
       } else if (propType == 'TEXT') {
         final defaultValue = prop['defaultValue'] as String;
         properties.add(
           ComponentProperty(
-            id: propertyIndex,
+            id: propertyId,
             name: key,
             defaultValue: Value(stringValue: defaultValue),
           ),
         );
-        propertyIdMap[key] = (componentId, propertyIndex);
-        propertyIndex++;
+        propertyIdMap[key] = (componentId, propertyId);
       } else if (propType == 'BOOLEAN') {
         final defaultValue = prop['defaultValue'] as bool;
         properties.add(
           ComponentProperty(
-            id: propertyIndex,
+            id: propertyId,
             name: key,
             defaultValue: Value(boolean: defaultValue),
           ),
         );
-        propertyIdMap[key] = (componentId, propertyIndex);
-        propertyIndex++;
+        propertyIdMap[key] = (componentId, propertyId);
       }
     }
 
     // Create variants with visual nodes for each child component
     for (var i = 0; i < children.length; i++) {
       final childNode = children[i] as figma_api.ComponentNode;
+      final variantId = context.identifiers.get(
+        'component_sets/${componentSet.id}/variant/${childNode.id}',
+      );
       final visualNode = await _convertSceneNodeToVisualNode(
         childNode,
-        variableIdMap,
+        context,
         propertyIdMap,
       );
 
@@ -191,7 +202,7 @@ Future<Component> _createComponentFromSet(
 
       variants.add(
         ComponentVariant(
-          id: i,
+          id: variantId,
           name: childNode.name,
           variants: variantValues,
           root: visualNode,
@@ -261,36 +272,38 @@ Future<Component> _createComponentFromNode(
   // Extract component properties from standalone component
   final figProperties = component.componentPropertyDefinitions.dartify();
   if (figProperties is Map) {
-    var propertyIndex = 0;
     for (final entry in figProperties.entries) {
       final key = entry.key as String;
       final prop = entry.value as Map;
       final propType = prop['type'] as String;
+
+      // Use context.identifiers.get to get a stable property ID
+      final propertyId = context.identifiers.get(
+        'components/${component.id}/property/$key',
+      );
 
       if (propType == 'TEXT') {
         final defaultValue = prop['defaultValue'] as String;
         properties.add(
           ComponentProperty(
             componentId: componentId,
-            id: propertyIndex,
+            id: propertyId,
             name: key,
             defaultValue: Value(stringValue: defaultValue),
           ),
         );
-        propertyIdMap[key] = (componentId, propertyIndex);
-        propertyIndex++;
+        propertyIdMap[key] = (componentId, propertyId);
       } else if (propType == 'BOOLEAN') {
         final defaultValue = prop['defaultValue'] as bool;
         properties.add(
           ComponentProperty(
             componentId: componentId,
-            id: propertyIndex,
+            id: propertyId,
             name: key,
             defaultValue: Value(boolean: defaultValue),
           ),
         );
-        propertyIdMap[key] = (componentId, propertyIndex);
-        propertyIndex++;
+        propertyIdMap[key] = (componentId, propertyId);
       }
       // Note: VARIANT type doesn't apply to standalone components
     }
@@ -298,12 +311,15 @@ Future<Component> _createComponentFromNode(
 
   final visualNode = await _convertSceneNodeToVisualNode(
     component,
-    variableIdMap,
+    context,
     propertyIdMap,
   );
 
   // Create a single variant with the component's visual tree
-  final variant = ComponentVariant(id: 0, name: name, root: visualNode);
+  final variantId = context.identifiers.get(
+    'components/${component.id}/variant/default',
+  );
+  final variant = ComponentVariant(id: variantId, name: name, root: visualNode);
 
   return Component(
     id: componentId,

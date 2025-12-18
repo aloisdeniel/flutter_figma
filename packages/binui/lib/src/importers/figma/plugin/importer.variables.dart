@@ -25,9 +25,8 @@ Future<(List<VariableCollection>, VariableIdMap)> _importVariableCollections(
     final variableIds = collection.variableIds;
     for (var k = 0; k < variableIds.length; k++) {
       final figmaId = variableIds[k].toDart;
-      final variableId = context.identifiers.get(
-        'variable_collection/${collection.id}/variable/$figmaId',
-      );
+      // Use consistent key format for variable IDs
+      final variableId = context.identifiers.get('variable/$figmaId');
       figmaVariableIdToAlias[figmaId] = (collectionId, variableId);
     }
   }
@@ -89,9 +88,7 @@ Future<(List<VariableCollection>, VariableIdMap)> _importVariableCollections(
     for (var k = 0; k < variableIds.length; k++) {
       final figmaId = variableIds[k].toDart;
 
-      final variableId = context.identifiers.get(
-        'variable_collection/${collection.id}/variable/$figmaId',
-      );
+      final variableId = context.identifiers.get('variable/$figmaId');
       final variable = await figma_api.figma.variables
           .getVariableByIdAsync(figmaId)
           .toDart;

@@ -5,7 +5,7 @@ typedef PropertyIdMap = Map<String, (int componentId, int propertyId)>;
 
 Future<VisualNode?> _convertSceneNodeToVisualNode(
   figma_api.SceneNode node,
-  VariableIdMap variableIdMap,
+  ImporterContext<FigmaImportOptions> context,
   PropertyIdMap propertyIdMap,
 ) async {
   switch (node.type) {
@@ -13,7 +13,7 @@ Future<VisualNode?> _convertSceneNodeToVisualNode(
       return VisualNode(
         frame: await _convertFrameNode(
           node as figma_api.FrameNode,
-          variableIdMap,
+          context,
           propertyIdMap,
         ),
       );
@@ -21,15 +21,15 @@ Future<VisualNode?> _convertSceneNodeToVisualNode(
       return VisualNode(
         group: await _convertGroupNode(
           node as figma_api.GroupNode,
-          variableIdMap,
+          context,
           propertyIdMap,
         ),
       );
     case 'RECTANGLE':
       return VisualNode(
-        rectangle: _convertRectangleNode(
+        rectangle: await _convertRectangleNode(
           node as figma_api.RectangleNode,
-          variableIdMap,
+          context,
         ),
       );
     case 'ELLIPSE':
@@ -44,9 +44,9 @@ Future<VisualNode?> _convertSceneNodeToVisualNode(
       );
     case 'TEXT':
       return VisualNode(
-        text: _convertTextNode(
+        text: await _convertTextNode(
           node as figma_api.TextNode,
-          variableIdMap,
+          context,
           propertyIdMap,
         ),
       );
@@ -54,7 +54,7 @@ Future<VisualNode?> _convertSceneNodeToVisualNode(
       return VisualNode(
         frame: await _convertComponentNode(
           node as figma_api.ComponentNode,
-          variableIdMap,
+          context,
           propertyIdMap,
         ),
       );
@@ -62,7 +62,7 @@ Future<VisualNode?> _convertSceneNodeToVisualNode(
       return VisualNode(
         instance: await _convertInstanceNode(
           node as figma_api.InstanceNode,
-          variableIdMap,
+          context,
           propertyIdMap,
         ),
       );
@@ -70,7 +70,7 @@ Future<VisualNode?> _convertSceneNodeToVisualNode(
       return VisualNode(
         booleanOperation: await _convertBooleanOperationNode(
           node as figma_api.BooleanOperationNode,
-          variableIdMap,
+          context,
           propertyIdMap,
         ),
       );
@@ -82,7 +82,7 @@ Future<VisualNode?> _convertSceneNodeToVisualNode(
 
 Future<FrameNode> _convertFrameNode(
   figma_api.FrameNode node,
-  VariableIdMap variableIdMap,
+  ImporterContext<FigmaImportOptions> context,
   PropertyIdMap propertyIdMap,
 ) async {
   // Convert layout properties based on layout mode
@@ -116,18 +116,18 @@ Future<FrameNode> _convertFrameNode(
     rotation: node.rotation.toDouble(),
     children: await _convertChildren(
       node.children.toDart,
-      variableIdMap,
+      context,
       propertyIdMap,
     ),
-    fills: _convertPaintsWithBoundVariables(
+    fills: await _convertPaintsWithBoundVariables(
       node,
       node.fills.toDart,
-      variableIdMap,
+      context,
     ),
-    strokes: _convertPaintsWithBoundVariables(
+    strokes: await _convertPaintsWithBoundVariables(
       node,
       node.strokes.toDart,
-      variableIdMap,
+      context,
     ),
     clipContent: node.clipsContent,
     effects: _convertEffects(node.effects.toDart),
@@ -137,7 +137,7 @@ Future<FrameNode> _convertFrameNode(
 
 Future<GroupNode> _convertGroupNode(
   figma_api.GroupNode node,
-  VariableIdMap variableIdMap,
+  ImporterContext<FigmaImportOptions> context,
   PropertyIdMap propertyIdMap,
 ) async {
   return GroupNode(
@@ -151,16 +151,16 @@ Future<GroupNode> _convertGroupNode(
     rotation: node.rotation.toDouble(),
     children: await _convertChildren(
       node.children.toDart,
-      variableIdMap,
+      context,
       propertyIdMap,
     ),
   );
 }
 
-RectangleNode _convertRectangleNode(
+Future<RectangleNode> _convertRectangleNode(
   figma_api.RectangleNode node,
-  VariableIdMap variableIdMap,
-) {
+  ImporterContext<FigmaImportOptions> context,
+) async {
   return RectangleNode(
     id: node.id,
     name: node.name,
@@ -170,15 +170,15 @@ RectangleNode _convertRectangleNode(
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
-    fills: _convertPaintsWithBoundVariables(
+    fills: await _convertPaintsWithBoundVariables(
       node,
       node.fills.toDart,
-      variableIdMap,
+      context,
     ),
-    strokes: _convertPaintsWithBoundVariables(
+    strokes: await _convertPaintsWithBoundVariables(
       node,
       node.strokes.toDart,
-      variableIdMap,
+      context,
     ),
     cornerRadius: CornerRadius(
       topLeft: (node.topLeftRadius as num?)?.toDouble() ?? 0,
@@ -228,11 +228,11 @@ VectorNode _convertVectorNode(figma_api.VectorNode node) {
   );
 }
 
-TextNode _convertTextNode(
+Future<TextNode> _convertTextNode(
   figma_api.TextNode node,
-  VariableIdMap variableIdMap,
+  ImporterContext<FigmaImportOptions> context,
   PropertyIdMap propertyIdMap,
-) {
+) async {
   // Extract font information
   String? fontFamily;
   String? fontStyleStr;
@@ -265,10 +265,10 @@ TextNode _convertTextNode(
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
     characters: characters,
-    fills: _convertPaintsWithBoundVariables(
+    fills: await _convertPaintsWithBoundVariables(
       node,
       node.fills.toDart,
-      variableIdMap,
+      context,
     ),
     style: TextStyle(
       fontName: FontName(
@@ -285,7 +285,7 @@ TextNode _convertTextNode(
 
 Future<FrameNode> _convertComponentNode(
   figma_api.ComponentNode node,
-  VariableIdMap variableIdMap,
+  ImporterContext<FigmaImportOptions> context,
   PropertyIdMap propertyIdMap,
 ) async {
   return FrameNode(
@@ -299,7 +299,7 @@ Future<FrameNode> _convertComponentNode(
     rotation: node.rotation.toDouble(),
     children: await _convertChildren(
       node.children.toDart,
-      variableIdMap,
+      context,
       propertyIdMap,
     ),
   );
@@ -307,7 +307,7 @@ Future<FrameNode> _convertComponentNode(
 
 Future<InstanceNode> _convertInstanceNode(
   figma_api.InstanceNode node,
-  VariableIdMap variableIdMap,
+  ImporterContext<FigmaImportOptions> context,
   PropertyIdMap propertyIdMap,
 ) async {
   // Use async API to get main component to avoid documentAccess errors
@@ -324,7 +324,7 @@ Future<InstanceNode> _convertInstanceNode(
     rotation: node.rotation.toDouble(),
     children: await _convertChildren(
       node.children.toDart,
-      variableIdMap,
+      context,
       propertyIdMap,
     ),
     mainComponentId: mainComponent?.id,
@@ -333,7 +333,7 @@ Future<InstanceNode> _convertInstanceNode(
 
 Future<BooleanOperationNode> _convertBooleanOperationNode(
   figma_api.BooleanOperationNode node,
-  VariableIdMap variableIdMap,
+  ImporterContext<FigmaImportOptions> context,
   PropertyIdMap propertyIdMap,
 ) async {
   return BooleanOperationNode(
@@ -347,7 +347,7 @@ Future<BooleanOperationNode> _convertBooleanOperationNode(
     rotation: node.rotation.toDouble(),
     children: await _convertChildren(
       node.children.toDart,
-      variableIdMap,
+      context,
       propertyIdMap,
     ),
     booleanOperation: _convertBooleanOperation(node.booleanOperation),
@@ -358,14 +358,14 @@ Future<BooleanOperationNode> _convertBooleanOperationNode(
 
 Future<List<VisualNode>> _convertChildren(
   List<figma_api.SceneNode> children,
-  VariableIdMap variableIdMap,
+  ImporterContext<FigmaImportOptions> context,
   PropertyIdMap propertyIdMap,
 ) async {
   final visualNodes = <VisualNode>[];
   for (final child in children) {
     final visualNode = await _convertSceneNodeToVisualNode(
       child,
-      variableIdMap,
+      context,
       propertyIdMap,
     );
     if (visualNode != null) {
@@ -376,39 +376,40 @@ Future<List<VisualNode>> _convertChildren(
 }
 
 /// Converts paints while checking for bound variables on the node
-List<Paint> _convertPaintsWithBoundVariables(
+Future<List<Paint>> _convertPaintsWithBoundVariables(
   figma_api.SceneNode node,
   List<figma_api.Paint> paints,
-  VariableIdMap variableIdMap,
+  ImporterContext<FigmaImportOptions> context,
 ) {
   final boundVariables = node.boundVariables?.dartify() as Map?;
 
-  return paints
-      .asMap()
-      .entries
-      .where((entry) {
-        final paint = entry.value;
-        return paint.visible ?? true;
-      })
-      .map((entry) {
-        final index = entry.key;
-        final paint = entry.value;
-        return _convertPaintWithBoundVariable(
-          paint,
-          boundVariables,
-          index,
-          variableIdMap,
-        );
-      })
-      .toList();
+  return Future.wait(
+    paints
+        .asMap()
+        .entries
+        .where((entry) {
+          final paint = entry.value;
+          return paint.visible ?? true;
+        })
+        .map((entry) {
+          final index = entry.key;
+          final paint = entry.value;
+          return _convertPaintWithBoundVariable(
+            paint,
+            boundVariables,
+            index,
+            context,
+          );
+        }),
+  );
 }
 
-Paint _convertPaintWithBoundVariable(
+Future<Paint> _convertPaintWithBoundVariable(
   figma_api.Paint paint,
   Map? boundVariables,
   int paintIndex,
-  VariableIdMap variableIdMap,
-) {
+  ImporterContext<FigmaImportOptions> context,
+) async {
   final paintType = paint.type.toUpperCase();
 
   // Check if this paint has a bound variable for color
@@ -420,23 +421,13 @@ Paint _convertPaintWithBoundVariable(
     if (fillsBindings != null && paintIndex < fillsBindings.length) {
       final fillBinding = fillsBindings[paintIndex] as Map?;
       if (fillBinding != null && fillBinding['type'] == 'VARIABLE_ALIAS') {
-        final variableId = fillBinding['id'] as String?;
-        if (variableId != null) {
-          final indices = variableIdMap[variableId];
-          if (indices != null) {
-            final (collectionId, varId) = indices;
-            colorAlias = Alias(
-              variable: VariableAlias(
-                collectionId: collectionId,
-                variableId: varId,
-              ),
-            );
-          } else {
-            // Variable reference exists but variable was not found - likely deleted
-            print(
-              'Warning: Variable $variableId referenced in fill binding but not found in any collection (may have been deleted)',
-            );
-          }
+        final figmaVariableId = fillBinding['id'] as String?;
+        if (figmaVariableId != null) {
+          // Use context.identifiers.get to get stable IDs for the variable alias
+          colorAlias = await _createVariableAliasAsync(
+            context,
+            figmaVariableId,
+          );
         }
       }
     }
@@ -459,6 +450,34 @@ Paint _convertPaintWithBoundVariable(
     visible: paint.visible ?? true,
     opacity: paint.opacity?.toDouble(),
     blendMode: _convertBlendMode(paint.blendMode),
+  );
+}
+
+/// Creates a variable alias from a Figma variable ID using context.identifiers
+Future<Alias?> _createVariableAliasAsync(
+  ImporterContext<FigmaImportOptions> context,
+  String figmaVariableId,
+) async {
+  // Look up the variable to find its collection
+  final variable = await figma_api.figma.variables
+      .getVariableByIdAsync(figmaVariableId)
+      .toDart;
+
+  if (variable == null) {
+    print(
+      'Warning: Variable $figmaVariableId not found (may have been deleted)',
+    );
+    return null;
+  }
+
+  // Use consistent key format for collection and variable IDs
+  final collectionId = context.identifiers.get(
+    'variable_collection/${variable.variableCollectionId}',
+  );
+  final variableId = context.identifiers.get('variable/$figmaVariableId');
+
+  return Alias(
+    variable: VariableAlias(collectionId: collectionId, variableId: variableId),
   );
 }
 
