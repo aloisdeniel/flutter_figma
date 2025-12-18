@@ -363,30 +363,49 @@
 
     document.getElementById('copy-btn').addEventListener('click', () => {
       if (currentCode) {
-        navigator.clipboard.writeText(currentCode).then(() => {
-          showCopyNotification();
-        }).catch(err => {
-          console.error('Failed to copy:', err);
-          // Fallback for older browsers
-          const textArea = document.createElement('textarea');
-          textArea.value = currentCode;
-          textArea.style.position = 'fixed';
-          textArea.style.opacity = '0';
-          document.body.appendChild(textArea);
-          textArea.select();
-          try {
-            document.execCommand('copy');
-            showCopyNotification();
-          } catch (err) {
-            console.error('Fallback copy failed:', err);
-          }
-          document.body.removeChild(textArea);
-        });
+        copyToClipboard(currentCode);
       }
     });
 
-    function showCopyNotification() {
+    function copyToClipboard(text) {
+      // Create a textarea element for the copy operation
+      // This must be done synchronously within the click handler for Figma plugins
+      const textArea = document.createElement('textarea');
+      textArea.value = text;
+      // Prevent scrolling to bottom of page
+      textArea.style.position = 'fixed';
+      textArea.style.top = '0';
+      textArea.style.left = '0';
+      textArea.style.width = '2em';
+      textArea.style.height = '2em';
+      textArea.style.padding = '0';
+      textArea.style.border = 'none';
+      textArea.style.outline = 'none';
+      textArea.style.boxShadow = 'none';
+      textArea.style.background = 'transparent';
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+      
+      try {
+        const successful = document.execCommand('copy');
+        if (successful) {
+          showCopyNotification();
+        } else {
+          console.error('Copy command was unsuccessful');
+          showCopyNotification('Failed to copy');
+        }
+      } catch (err) {
+        console.error('Copy failed:', err);
+        showCopyNotification('Failed to copy');
+      }
+      
+      document.body.removeChild(textArea);
+    }
+
+    function showCopyNotification(message) {
       const notification = document.getElementById('copy-notification');
+      notification.textContent = message || 'Code copied to clipboard!';
       notification.classList.add('show');
       setTimeout(() => {
         notification.classList.remove('show');
