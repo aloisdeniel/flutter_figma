@@ -14,6 +14,7 @@ class BinuiText extends StatelessWidget {
     final config = BinuiProvider.of(context);
     return FigmaText(
       config.resolve(node.characters, ''),
+      style: node.hasStyle() ? node.style.toFigmaFlutter() : null,
       fills: node.fills
           .map(
             (p) => p.toFigmaFlutter(
