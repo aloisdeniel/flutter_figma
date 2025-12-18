@@ -57,7 +57,7 @@ class BinuiVisualNode extends StatelessWidget {
         referenceHeight: node.group.height,
       ),
       opacity: config.resolve<double>(node.group.opacity, 1.0),
-      visible: node.group.visible,
+      visible: config.resolve<bool>(node.group.visible, true),
       blendMode: node.group.blendMode.toFigmaFlutter(),
       clipContent: false,
       children: node.group.children

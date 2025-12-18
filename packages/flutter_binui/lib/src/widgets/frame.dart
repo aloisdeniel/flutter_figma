@@ -54,7 +54,7 @@ class BinuiFrame extends StatelessWidget {
       cornerRadius: node.cornerRadius.toFigmaFlutter(),
       //TODO effects: node.frame.effects,
       opacity: config.resolve<double>(node.opacity, 1.0),
-      visible: node.visible,
+      visible: config.resolve<bool>(node.visible, true),
       blendMode: node.blendMode.toFigmaFlutter(),
       clipContent: node.clipContent,
       children: flattenGroups(

@@ -30,17 +30,32 @@ Future<VisualNode?> _convertSceneNodeToVisualNode(
         rectangle: await _convertRectangleNode(
           node as figma_api.RectangleNode,
           context,
+          propertyIdMap,
         ),
       );
     case 'ELLIPSE':
       return VisualNode(
-        ellipse: _convertEllipseNode(node as figma_api.EllipseNode),
+        ellipse: await _convertEllipseNode(
+          node as figma_api.EllipseNode,
+          context,
+          propertyIdMap,
+        ),
       );
     case 'LINE':
-      return VisualNode(line: _convertLineNode(node as figma_api.LineNode));
+      return VisualNode(
+        line: await _convertLineNode(
+          node as figma_api.LineNode,
+          context,
+          propertyIdMap,
+        ),
+      );
     case 'VECTOR':
       return VisualNode(
-        vector: _convertVectorNode(node as figma_api.VectorNode),
+        vector: await _convertVectorNode(
+          node as figma_api.VectorNode,
+          context,
+          propertyIdMap,
+        ),
       );
     case 'TEXT':
       return VisualNode(
@@ -108,7 +123,7 @@ Future<FrameNode> _convertFrameNode(
   return FrameNode(
     id: node.id,
     name: node.name,
-    visible: node.visible,
+    visible: await _createVisibilityAlias(node, context, propertyIdMap),
     x: node.x.toDouble(),
     y: node.y.toDouble(),
     width: node.width.toDouble(),
@@ -143,7 +158,7 @@ Future<GroupNode> _convertGroupNode(
   return GroupNode(
     id: node.id,
     name: node.name,
-    visible: node.visible,
+    visible: await _createVisibilityAlias(node, context, propertyIdMap),
     x: node.x.toDouble(),
     y: node.y.toDouble(),
     width: node.width.toDouble(),
@@ -160,11 +175,12 @@ Future<GroupNode> _convertGroupNode(
 Future<RectangleNode> _convertRectangleNode(
   figma_api.RectangleNode node,
   ImporterContext<FigmaImportOptions> context,
+  PropertyIdMap propertyIdMap,
 ) async {
   return RectangleNode(
     id: node.id,
     name: node.name,
-    visible: node.visible,
+    visible: await _createVisibilityAlias(node, context, propertyIdMap),
     x: node.x.toDouble(),
     y: node.y.toDouble(),
     width: node.width.toDouble(),
@@ -189,11 +205,15 @@ Future<RectangleNode> _convertRectangleNode(
   );
 }
 
-EllipseNode _convertEllipseNode(figma_api.EllipseNode node) {
+Future<EllipseNode> _convertEllipseNode(
+  figma_api.EllipseNode node,
+  ImporterContext<FigmaImportOptions> context,
+  PropertyIdMap propertyIdMap,
+) async {
   return EllipseNode(
     id: node.id,
     name: node.name,
-    visible: node.visible,
+    visible: await _createVisibilityAlias(node, context, propertyIdMap),
     x: node.x.toDouble(),
     y: node.y.toDouble(),
     width: node.width.toDouble(),
@@ -202,11 +222,15 @@ EllipseNode _convertEllipseNode(figma_api.EllipseNode node) {
   );
 }
 
-LineNode _convertLineNode(figma_api.LineNode node) {
+Future<LineNode> _convertLineNode(
+  figma_api.LineNode node,
+  ImporterContext<FigmaImportOptions> context,
+  PropertyIdMap propertyIdMap,
+) async {
   return LineNode(
     id: node.id,
     name: node.name,
-    visible: node.visible,
+    visible: await _createVisibilityAlias(node, context, propertyIdMap),
     x: node.x.toDouble(),
     y: node.y.toDouble(),
     width: node.width.toDouble(),
@@ -215,11 +239,15 @@ LineNode _convertLineNode(figma_api.LineNode node) {
   );
 }
 
-VectorNode _convertVectorNode(figma_api.VectorNode node) {
+Future<VectorNode> _convertVectorNode(
+  figma_api.VectorNode node,
+  ImporterContext<FigmaImportOptions> context,
+  PropertyIdMap propertyIdMap,
+) async {
   return VectorNode(
     id: node.id,
     name: node.name,
-    visible: node.visible,
+    visible: await _createVisibilityAlias(node, context, propertyIdMap),
     x: node.x.toDouble(),
     y: node.y.toDouble(),
     width: node.width.toDouble(),
@@ -258,7 +286,7 @@ Future<TextNode> _convertTextNode(
   return TextNode(
     id: node.id,
     name: node.name,
-    visible: node.visible,
+    visible: await _createVisibilityAlias(node, context, propertyIdMap),
     x: node.x.toDouble(),
     y: node.y.toDouble(),
     width: node.width.toDouble(),
@@ -291,7 +319,7 @@ Future<FrameNode> _convertComponentNode(
   return FrameNode(
     id: node.id,
     name: node.name,
-    visible: node.visible,
+    visible: await _createVisibilityAlias(node, context, propertyIdMap),
     x: node.x.toDouble(),
     y: node.y.toDouble(),
     width: node.width.toDouble(),
@@ -316,7 +344,7 @@ Future<InstanceNode> _convertInstanceNode(
   return InstanceNode(
     id: node.id,
     name: node.name,
-    visible: node.visible,
+    visible: await _createVisibilityAlias(node, context, propertyIdMap),
     x: node.x.toDouble(),
     y: node.y.toDouble(),
     width: node.width.toDouble(),
@@ -339,7 +367,7 @@ Future<BooleanOperationNode> _convertBooleanOperationNode(
   return BooleanOperationNode(
     id: node.id,
     name: node.name,
-    visible: node.visible,
+    visible: await _createVisibilityAlias(node, context, propertyIdMap),
     x: node.x.toDouble(),
     y: node.y.toDouble(),
     width: node.width.toDouble(),
@@ -528,6 +556,54 @@ Alias _createCharactersAlias(
   // Fall back to constant string
   return Alias(
     constant: ConstantAlias(value: Value(stringValue: node.characters)),
+  );
+}
+
+/// Creates a visibility alias, checking for component property or variable references
+Future<Alias> _createVisibilityAlias(
+  figma_api.SceneNode node,
+  ImporterContext<FigmaImportOptions> context,
+  PropertyIdMap propertyIdMap,
+) async {
+  // Check for component property references on visible
+  final propertyReferences =
+      node.componentPropertyReferences?.dartify() as Map?;
+  if (propertyReferences != null) {
+    final visibleRef = propertyReferences['visible'] as String?;
+    if (visibleRef != null) {
+      final propertyId = propertyIdMap[visibleRef];
+      if (propertyId != null) {
+        return Alias(
+          property: PropertyAlias(
+            componentId: propertyId.$1,
+            propertyId: propertyId.$2,
+            defaultValue: Value(boolean: node.visible),
+          ),
+        );
+      }
+    }
+  }
+
+  // Check for bound variables on visible
+  final boundVariables = node.boundVariables?.dartify() as Map?;
+  if (boundVariables != null) {
+    final visibleBinding = boundVariables['visible'] as Map?;
+    if (visibleBinding != null && visibleBinding['type'] == 'VARIABLE_ALIAS') {
+      final figmaVariableId = visibleBinding['id'] as String?;
+      if (figmaVariableId != null) {
+        final alias = await _createVariableAliasAsync(context, figmaVariableId);
+        if (alias != null) {
+          // Add default value to the variable alias
+          alias.variable.defaultValue = Value(boolean: node.visible);
+          return alias;
+        }
+      }
+    }
+  }
+
+  // Fall back to constant boolean
+  return Alias(
+    constant: ConstantAlias(value: Value(boolean: node.visible)),
   );
 }
 

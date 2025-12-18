@@ -1089,7 +1089,7 @@ message VisualNode {
 message BaseNodeProperties {
   string id = 1;
   string name = 2;
-  bool visible = 3;
+  Alias visible = 3;
   Alias opacity = 4;
   BlendMode blendMode = 5;
 }
@@ -1121,7 +1121,7 @@ message FrameNode {
   // Base properties
   string id = 1;
   string name = 2;
-  bool visible = 3;
+  Alias visible = 3;
   Alias opacity = 4;
   BlendMode blendMode = 5;
   
@@ -1162,7 +1162,7 @@ message GroupNode {
   // Base properties
   string id = 1;
   string name = 2;
-  bool visible = 3;
+  Alias visible = 3;
   Alias opacity = 4;
   BlendMode blendMode = 5;
   
@@ -1188,7 +1188,7 @@ message RectangleNode {
   // Base properties
   string id = 1;
   string name = 2;
-  bool visible = 3;
+  Alias visible = 3;
   Alias opacity = 4;
   BlendMode blendMode = 5;
   
@@ -1221,7 +1221,7 @@ message EllipseNode {
   // Base properties
   string id = 1;
   string name = 2;
-  bool visible = 3;
+  Alias visible = 3;
   Alias opacity = 4;
   BlendMode blendMode = 5;
   
@@ -1256,7 +1256,7 @@ message LineNode {
   // Base properties
   string id = 1;
   string name = 2;
-  bool visible = 3;
+  Alias visible = 3;
   Alias opacity = 4;
   BlendMode blendMode = 5;
   
@@ -1288,7 +1288,7 @@ message VectorNode {
   // Base properties
   string id = 1;
   string name = 2;
-  bool visible = 3;
+  Alias visible = 3;
   Alias opacity = 4;
   BlendMode blendMode = 5;
   
@@ -1326,7 +1326,7 @@ message TextNode {
   // Base properties
   string id = 1;
   string name = 2;
-  bool visible = 3;
+  Alias visible = 3;
   Alias opacity = 4;
   BlendMode blendMode = 5;
   
@@ -1372,7 +1372,7 @@ message InstanceNode {
   // Base properties
   string id = 1;
   string name = 2;
-  bool visible = 3;
+  Alias visible = 3;
   Alias opacity = 4;
   BlendMode blendMode = 5;
   
@@ -1419,7 +1419,7 @@ message BooleanOperationNode {
   // Base properties
   string id = 1;
   string name = 2;
-  bool visible = 3;
+  Alias visible = 3;
   Alias opacity = 4;
   BlendMode blendMode = 5;
   

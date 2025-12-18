@@ -9874,7 +9874,7 @@ class BaseNodeProperties extends $pb.GeneratedMessage {
   factory BaseNodeProperties({
     $core.String? id,
     $core.String? name,
-    $core.bool? visible,
+    Alias? visible,
     Alias? opacity,
     BlendMode? blendMode,
   }) {
@@ -9902,7 +9902,7 @@ class BaseNodeProperties extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'id')
     ..aOS(2, _omitFieldNames ? '' : 'name')
-    ..aOB(3, _omitFieldNames ? '' : 'visible')
+    ..aOM<Alias>(3, _omitFieldNames ? '' : 'visible', subBuilder: Alias.create)
     ..aOM<Alias>(4, _omitFieldNames ? '' : 'opacity', subBuilder: Alias.create)
     ..aE<BlendMode>(5, _omitFieldNames ? '' : 'blendMode',
         protoName: 'blendMode', enumValues: BlendMode.values)
@@ -9946,13 +9946,15 @@ class BaseNodeProperties extends $pb.GeneratedMessage {
   void clearName() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.bool get visible => $_getBF(2);
+  Alias get visible => $_getN(2);
   @$pb.TagNumber(3)
-  set visible($core.bool value) => $_setBool(2, value);
+  set visible(Alias value) => $_setField(3, value);
   @$pb.TagNumber(3)
   $core.bool hasVisible() => $_has(2);
   @$pb.TagNumber(3)
   void clearVisible() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Alias ensureVisible() => $_ensure(2);
 
   @$pb.TagNumber(4)
   Alias get opacity => $_getN(3);
@@ -10232,7 +10234,7 @@ class FrameNode extends $pb.GeneratedMessage {
   factory FrameNode({
     $core.String? id,
     $core.String? name,
-    $core.bool? visible,
+    Alias? visible,
     Alias? opacity,
     BlendMode? blendMode,
     $core.double? x,
@@ -10301,7 +10303,7 @@ class FrameNode extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'id')
     ..aOS(2, _omitFieldNames ? '' : 'name')
-    ..aOB(3, _omitFieldNames ? '' : 'visible')
+    ..aOM<Alias>(3, _omitFieldNames ? '' : 'visible', subBuilder: Alias.create)
     ..aOM<Alias>(4, _omitFieldNames ? '' : 'opacity', subBuilder: Alias.create)
     ..aE<BlendMode>(5, _omitFieldNames ? '' : 'blendMode',
         protoName: 'blendMode', enumValues: BlendMode.values)
@@ -10376,13 +10378,15 @@ class FrameNode extends $pb.GeneratedMessage {
   void clearName() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.bool get visible => $_getBF(2);
+  Alias get visible => $_getN(2);
   @$pb.TagNumber(3)
-  set visible($core.bool value) => $_setBool(2, value);
+  set visible(Alias value) => $_setField(3, value);
   @$pb.TagNumber(3)
   $core.bool hasVisible() => $_has(2);
   @$pb.TagNumber(3)
   void clearVisible() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Alias ensureVisible() => $_ensure(2);
 
   @$pb.TagNumber(4)
   Alias get opacity => $_getN(3);
@@ -10583,7 +10587,7 @@ class GroupNode extends $pb.GeneratedMessage {
   factory GroupNode({
     $core.String? id,
     $core.String? name,
-    $core.bool? visible,
+    Alias? visible,
     Alias? opacity,
     BlendMode? blendMode,
     $core.double? x,
@@ -10634,7 +10638,7 @@ class GroupNode extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'id')
     ..aOS(2, _omitFieldNames ? '' : 'name')
-    ..aOB(3, _omitFieldNames ? '' : 'visible')
+    ..aOM<Alias>(3, _omitFieldNames ? '' : 'visible', subBuilder: Alias.create)
     ..aOM<Alias>(4, _omitFieldNames ? '' : 'opacity', subBuilder: Alias.create)
     ..aE<BlendMode>(5, _omitFieldNames ? '' : 'blendMode',
         protoName: 'blendMode', enumValues: BlendMode.values)
@@ -10694,13 +10698,15 @@ class GroupNode extends $pb.GeneratedMessage {
   void clearName() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.bool get visible => $_getBF(2);
+  Alias get visible => $_getN(2);
   @$pb.TagNumber(3)
-  set visible($core.bool value) => $_setBool(2, value);
+  set visible(Alias value) => $_setField(3, value);
   @$pb.TagNumber(3)
   $core.bool hasVisible() => $_has(2);
   @$pb.TagNumber(3)
   void clearVisible() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Alias ensureVisible() => $_ensure(2);
 
   @$pb.TagNumber(4)
   Alias get opacity => $_getN(3);
@@ -10830,7 +10836,7 @@ class RectangleNode extends $pb.GeneratedMessage {
   factory RectangleNode({
     $core.String? id,
     $core.String? name,
-    $core.bool? visible,
+    Alias? visible,
     Alias? opacity,
     BlendMode? blendMode,
     $core.double? x,
@@ -10891,7 +10897,7 @@ class RectangleNode extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'id')
     ..aOS(2, _omitFieldNames ? '' : 'name')
-    ..aOB(3, _omitFieldNames ? '' : 'visible')
+    ..aOM<Alias>(3, _omitFieldNames ? '' : 'visible', subBuilder: Alias.create)
     ..aOM<Alias>(4, _omitFieldNames ? '' : 'opacity', subBuilder: Alias.create)
     ..aE<BlendMode>(5, _omitFieldNames ? '' : 'blendMode',
         protoName: 'blendMode', enumValues: BlendMode.values)
@@ -10960,13 +10966,15 @@ class RectangleNode extends $pb.GeneratedMessage {
   void clearName() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.bool get visible => $_getBF(2);
+  Alias get visible => $_getN(2);
   @$pb.TagNumber(3)
-  set visible($core.bool value) => $_setBool(2, value);
+  set visible(Alias value) => $_setField(3, value);
   @$pb.TagNumber(3)
   $core.bool hasVisible() => $_has(2);
   @$pb.TagNumber(3)
   void clearVisible() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Alias ensureVisible() => $_ensure(2);
 
   @$pb.TagNumber(4)
   Alias get opacity => $_getN(3);
@@ -11133,7 +11141,7 @@ class EllipseNode extends $pb.GeneratedMessage {
   factory EllipseNode({
     $core.String? id,
     $core.String? name,
-    $core.bool? visible,
+    Alias? visible,
     Alias? opacity,
     BlendMode? blendMode,
     $core.double? x,
@@ -11194,7 +11202,7 @@ class EllipseNode extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'id')
     ..aOS(2, _omitFieldNames ? '' : 'name')
-    ..aOB(3, _omitFieldNames ? '' : 'visible')
+    ..aOM<Alias>(3, _omitFieldNames ? '' : 'visible', subBuilder: Alias.create)
     ..aOM<Alias>(4, _omitFieldNames ? '' : 'opacity', subBuilder: Alias.create)
     ..aE<BlendMode>(5, _omitFieldNames ? '' : 'blendMode',
         protoName: 'blendMode', enumValues: BlendMode.values)
@@ -11263,13 +11271,15 @@ class EllipseNode extends $pb.GeneratedMessage {
   void clearName() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.bool get visible => $_getBF(2);
+  Alias get visible => $_getN(2);
   @$pb.TagNumber(3)
-  set visible($core.bool value) => $_setBool(2, value);
+  set visible(Alias value) => $_setField(3, value);
   @$pb.TagNumber(3)
   $core.bool hasVisible() => $_has(2);
   @$pb.TagNumber(3)
   void clearVisible() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Alias ensureVisible() => $_ensure(2);
 
   @$pb.TagNumber(4)
   Alias get opacity => $_getN(3);
@@ -11436,7 +11446,7 @@ class LineNode extends $pb.GeneratedMessage {
   factory LineNode({
     $core.String? id,
     $core.String? name,
-    $core.bool? visible,
+    Alias? visible,
     Alias? opacity,
     BlendMode? blendMode,
     $core.double? x,
@@ -11495,7 +11505,7 @@ class LineNode extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'id')
     ..aOS(2, _omitFieldNames ? '' : 'name')
-    ..aOB(3, _omitFieldNames ? '' : 'visible')
+    ..aOM<Alias>(3, _omitFieldNames ? '' : 'visible', subBuilder: Alias.create)
     ..aOM<Alias>(4, _omitFieldNames ? '' : 'opacity', subBuilder: Alias.create)
     ..aE<BlendMode>(5, _omitFieldNames ? '' : 'blendMode',
         protoName: 'blendMode', enumValues: BlendMode.values)
@@ -11561,13 +11571,15 @@ class LineNode extends $pb.GeneratedMessage {
   void clearName() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.bool get visible => $_getBF(2);
+  Alias get visible => $_getN(2);
   @$pb.TagNumber(3)
-  set visible($core.bool value) => $_setBool(2, value);
+  set visible(Alias value) => $_setField(3, value);
   @$pb.TagNumber(3)
   $core.bool hasVisible() => $_has(2);
   @$pb.TagNumber(3)
   void clearVisible() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Alias ensureVisible() => $_ensure(2);
 
   @$pb.TagNumber(4)
   Alias get opacity => $_getN(3);
@@ -11723,7 +11735,7 @@ class VectorNode extends $pb.GeneratedMessage {
   factory VectorNode({
     $core.String? id,
     $core.String? name,
-    $core.bool? visible,
+    Alias? visible,
     Alias? opacity,
     BlendMode? blendMode,
     $core.double? x,
@@ -11790,7 +11802,7 @@ class VectorNode extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'id')
     ..aOS(2, _omitFieldNames ? '' : 'name')
-    ..aOB(3, _omitFieldNames ? '' : 'visible')
+    ..aOM<Alias>(3, _omitFieldNames ? '' : 'visible', subBuilder: Alias.create)
     ..aOM<Alias>(4, _omitFieldNames ? '' : 'opacity', subBuilder: Alias.create)
     ..aE<BlendMode>(5, _omitFieldNames ? '' : 'blendMode',
         protoName: 'blendMode', enumValues: BlendMode.values)
@@ -11864,13 +11876,15 @@ class VectorNode extends $pb.GeneratedMessage {
   void clearName() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.bool get visible => $_getBF(2);
+  Alias get visible => $_getN(2);
   @$pb.TagNumber(3)
-  set visible($core.bool value) => $_setBool(2, value);
+  set visible(Alias value) => $_setField(3, value);
   @$pb.TagNumber(3)
   $core.bool hasVisible() => $_has(2);
   @$pb.TagNumber(3)
   void clearVisible() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Alias ensureVisible() => $_ensure(2);
 
   @$pb.TagNumber(4)
   Alias get opacity => $_getN(3);
@@ -12054,7 +12068,7 @@ class TextNode extends $pb.GeneratedMessage {
   factory TextNode({
     $core.String? id,
     $core.String? name,
-    $core.bool? visible,
+    Alias? visible,
     Alias? opacity,
     BlendMode? blendMode,
     $core.double? x,
@@ -12135,7 +12149,7 @@ class TextNode extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'id')
     ..aOS(2, _omitFieldNames ? '' : 'name')
-    ..aOB(3, _omitFieldNames ? '' : 'visible')
+    ..aOM<Alias>(3, _omitFieldNames ? '' : 'visible', subBuilder: Alias.create)
     ..aOM<Alias>(4, _omitFieldNames ? '' : 'opacity', subBuilder: Alias.create)
     ..aE<BlendMode>(5, _omitFieldNames ? '' : 'blendMode',
         protoName: 'blendMode', enumValues: BlendMode.values)
@@ -12223,13 +12237,15 @@ class TextNode extends $pb.GeneratedMessage {
   void clearName() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.bool get visible => $_getBF(2);
+  Alias get visible => $_getN(2);
   @$pb.TagNumber(3)
-  set visible($core.bool value) => $_setBool(2, value);
+  set visible(Alias value) => $_setField(3, value);
   @$pb.TagNumber(3)
   $core.bool hasVisible() => $_has(2);
   @$pb.TagNumber(3)
   void clearVisible() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Alias ensureVisible() => $_ensure(2);
 
   @$pb.TagNumber(4)
   Alias get opacity => $_getN(3);
@@ -12477,7 +12493,7 @@ class InstanceNode extends $pb.GeneratedMessage {
   factory InstanceNode({
     $core.String? id,
     $core.String? name,
-    $core.bool? visible,
+    Alias? visible,
     Alias? opacity,
     BlendMode? blendMode,
     $core.double? x,
@@ -12549,7 +12565,7 @@ class InstanceNode extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'id')
     ..aOS(2, _omitFieldNames ? '' : 'name')
-    ..aOB(3, _omitFieldNames ? '' : 'visible')
+    ..aOM<Alias>(3, _omitFieldNames ? '' : 'visible', subBuilder: Alias.create)
     ..aOM<Alias>(4, _omitFieldNames ? '' : 'opacity', subBuilder: Alias.create)
     ..aE<BlendMode>(5, _omitFieldNames ? '' : 'blendMode',
         protoName: 'blendMode', enumValues: BlendMode.values)
@@ -12629,13 +12645,15 @@ class InstanceNode extends $pb.GeneratedMessage {
   void clearName() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.bool get visible => $_getBF(2);
+  Alias get visible => $_getN(2);
   @$pb.TagNumber(3)
-  set visible($core.bool value) => $_setBool(2, value);
+  set visible(Alias value) => $_setField(3, value);
   @$pb.TagNumber(3)
   $core.bool hasVisible() => $_has(2);
   @$pb.TagNumber(3)
   void clearVisible() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Alias ensureVisible() => $_ensure(2);
 
   @$pb.TagNumber(4)
   Alias get opacity => $_getN(3);
@@ -12908,7 +12926,7 @@ class BooleanOperationNode extends $pb.GeneratedMessage {
   factory BooleanOperationNode({
     $core.String? id,
     $core.String? name,
-    $core.bool? visible,
+    Alias? visible,
     Alias? opacity,
     BlendMode? blendMode,
     $core.double? x,
@@ -12969,7 +12987,7 @@ class BooleanOperationNode extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'id')
     ..aOS(2, _omitFieldNames ? '' : 'name')
-    ..aOB(3, _omitFieldNames ? '' : 'visible')
+    ..aOM<Alias>(3, _omitFieldNames ? '' : 'visible', subBuilder: Alias.create)
     ..aOM<Alias>(4, _omitFieldNames ? '' : 'opacity', subBuilder: Alias.create)
     ..aE<BlendMode>(5, _omitFieldNames ? '' : 'blendMode',
         protoName: 'blendMode', enumValues: BlendMode.values)
@@ -13038,13 +13056,15 @@ class BooleanOperationNode extends $pb.GeneratedMessage {
   void clearName() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $core.bool get visible => $_getBF(2);
+  Alias get visible => $_getN(2);
   @$pb.TagNumber(3)
-  set visible($core.bool value) => $_setBool(2, value);
+  set visible(Alias value) => $_setField(3, value);
   @$pb.TagNumber(3)
   $core.bool hasVisible() => $_has(2);
   @$pb.TagNumber(3)
   void clearVisible() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Alias ensureVisible() => $_ensure(2);
 
   @$pb.TagNumber(4)
   Alias get opacity => $_getN(3);

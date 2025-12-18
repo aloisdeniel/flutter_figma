@@ -11,6 +11,49 @@ class VisualNodeDartExporter {
 
   final FlutterValueExporter valueSerializer;
 
+  /// Checks if a visibility alias is a constant true value
+  bool _isConstantVisible(Alias visible) {
+    if (visible.whichType() == Alias_Type.constant) {
+      final value = visible.constant.value;
+      if (value.whichType() == Value_Type.boolean) {
+        return value.boolean;
+      }
+    }
+    // For variable/property aliases, we can't determine visibility statically
+    return true;
+  }
+
+  /// Checks if visibility is dynamic (variable or property reference)
+  bool _isDynamicVisibility(Alias visible) {
+    return visible.whichType() == Alias_Type.variable ||
+        visible.whichType() == Alias_Type.property;
+  }
+
+  /// Wraps a widget with visibility handling if needed
+  String _wrapWithVisibility(
+    Library library,
+    Alias visible,
+    String widgetCode,
+  ) {
+    // If constant false, return hidden widget
+    if (visible.whichType() == Alias_Type.constant) {
+      final value = visible.constant.value;
+      if (value.whichType() == Value_Type.boolean && !value.boolean) {
+        return 'fl.SizedBox.shrink()';
+      }
+      // If constant true, no wrapper needed
+      return widgetCode;
+    }
+
+    // For dynamic visibility (variable or property), wrap with Visibility widget
+    final aliasExporter = AliasDartExporter(
+      valueSerializer: valueSerializer,
+      alwaysFallback: true,
+    );
+    final visibilityExpr = aliasExporter.serialize(library, visible);
+    return 'fl.Visibility(visible: $visibilityExpr, child: $widgetCode, )';
+  }
+
   /// Serializes a VisualNode to a Flutter Widget
   String serialize(Library library, VisualNode node) {
     return switch (node.whichType()) {
@@ -37,7 +80,11 @@ class VisualNodeDartExporter {
   }
 
   String _serializeFrameNode(Library library, FrameNode frame) {
-    if (!frame.visible) return 'fl.SizedBox.shrink()';
+    // Check for constant hidden visibility
+    if (!_isConstantVisible(frame.visible) &&
+        !_isDynamicVisibility(frame.visible)) {
+      return 'fl.SizedBox.shrink()';
+    }
 
     final paintExporter = PaintDartExporter(valueSerializer: valueSerializer);
     final effectExporter = EffectDartExporter(valueSerializer: valueSerializer);
@@ -96,11 +143,15 @@ class VisualNodeDartExporter {
     // TODO: Implement constraint handling
 
     buffer.write(')');
-    return buffer.toString();
+    return _wrapWithVisibility(library, frame.visible, buffer.toString());
   }
 
   String _serializeGroupNode(Library library, GroupNode group) {
-    if (!group.visible) return 'fl.SizedBox.shrink()';
+    // Check for constant hidden visibility
+    if (!_isConstantVisible(group.visible) &&
+        !_isDynamicVisibility(group.visible)) {
+      return 'fl.SizedBox.shrink()';
+    }
 
     final buffer = StringBuffer('fl.Stack(children: [');
     for (final child in group.children) {
@@ -108,11 +159,15 @@ class VisualNodeDartExporter {
       buffer.write(', ');
     }
     buffer.write('])');
-    return buffer.toString();
+    return _wrapWithVisibility(library, group.visible, buffer.toString());
   }
 
   String _serializeRectangleNode(Library library, RectangleNode rectangle) {
-    if (!rectangle.visible) return 'fl.SizedBox.shrink()';
+    // Check for constant hidden visibility
+    if (!_isConstantVisible(rectangle.visible) &&
+        !_isDynamicVisibility(rectangle.visible)) {
+      return 'fl.SizedBox.shrink()';
+    }
 
     final paintExporter = PaintDartExporter(valueSerializer: valueSerializer);
     final effectExporter = EffectDartExporter(valueSerializer: valueSerializer);
@@ -169,11 +224,15 @@ class VisualNodeDartExporter {
     }
 
     buffer.write(')');
-    return buffer.toString();
+    return _wrapWithVisibility(library, rectangle.visible, buffer.toString());
   }
 
   String _serializeEllipseNode(Library library, EllipseNode ellipse) {
-    if (!ellipse.visible) return 'fl.SizedBox.shrink()';
+    // Check for constant hidden visibility
+    if (!_isConstantVisible(ellipse.visible) &&
+        !_isDynamicVisibility(ellipse.visible)) {
+      return 'fl.SizedBox.shrink()';
+    }
 
     final paintExporter = PaintDartExporter(valueSerializer: valueSerializer);
 
@@ -192,23 +251,38 @@ class VisualNodeDartExporter {
 
     buffer.write('), ');
     buffer.write(')');
-    return buffer.toString();
+    return _wrapWithVisibility(library, ellipse.visible, buffer.toString());
   }
 
   String _serializeLineNode(Library library, LineNode line) {
-    if (!line.visible) return 'fl.SizedBox.shrink()';
+    // Check for constant hidden visibility
+    if (!_isConstantVisible(line.visible) &&
+        !_isDynamicVisibility(line.visible)) {
+      return 'fl.SizedBox.shrink()';
+    }
 
-    return 'fl.Divider() /* Line node - requires custom paint */';
+    final widgetCode = 'fl.Divider() /* Line node - requires custom paint */';
+    return _wrapWithVisibility(library, line.visible, widgetCode);
   }
 
   String _serializeVectorNode(Library library, VectorNode vector) {
-    if (!vector.visible) return 'fl.SizedBox.shrink()';
+    // Check for constant hidden visibility
+    if (!_isConstantVisible(vector.visible) &&
+        !_isDynamicVisibility(vector.visible)) {
+      return 'fl.SizedBox.shrink()';
+    }
 
-    return 'fl.SizedBox.shrink() /* Vector node - requires custom paint or SVG */';
+    final widgetCode =
+        'fl.SizedBox.shrink() /* Vector node - requires custom paint or SVG */';
+    return _wrapWithVisibility(library, vector.visible, widgetCode);
   }
 
   String _serializeTextNode(Library library, TextNode text) {
-    if (!text.visible) return 'fl.SizedBox.shrink()';
+    // Check for constant hidden visibility
+    if (!_isConstantVisible(text.visible) &&
+        !_isDynamicVisibility(text.visible)) {
+      return 'fl.SizedBox.shrink()';
+    }
 
     final aliasExporter = AliasDartExporter(
       valueSerializer: valueSerializer,
@@ -263,7 +337,7 @@ class VisualNodeDartExporter {
     );
 
     buffer.write(')');
-    return buffer.toString();
+    return _wrapWithVisibility(library, text.visible, buffer.toString());
   }
 
   String _serializeTextAlign(TextAlignHorizontal align) {
@@ -278,12 +352,17 @@ class VisualNodeDartExporter {
   }
 
   String _serializeInstanceNode(Library library, InstanceNode instance) {
-    if (!instance.visible) return 'fl.SizedBox.shrink()';
+    // Check for constant hidden visibility
+    if (!_isConstantVisible(instance.visible) &&
+        !_isDynamicVisibility(instance.visible)) {
+      return 'fl.SizedBox.shrink()';
+    }
 
     // Instance nodes are instances of components
     if (instance.hasMainComponentId()) {
       final componentName = Naming.typeName(instance.name);
-      return '$componentName()';
+      final widgetCode = '$componentName()';
+      return _wrapWithVisibility(library, instance.visible, widgetCode);
     }
 
     return 'fl.SizedBox.shrink()';
@@ -293,9 +372,15 @@ class VisualNodeDartExporter {
     Library library,
     BooleanOperationNode booleanOp,
   ) {
-    if (!booleanOp.visible) return 'fl.SizedBox.shrink()';
+    // Check for constant hidden visibility
+    if (!_isConstantVisible(booleanOp.visible) &&
+        !_isDynamicVisibility(booleanOp.visible)) {
+      return 'fl.SizedBox.shrink()';
+    }
 
     // Boolean operations require custom painting or complex clipping
-    return 'fl.SizedBox.shrink() /* Boolean operation - requires custom paint */';
+    final widgetCode =
+        'fl.SizedBox.shrink() /* Boolean operation - requires custom paint */';
+    return _wrapWithVisibility(library, booleanOp.visible, widgetCode);
   }
 }

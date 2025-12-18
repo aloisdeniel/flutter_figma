@@ -25,7 +25,7 @@ class BinuiInstance extends StatelessWidget {
           .toList(),
       cornerRadius: node.cornerRadius.toFigmaFlutter(),
       opacity: config.resolve<double>(node.opacity, 1.0),
-      visible: node.visible,
+      visible: config.resolve<bool>(node.visible, true),
       blendMode: node.blendMode.toFigmaFlutter(),
       clipContent: node.clipContent,
       children: BinuiFrame.flattenGroups(
