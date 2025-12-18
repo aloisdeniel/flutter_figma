@@ -319,7 +319,11 @@ Future<Component> _createComponentFromNode(
   final variantId = context.identifiers.get(
     'components/${component.id}/variant/default',
   );
-  final variant = ComponentVariant(id: variantId, name: name, root: visualNode);
+  final variant = ComponentVariant(
+    id: variantId,
+    name: 'Default',
+    root: visualNode,
+  );
 
   return Component(
     id: componentId,
