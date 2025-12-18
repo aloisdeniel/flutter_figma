@@ -84,20 +84,22 @@ class DartBuffer {
     final namedArgs = args.where((arg) => arg.isNamed).toList();
     if (namedArgs.isNotEmpty) {
       write('{');
-      write('\n');
+      writeln();
+      indented(() {
+        for (var p in namedArgs) {
+          writeArgument(p);
+        }
+      });
       writeIndent();
-      for (var p in namedArgs) {
-        writeArgument(p);
-      }
       write('}');
     }
   }
 
   void writeGetter(DartGetter value) {
+    writeln();
     if (value.isOverride) writeln('@override');
-    write('${value.type} get ');
-    write(value.name);
-    write(' {');
+    writeIndent();
+    write('${value.type} get ${value.name} {');
     writeln();
     indented(() {
       value.body.build(this);
@@ -106,12 +108,13 @@ class DartBuffer {
   }
 
   void writeMethod(DartMethod value) {
+    writeln();
     if (value.isOverride) writeln('@override');
+    writeIndent();
     if (value.isStatic) write('static ');
-    write('${value.returnType} ');
-    write('${value.name}(');
+    write('${value.returnType} ${value.name}(');
     writeArguments(value.parameters);
-    write('){');
+    write(') {');
     writeln();
     indented(() {
       value.body.build(this);
@@ -120,6 +123,7 @@ class DartBuffer {
   }
 
   void writeConstructor(DartConstructor constructor) {
+    writeIndent();
     if (constructor.isConst) write('const ');
     write(constructor.type);
     if (constructor.name case final name?) write('.$name');
@@ -132,12 +136,14 @@ class DartBuffer {
           writeArgument(arg);
         }
       });
+      writeIndent();
       write('}');
     }
     writeln(');');
   }
 
   void writeArgument(DartArgument arg) {
+    writeIndent();
     if (arg.isRequired && arg.isNamed) write('required ');
     if (arg.isSuper) {
       write('super.');
@@ -153,12 +159,14 @@ class DartBuffer {
 
     write(arg.name);
     if (arg.defaultValue case final value?) {
-      write('= $value');
+      write(' = $value');
     }
-    write(',\n');
+    write(',');
+    writeln();
   }
 
   void writeField(DartField field) {
+    writeIndent();
     if (field.isFinal) {
       write('final ');
     }
@@ -166,6 +174,7 @@ class DartBuffer {
     write(' ');
     write(field.name);
     write(';');
+    writeln();
   }
 
   void writeClass(DartClass value) {

@@ -35,9 +35,9 @@ class InheritedWidgetClass extends DartClass {
                ],
                body: DartBody(
                  build: (buffer) {
-                   buffer.writeln('return ');
-                   final comparison = '${data.name} != oldWidget.${data.name}';
-                   buffer.writeln('$comparison;');
+                   buffer.writeln(
+                     'return ${data.name} != oldWidget.${data.name};',
+                   );
                  },
                ),
              ),

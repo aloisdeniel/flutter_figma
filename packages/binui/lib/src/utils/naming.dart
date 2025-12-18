@@ -1,7 +1,21 @@
 import 'package:recase/recase.dart';
 
 abstract class Naming {
+  /// Sanitizes a name by removing invalid Dart identifier characters.
+  /// Removes #, :, and other special characters that are not valid in identifiers.
+  static String _sanitize(String name) {
+    // Remove # and everything after it (often Figma node IDs like "content#56:8")
+    final hashIndex = name.indexOf('#');
+    if (hashIndex != -1) {
+      name = name.substring(0, hashIndex);
+    }
+    // Remove any remaining invalid characters (keep only alphanumeric, underscore, space, dash)
+    name = name.replaceAll(RegExp(r'[^a-zA-Z0-9_\s\-]'), '');
+    return name.trim();
+  }
+
   static String typeName(String name) {
+    name = _sanitize(name);
     name = _leadingDigits(name);
     name = ReCase(name).pascalCase;
     name = name.replaceAll('=', '');
@@ -9,6 +23,7 @@ abstract class Naming {
   }
 
   static String fieldName(String name) {
+    name = _sanitize(name);
     name = _leadingDigits(name);
     name = ReCase(name).camelCase;
     name = name.replaceAll('=', '');
@@ -16,6 +31,7 @@ abstract class Naming {
   }
 
   static String fileName(String name) {
+    name = _sanitize(name);
     name = _leadingDigits(name);
     name = ReCase(name).snakeCase;
     name = name.replaceAll('=', '');

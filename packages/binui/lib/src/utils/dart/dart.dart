@@ -94,14 +94,15 @@ class DartGetter {
           if (props.isEmpty) {
             buffer.writeln('return 0;');
           } else {
-            buffer.write('return Object.hashAll([');
+            buffer.writeln('return Object.hashAll([');
+            buffer.indent();
             for (var i = 0; i < props.length; i++) {
               final propName = props[i].name;
+              buffer.writeIndent();
               buffer.write(propName);
-              if (i < props.length - 1) {
-                buffer.writeln(',');
-              }
+              buffer.writeln(',');
             }
+            buffer.unindent();
             buffer.writeln(']);');
           }
         },
@@ -138,15 +139,19 @@ class DartMethod {
       returnType: 'String',
       body: DartBody(
         build: (buffer) {
-          buffer.write("return '$typeName(");
-          for (var i = 0; i < props.length; i++) {
-            final propName = props[i].name;
-            buffer.write('$propName: \$$propName');
-            if (i < props.length - 1) {
-              buffer.write(', ');
+          if (props.isEmpty) {
+            buffer.writeln("return '$typeName()';");
+          } else {
+            buffer.writeln("return '$typeName('");
+            buffer.indent();
+            for (var i = 0; i < props.length; i++) {
+              final propName = props[i].name;
+              final separator = i < props.length - 1 ? ', ' : '';
+              buffer.writeln("'$propName: \$$propName$separator'");
             }
+            buffer.unindent();
+            buffer.writeln("')';");
           }
-          buffer.writeln(")';");
         },
       ),
     );
@@ -164,16 +169,19 @@ class DartMethod {
             (e) => DartArgument(
               name: e.name,
               type: e.type.endsWith('?') ? e.type : '${e.type}?',
+              isRequired: false,
             ),
           )
           .toList(),
       body: DartBody(
         build: (buffer) {
           buffer.writeln('return $typeName(');
+          buffer.indent();
           for (final prop in props) {
             final propName = prop.name;
-            buffer.writeln('  $propName: $propName ?? this.$propName,');
+            buffer.writeln('$propName: $propName ?? this.$propName,');
           }
+          buffer.unindent();
           buffer.writeln(');');
         },
       ),
@@ -191,20 +199,20 @@ class DartMethod {
       body: DartBody(
         build: (buffer) {
           buffer.writeln('if (identical(this, other)) return true;');
-          buffer.write('return other is $typeName');
           if (props.isEmpty) {
-            buffer.writeln(';');
+            buffer.writeln('return other is $typeName;');
             return;
           }
+          buffer.writeln('return other is $typeName &&');
+          buffer.indent();
           for (var i = 0; i < props.length; i++) {
             final propName = props[i].name;
-            buffer.write(' && other.$propName == $propName');
-            if (i < props.length - 1) {
-              buffer.writeln('');
-            } else {
-              buffer.writeln(';');
-            }
+            final isLast = i == props.length - 1;
+            buffer.writeln(
+              'other.$propName == $propName${isLast ? ';' : ' &&'}',
+            );
           }
+          buffer.unindent();
         },
       ),
       isOverride: true,
