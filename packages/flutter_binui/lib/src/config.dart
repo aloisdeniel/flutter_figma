@@ -17,8 +17,14 @@ class BinuiConfig {
     if (alias.whichType() == Alias_Type.notSet) {
       return defaultValue;
     }
-    final value = library.resolveAlias(alias);
-    if (value == null) throw Exception('Unable to resolve alias: $alias');
+    final value = library.resolveAlias(
+      alias,
+      variableCollectionVariants: variableCollectionVariants,
+      properties: componentProperties,
+    );
+    if (value == null || value.whichType() == Value_Type.notSet) {
+      return defaultValue;
+    }
     return value.toFlutter<T>();
   }
 

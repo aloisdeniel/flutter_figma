@@ -149,7 +149,7 @@ extension TextStyleConversionExtension on b.TextStyle {
 }
 
 extension PaintConversionExtension on b.Paint {
-  FigmaPaint toFigmaFlutter(b.Library library) {
+  FigmaPaint? toFigmaFlutter(b.Library library) {
     switch (whichType()) {
       case b.Paint_Type.solid:
         return solid.toFigmaFlutter(
@@ -158,6 +158,9 @@ extension PaintConversionExtension on b.Paint {
           visible: visible,
           mode: blendMode.toFigmaFlutter(),
         );
+      case b.Paint_Type.notSet:
+        return null;
+
       default:
         throw Exception('Unsupported paint type: $runtimeType');
     }
@@ -166,9 +169,12 @@ extension PaintConversionExtension on b.Paint {
 
 extension SolidPaintConversionExtension on b.SolidPaint {
   f.Paint toFlutter(b.Library library) {
-    final color = library.resolveAlias(this.color);
+    final colorValue = library.resolveAlias(this.color);
+    final color = colorValue?.whichType() == b.Value_Type.color
+        ? colorValue!.color.toFlutter()
+        : const Color(0x00000000); // Fallback to transparent
     return f.Paint()
-      ..color = color!.toFlutter()
+      ..color = color
       ..style = f.PaintingStyle.fill;
   }
 
@@ -178,9 +184,12 @@ extension SolidPaintConversionExtension on b.SolidPaint {
     required bool visible,
     required BlendMode mode,
   }) {
-    final color = library.resolveAlias(this.color);
+    final colorValue = library.resolveAlias(this.color);
+    final color = colorValue?.whichType() == b.Value_Type.color
+        ? colorValue!.color.toFlutter()
+        : const Color(0x00000000); // Fallback to transparent
     return SolidPaint(
-      color: color!.toFlutter(),
+      color: color,
       opacity: opacity,
       visible: visible,
       blendMode: mode,

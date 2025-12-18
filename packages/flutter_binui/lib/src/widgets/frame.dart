@@ -43,9 +43,13 @@ class BinuiFrame extends StatelessWidget {
     final config = BinuiProvider.of(context);
     return FigmaFrame(
       layout: node.layout.toFlutter(),
-      fills: node.fills.map((p) => p.toFigmaFlutter(config.library)).toList(),
+      fills: node.fills
+          .map((p) => p.toFigmaFlutter(config.library))
+          .nonNulls
+          .toList(),
       strokes: node.strokes
           .map((p) => p.toFigmaFlutter(config.library))
+          .nonNulls
           .toList(),
       cornerRadius: node.cornerRadius.toFigmaFlutter(),
       //TODO effects: node.frame.effects,

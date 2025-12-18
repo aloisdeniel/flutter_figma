@@ -14,9 +14,13 @@ class BinuiEllipse extends StatelessWidget {
     final config = BinuiProvider.of(context);
     return FigmaDecorated(
       decoration: FigmaDecoration(
-        fills: node.fills.map((p) => p.toFigmaFlutter(config.library)).toList(),
+        fills: node.fills
+            .map((p) => p.toFigmaFlutter(config.library))
+            .nonNulls
+            .toList(),
         strokes: node.strokes
             .map((p) => p.toFigmaFlutter(config.library))
+            .nonNulls
             .toList(),
       ),
       // TODO: Add proper ellipse shape support
