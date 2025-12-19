@@ -308,6 +308,12 @@ extension AutoLayoutPropertiesConversionExtension on b.AutoLayoutProperties {
     return FigmaLayoutProperties.auto(
       axis: isVertical ? Axis.vertical : Axis.horizontal,
       itemSpacing: itemSpacing,
+      padding: EdgeInsets.only(
+        left: padding.left,
+        right: padding.right,
+        top: padding.top,
+        bottom: padding.bottom,
+      ),
       primaryAxisSizingMode: switch (primaryAxisSizingMode) {
         b.PrimaryAxisSizingMode.PRIMARY_AXIS_SIZING_FIXED =>
           PrimaryAxisSizingMode.fixed,
