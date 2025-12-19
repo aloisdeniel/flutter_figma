@@ -109,12 +109,6 @@ Future<FrameNode> _convertFrameNode(
         referenceWidth: node.width.toDouble(),
         referenceHeight: node.height.toDouble(),
         isVertical: layoutModeStr == 'VERTICAL',
-        primaryAxisSizingMode: _convertPrimaryAxisSizingMode(
-          node.primaryAxisSizingMode,
-        ),
-        counterAxisSizingMode: _convertCounterAxisSizingMode(
-          node.counterAxisSizingMode,
-        ),
         primaryAxisAlignItems: _convertLayoutAlign(node.primaryAxisAlignItems),
         counterAxisAlignItems: _convertLayoutAlign(node.counterAxisAlignItems),
         layoutWrap: _convertLayoutWrap(node.layoutWrap),
@@ -433,12 +427,6 @@ Future<FrameNode> _convertComponentNode(
         referenceWidth: node.width.toDouble(),
         referenceHeight: node.height.toDouble(),
         isVertical: layoutModeStr == 'VERTICAL',
-        primaryAxisSizingMode: _convertPrimaryAxisSizingMode(
-          node.primaryAxisSizingMode,
-        ),
-        counterAxisSizingMode: _convertCounterAxisSizingMode(
-          node.counterAxisSizingMode,
-        ),
         primaryAxisAlignItems: _convertLayoutAlign(node.primaryAxisAlignItems),
         counterAxisAlignItems: _convertLayoutAlign(node.counterAxisAlignItems),
         layoutWrap: _convertLayoutWrap(node.layoutWrap),
@@ -510,12 +498,6 @@ Future<InstanceNode> _convertInstanceNode(
         referenceWidth: node.width.toDouble(),
         referenceHeight: node.height.toDouble(),
         isVertical: layoutModeStr == 'VERTICAL',
-        primaryAxisSizingMode: _convertPrimaryAxisSizingMode(
-          node.primaryAxisSizingMode,
-        ),
-        counterAxisSizingMode: _convertCounterAxisSizingMode(
-          node.counterAxisSizingMode,
-        ),
         primaryAxisAlignItems: _convertLayoutAlign(node.primaryAxisAlignItems),
         counterAxisAlignItems: _convertLayoutAlign(node.counterAxisAlignItems),
         layoutWrap: _convertLayoutWrap(node.layoutWrap),
@@ -947,24 +929,6 @@ FontStyle _parseFontStyle(String style) {
     return FontStyle.FONT_STYLE_ITALIC;
   }
   return FontStyle.FONT_STYLE_REGULAR;
-}
-
-/// Converts Figma primaryAxisSizingMode string to protobuf enum
-PrimaryAxisSizingMode _convertPrimaryAxisSizingMode(String mode) {
-  return switch (mode.toUpperCase()) {
-    'FIXED' => PrimaryAxisSizingMode.PRIMARY_AXIS_SIZING_FIXED,
-    'AUTO' => PrimaryAxisSizingMode.PRIMARY_AXIS_SIZING_AUTO,
-    _ => PrimaryAxisSizingMode.PRIMARY_AXIS_SIZING_FIXED,
-  };
-}
-
-/// Converts Figma counterAxisSizingMode string to protobuf enum
-CounterAxisSizingMode _convertCounterAxisSizingMode(String mode) {
-  return switch (mode.toUpperCase()) {
-    'FIXED' => CounterAxisSizingMode.COUNTER_AXIS_SIZING_FIXED,
-    'AUTO' => CounterAxisSizingMode.COUNTER_AXIS_SIZING_AUTO,
-    _ => CounterAxisSizingMode.COUNTER_AXIS_SIZING_FIXED,
-  };
 }
 
 /// Converts Figma layout align string to protobuf enum

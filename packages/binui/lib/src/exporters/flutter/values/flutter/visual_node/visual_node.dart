@@ -215,8 +215,6 @@ class VisualNodeDartExporter {
           top: ${layout.autoLayout.padding.top},
           bottom: ${layout.autoLayout.padding.bottom},
         ),
-        primaryAxisSizingMode: ${_serializePrimaryAxisSizingMode(layout.autoLayout.primaryAxisSizingMode)},
-        counterAxisSizingMode: ${_serializeCounterAxisSizingMode(layout.autoLayout.counterAxisSizingMode)},
         primaryAxisAlignItems: ${_serializeLayoutAlign(layout.autoLayout.primaryAxisAlignItems)},
         counterAxisAlignItems: ${_serializeLayoutAlign(layout.autoLayout.counterAxisAlignItems)},
         layoutWrap: ${_serializeLayoutWrap(layout.autoLayout.layoutWrap)},
@@ -239,22 +237,6 @@ class VisualNodeDartExporter {
         referenceWidth: 0,
         referenceHeight: 0,
       )''',
-    };
-  }
-
-  String _serializePrimaryAxisSizingMode(PrimaryAxisSizingMode mode) {
-    return switch (mode) {
-      PrimaryAxisSizingMode.PRIMARY_AXIS_SIZING_FIXED =>
-        'figma.PrimaryAxisSizingMode.fixed',
-      _ => 'figma.PrimaryAxisSizingMode.auto',
-    };
-  }
-
-  String _serializeCounterAxisSizingMode(CounterAxisSizingMode mode) {
-    return switch (mode) {
-      CounterAxisSizingMode.COUNTER_AXIS_SIZING_FIXED =>
-        'figma.CounterAxisSizingMode.fixed',
-      _ => 'figma.CounterAxisSizingMode.auto',
     };
   }
 

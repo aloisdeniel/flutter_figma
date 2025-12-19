@@ -717,8 +717,6 @@ void main() {
                           referenceWidth: 240,
                           referenceHeight: 50,
                           axis: Axis.horizontal,
-                          primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
-                          counterAxisSizingMode: CounterAxisSizingMode.auto,
                           itemSpacing: 8,
                           primaryAxisAlignItems: LayoutAlign.spaceBetween,
                         ),

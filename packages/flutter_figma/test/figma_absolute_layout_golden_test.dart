@@ -557,8 +557,6 @@ void main() {
                       axis: Axis.vertical,
                       itemSpacing: 8,
                       padding: EdgeInsets.all(10),
-                      primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
-                      counterAxisSizingMode: CounterAxisSizingMode.auto,
                     ),
                     children: [
                       Container(width: 130, height: 30, color: Colors.red),
@@ -616,8 +614,6 @@ void main() {
                 referenceHeight: 300,
                 itemSpacing: 20,
                 padding: EdgeInsets.all(20),
-                primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
-                counterAxisSizingMode: CounterAxisSizingMode.auto,
               ),
               children: [
                 Container(
@@ -701,8 +697,6 @@ void main() {
                       axis: Axis.vertical,
                       itemSpacing: 12,
                       padding: EdgeInsets.all(15),
-                      primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
-                      counterAxisSizingMode: CounterAxisSizingMode.fixed,
                     ),
                     children: [
                       Container(
@@ -766,7 +760,6 @@ void main() {
                       itemSpacing: 8,
                       counterAxisSpacing: 8,
                       padding: EdgeInsets.all(12),
-                      primaryAxisSizingMode: PrimaryAxisSizingMode.fixed,
                     ),
                     children: [
                       Container(width: 60, height: 60, color: Colors.red),
@@ -805,8 +798,6 @@ void main() {
                 axis: Axis.horizontal,
                 itemSpacing: 16,
                 padding: EdgeInsets.all(20),
-                primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
-                counterAxisSizingMode: CounterAxisSizingMode.auto,
               ),
               children: [
                 FigmaSized(
@@ -881,8 +872,6 @@ void main() {
                 axis: Axis.vertical,
                 itemSpacing: 12,
                 padding: EdgeInsets.all(20),
-                primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
-                counterAxisSizingMode: CounterAxisSizingMode.auto,
               ),
               children: [
                 FigmaSized(
@@ -957,8 +946,6 @@ void main() {
                 axis: Axis.horizontal,
                 itemSpacing: 10,
                 padding: EdgeInsets.all(15),
-                primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
-                counterAxisSizingMode: CounterAxisSizingMode.auto,
               ),
               children: [
                 FigmaSized(
@@ -1030,8 +1017,6 @@ void main() {
                 axis: Axis.horizontal,
                 itemSpacing: 10,
                 padding: EdgeInsets.all(20),
-                primaryAxisSizingMode: PrimaryAxisSizingMode.auto,
-                counterAxisSizingMode: CounterAxisSizingMode.auto,
               ),
               children: [
                 Container(
