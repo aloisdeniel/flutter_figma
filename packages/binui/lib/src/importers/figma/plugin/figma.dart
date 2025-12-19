@@ -550,6 +550,8 @@ extension type SceneNode._(JSObject _) implements BaseNode {
   external set layoutSizingHorizontal(String value);
   external String get layoutSizingVertical;
   external set layoutSizingVertical(String value);
+  external String get layoutPositioning;
+  external set layoutPositioning(String value);
   external void resize(num width, num height);
   external void resizeWithoutConstraints(num width, num height);
   external void rescale(num scale);

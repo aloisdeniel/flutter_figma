@@ -165,6 +165,7 @@ Future<FrameNode> _convertFrameNode(
     effects: _convertEffects(node.effects.toDart),
     layout: layout,
     cornerRadius: _convertFrameCornerRadius(node),
+    layoutData: _createChildLayoutData(node),
   );
 }
 
@@ -187,6 +188,7 @@ Future<GroupNode> _convertGroupNode(
       context,
       propertyIdMap,
     ),
+    layoutData: _createChildLayoutData(node),
   );
 }
 
@@ -215,6 +217,7 @@ Future<RectangleNode> _convertRectangleNode(
       context,
     ),
     cornerRadius: _convertRectangleCornerRadius(node),
+    layoutData: _createChildLayoutData(node),
   );
 }
 
@@ -320,6 +323,7 @@ Future<EllipseNode> _convertEllipseNode(
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
+    layoutData: _createChildLayoutData(node),
   );
 }
 
@@ -337,6 +341,7 @@ Future<LineNode> _convertLineNode(
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
+    layoutData: _createChildLayoutData(node),
   );
 }
 
@@ -354,6 +359,7 @@ Future<VectorNode> _convertVectorNode(
     width: node.width.toDouble(),
     height: node.height.toDouble(),
     rotation: node.rotation.toDouble(),
+    layoutData: _createChildLayoutData(node),
   );
 }
 
@@ -409,6 +415,7 @@ Future<TextNode> _convertTextNode(
       //letterSpacing: letterSpacing,
       //lineHeight: lineHeight,
     ),
+    layoutData: _createChildLayoutData(node),
   );
 }
 
@@ -482,6 +489,7 @@ Future<FrameNode> _convertComponentNode(
     effects: _convertEffects(node.effects.toDart),
     layout: layout,
     cornerRadius: _convertComponentCornerRadius(node),
+    layoutData: _createChildLayoutData(node),
   );
 }
 
@@ -559,6 +567,7 @@ Future<InstanceNode> _convertInstanceNode(
     effects: _convertEffects(node.effects.toDart),
     layout: layout,
     cornerRadius: _convertInstanceCornerRadius(node),
+    layoutData: _createChildLayoutData(node),
   );
 }
 
@@ -582,6 +591,7 @@ Future<BooleanOperationNode> _convertBooleanOperationNode(
       propertyIdMap,
     ),
     booleanOperation: _convertBooleanOperation(node.booleanOperation),
+    layoutData: _createChildLayoutData(node),
   );
 }
 
@@ -977,4 +987,32 @@ LayoutWrap _convertLayoutWrap(String wrap) {
     'NO_WRAP' || 'NO-WRAP' || 'NONE' => LayoutWrap.LAYOUT_WRAP_NO_WRAP,
     _ => LayoutWrap.LAYOUT_WRAP_NO_WRAP,
   };
+}
+
+/// Converts Figma layoutSizing string to ChildSizingMode enum
+ChildSizingMode _convertChildSizingMode(String sizing) {
+  return switch (sizing.toUpperCase()) {
+    'HUG' => ChildSizingMode.CHILD_SIZING_HUG,
+    'FILL' => ChildSizingMode.CHILD_SIZING_FILL,
+    'FIXED' => ChildSizingMode.CHILD_SIZING_FIXED,
+    _ => ChildSizingMode.CHILD_SIZING_FIXED,
+  };
+}
+
+/// Converts Figma layoutPositioning string to PositioningMode enum
+PositioningMode _convertPositioningMode(String positioning) {
+  return switch (positioning.toUpperCase()) {
+    'ABSOLUTE' => PositioningMode.POSITIONING_MODE_ABSOLUTE,
+    'AUTO' => PositioningMode.POSITIONING_MODE_AUTO,
+    _ => PositioningMode.POSITIONING_MODE_AUTO,
+  };
+}
+
+/// Creates ChildLayoutData from a Figma scene node
+ChildLayoutData _createChildLayoutData(figma_api.SceneNode node) {
+  return ChildLayoutData(
+    mode: _convertPositioningMode(node.layoutPositioning),
+    primaryAxisSizing: _convertChildSizingMode(node.layoutSizingHorizontal),
+    counterAxisSizing: _convertChildSizingMode(node.layoutSizingVertical),
+  );
 }

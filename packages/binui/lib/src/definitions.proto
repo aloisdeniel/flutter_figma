@@ -397,6 +397,7 @@ enum LayoutAlign {
 enum ChildSizingMode {
   CHILD_SIZING_FIXED = 0;
   CHILD_SIZING_HUG = 1;
+  CHILD_SIZING_FILL = 2;
 }
 
 enum GridTrackSizingMode {

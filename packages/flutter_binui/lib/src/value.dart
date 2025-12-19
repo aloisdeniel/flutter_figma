@@ -277,6 +277,7 @@ extension BlendModeConversionExtension on b.BlendMode {
 extension ChildSizingModeConversionExtension on b.ChildSizingMode {
   ChildSizingMode toFigmaFlutter() {
     return switch (this) {
+      b.ChildSizingMode.CHILD_SIZING_FILL => ChildSizingMode.fill,
       b.ChildSizingMode.CHILD_SIZING_HUG => ChildSizingMode.hug,
       _ => ChildSizingMode.fixed,
     };
@@ -307,6 +308,7 @@ extension AutoLayoutPropertiesConversionExtension on b.AutoLayoutProperties {
   FigmaLayoutProperties toFlutter() {
     return FigmaLayoutProperties.auto(
       axis: isVertical ? Axis.vertical : Axis.horizontal,
+      counterAxisSpacing: counterAxisSpacing,
       itemSpacing: itemSpacing,
       padding: EdgeInsets.only(
         left: padding.left,

@@ -56,6 +56,7 @@ enum LayoutAlign {
 enum ChildSizingMode {
   fixed,
   hug,
+  fill,
 }
 
 class ChildSize {

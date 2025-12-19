@@ -365,13 +365,14 @@ const ChildSizingMode$json = {
   '2': [
     {'1': 'CHILD_SIZING_FIXED', '2': 0},
     {'1': 'CHILD_SIZING_HUG', '2': 1},
+    {'1': 'CHILD_SIZING_FILL', '2': 2},
   ],
 };
 
 /// Descriptor for `ChildSizingMode`. Decode as a `google.protobuf.EnumDescriptorProto`.
 final $typed_data.Uint8List childSizingModeDescriptor = $convert.base64Decode(
     'Cg9DaGlsZFNpemluZ01vZGUSFgoSQ0hJTERfU0laSU5HX0ZJWEVEEAASFAoQQ0hJTERfU0laSU'
-    '5HX0hVRxAB');
+    '5HX0hVRxABEhUKEUNISUxEX1NJWklOR19GSUxMEAI=');
 
 @$core.Deprecated('Use gridTrackSizingModeDescriptor instead')
 const GridTrackSizingMode$json = {

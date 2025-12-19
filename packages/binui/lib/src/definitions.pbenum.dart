@@ -566,14 +566,17 @@ class ChildSizingMode extends $pb.ProtobufEnum {
       ChildSizingMode._(0, _omitEnumNames ? '' : 'CHILD_SIZING_FIXED');
   static const ChildSizingMode CHILD_SIZING_HUG =
       ChildSizingMode._(1, _omitEnumNames ? '' : 'CHILD_SIZING_HUG');
+  static const ChildSizingMode CHILD_SIZING_FILL =
+      ChildSizingMode._(2, _omitEnumNames ? '' : 'CHILD_SIZING_FILL');
 
   static const $core.List<ChildSizingMode> values = <ChildSizingMode>[
     CHILD_SIZING_FIXED,
     CHILD_SIZING_HUG,
+    CHILD_SIZING_FILL,
   ];
 
   static final $core.List<ChildSizingMode?> _byValue =
-      $pb.ProtobufEnum.$_initByValueList(values, 1);
+      $pb.ProtobufEnum.$_initByValueList(values, 2);
   static ChildSizingMode? valueOf($core.int value) =>
       value < 0 || value >= _byValue.length ? null : _byValue[value];
 
