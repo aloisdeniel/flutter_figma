@@ -43,10 +43,52 @@ mixin FigmaAutoLayoutMixin on RenderBox {
       return constraints.constrain(expectedSize);
     }
 
-    final List<Size> childSizes = _layoutAutoChildren(autoChildren);
-
     final padSumP = _getPadStartP() + _getPadEndP();
     final padSumC = _getPadStartC() + _getPadEndC();
+
+    // Calculate available space for fill children
+    double? availablePrimarySpace;
+    double? availableCounterSpace;
+
+    if (primaryAxisSizingMode == PrimaryAxisSizingMode.fixed) {
+      availablePrimarySpace = switch (autoLayoutMode) {
+        LayoutMode.horizontal => referenceWidth - padSumP,
+        LayoutMode.vertical => referenceHeight - padSumP,
+        LayoutMode.freeform || LayoutMode.grid => null,
+      };
+    } else {
+      // For hug mode, use constraints if bounded
+      availablePrimarySpace = switch (autoLayoutMode) {
+        LayoutMode.horizontal =>
+          constraints.hasBoundedWidth ? constraints.maxWidth - padSumP : null,
+        LayoutMode.vertical =>
+          constraints.hasBoundedHeight ? constraints.maxHeight - padSumP : null,
+        LayoutMode.freeform || LayoutMode.grid => null,
+      };
+    }
+
+    if (counterAxisSizingMode == CounterAxisSizingMode.fixed) {
+      availableCounterSpace = switch (autoLayoutMode) {
+        LayoutMode.horizontal => referenceHeight - padSumC,
+        LayoutMode.vertical => referenceWidth - padSumC,
+        LayoutMode.freeform || LayoutMode.grid => null,
+      };
+    } else {
+      // For hug mode, use constraints if bounded
+      availableCounterSpace = switch (autoLayoutMode) {
+        LayoutMode.horizontal =>
+          constraints.hasBoundedHeight ? constraints.maxHeight - padSumC : null,
+        LayoutMode.vertical =>
+          constraints.hasBoundedWidth ? constraints.maxWidth - padSumC : null,
+        LayoutMode.freeform || LayoutMode.grid => null,
+      };
+    }
+
+    final List<Size> childSizes = _layoutAutoChildren(
+      autoChildren,
+      availablePrimarySpace,
+      availableCounterSpace,
+    );
 
     double? innerFixedP;
     if (primaryAxisSizingMode == PrimaryAxisSizingMode.fixed) {
@@ -112,58 +154,153 @@ mixin FigmaAutoLayoutMixin on RenderBox {
   }
 
   /// Layouts auto children and returns their sizes.
-  List<Size> _layoutAutoChildren(List<RenderBox> autoChildren) {
-    final List<Size> childSizes = [];
-    for (final child in autoChildren) {
+  ///
+  /// This uses a two-pass approach to handle [ChildSizingMode.fill]:
+  /// 1. First pass: layout non-fill children to determine their sizes
+  /// 2. Calculate remaining space for fill children
+  /// 3. Second pass: layout fill children with their share of remaining space
+  List<Size> _layoutAutoChildren(
+    List<RenderBox> autoChildren,
+    double? availablePrimarySpace,
+    double? availableCounterSpace,
+  ) {
+    final List<Size?> childSizes = List.filled(autoChildren.length, null);
+    final List<int> fillPrimaryIndices = [];
+
+    // First pass: layout non-fill-primary children and identify fill children
+    double usedPrimarySpace = 0;
+    for (var i = 0; i < autoChildren.length; i++) {
+      final child = autoChildren[i];
       final childParentData = child.parentData! as FigmaLayoutParentData;
       final primarySizing = childParentData.primaryAxisSizing;
       final counterSizing = childParentData.counterAxisSizing;
 
-      BoxConstraints childConstraints;
-      if (autoLayoutMode == LayoutMode.horizontal) {
-        final minWidth = primarySizing == ChildSizingMode.fixed
-            ? childParentData.width
-            : 0.0;
-        final maxWidth = primarySizing == ChildSizingMode.fixed
-            ? childParentData.width
-            : double.infinity;
-        final minHeight = counterSizing == ChildSizingMode.fixed
-            ? childParentData.height
-            : 0.0;
-        final maxHeight = counterSizing == ChildSizingMode.fixed
-            ? childParentData.height
-            : double.infinity;
-        childConstraints = BoxConstraints(
-          minWidth: minWidth,
-          maxWidth: maxWidth,
-          minHeight: minHeight,
-          maxHeight: maxHeight,
-        );
-      } else {
-        final minWidth = counterSizing == ChildSizingMode.fixed
-            ? childParentData.width
-            : 0.0;
-        final maxWidth = counterSizing == ChildSizingMode.fixed
-            ? childParentData.width
-            : double.infinity;
-        final minHeight = primarySizing == ChildSizingMode.fixed
-            ? childParentData.height
-            : 0.0;
-        final maxHeight = primarySizing == ChildSizingMode.fixed
-            ? childParentData.height
-            : double.infinity;
-        childConstraints = BoxConstraints(
-          minWidth: minWidth,
-          maxWidth: maxWidth,
-          minHeight: minHeight,
-          maxHeight: maxHeight,
-        );
+      // Check if this child fills the primary axis
+      if (primarySizing == ChildSizingMode.fill) {
+        fillPrimaryIndices.add(i);
+        continue;
       }
 
+      // Layout non-fill-primary children
+      final childConstraints = _buildChildConstraints(
+        childParentData,
+        primarySizing,
+        counterSizing,
+        null, // No fill size for primary axis
+        availableCounterSpace,
+      );
+
       child.layout(childConstraints, parentUsesSize: true);
-      childSizes.add(child.size);
+      childSizes[i] = child.size;
+      usedPrimarySpace += _getPrimarySize(child.size);
     }
-    return childSizes;
+
+    // Calculate spacing used
+    final spacingUsed =
+        autoChildren.length > 1 ? itemSpacing * (autoChildren.length - 1) : 0.0;
+
+    // Calculate remaining space for fill children
+    double fillPrimarySize = 0;
+    if (fillPrimaryIndices.isNotEmpty && availablePrimarySpace != null) {
+      final remainingSpace =
+          availablePrimarySpace - usedPrimarySpace - spacingUsed;
+      fillPrimarySize = math.max(0, remainingSpace / fillPrimaryIndices.length);
+    }
+
+    // Second pass: layout fill-primary children
+    for (final i in fillPrimaryIndices) {
+      final child = autoChildren[i];
+      final childParentData = child.parentData! as FigmaLayoutParentData;
+      final primarySizing = childParentData.primaryAxisSizing;
+      final counterSizing = childParentData.counterAxisSizing;
+
+      final childConstraints = _buildChildConstraints(
+        childParentData,
+        primarySizing,
+        counterSizing,
+        fillPrimarySize,
+        availableCounterSpace,
+      );
+
+      child.layout(childConstraints, parentUsesSize: true);
+      childSizes[i] = child.size;
+    }
+
+    return childSizes.cast<Size>();
+  }
+
+  /// Builds constraints for a child based on its sizing modes.
+  BoxConstraints _buildChildConstraints(
+    FigmaLayoutParentData childParentData,
+    ChildSizingMode? primarySizing,
+    ChildSizingMode? counterSizing,
+    double? fillPrimarySize,
+    double? availableCounterSpace,
+  ) {
+    double minPrimary, maxPrimary, minCounter, maxCounter;
+
+    // Handle primary axis sizing
+    switch (primarySizing) {
+      case ChildSizingMode.fixed:
+        final fixedSize = autoLayoutMode == LayoutMode.horizontal
+            ? childParentData.width
+            : childParentData.height;
+        minPrimary = fixedSize;
+        maxPrimary = fixedSize;
+      case ChildSizingMode.fill:
+        if (fillPrimarySize != null && fillPrimarySize > 0) {
+          minPrimary = fillPrimarySize;
+          maxPrimary = fillPrimarySize;
+        } else {
+          // Fallback to hug behavior if no fill size available
+          minPrimary = 0.0;
+          maxPrimary = double.infinity;
+        }
+      case ChildSizingMode.hug:
+      case null:
+        minPrimary = 0.0;
+        maxPrimary = double.infinity;
+    }
+
+    // Handle counter axis sizing
+    switch (counterSizing) {
+      case ChildSizingMode.fixed:
+        final fixedSize = autoLayoutMode == LayoutMode.horizontal
+            ? childParentData.height
+            : childParentData.width;
+        minCounter = fixedSize;
+        maxCounter = fixedSize;
+      case ChildSizingMode.fill:
+        if (availableCounterSpace != null && availableCounterSpace > 0) {
+          minCounter = availableCounterSpace;
+          maxCounter = availableCounterSpace;
+        } else {
+          // Fallback to hug behavior if no fill size available
+          minCounter = 0.0;
+          maxCounter = double.infinity;
+        }
+      case ChildSizingMode.hug:
+      case null:
+        minCounter = 0.0;
+        maxCounter = double.infinity;
+    }
+
+    // Map primary/counter to width/height based on layout mode
+    if (autoLayoutMode == LayoutMode.horizontal) {
+      return BoxConstraints(
+        minWidth: minPrimary,
+        maxWidth: maxPrimary,
+        minHeight: minCounter,
+        maxHeight: maxCounter,
+      );
+    } else {
+      return BoxConstraints(
+        minWidth: minCounter,
+        maxWidth: maxCounter,
+        minHeight: minPrimary,
+        maxHeight: maxPrimary,
+      );
+    }
   }
 
   /// Calculates the inner primary axis size.
