@@ -208,6 +208,13 @@ class VisualNodeDartExporter {
         referenceHeight: ${layout.autoLayout.referenceHeight},
         axis: ${layout.autoLayout.isVertical ? 'fl.Axis.vertical' : 'fl.Axis.horizontal'},
         itemSpacing: ${layout.autoLayout.itemSpacing},
+        counterAxisSpacing: ${layout.autoLayout.counterAxisSpacing},
+        padding: const fl.EdgeInsets.only(
+          left: ${layout.autoLayout.padding.left},
+          right: ${layout.autoLayout.padding.right},
+          top: ${layout.autoLayout.padding.top},
+          bottom: ${layout.autoLayout.padding.bottom},
+        ),
         primaryAxisSizingMode: ${_serializePrimaryAxisSizingMode(layout.autoLayout.primaryAxisSizingMode)},
         counterAxisSizingMode: ${_serializeCounterAxisSizingMode(layout.autoLayout.counterAxisSizingMode)},
         primaryAxisAlignItems: ${_serializeLayoutAlign(layout.autoLayout.primaryAxisAlignItems)},
@@ -218,6 +225,14 @@ class VisualNodeDartExporter {
         '''figma.FigmaLayoutProperties.grid(
         columnCount: ${layout.grid.columnCount},
         rowCount: ${layout.grid.rowCount},
+        columnGap: ${layout.grid.columnGap},
+        rowGap: ${layout.grid.rowGap},
+        padding: const fl.EdgeInsets.only(
+          left: ${layout.grid.padding.left},
+          right: ${layout.grid.padding.right},
+          top: ${layout.grid.padding.top},
+          bottom: ${layout.grid.padding.bottom},
+        ),
       )''',
       LayoutProperties_Type.notSet =>
         '''figma.FigmaLayoutProperties.freeform(
