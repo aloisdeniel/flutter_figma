@@ -14,16 +14,13 @@ import 'package:binui/src/exporters/flutter/values/flutter/visual_node/visual_no
 import 'package:binui/src/utils/naming.dart';
 
 class FlutterValueExporter {
-  const FlutterValueExporter({this.alwaysFallback = true});
+  const FlutterValueExporter();
 
-  final bool alwaysFallback;
-
-  String serialize(Library library, Value value) {
+  String serialize(Library library, Value value, Value_Type expectedType) {
     return switch (value.whichType()) {
       Value_Type.alias => AliasDartExporter(
-        alwaysFallback: alwaysFallback,
         valueSerializer: this,
-      ).serialize(library, value.alias),
+      ).serialize(library, value.alias, expectedType),
       Value_Type.stringValue => "'${value.stringValue.replaceAll("'", "\\'")}'",
       Value_Type.doubleValue => value.doubleValue.toString(),
       Value_Type.boolean => value.boolean.toString(),

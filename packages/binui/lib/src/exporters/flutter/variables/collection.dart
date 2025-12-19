@@ -124,6 +124,7 @@ class VariableCollectionDartExporter {
         final serializedValue = const FlutterValueExporter().serialize(
           context.library,
           value,
+          value.whichType(),
         );
         buffer.writeln('final $name = $serializedValue;');
       }
@@ -260,6 +261,7 @@ class VariableCollectionDartExporter {
           final serializedValue = const FlutterValueExporter().serialize(
             context.library,
             value,
+            value.whichType(),
           );
           buffer.writeln('final $name = $serializedValue;');
         }

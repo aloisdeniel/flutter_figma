@@ -22,6 +22,20 @@ class ComponentDefinitionDartExporter {
     FlutterExportContext context,
     Component definition,
   ) {
+    final packageName = Naming.fileName(context.library.name);
+
+    // Add imports
+    buffer.writeln("import 'package:flutter/widgets.dart' as fl;");
+    buffer.writeln("import 'package:flutter_figma/widgets.dart' as figma;");
+
+    // Import variables if we have any variable collections
+    if (context.library.variables.isNotEmpty) {
+      buffer.writeln(
+        "import 'package:$packageName/src/variables/variables.dart';",
+      );
+    }
+    buffer.writeln();
+
     final baseTypeName = Naming.typeName(definition.name);
 
     final valueSerializer = ValueDartExporter();
@@ -40,6 +54,7 @@ class ComponentDefinitionDartExporter {
           defaultValue: valueSerializer.serialize(
             context,
             property.defaultValue,
+            property.defaultValue.whichType(),
           ),
         ),
       );
@@ -62,6 +77,9 @@ class ComponentDefinitionDartExporter {
       valueSerializer: FlutterValueExporter(),
     );
 
+    final hasVariables = context.library.variables.isNotEmpty;
+    final hasProperties = definition.properties.isNotEmpty;
+
     for (final variant in definition.variants) {
       final variantTypeName = Naming.typeName(variant.name);
 
@@ -70,6 +88,19 @@ class ComponentDefinitionDartExporter {
         fields: const [],
         build: DartBody(
           build: (b) {
+            // Declare variables at the beginning of the build method
+            if (hasVariables) {
+              b.writeln('final variables = Variables.of(context);');
+            }
+            if (hasProperties) {
+              b.writeln(
+                'final properties = ${baseTypeName}PropertiesProvider.of(context);',
+              );
+            }
+            if (hasVariables || hasProperties) {
+              b.writeln();
+            }
+
             if (variant.hasRoot()) {
               final widgetCode = visualNodeExporter.serialize(
                 context.library,

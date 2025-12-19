@@ -6,10 +6,18 @@ import 'package:binui/src/exporters/flutter/values/flutter/value.dart';
 class ValueDartExporter {
   const ValueDartExporter();
 
-  String serialize(FlutterExportContext context, Value value) {
+  String serialize(
+    FlutterExportContext context,
+    Value value,
+    Value_Type expectedType,
+  ) {
     switch (context.options.visualNodes.mode) {
       case FlutterVisualNodeExportMode.flutter:
-        return FlutterValueExporter().serialize(context.library, value);
+        return FlutterValueExporter().serialize(
+          context.library,
+          value,
+          expectedType,
+        );
       case FlutterVisualNodeExportMode.flutterFigma:
         throw UnimplementedError();
     }

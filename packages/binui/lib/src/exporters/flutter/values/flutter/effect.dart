@@ -37,8 +37,7 @@ class EffectDartExporter {
   String _serializeDropShadow(Library library, DropShadowEffect dropShadow) {
     final color = AliasDartExporter(
       valueSerializer: valueSerializer,
-      alwaysFallback: true,
-    ).serialize(library, dropShadow.color);
+    ).serialize(library, dropShadow.color, Value_Type.color);
 
     final offsetX = dropShadow.offset.x;
     final offsetY = dropShadow.offset.y;
@@ -53,8 +52,7 @@ class EffectDartExporter {
     // This would require custom painting or a workaround
     final color = AliasDartExporter(
       valueSerializer: valueSerializer,
-      alwaysFallback: true,
-    ).serialize(library, innerShadow.color);
+    ).serialize(library, innerShadow.color, Value_Type.color);
 
     final offsetX = innerShadow.offset.x;
     final offsetY = innerShadow.offset.y;

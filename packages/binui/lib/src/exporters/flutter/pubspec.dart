@@ -13,6 +13,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_figma:
+    git:
+      url: https://github.com/user/flutter_figma
+      path: packages/flutter_figma
 ''';
   }
 }
