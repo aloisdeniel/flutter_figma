@@ -3244,24 +3244,8 @@ const AutoLayoutProperties$json = {
     {'1': 'referenceHeight', '3': 2, '5': 1, '8': {}, '10': 'referenceHeight'},
     {'1': 'isVertical', '3': 3, '5': 8, '8': {}, '10': 'isVertical'},
     {
-      '1': 'primaryAxisSizingMode',
-      '3': 4,
-      '5': 14,
-      '6': '.binui.PrimaryAxisSizingMode',
-      '8': {},
-      '10': 'primaryAxisSizingMode'
-    },
-    {
-      '1': 'counterAxisSizingMode',
-      '3': 5,
-      '5': 14,
-      '6': '.binui.CounterAxisSizingMode',
-      '8': {},
-      '10': 'counterAxisSizingMode'
-    },
-    {
       '1': 'primaryAxisAlignItems',
-      '3': 6,
+      '3': 4,
       '5': 14,
       '6': '.binui.LayoutAlign',
       '8': {},
@@ -3269,7 +3253,7 @@ const AutoLayoutProperties$json = {
     },
     {
       '1': 'counterAxisAlignItems',
-      '3': 7,
+      '3': 5,
       '5': 14,
       '6': '.binui.LayoutAlign',
       '8': {},
@@ -3277,7 +3261,7 @@ const AutoLayoutProperties$json = {
     },
     {
       '1': 'layoutWrap',
-      '3': 8,
+      '3': 6,
       '5': 14,
       '6': '.binui.LayoutWrap',
       '8': {},
@@ -3285,16 +3269,16 @@ const AutoLayoutProperties$json = {
     },
     {
       '1': 'padding',
-      '3': 9,
+      '3': 7,
       '5': 11,
       '6': '.binui.EdgeInsets',
       '8': {},
       '10': 'padding'
     },
-    {'1': 'itemSpacing', '3': 10, '5': 1, '8': {}, '10': 'itemSpacing'},
+    {'1': 'itemSpacing', '3': 8, '5': 1, '8': {}, '10': 'itemSpacing'},
     {
       '1': 'counterAxisSpacing',
-      '3': 11,
+      '3': 9,
       '5': 1,
       '8': {},
       '10': 'counterAxisSpacing'
@@ -3306,16 +3290,13 @@ const AutoLayoutProperties$json = {
 final $typed_data.Uint8List autoLayoutPropertiesDescriptor = $convert.base64Decode(
     'ChRBdXRvTGF5b3V0UHJvcGVydGllcxImCg5yZWZlcmVuY2VXaWR0aBgBKAFCAFIOcmVmZXJlbm'
     'NlV2lkdGgSKAoPcmVmZXJlbmNlSGVpZ2h0GAIoAUIAUg9yZWZlcmVuY2VIZWlnaHQSHgoKaXNW'
-    'ZXJ0aWNhbBgDKAhCAFIKaXNWZXJ0aWNhbBJSChVwcmltYXJ5QXhpc1NpemluZ01vZGUYBCgOMh'
-    'wuYmludWkuUHJpbWFyeUF4aXNTaXppbmdNb2RlQgBSFXByaW1hcnlBeGlzU2l6aW5nTW9kZRJS'
-    'ChVjb3VudGVyQXhpc1NpemluZ01vZGUYBSgOMhwuYmludWkuQ291bnRlckF4aXNTaXppbmdNb2'
-    'RlQgBSFWNvdW50ZXJBeGlzU2l6aW5nTW9kZRJIChVwcmltYXJ5QXhpc0FsaWduSXRlbXMYBigO'
-    'MhIuYmludWkuTGF5b3V0QWxpZ25CAFIVcHJpbWFyeUF4aXNBbGlnbkl0ZW1zEkgKFWNvdW50ZX'
-    'JBeGlzQWxpZ25JdGVtcxgHKA4yEi5iaW51aS5MYXlvdXRBbGlnbkIAUhVjb3VudGVyQXhpc0Fs'
-    'aWduSXRlbXMSMQoKbGF5b3V0V3JhcBgIKA4yES5iaW51aS5MYXlvdXRXcmFwQgBSCmxheW91dF'
-    'dyYXASKwoHcGFkZGluZxgJKAsyES5iaW51aS5FZGdlSW5zZXRzQgBSB3BhZGRpbmcSIAoLaXRl'
-    'bVNwYWNpbmcYCigBQgBSC2l0ZW1TcGFjaW5nEi4KEmNvdW50ZXJBeGlzU3BhY2luZxgLKAFCAF'
-    'ISY291bnRlckF4aXNTcGFjaW5n');
+    'ZXJ0aWNhbBgDKAhCAFIKaXNWZXJ0aWNhbBJIChVwcmltYXJ5QXhpc0FsaWduSXRlbXMYBCgOMh'
+    'IuYmludWkuTGF5b3V0QWxpZ25CAFIVcHJpbWFyeUF4aXNBbGlnbkl0ZW1zEkgKFWNvdW50ZXJB'
+    'eGlzQWxpZ25JdGVtcxgFKA4yEi5iaW51aS5MYXlvdXRBbGlnbkIAUhVjb3VudGVyQXhpc0FsaW'
+    'duSXRlbXMSMQoKbGF5b3V0V3JhcBgGKA4yES5iaW51aS5MYXlvdXRXcmFwQgBSCmxheW91dFdy'
+    'YXASKwoHcGFkZGluZxgHKAsyES5iaW51aS5FZGdlSW5zZXRzQgBSB3BhZGRpbmcSIAoLaXRlbV'
+    'NwYWNpbmcYCCgBQgBSC2l0ZW1TcGFjaW5nEi4KEmNvdW50ZXJBeGlzU3BhY2luZxgJKAFCAFIS'
+    'Y291bnRlckF4aXNTcGFjaW5n');
 
 @$core.Deprecated('Use gridLayoutPropertiesDescriptor instead')
 const GridLayoutProperties$json = {

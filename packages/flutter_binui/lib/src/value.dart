@@ -316,16 +316,6 @@ extension AutoLayoutPropertiesConversionExtension on b.AutoLayoutProperties {
         top: padding.top,
         bottom: padding.bottom,
       ),
-      primaryAxisSizingMode: switch (primaryAxisSizingMode) {
-        b.PrimaryAxisSizingMode.PRIMARY_AXIS_SIZING_FIXED =>
-          PrimaryAxisSizingMode.fixed,
-        _ => PrimaryAxisSizingMode.auto,
-      },
-      counterAxisSizingMode: switch (counterAxisSizingMode) {
-        b.CounterAxisSizingMode.COUNTER_AXIS_SIZING_FIXED =>
-          CounterAxisSizingMode.fixed,
-        _ => CounterAxisSizingMode.auto,
-      },
       primaryAxisAlignItems: switch (primaryAxisAlignItems) {
         b.LayoutAlign.LAYOUT_ALIGN_CENTER => LayoutAlign.center,
         b.LayoutAlign.LAYOUT_ALIGN_MAX => LayoutAlign.max,

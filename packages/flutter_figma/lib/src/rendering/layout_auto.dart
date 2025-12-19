@@ -8,11 +8,13 @@ import 'layout.dart';
 ///
 /// This mixin handles horizontal and vertical auto layouts, similar to flexbox,
 /// with support for wrapping, spacing, alignment, and different sizing modes.
+///
+/// The container's own sizing behavior is derived from the incoming constraints:
+/// - Tight constraints (min == max) → behaves like fixed sizing
+/// - Loose constraints → behaves like hug/auto sizing
 mixin FigmaAutoLayoutMixin on RenderBox {
   // Auto layout properties - to be implemented by the using class
   LayoutMode get autoLayoutMode;
-  PrimaryAxisSizingMode get primaryAxisSizingMode;
-  CounterAxisSizingMode get counterAxisSizingMode;
   LayoutAlign get primaryAxisAlignItems;
   LayoutAlign get counterAxisAlignItems;
   LayoutWrap get layoutWrap;
@@ -26,6 +28,28 @@ mixin FigmaAutoLayoutMixin on RenderBox {
   double get referenceHeight;
 
   BoxConstraints get constraints;
+
+  /// Returns the fixed primary axis size from constraints, or null if not fixed.
+  double? _getFixedPrimarySize(BoxConstraints constraints) {
+    return switch (autoLayoutMode) {
+      LayoutMode.horizontal =>
+        constraints.hasTightWidth ? constraints.maxWidth : null,
+      LayoutMode.vertical =>
+        constraints.hasTightHeight ? constraints.maxHeight : null,
+      LayoutMode.freeform || LayoutMode.grid => null,
+    };
+  }
+
+  /// Returns the fixed counter axis size from constraints, or null if not fixed.
+  double? _getFixedCounterSize(BoxConstraints constraints) {
+    return switch (autoLayoutMode) {
+      LayoutMode.horizontal =>
+        constraints.hasTightHeight ? constraints.maxHeight : null,
+      LayoutMode.vertical =>
+        constraints.hasTightWidth ? constraints.maxWidth : null,
+      LayoutMode.freeform || LayoutMode.grid => null,
+    };
+  }
 
   /// Performs auto layout for horizontal or vertical layouts.
   Size performAutoLayout(
@@ -46,16 +70,13 @@ mixin FigmaAutoLayoutMixin on RenderBox {
     final padSumP = _getPadStartP() + _getPadEndP();
     final padSumC = _getPadStartC() + _getPadEndC();
 
-    // Calculate available space for fill children
+    // Calculate available space for fill children based on constraints
     double? availablePrimarySpace;
     double? availableCounterSpace;
 
-    if (primaryAxisSizingMode == PrimaryAxisSizingMode.fixed) {
-      availablePrimarySpace = switch (autoLayoutMode) {
-        LayoutMode.horizontal => referenceWidth - padSumP,
-        LayoutMode.vertical => referenceHeight - padSumP,
-        LayoutMode.freeform || LayoutMode.grid => null,
-      };
+    final fixedPrimary = _getFixedPrimarySize(constraints);
+    if (fixedPrimary != null) {
+      availablePrimarySpace = fixedPrimary - padSumP;
     } else {
       // For hug mode, use constraints if bounded
       availablePrimarySpace = switch (autoLayoutMode) {
@@ -67,12 +88,9 @@ mixin FigmaAutoLayoutMixin on RenderBox {
       };
     }
 
-    if (counterAxisSizingMode == CounterAxisSizingMode.fixed) {
-      availableCounterSpace = switch (autoLayoutMode) {
-        LayoutMode.horizontal => referenceHeight - padSumC,
-        LayoutMode.vertical => referenceWidth - padSumC,
-        LayoutMode.freeform || LayoutMode.grid => null,
-      };
+    final fixedCounter = _getFixedCounterSize(constraints);
+    if (fixedCounter != null) {
+      availableCounterSpace = fixedCounter - padSumC;
     } else {
       // For hug mode, use constraints if bounded
       availableCounterSpace = switch (autoLayoutMode) {
@@ -90,14 +108,9 @@ mixin FigmaAutoLayoutMixin on RenderBox {
       availableCounterSpace,
     );
 
-    double? innerFixedP;
-    if (primaryAxisSizingMode == PrimaryAxisSizingMode.fixed) {
-      innerFixedP = switch (autoLayoutMode) {
-        LayoutMode.horizontal => referenceWidth - padSumP,
-        LayoutMode.vertical => referenceHeight - padSumP,
-        LayoutMode.freeform || LayoutMode.grid => null,
-      };
-    }
+    // Use tight constraint size if available, otherwise calculate from children
+    final double? innerFixedP =
+        fixedPrimary != null ? fixedPrimary - padSumP : null;
 
     final lines = _buildLines(childSizes, innerFixedP);
 
@@ -130,14 +143,12 @@ mixin FigmaAutoLayoutMixin on RenderBox {
     final padSumP = _getPadStartP() + _getPadEndP();
     final padSumC = _getPadStartC() + _getPadEndC();
 
-    double? innerFixedP;
-    if (primaryAxisSizingMode == PrimaryAxisSizingMode.fixed) {
-      innerFixedP = switch (autoLayoutMode) {
-        LayoutMode.horizontal => containerSize.width - padSumP,
-        LayoutMode.vertical => containerSize.height - padSumP,
-        LayoutMode.freeform || LayoutMode.grid => null,
-      };
-    }
+    // Use container size for positioning (the size is already determined)
+    final innerFixedP = switch (autoLayoutMode) {
+      LayoutMode.horizontal => containerSize.width - padSumP,
+      LayoutMode.vertical => containerSize.height - padSumP,
+      LayoutMode.freeform || LayoutMode.grid => null,
+    };
 
     final lines = _buildLines(childSizes, innerFixedP);
     final innerP = _calculateInnerPrimarySize(childSizes, lines, innerFixedP);
@@ -309,19 +320,18 @@ mixin FigmaAutoLayoutMixin on RenderBox {
     List<_AutoLayoutLine> lines,
     double? innerFixedP,
   ) {
-    if (primaryAxisSizingMode == PrimaryAxisSizingMode.fixed) {
-      return innerFixedP!;
+    // If we have a fixed primary size (from tight constraints), use it
+    if (innerFixedP != null) {
+      return innerFixedP;
+    }
+    // Otherwise calculate from children (hug behavior)
+    if (layoutWrap == LayoutWrap.wrap && lines.length > 1) {
+      return lines.map((l) => l.sumP).reduce(math.max);
     } else {
-      if (layoutWrap == LayoutWrap.wrap && lines.length > 1) {
-        return lines.map((l) => l.sumP).reduce(math.max);
-      } else {
-        return childSizes.isEmpty
-            ? 0
-            : childSizes
-                    .map((s) => _getPrimarySize(s))
-                    .reduce((a, b) => a + b) +
-                itemSpacing * (childSizes.length - 1);
-      }
+      return childSizes.isEmpty
+          ? 0
+          : childSizes.map((s) => _getPrimarySize(s)).reduce((a, b) => a + b) +
+              itemSpacing * (childSizes.length - 1);
     }
   }
 
@@ -331,20 +341,16 @@ mixin FigmaAutoLayoutMixin on RenderBox {
     BoxConstraints constraints,
     double padSumC,
   ) {
-    if (counterAxisSizingMode == CounterAxisSizingMode.fixed) {
-      return switch (autoLayoutMode) {
-        LayoutMode.horizontal => referenceHeight - padSumC,
-        LayoutMode.vertical => referenceWidth - padSumC,
-        LayoutMode.freeform ||
-        LayoutMode.grid =>
-          throw Exception('Invalid auto layout mode'),
-      };
-    } else {
-      return lines.isEmpty
-          ? 0
-          : lines.map((l) => l.maxC).reduce((a, b) => a + b) +
-              counterAxisSpacing * math.max(0, lines.length - 1);
+    // If we have a fixed counter size (from tight constraints), use it
+    final fixedCounter = _getFixedCounterSize(constraints);
+    if (fixedCounter != null) {
+      return fixedCounter - padSumC;
     }
+    // Otherwise calculate from children (hug behavior)
+    return lines.isEmpty
+        ? 0
+        : lines.map((l) => l.maxC).reduce((a, b) => a + b) +
+            counterAxisSpacing * math.max(0, lines.length - 1);
   }
 
   /// Builds layout lines for wrapping support.

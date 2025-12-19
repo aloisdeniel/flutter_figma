@@ -40,8 +40,6 @@ class RenderFigmaLayout extends RenderBox
     LayoutMode mode = LayoutMode.freeform,
     double referenceWidth = 0,
     double referenceHeight = 0,
-    PrimaryAxisSizingMode primaryAxisSizingMode = PrimaryAxisSizingMode.fixed,
-    CounterAxisSizingMode counterAxisSizingMode = CounterAxisSizingMode.fixed,
     LayoutAlign primaryAxisAlignItems = LayoutAlign.min,
     LayoutAlign counterAxisAlignItems = LayoutAlign.min,
     LayoutWrap layoutWrap = LayoutWrap.noWrap,
@@ -60,8 +58,6 @@ class RenderFigmaLayout extends RenderBox
   })  : _mode = mode,
         _referenceWidth = referenceWidth,
         _referenceHeight = referenceHeight,
-        _primaryAxisSizingMode = primaryAxisSizingMode,
-        _counterAxisSizingMode = counterAxisSizingMode,
         _primaryAxisAlignItems = primaryAxisAlignItems,
         _counterAxisAlignItems = counterAxisAlignItems,
         _layoutWrap = layoutWrap,
@@ -108,24 +104,6 @@ class RenderFigmaLayout extends RenderBox
   // FigmaAutoLayoutMixin implementation
   @override
   LayoutMode get autoLayoutMode => _mode;
-
-  PrimaryAxisSizingMode _primaryAxisSizingMode;
-  PrimaryAxisSizingMode get primaryAxisSizingMode => _primaryAxisSizingMode;
-  set primaryAxisSizingMode(PrimaryAxisSizingMode value) {
-    if (_primaryAxisSizingMode != value) {
-      _primaryAxisSizingMode = value;
-      markNeedsLayout();
-    }
-  }
-
-  CounterAxisSizingMode _counterAxisSizingMode;
-  CounterAxisSizingMode get counterAxisSizingMode => _counterAxisSizingMode;
-  set counterAxisSizingMode(CounterAxisSizingMode value) {
-    if (_counterAxisSizingMode != value) {
-      _counterAxisSizingMode = value;
-      markNeedsLayout();
-    }
-  }
 
   LayoutAlign _primaryAxisAlignItems;
   LayoutAlign get primaryAxisAlignItems => _primaryAxisAlignItems;
@@ -338,10 +316,6 @@ class RenderFigmaLayout extends RenderBox
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     super.debugFillProperties(properties);
     properties.add(EnumProperty<LayoutMode>('direction', mode));
-    properties.add(EnumProperty<PrimaryAxisSizingMode>(
-        'primaryAxisSizingMode', primaryAxisSizingMode));
-    properties.add(EnumProperty<CounterAxisSizingMode>(
-        'counterAxisSizingMode', counterAxisSizingMode));
     properties.add(EnumProperty<LayoutAlign>(
         'primaryAxisAlignItems', primaryAxisAlignItems));
     properties.add(EnumProperty<LayoutAlign>(

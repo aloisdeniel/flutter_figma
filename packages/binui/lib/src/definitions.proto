@@ -896,14 +896,12 @@ message AutoLayoutProperties {
   double referenceWidth = 1;
   double referenceHeight = 2;
   bool isVertical = 3; // false = horizontal, true = vertical
-  PrimaryAxisSizingMode primaryAxisSizingMode = 4;
-  CounterAxisSizingMode counterAxisSizingMode = 5;
-  LayoutAlign primaryAxisAlignItems = 6;
-  LayoutAlign counterAxisAlignItems = 7;
-  LayoutWrap layoutWrap = 8;
-  EdgeInsets padding = 9;
-  double itemSpacing = 10;
-  double counterAxisSpacing = 11;
+  LayoutAlign primaryAxisAlignItems = 4;
+  LayoutAlign counterAxisAlignItems = 5;
+  LayoutWrap layoutWrap = 6;
+  EdgeInsets padding = 7;
+  double itemSpacing = 8;
+  double counterAxisSpacing = 9;
 }
 
 message GridLayoutProperties {

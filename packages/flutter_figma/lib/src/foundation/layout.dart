@@ -30,16 +30,6 @@ enum LayoutMode {
   grid,
 }
 
-enum PrimaryAxisSizingMode {
-  fixed,
-  auto,
-}
-
-enum CounterAxisSizingMode {
-  fixed,
-  auto,
-}
-
 enum LayoutWrap {
   noWrap,
   wrap,

@@ -7456,8 +7456,6 @@ class AutoLayoutProperties extends $pb.GeneratedMessage {
     $core.double? referenceWidth,
     $core.double? referenceHeight,
     $core.bool? isVertical,
-    PrimaryAxisSizingMode? primaryAxisSizingMode,
-    CounterAxisSizingMode? counterAxisSizingMode,
     LayoutAlign? primaryAxisAlignItems,
     LayoutAlign? counterAxisAlignItems,
     LayoutWrap? layoutWrap,
@@ -7469,10 +7467,6 @@ class AutoLayoutProperties extends $pb.GeneratedMessage {
     if (referenceWidth != null) result.referenceWidth = referenceWidth;
     if (referenceHeight != null) result.referenceHeight = referenceHeight;
     if (isVertical != null) result.isVertical = isVertical;
-    if (primaryAxisSizingMode != null)
-      result.primaryAxisSizingMode = primaryAxisSizingMode;
-    if (counterAxisSizingMode != null)
-      result.counterAxisSizingMode = counterAxisSizingMode;
     if (primaryAxisAlignItems != null)
       result.primaryAxisAlignItems = primaryAxisAlignItems;
     if (counterAxisAlignItems != null)
@@ -7503,24 +7497,16 @@ class AutoLayoutProperties extends $pb.GeneratedMessage {
     ..aD(2, _omitFieldNames ? '' : 'referenceHeight',
         protoName: 'referenceHeight')
     ..aOB(3, _omitFieldNames ? '' : 'isVertical', protoName: 'isVertical')
-    ..aE<PrimaryAxisSizingMode>(
-        4, _omitFieldNames ? '' : 'primaryAxisSizingMode',
-        protoName: 'primaryAxisSizingMode',
-        enumValues: PrimaryAxisSizingMode.values)
-    ..aE<CounterAxisSizingMode>(
-        5, _omitFieldNames ? '' : 'counterAxisSizingMode',
-        protoName: 'counterAxisSizingMode',
-        enumValues: CounterAxisSizingMode.values)
-    ..aE<LayoutAlign>(6, _omitFieldNames ? '' : 'primaryAxisAlignItems',
+    ..aE<LayoutAlign>(4, _omitFieldNames ? '' : 'primaryAxisAlignItems',
         protoName: 'primaryAxisAlignItems', enumValues: LayoutAlign.values)
-    ..aE<LayoutAlign>(7, _omitFieldNames ? '' : 'counterAxisAlignItems',
+    ..aE<LayoutAlign>(5, _omitFieldNames ? '' : 'counterAxisAlignItems',
         protoName: 'counterAxisAlignItems', enumValues: LayoutAlign.values)
-    ..aE<LayoutWrap>(8, _omitFieldNames ? '' : 'layoutWrap',
+    ..aE<LayoutWrap>(6, _omitFieldNames ? '' : 'layoutWrap',
         protoName: 'layoutWrap', enumValues: LayoutWrap.values)
-    ..aOM<EdgeInsets>(9, _omitFieldNames ? '' : 'padding',
+    ..aOM<EdgeInsets>(7, _omitFieldNames ? '' : 'padding',
         subBuilder: EdgeInsets.create)
-    ..aD(10, _omitFieldNames ? '' : 'itemSpacing', protoName: 'itemSpacing')
-    ..aD(11, _omitFieldNames ? '' : 'counterAxisSpacing',
+    ..aD(8, _omitFieldNames ? '' : 'itemSpacing', protoName: 'itemSpacing')
+    ..aD(9, _omitFieldNames ? '' : 'counterAxisSpacing',
         protoName: 'counterAxisSpacing')
     ..hasRequiredFields = false;
 
@@ -7571,80 +7557,60 @@ class AutoLayoutProperties extends $pb.GeneratedMessage {
   void clearIsVertical() => $_clearField(3);
 
   @$pb.TagNumber(4)
-  PrimaryAxisSizingMode get primaryAxisSizingMode => $_getN(3);
+  LayoutAlign get primaryAxisAlignItems => $_getN(3);
   @$pb.TagNumber(4)
-  set primaryAxisSizingMode(PrimaryAxisSizingMode value) =>
-      $_setField(4, value);
+  set primaryAxisAlignItems(LayoutAlign value) => $_setField(4, value);
   @$pb.TagNumber(4)
-  $core.bool hasPrimaryAxisSizingMode() => $_has(3);
+  $core.bool hasPrimaryAxisAlignItems() => $_has(3);
   @$pb.TagNumber(4)
-  void clearPrimaryAxisSizingMode() => $_clearField(4);
+  void clearPrimaryAxisAlignItems() => $_clearField(4);
 
   @$pb.TagNumber(5)
-  CounterAxisSizingMode get counterAxisSizingMode => $_getN(4);
+  LayoutAlign get counterAxisAlignItems => $_getN(4);
   @$pb.TagNumber(5)
-  set counterAxisSizingMode(CounterAxisSizingMode value) =>
-      $_setField(5, value);
+  set counterAxisAlignItems(LayoutAlign value) => $_setField(5, value);
   @$pb.TagNumber(5)
-  $core.bool hasCounterAxisSizingMode() => $_has(4);
+  $core.bool hasCounterAxisAlignItems() => $_has(4);
   @$pb.TagNumber(5)
-  void clearCounterAxisSizingMode() => $_clearField(5);
+  void clearCounterAxisAlignItems() => $_clearField(5);
 
   @$pb.TagNumber(6)
-  LayoutAlign get primaryAxisAlignItems => $_getN(5);
+  LayoutWrap get layoutWrap => $_getN(5);
   @$pb.TagNumber(6)
-  set primaryAxisAlignItems(LayoutAlign value) => $_setField(6, value);
+  set layoutWrap(LayoutWrap value) => $_setField(6, value);
   @$pb.TagNumber(6)
-  $core.bool hasPrimaryAxisAlignItems() => $_has(5);
+  $core.bool hasLayoutWrap() => $_has(5);
   @$pb.TagNumber(6)
-  void clearPrimaryAxisAlignItems() => $_clearField(6);
+  void clearLayoutWrap() => $_clearField(6);
 
   @$pb.TagNumber(7)
-  LayoutAlign get counterAxisAlignItems => $_getN(6);
+  EdgeInsets get padding => $_getN(6);
   @$pb.TagNumber(7)
-  set counterAxisAlignItems(LayoutAlign value) => $_setField(7, value);
+  set padding(EdgeInsets value) => $_setField(7, value);
   @$pb.TagNumber(7)
-  $core.bool hasCounterAxisAlignItems() => $_has(6);
+  $core.bool hasPadding() => $_has(6);
   @$pb.TagNumber(7)
-  void clearCounterAxisAlignItems() => $_clearField(7);
+  void clearPadding() => $_clearField(7);
+  @$pb.TagNumber(7)
+  EdgeInsets ensurePadding() => $_ensure(6);
 
   @$pb.TagNumber(8)
-  LayoutWrap get layoutWrap => $_getN(7);
+  $core.double get itemSpacing => $_getN(7);
   @$pb.TagNumber(8)
-  set layoutWrap(LayoutWrap value) => $_setField(8, value);
+  set itemSpacing($core.double value) => $_setDouble(7, value);
   @$pb.TagNumber(8)
-  $core.bool hasLayoutWrap() => $_has(7);
+  $core.bool hasItemSpacing() => $_has(7);
   @$pb.TagNumber(8)
-  void clearLayoutWrap() => $_clearField(8);
+  void clearItemSpacing() => $_clearField(8);
 
   @$pb.TagNumber(9)
-  EdgeInsets get padding => $_getN(8);
+  $core.double get counterAxisSpacing => $_getN(8);
   @$pb.TagNumber(9)
-  set padding(EdgeInsets value) => $_setField(9, value);
+  set counterAxisSpacing($core.double value) => $_setDouble(8, value);
   @$pb.TagNumber(9)
-  $core.bool hasPadding() => $_has(8);
+  $core.bool hasCounterAxisSpacing() => $_has(8);
   @$pb.TagNumber(9)
-  void clearPadding() => $_clearField(9);
-  @$pb.TagNumber(9)
-  EdgeInsets ensurePadding() => $_ensure(8);
-
-  @$pb.TagNumber(10)
-  $core.double get itemSpacing => $_getN(9);
-  @$pb.TagNumber(10)
-  set itemSpacing($core.double value) => $_setDouble(9, value);
-  @$pb.TagNumber(10)
-  $core.bool hasItemSpacing() => $_has(9);
-  @$pb.TagNumber(10)
-  void clearItemSpacing() => $_clearField(10);
-
-  @$pb.TagNumber(11)
-  $core.double get counterAxisSpacing => $_getN(10);
-  @$pb.TagNumber(11)
-  set counterAxisSpacing($core.double value) => $_setDouble(10, value);
-  @$pb.TagNumber(11)
-  $core.bool hasCounterAxisSpacing() => $_has(10);
-  @$pb.TagNumber(11)
-  void clearCounterAxisSpacing() => $_clearField(11);
+  void clearCounterAxisSpacing() => $_clearField(9);
 }
 
 class GridLayoutProperties extends $pb.GeneratedMessage {

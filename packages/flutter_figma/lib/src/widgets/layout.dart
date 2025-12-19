@@ -9,8 +9,6 @@ sealed class FigmaLayoutProperties {
     required double referenceWidth,
     required double referenceHeight,
     Axis axis,
-    PrimaryAxisSizingMode primaryAxisSizingMode,
-    CounterAxisSizingMode counterAxisSizingMode,
     LayoutAlign primaryAxisAlignItems,
     LayoutAlign counterAxisAlignItems,
     LayoutWrap layoutWrap,
@@ -49,8 +47,6 @@ class FigmaAutoLayoutProperties extends FigmaLayoutProperties {
     required this.referenceWidth,
     required this.referenceHeight,
     this.axis = Axis.horizontal,
-    this.primaryAxisSizingMode = PrimaryAxisSizingMode.auto,
-    this.counterAxisSizingMode = CounterAxisSizingMode.fixed,
     this.primaryAxisAlignItems = LayoutAlign.min,
     this.counterAxisAlignItems = LayoutAlign.min,
     this.layoutWrap = LayoutWrap.noWrap,
@@ -62,8 +58,6 @@ class FigmaAutoLayoutProperties extends FigmaLayoutProperties {
   final double referenceWidth;
   final double referenceHeight;
   final Axis axis;
-  final PrimaryAxisSizingMode primaryAxisSizingMode;
-  final CounterAxisSizingMode counterAxisSizingMode;
   final LayoutAlign primaryAxisAlignItems;
   final LayoutAlign counterAxisAlignItems;
   final LayoutWrap layoutWrap;
@@ -108,8 +102,6 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
         :final referenceWidth,
         :final referenceHeight,
         :final axis,
-        :final primaryAxisSizingMode,
-        :final counterAxisSizingMode,
         :final primaryAxisAlignItems,
         :final counterAxisAlignItems,
         :final layoutWrap,
@@ -124,8 +116,6 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           },
           referenceWidth: referenceWidth,
           referenceHeight: referenceHeight,
-          primaryAxisSizingMode: primaryAxisSizingMode,
-          counterAxisSizingMode: counterAxisSizingMode,
           primaryAxisAlignItems: primaryAxisAlignItems,
           counterAxisAlignItems: counterAxisAlignItems,
           layoutWrap: layoutWrap,
@@ -177,8 +167,6 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           :final referenceWidth,
           :final referenceHeight,
           :final axis,
-          :final primaryAxisSizingMode,
-          :final counterAxisSizingMode,
           :final primaryAxisAlignItems,
           :final counterAxisAlignItems,
           :final layoutWrap,
@@ -193,8 +181,6 @@ class FigmaLayout extends MultiChildRenderObjectWidget {
           }
           ..referenceHeight = referenceHeight
           ..referenceWidth = referenceWidth
-          ..primaryAxisSizingMode = primaryAxisSizingMode
-          ..counterAxisSizingMode = counterAxisSizingMode
           ..primaryAxisAlignItems = primaryAxisAlignItems
           ..counterAxisAlignItems = counterAxisAlignItems
           ..layoutWrap = layoutWrap
