@@ -599,6 +599,19 @@ extension type FrameNode._(JSObject _) implements SceneNode {
   external set layoutGrow(num value);
   external bool get expanded;
   external set expanded(bool value);
+  // Auto layout properties
+  external String get primaryAxisSizingMode;
+  external set primaryAxisSizingMode(String value);
+  external String get counterAxisSizingMode;
+  external set counterAxisSizingMode(String value);
+  external String get primaryAxisAlignItems;
+  external set primaryAxisAlignItems(String value);
+  external String get counterAxisAlignItems;
+  external set counterAxisAlignItems(String value);
+  external String get layoutWrap;
+  external set layoutWrap(String value);
+  external num get counterAxisSpacing;
+  external set counterAxisSpacing(num value);
   external num get cornerRadius;
   external set cornerRadius(num value);
   external num get topLeftRadius;
@@ -725,6 +738,49 @@ extension type ComponentNode._(JSObject _) implements SceneNode {
   external JSPromise<JSArray<InstanceNode>> getInstancesAsync();
   external JSArray<SceneNode> get children;
   external JSObject get componentPropertyDefinitions;
+  // Layout properties (same as FrameNode)
+  external String get layoutMode;
+  external set layoutMode(String value);
+  external num get paddingLeft;
+  external set paddingLeft(num value);
+  external num get paddingRight;
+  external set paddingRight(num value);
+  external num get paddingTop;
+  external set paddingTop(num value);
+  external num get paddingBottom;
+  external set paddingBottom(num value);
+  external num get itemSpacing;
+  external set itemSpacing(num value);
+  external String get primaryAxisSizingMode;
+  external set primaryAxisSizingMode(String value);
+  external String get counterAxisSizingMode;
+  external set counterAxisSizingMode(String value);
+  external String get primaryAxisAlignItems;
+  external set primaryAxisAlignItems(String value);
+  external String get counterAxisAlignItems;
+  external set counterAxisAlignItems(String value);
+  external String get layoutWrap;
+  external set layoutWrap(String value);
+  external num get counterAxisSpacing;
+  external set counterAxisSpacing(num value);
+  external bool get clipsContent;
+  external set clipsContent(bool value);
+  external JSArray<Paint> get fills;
+  external set fills(JSArray<Paint> value);
+  external JSArray<Paint> get strokes;
+  external set strokes(JSArray<Paint> value);
+  external JSArray<Effect> get effects;
+  external set effects(JSArray<Effect> value);
+  external num get cornerRadius;
+  external set cornerRadius(num value);
+  external num get topLeftRadius;
+  external set topLeftRadius(num value);
+  external num get topRightRadius;
+  external set topRightRadius(num value);
+  external num get bottomLeftRadius;
+  external set bottomLeftRadius(num value);
+  external num get bottomRightRadius;
+  external set bottomRightRadius(num value);
 }
 
 extension type InstanceNode._(JSObject _) implements SceneNode {
@@ -742,6 +798,49 @@ extension type InstanceNode._(JSObject _) implements SceneNode {
   external bool get isExposedInstance;
   external set isExposedInstance(bool value);
   external JSArray<SceneNode> get children;
+  // Layout properties (same as FrameNode)
+  external String get layoutMode;
+  external set layoutMode(String value);
+  external num get paddingLeft;
+  external set paddingLeft(num value);
+  external num get paddingRight;
+  external set paddingRight(num value);
+  external num get paddingTop;
+  external set paddingTop(num value);
+  external num get paddingBottom;
+  external set paddingBottom(num value);
+  external num get itemSpacing;
+  external set itemSpacing(num value);
+  external String get primaryAxisSizingMode;
+  external set primaryAxisSizingMode(String value);
+  external String get counterAxisSizingMode;
+  external set counterAxisSizingMode(String value);
+  external String get primaryAxisAlignItems;
+  external set primaryAxisAlignItems(String value);
+  external String get counterAxisAlignItems;
+  external set counterAxisAlignItems(String value);
+  external String get layoutWrap;
+  external set layoutWrap(String value);
+  external num get counterAxisSpacing;
+  external set counterAxisSpacing(num value);
+  external bool get clipsContent;
+  external set clipsContent(bool value);
+  external JSArray<Paint> get fills;
+  external set fills(JSArray<Paint> value);
+  external JSArray<Paint> get strokes;
+  external set strokes(JSArray<Paint> value);
+  external JSArray<Effect> get effects;
+  external set effects(JSArray<Effect> value);
+  external num get cornerRadius;
+  external set cornerRadius(num value);
+  external num get topLeftRadius;
+  external set topLeftRadius(num value);
+  external num get topRightRadius;
+  external set topRightRadius(num value);
+  external num get bottomLeftRadius;
+  external set bottomLeftRadius(num value);
+  external num get bottomRightRadius;
+  external set bottomRightRadius(num value);
 }
 
 extension type BooleanOperationNode._(JSObject _) implements SceneNode {

@@ -106,7 +106,18 @@ Future<FrameNode> _convertFrameNode(
   if (layoutModeStr == 'HORIZONTAL' || layoutModeStr == 'VERTICAL') {
     layout = LayoutProperties(
       autoLayout: AutoLayoutProperties(
+        referenceWidth: node.width.toDouble(),
+        referenceHeight: node.height.toDouble(),
         isVertical: layoutModeStr == 'VERTICAL',
+        primaryAxisSizingMode: _convertPrimaryAxisSizingMode(
+          node.primaryAxisSizingMode,
+        ),
+        counterAxisSizingMode: _convertCounterAxisSizingMode(
+          node.counterAxisSizingMode,
+        ),
+        primaryAxisAlignItems: _convertLayoutAlign(node.primaryAxisAlignItems),
+        counterAxisAlignItems: _convertLayoutAlign(node.counterAxisAlignItems),
+        layoutWrap: _convertLayoutWrap(node.layoutWrap),
         padding: EdgeInsets(
           left: (node.paddingLeft as num?)?.toDouble() ?? 0,
           right: (node.paddingRight as num?)?.toDouble() ?? 0,
@@ -114,10 +125,16 @@ Future<FrameNode> _convertFrameNode(
           bottom: (node.paddingBottom as num?)?.toDouble() ?? 0,
         ),
         itemSpacing: (node.itemSpacing as num?)?.toDouble() ?? 0,
+        counterAxisSpacing: (node.counterAxisSpacing as num?)?.toDouble() ?? 0,
       ),
     );
   } else {
-    layout = LayoutProperties(freeform: FreeformLayoutProperties());
+    layout = LayoutProperties(
+      freeform: FreeformLayoutProperties(
+        referenceWidth: node.width.toDouble(),
+        referenceHeight: node.height.toDouble(),
+      ),
+    );
   }
 
   return FrameNode(
@@ -267,6 +284,28 @@ CornerRadius _convertFrameCornerRadius(figma_api.FrameNode node) {
   );
 }
 
+/// Converts corner radius from a Figma component node.
+CornerRadius _convertComponentCornerRadius(figma_api.ComponentNode node) {
+  return _convertCornerRadiusFromValues(
+    uniformRadius: node.cornerRadius,
+    topLeft: node.topLeftRadius,
+    topRight: node.topRightRadius,
+    bottomLeft: node.bottomLeftRadius,
+    bottomRight: node.bottomRightRadius,
+  );
+}
+
+/// Converts corner radius from a Figma instance node.
+CornerRadius _convertInstanceCornerRadius(figma_api.InstanceNode node) {
+  return _convertCornerRadiusFromValues(
+    uniformRadius: node.cornerRadius,
+    topLeft: node.topLeftRadius,
+    topRight: node.topRightRadius,
+    bottomLeft: node.bottomLeftRadius,
+    bottomRight: node.bottomRightRadius,
+  );
+}
+
 Future<EllipseNode> _convertEllipseNode(
   figma_api.EllipseNode node,
   ImporterContext<FigmaImportOptions> context,
@@ -378,6 +417,43 @@ Future<FrameNode> _convertComponentNode(
   ImporterContext<FigmaImportOptions> context,
   PropertyIdMap propertyIdMap,
 ) async {
+  // Convert layout properties based on layout mode
+  LayoutProperties? layout;
+  final layoutModeStr = node.layoutMode.toUpperCase();
+  if (layoutModeStr == 'HORIZONTAL' || layoutModeStr == 'VERTICAL') {
+    layout = LayoutProperties(
+      autoLayout: AutoLayoutProperties(
+        referenceWidth: node.width.toDouble(),
+        referenceHeight: node.height.toDouble(),
+        isVertical: layoutModeStr == 'VERTICAL',
+        primaryAxisSizingMode: _convertPrimaryAxisSizingMode(
+          node.primaryAxisSizingMode,
+        ),
+        counterAxisSizingMode: _convertCounterAxisSizingMode(
+          node.counterAxisSizingMode,
+        ),
+        primaryAxisAlignItems: _convertLayoutAlign(node.primaryAxisAlignItems),
+        counterAxisAlignItems: _convertLayoutAlign(node.counterAxisAlignItems),
+        layoutWrap: _convertLayoutWrap(node.layoutWrap),
+        padding: EdgeInsets(
+          left: (node.paddingLeft as num?)?.toDouble() ?? 0,
+          right: (node.paddingRight as num?)?.toDouble() ?? 0,
+          top: (node.paddingTop as num?)?.toDouble() ?? 0,
+          bottom: (node.paddingBottom as num?)?.toDouble() ?? 0,
+        ),
+        itemSpacing: (node.itemSpacing as num?)?.toDouble() ?? 0,
+        counterAxisSpacing: (node.counterAxisSpacing as num?)?.toDouble() ?? 0,
+      ),
+    );
+  } else {
+    layout = LayoutProperties(
+      freeform: FreeformLayoutProperties(
+        referenceWidth: node.width.toDouble(),
+        referenceHeight: node.height.toDouble(),
+      ),
+    );
+  }
+
   return FrameNode(
     id: node.id,
     name: node.name,
@@ -392,6 +468,20 @@ Future<FrameNode> _convertComponentNode(
       context,
       propertyIdMap,
     ),
+    fills: await _convertPaintsWithBoundVariables(
+      node,
+      node.fills.toDart,
+      context,
+    ),
+    strokes: await _convertPaintsWithBoundVariables(
+      node,
+      node.strokes.toDart,
+      context,
+    ),
+    clipContent: node.clipsContent,
+    effects: _convertEffects(node.effects.toDart),
+    layout: layout,
+    cornerRadius: _convertComponentCornerRadius(node),
   );
 }
 
@@ -402,6 +492,43 @@ Future<InstanceNode> _convertInstanceNode(
 ) async {
   // Use async API to get main component to avoid documentAccess errors
   final mainComponent = await node.getMainComponentAsync().toDart;
+
+  // Convert layout properties based on layout mode
+  LayoutProperties? layout;
+  final layoutModeStr = node.layoutMode.toUpperCase();
+  if (layoutModeStr == 'HORIZONTAL' || layoutModeStr == 'VERTICAL') {
+    layout = LayoutProperties(
+      autoLayout: AutoLayoutProperties(
+        referenceWidth: node.width.toDouble(),
+        referenceHeight: node.height.toDouble(),
+        isVertical: layoutModeStr == 'VERTICAL',
+        primaryAxisSizingMode: _convertPrimaryAxisSizingMode(
+          node.primaryAxisSizingMode,
+        ),
+        counterAxisSizingMode: _convertCounterAxisSizingMode(
+          node.counterAxisSizingMode,
+        ),
+        primaryAxisAlignItems: _convertLayoutAlign(node.primaryAxisAlignItems),
+        counterAxisAlignItems: _convertLayoutAlign(node.counterAxisAlignItems),
+        layoutWrap: _convertLayoutWrap(node.layoutWrap),
+        padding: EdgeInsets(
+          left: (node.paddingLeft as num?)?.toDouble() ?? 0,
+          right: (node.paddingRight as num?)?.toDouble() ?? 0,
+          top: (node.paddingTop as num?)?.toDouble() ?? 0,
+          bottom: (node.paddingBottom as num?)?.toDouble() ?? 0,
+        ),
+        itemSpacing: (node.itemSpacing as num?)?.toDouble() ?? 0,
+        counterAxisSpacing: (node.counterAxisSpacing as num?)?.toDouble() ?? 0,
+      ),
+    );
+  } else {
+    layout = LayoutProperties(
+      freeform: FreeformLayoutProperties(
+        referenceWidth: node.width.toDouble(),
+        referenceHeight: node.height.toDouble(),
+      ),
+    );
+  }
 
   return InstanceNode(
     id: node.id,
@@ -418,6 +545,20 @@ Future<InstanceNode> _convertInstanceNode(
       propertyIdMap,
     ),
     mainComponentId: mainComponent?.id,
+    fills: await _convertPaintsWithBoundVariables(
+      node,
+      node.fills.toDart,
+      context,
+    ),
+    strokes: await _convertPaintsWithBoundVariables(
+      node,
+      node.strokes.toDart,
+      context,
+    ),
+    clipContent: node.clipsContent,
+    effects: _convertEffects(node.effects.toDart),
+    layout: layout,
+    cornerRadius: _convertInstanceCornerRadius(node),
   );
 }
 
@@ -796,4 +937,44 @@ FontStyle _parseFontStyle(String style) {
     return FontStyle.FONT_STYLE_ITALIC;
   }
   return FontStyle.FONT_STYLE_REGULAR;
+}
+
+/// Converts Figma primaryAxisSizingMode string to protobuf enum
+PrimaryAxisSizingMode _convertPrimaryAxisSizingMode(String mode) {
+  return switch (mode.toUpperCase()) {
+    'FIXED' => PrimaryAxisSizingMode.PRIMARY_AXIS_SIZING_FIXED,
+    'AUTO' => PrimaryAxisSizingMode.PRIMARY_AXIS_SIZING_AUTO,
+    _ => PrimaryAxisSizingMode.PRIMARY_AXIS_SIZING_FIXED,
+  };
+}
+
+/// Converts Figma counterAxisSizingMode string to protobuf enum
+CounterAxisSizingMode _convertCounterAxisSizingMode(String mode) {
+  return switch (mode.toUpperCase()) {
+    'FIXED' => CounterAxisSizingMode.COUNTER_AXIS_SIZING_FIXED,
+    'AUTO' => CounterAxisSizingMode.COUNTER_AXIS_SIZING_AUTO,
+    _ => CounterAxisSizingMode.COUNTER_AXIS_SIZING_FIXED,
+  };
+}
+
+/// Converts Figma layout align string to protobuf enum
+LayoutAlign _convertLayoutAlign(String align) {
+  return switch (align.toUpperCase()) {
+    'MIN' => LayoutAlign.LAYOUT_ALIGN_MIN,
+    'CENTER' => LayoutAlign.LAYOUT_ALIGN_CENTER,
+    'MAX' => LayoutAlign.LAYOUT_ALIGN_MAX,
+    'STRETCH' => LayoutAlign.LAYOUT_ALIGN_STRETCH,
+    'SPACE_BETWEEN' ||
+    'SPACE-BETWEEN' => LayoutAlign.LAYOUT_ALIGN_SPACE_BETWEEN,
+    _ => LayoutAlign.LAYOUT_ALIGN_MIN,
+  };
+}
+
+/// Converts Figma layoutWrap string to protobuf enum
+LayoutWrap _convertLayoutWrap(String wrap) {
+  return switch (wrap.toUpperCase()) {
+    'WRAP' => LayoutWrap.LAYOUT_WRAP_WRAP,
+    'NO_WRAP' || 'NO-WRAP' || 'NONE' => LayoutWrap.LAYOUT_WRAP_NO_WRAP,
+    _ => LayoutWrap.LAYOUT_WRAP_NO_WRAP,
+  };
 }
