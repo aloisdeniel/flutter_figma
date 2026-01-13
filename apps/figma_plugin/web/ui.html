@@ -114,57 +114,6 @@
       background: var(--bg-primary);
     }
 
-    .sidebar {
-      width: 250px;
-      border-left: 1px solid var(--border-color);
-      background: var(--bg-secondary);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .sidebar-header {
-      padding: 12px 16px;
-      border-bottom: 1px solid var(--border-color);
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--text-secondary);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-
-    .file-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 8px 0;
-    }
-
-    .file-item {
-      padding: 8px 16px;
-      font-size: 12px;
-      cursor: pointer;
-      transition: background 0.1s ease;
-      border-left: 3px solid transparent;
-      word-break: break-word;
-      color: var(--text-secondary);
-    }
-
-    .file-item:hover {
-      background: var(--item-hover);
-      color: var(--text-primary);
-    }
-
-    .file-item.selected {
-      background: var(--item-selected);
-      border-left-color: var(--accent-color);
-      font-weight: 500;
-      color: var(--accent-color);
-    }
-
-    .sidebar.hidden {
-      display: none;
-    }
-
     pre {
       margin: 0;
       font-family: 'SF Mono', 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', monospace;
@@ -253,18 +202,12 @@
         </div>
       </div>
     </div>
-
-    <div class="sidebar hidden" id="sidebar">
-      <div class="sidebar-header">Generated Files</div>
-      <div class="file-list" id="file_list"></div>
-    </div>
   </div>
 
   <div class="footer">
     <div class="format-picker">
       <button class="format-option active" data-format="dart">Dart</button>
       <button class="format-option" data-format="json">JSON</button>
-      <button class="format-option" data-format="binary">Binary</button>
     </div>
     <div class="footer-actions">
       <div class="status-indicator" id="status">
@@ -279,87 +222,38 @@
 
   <script>
     let currentCode = '';
-    let currentFiles = [];
-    let selectedFileIndex = 0;
     let currentFormat = 'dart';
 
     // Auto-generate code on load
     window.addEventListener('load', () => {
       updateStatus('Generating code...', false);
-      parent.postMessage({ 
-        pluginMessage: { type: 'generate' } 
+      parent.postMessage({
+        pluginMessage: { type: 'generate' }
       }, '*');
     });
 
     window.onmessage = (event) => {
       const msg = event.data.pluginMessage;
-      
+
       if (msg.type === 'code-generated') {
-        currentFiles = msg.files || [];
-        
-        if (currentFiles.length > 1) {
-          selectedFileIndex = 0;
-          renderFileList();
-          displayFile(selectedFileIndex);
-          document.getElementById('sidebar').classList.remove('hidden');
-          document.getElementById('copy-btn').style.display = 'block';
-          updateStatus(`${currentFiles.length} files generated`, true);
-        } else if (currentFiles.length === 1) {
-          selectedFileIndex = 0;
-          displayFile(selectedFileIndex);
-          document.getElementById('sidebar').classList.add('hidden');
-          document.getElementById('copy-btn').style.display = 'block';
-          updateStatus('Code generated', true);
-        } else {
-          // Fallback for old format (single 'code' property)
-          currentCode = msg.code || '';
-          document.getElementById('code_container').innerHTML = 
-            '<pre>' + escapeHtml(currentCode) + '</pre>';
-          document.getElementById('sidebar').classList.add('hidden');
-          document.getElementById('copy-btn').style.display = 'block';
-          updateStatus('Code generated', true);
-        }
+        currentCode = msg.code || '';
+        document.getElementById('code_container').innerHTML =
+          '<pre>' + escapeHtml(currentCode) + '</pre>';
+        document.getElementById('copy-btn').style.display = 'block';
+        updateStatus('Code generated', true);
       } else if (msg.type === 'no-selection') {
         currentCode = '';
-        currentFiles = [];
-        document.getElementById('code_container').innerHTML = 
+        document.getElementById('code_container').innerHTML =
           `<div class="placeholder">
             <div class="placeholder-content">
               <div class="placeholder-icon">🎨</div>
               <div>${escapeHtml(msg.message)}</div>
             </div>
           </div>`;
-        document.getElementById('sidebar').classList.add('hidden');
         document.getElementById('copy-btn').style.display = 'none';
         updateStatus('Waiting for selection', false);
       }
     };
-
-    function renderFileList() {
-      const fileList = document.getElementById('file_list');
-      fileList.innerHTML = '';
-      
-      currentFiles.forEach((file, index) => {
-        const fileItem = document.createElement('div');
-        fileItem.className = 'file-item' + (index === selectedFileIndex ? ' selected' : '');
-        fileItem.textContent = file.path;
-        fileItem.addEventListener('click', () => {
-          selectedFileIndex = index;
-          displayFile(index);
-          renderFileList(); // Re-render to update selection
-        });
-        fileList.appendChild(fileItem);
-      });
-    }
-
-    function displayFile(index) {
-      if (index >= 0 && index < currentFiles.length) {
-        const file = currentFiles[index];
-        currentCode = file.content;
-        document.getElementById('code_container').innerHTML = 
-          '<pre>' + escapeHtml(file.content) + '</pre>';
-      }
-    }
 
     document.getElementById('copy-btn').addEventListener('click', () => {
       if (currentCode) {

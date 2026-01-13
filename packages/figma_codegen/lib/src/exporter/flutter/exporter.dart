@@ -1,5 +1,5 @@
 import 'package:figma_codegen/src/definitions/variables.pb.dart';
-import 'package:figma_codegen/src/exporter/flutter/collection.dart';
+import 'package:figma_codegen/src/exporter/flutter/variables/variables.dart';
 import 'package:figma_codegen/src/utils/dart/buffer.dart';
 
 class FlutterExportContext {
@@ -15,10 +15,8 @@ class FlutterExporter {
     buffer.writeln("import 'package:flutter/widgets.dart' as fl;");
     buffer.writeln();
 
-    for (var collection in context.collections) {
-      final exporter = VariableCollectionDartExporter();
-      exporter.serialize(context, buffer, collection);
-    }
+    final exporter = VariablesDartExporter();
+    exporter.serialize(context, buffer);
 
     return buffer.toString();
   }

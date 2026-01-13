@@ -70,14 +70,8 @@ Future<void> _generateCode() async {
   }
 
   print('Code successfully generated!');
-  final files = [
-    {
-      'path': 'variables.g.dart',
-      'content': variablesCode,
-    },
-  ];
 
-  final message = {'type': 'code-generated', 'files': files}.jsify()!;
+  final message = {'type': 'code-generated', 'code': variablesCode}.jsify()!;
 
   figma.ui.postMessage(message);
 }

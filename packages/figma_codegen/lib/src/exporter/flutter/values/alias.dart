@@ -1,5 +1,4 @@
 import 'package:figma_codegen/src/definitions/variables.dart';
-import 'package:figma_codegen/src/definitions/variables.pb.dart';
 import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
 import 'package:figma_codegen/src/exporter/flutter/values/value.dart';
 import 'package:figma_codegen/src/utils/dart/naming.dart';

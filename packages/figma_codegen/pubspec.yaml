@@ -13,6 +13,7 @@ dev_dependencies:
 dependencies:
   recase: ^4.1.0
   args: ^2.5.0
+  protobuf: ^6.0.0
 
 executables:
   figma_cli:
