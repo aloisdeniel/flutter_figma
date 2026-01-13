@@ -53,10 +53,9 @@ void _writeSingleModeClass(
     final aliasFields = <String>[];
     for (final entry in aliasedCollections.entries) {
       final collectionName = entry.value;
-      final prefix = Naming.fieldName(collectionName);
       final typeName = '${Naming.typeName(collectionName)}Data';
       final fieldName = Naming.fieldName(collectionName);
-      aliasFields.add('$prefix.$typeName $fieldName');
+      aliasFields.add('$typeName $fieldName');
     }
     buffer.writeln('late ({${aliasFields.join(', ')}}) alias;');
     buffer.writeln();
@@ -155,10 +154,9 @@ void _writeMultiModeClasses(
     final aliasFields = <String>[];
     for (final entry in aliasedCollections.entries) {
       final collectionName = entry.value;
-      final prefix = Naming.fieldName(collectionName);
       final typeName = '${Naming.typeName(collectionName)}Data';
       final fieldName = Naming.fieldName(collectionName);
-      aliasFields.add('$prefix.$typeName $fieldName');
+      aliasFields.add('$typeName $fieldName');
     }
     buffer.writeln('late ({${aliasFields.join(', ')}}) alias;');
     buffer.writeln();

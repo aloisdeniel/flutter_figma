@@ -9,11 +9,19 @@ external String get htmlContent;
 extension type MessageData._(JSObject _) implements JSObject {
   external String? get type;
   external String? get format;
+  external JSObject? get options;
 }
 
-enum OutputFormat { dart, json }
+extension type ExportOptions._(JSObject _) implements JSObject {
+  external bool? get prettyPrint;
+  external String? get colorFormat;
+  external bool? get includeComments;
+}
+
+enum OutputFormat { dart, json, css }
 
 OutputFormat _currentFormat = OutputFormat.dart;
+Map<String, dynamic> _currentOptions = {};
 
 void main() {
   figma.showUI(htmlContent, ShowUIOptions(width: 800, height: 600));
@@ -34,8 +42,20 @@ void main() {
     if (msg.type == 'format-changed') {
       _currentFormat = switch (msg.format) {
         'json' => OutputFormat.json,
+        'css' => OutputFormat.css,
         _ => OutputFormat.dart,
       };
+
+      // Store options if provided
+      if (msg.options != null) {
+        final opts = msg.options as ExportOptions;
+        _currentOptions = {
+          if (opts.prettyPrint != null) 'prettyPrint': opts.prettyPrint,
+          if (opts.colorFormat != null) 'colorFormat': opts.colorFormat,
+          if (opts.includeComments != null) 'includeComments': opts.includeComments,
+        };
+      }
+
       _generateCode();
       return;
     }
@@ -63,8 +83,23 @@ Future<void> _generateCode() async {
       break;
     case OutputFormat.json:
       final generator = JsonExporter();
+      final prettyPrint = _currentOptions['prettyPrint'] as bool? ?? true;
       variablesCode = await generator.exportVariableCollections(
-        JsonExportContext(collections: library, prettyPrint: true),
+        JsonExportContext(collections: library, prettyPrint: prettyPrint),
+      );
+      break;
+    case OutputFormat.css:
+      final generator = CssExporter();
+      final prettyPrint = _currentOptions['prettyPrint'] as bool? ?? true;
+      final colorFormat = _parseColorFormat(_currentOptions['colorFormat'] as String? ?? 'hex');
+      final includeComments = _currentOptions['includeComments'] as bool? ?? true;
+      variablesCode = await generator.exportVariableCollections(
+        CssExportContext(
+          collections: library,
+          prettyPrint: prettyPrint,
+          colorFormat: colorFormat,
+          includeComments: includeComments,
+        ),
       );
       break;
   }
@@ -74,4 +109,13 @@ Future<void> _generateCode() async {
   final message = {'type': 'code-generated', 'code': variablesCode}.jsify()!;
 
   figma.ui.postMessage(message);
+}
+
+ColorFormat _parseColorFormat(String format) {
+  return switch (format) {
+    'rgb' => ColorFormat.rgb,
+    'rgba' => ColorFormat.rgba,
+    'colorMix' => ColorFormat.colorMix,
+    _ => ColorFormat.hex,
+  };
 }

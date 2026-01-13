@@ -55,35 +55,165 @@
       align-items: center;
     }
 
-    .format-picker {
+    .options-button {
+      position: relative;
       display: flex;
-      gap: 4px;
-      background: var(--bg-primary);
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
       border: 1px solid var(--border-color);
       border-radius: 4px;
-      padding: 2px;
-    }
-
-    .format-option {
-      padding: 4px 10px;
-      border: none;
-      border-radius: 3px;
-      background: transparent;
+      background: var(--bg-secondary);
       cursor: pointer;
       font-size: 11px;
       font-weight: 500;
-      color: var(--text-secondary);
+      color: var(--text-primary);
       transition: all 0.15s ease;
+    }
+
+    .options-button:hover {
+      background: var(--bg-tertiary);
+      border-color: #666;
+    }
+
+    .options-button.active {
+      background: var(--bg-tertiary);
+      border-color: var(--accent-color);
+    }
+
+    .options-button-icon {
+      font-size: 10px;
+      transition: transform 0.2s ease;
+    }
+
+    .options-button.active .options-button-icon {
+      transform: rotate(180deg);
+    }
+
+    .options-popover {
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 0;
+      min-width: 280px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(8px);
+      transition: all 0.2s ease;
+      z-index: 1000;
+      padding: 12px;
+    }
+
+    .options-popover.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .options-section {
+      margin-bottom: 16px;
+    }
+
+    .options-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .options-label {
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+
+    .format-options {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .format-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.15s ease;
     }
 
     .format-option:hover {
       background: var(--bg-tertiary);
-      color: var(--text-primary);
     }
 
-    .format-option.active {
-      background: var(--accent-color);
-      color: white;
+    .format-option input[type="radio"] {
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .format-option label {
+      flex: 1;
+      font-size: 12px;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .export-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .export-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+      border-radius: 4px;
+      transition: background 0.15s ease;
+    }
+
+    .export-option:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .export-option input[type="checkbox"] {
+      margin: 0;
+      cursor: pointer;
+    }
+
+    .export-option label {
+      flex: 1;
+      font-size: 11px;
+      color: var(--text-primary);
+      cursor: pointer;
+    }
+
+    .export-option select {
+      flex: 1;
+      padding: 4px 8px;
+      border: 1px solid var(--border-color);
+      border-radius: 3px;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .export-option select:focus {
+      outline: none;
+      border-color: var(--accent-color);
+    }
+
+    .options-divider {
+      height: 1px;
+      background: var(--border-color);
+      margin: 12px 0;
     }
 
     button {
@@ -205,9 +335,39 @@
   </div>
 
   <div class="footer">
-    <div class="format-picker">
-      <button class="format-option active" data-format="dart">Dart</button>
-      <button class="format-option" data-format="json">JSON</button>
+    <div class="options-button-wrapper" style="position: relative;">
+      <button class="options-button" id="options-btn">
+        <span id="current-format">Dart</span>
+        <span class="options-button-icon">▼</span>
+      </button>
+      <div class="options-popover" id="options-popover">
+        <div class="options-section">
+          <span class="options-label">Export Format</span>
+          <div class="format-options">
+            <div class="format-option">
+              <input type="radio" id="format-dart" name="format" value="dart" checked>
+              <label for="format-dart">Dart</label>
+            </div>
+            <div class="format-option">
+              <input type="radio" id="format-json" name="format" value="json">
+              <label for="format-json">JSON</label>
+            </div>
+            <div class="format-option">
+              <input type="radio" id="format-css" name="format" value="css">
+              <label for="format-css">CSS</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="options-divider"></div>
+
+        <div class="options-section" id="export-options-section">
+          <span class="options-label">Options</span>
+          <div class="export-options" id="export-options">
+            <!-- Options will be dynamically inserted based on format -->
+          </div>
+        </div>
+      </div>
     </div>
     <div class="footer-actions">
       <div class="status-indicator" id="status">
@@ -223,10 +383,16 @@
   <script>
     let currentCode = '';
     let currentFormat = 'dart';
+    let exportOptions = {
+      dart: {},
+      json: { prettyPrint: true },
+      css: { prettyPrint: true, colorFormat: 'hex', includeComments: true }
+    };
 
     // Auto-generate code on load
     window.addEventListener('load', () => {
       updateStatus('Generating code...', false);
+      updateExportOptions();
       parent.postMessage({
         pluginMessage: { type: 'generate' }
       }, '*');
@@ -323,27 +489,117 @@
       return div.innerHTML;
     }
 
-    // Format picker functionality
-    document.querySelectorAll('.format-option').forEach(option => {
-      option.addEventListener('click', () => {
-        // Update active state
-        document.querySelectorAll('.format-option').forEach(opt => {
-          opt.classList.remove('active');
-        });
-        option.classList.add('active');
-        
-        // Update current format
-        currentFormat = option.dataset.format;
-        
-        // Request regeneration with new format
-        parent.postMessage({ 
-          pluginMessage: { 
-            type: 'format-changed', 
-            format: currentFormat
-          } 
-        }, '*');
+    // Options popover functionality
+    const optionsBtn = document.getElementById('options-btn');
+    const optionsPopover = document.getElementById('options-popover');
+
+    optionsBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isActive = optionsBtn.classList.contains('active');
+      if (isActive) {
+        closePopover();
+      } else {
+        openPopover();
+      }
+    });
+
+    // Close popover when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!optionsPopover.contains(e.target) && !optionsBtn.contains(e.target)) {
+        closePopover();
+      }
+    });
+
+    function openPopover() {
+      optionsBtn.classList.add('active');
+      optionsPopover.classList.add('show');
+    }
+
+    function closePopover() {
+      optionsBtn.classList.remove('active');
+      optionsPopover.classList.remove('show');
+    }
+
+    // Format change handling
+    document.querySelectorAll('input[name="format"]').forEach(radio => {
+      radio.addEventListener('change', () => {
+        currentFormat = radio.value;
+        document.getElementById('current-format').textContent =
+          currentFormat.charAt(0).toUpperCase() + currentFormat.slice(1);
+        updateExportOptions();
+        regenerateCode();
       });
     });
+
+    function updateExportOptions() {
+      const optionsContainer = document.getElementById('export-options');
+      const optionsSection = document.getElementById('export-options-section');
+
+      optionsContainer.innerHTML = '';
+
+      if (currentFormat === 'dart') {
+        optionsSection.style.display = 'none';
+      } else if (currentFormat === 'json') {
+        optionsSection.style.display = 'block';
+        optionsContainer.innerHTML = `
+          <div class="export-option">
+            <input type="checkbox" id="json-pretty" ${exportOptions.json.prettyPrint ? 'checked' : ''}>
+            <label for="json-pretty">Pretty Print</label>
+          </div>
+        `;
+
+        document.getElementById('json-pretty').addEventListener('change', (e) => {
+          exportOptions.json.prettyPrint = e.target.checked;
+          regenerateCode();
+        });
+      } else if (currentFormat === 'css') {
+        optionsSection.style.display = 'block';
+        optionsContainer.innerHTML = `
+          <div class="export-option">
+            <input type="checkbox" id="css-pretty" ${exportOptions.css.prettyPrint ? 'checked' : ''}>
+            <label for="css-pretty">Pretty Print</label>
+          </div>
+          <div class="export-option">
+            <input type="checkbox" id="css-comments" ${exportOptions.css.includeComments ? 'checked' : ''}>
+            <label for="css-comments">Include Comments</label>
+          </div>
+          <div class="export-option">
+            <label for="css-color-format">Color Format</label>
+            <select id="css-color-format">
+              <option value="hex" ${exportOptions.css.colorFormat === 'hex' ? 'selected' : ''}>Hex</option>
+              <option value="rgb" ${exportOptions.css.colorFormat === 'rgb' ? 'selected' : ''}>RGB</option>
+              <option value="rgba" ${exportOptions.css.colorFormat === 'rgba' ? 'selected' : ''}>RGBA</option>
+              <option value="colorMix" ${exportOptions.css.colorFormat === 'colorMix' ? 'selected' : ''}>Color Mix</option>
+            </select>
+          </div>
+        `;
+
+        document.getElementById('css-pretty').addEventListener('change', (e) => {
+          exportOptions.css.prettyPrint = e.target.checked;
+          regenerateCode();
+        });
+
+        document.getElementById('css-comments').addEventListener('change', (e) => {
+          exportOptions.css.includeComments = e.target.checked;
+          regenerateCode();
+        });
+
+        document.getElementById('css-color-format').addEventListener('change', (e) => {
+          exportOptions.css.colorFormat = e.target.value;
+          regenerateCode();
+        });
+      }
+    }
+
+    function regenerateCode() {
+      parent.postMessage({
+        pluginMessage: {
+          type: 'format-changed',
+          format: currentFormat,
+          options: exportOptions[currentFormat]
+        }
+      }, '*');
+    }
   </script>
 </body>
 </html>
