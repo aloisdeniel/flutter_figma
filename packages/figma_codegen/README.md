@@ -5,6 +5,7 @@ Code generation for Flutter widget trees from Figma assets in the `flutter_figma
 ## Features
 
 - Generates layout, text styles, colors, and assets from Figma variable collections
+- Multiple export formats: Dart (Flutter), JSON, and CSS custom properties
 - Supports configuration hooks for naming and output structure
 - CLI tool for easy integration into build workflows
 - Programmatic API for custom tooling
@@ -44,7 +45,10 @@ dependencies:
 
 ```bash
 # Generate Dart code from Figma variable collections
-figma_cli -i vars.json -o lib/theme/vars.dart -f dart
+figma_cli -i vars.json -o lib/theme/variables.dart -f dart
+
+# Export to CSS custom properties
+figma_cli -i vars.json -o styles.css -f css
 
 # Export to JSON with pretty printing
 figma_cli -i vars.json -o output.json -f json --pretty
@@ -58,8 +62,8 @@ figma_cli -i vars.json -o output.json -f json --no-pretty
 ```
 -i, --input         INPUT JSON file path (required)
 -o, --output        Output file path (required)
--f, --format        Output format: json or dart (required)
--p, --pretty        Pretty print JSON output (default: true)
+-f, --format        Output format: json, dart, or css (required)
+-p, --pretty        Pretty print output (default: true)
 -h, --help          Display usage information
 -v, --version       Display version information
 ```
@@ -113,6 +117,26 @@ Future<void> exportToJson(List<VariableCollection> collections) async {
   final json = exporter.exportVariableCollections(context);
 
   await File('output.json').writeAsString(json);
+}
+```
+
+### Export to CSS
+
+```dart
+import 'package:figma_codegen/figma_codegen.dart';
+
+Future<void> exportToCss(List<VariableCollection> collections) async {
+  final context = CssExportContext(
+    collections: collections,
+    prettyPrint: true,
+    colorFormat: ColorFormat.hex, // or rgb, rgba, colorMix
+    includeComments: true,
+  );
+
+  final exporter = CssExporter();
+  final css = exporter.exportVariableCollections(context);
+
+  await File('styles.css').writeAsString(css);
 }
 ```
 
@@ -234,6 +258,115 @@ class ColorsDark {
   static const secondary = fl.Color.from(alpha: 1.0, red: 0.7, green: 0.7, blue: 0.7);
 }
 ```
+
+## CSS Export Format
+
+### Overview
+
+The CSS exporter generates CSS custom properties (CSS variables) that can be used in web applications. Variables are namespaced by collection name and use kebab-case naming.
+
+### Single Variant CSS Output
+
+Collections with a single variant use a plain `:root` selector:
+
+```css
+/* Collection: Colors */
+:root {
+  --colors-primary: #3366cc;
+  --colors-secondary: #808080;
+}
+```
+
+### Multi-Variant CSS Output
+
+Collections with multiple variants (e.g., light/dark themes) use data attribute selectors:
+
+```css
+/* Collection: Colors (multi-variant) */
+/* Variant: Light */
+:root[data-colors="light"] {
+  --colors-primary: #3366cc;
+  --colors-secondary: #808080;
+  --colors-background: #ffffff;
+}
+
+/* Variant: Dark */
+:root[data-colors="dark"] {
+  --colors-primary: #99b3e6;
+  --colors-secondary: #b3b3b3;
+  --colors-background: #1a1a1a;
+}
+```
+
+### Theme Switching
+
+Use JavaScript to switch between themes by setting data attributes on the root element:
+
+```html
+<html data-colors="light">
+  <head>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <h1 style="color: var(--colors-primary)">Hello World</h1>
+  </body>
+</html>
+```
+
+```javascript
+// Switch to dark theme
+document.documentElement.setAttribute('data-colors', 'dark');
+
+// Switch to light theme
+document.documentElement.setAttribute('data-colors', 'light');
+```
+
+### CSS Value Type Conversions
+
+| Figma Type | CSS Output | Example |
+|------------|------------|---------|
+| Color (sRGB) | Hex or RGB | `#3366cc` or `rgb(51 102 204)` |
+| Color (Display P3) | CSS color() | `color(display-p3 0.2 0.4 0.8)` |
+| Gradient | CSS gradients | `linear-gradient(180deg, #fff 0%, #000 100%)` |
+| Text Style | Multiple properties | `--typography-heading-font-family`, `--typography-heading-font-size`, etc. |
+| Number | Direct value | `24` or `1.5` |
+| String | Quoted string | `"Roboto"` |
+| Corner Radius | Border radius | `8px 8px 8px 8px` |
+| Border Side | Width | `1px` |
+
+### Text Style Variables
+
+Text styles expand to multiple CSS custom properties:
+
+```css
+:root {
+  --typography-heading-font-family: 'Inter';
+  --typography-heading-font-size: 24px;
+  --typography-heading-font-weight: 700;
+  --typography-heading-line-height: 1.33;
+  --typography-heading-letter-spacing: 0px;
+  --typography-heading-font-style: normal;
+}
+```
+
+Use them in CSS:
+
+```css
+h1 {
+  font-family: var(--typography-heading-font-family);
+  font-size: var(--typography-heading-font-size);
+  font-weight: var(--typography-heading-font-weight);
+  line-height: var(--typography-heading-line-height);
+}
+```
+
+### CSS Naming Convention
+
+CSS variables follow kebab-case naming:
+
+- Collection: `MyColors` → `data-my-colors="..."`
+- Variable: `primaryColor` → `--my-colors-primary-color`
+- Format: `--<collection-name>-<variable-name>`
 
 ## Naming Conventions
 
