@@ -9,3 +9,8 @@ export 'src/importers/context.dart';
 export 'src/importers/figma/base.dart';
 export 'src/importers/figma/importer.dart';
 export 'src/importers/json/importer.dart';
+
+export 'src/cli/exceptions.dart';
+export 'src/cli/file_operations.dart';
+export 'src/cli/output_format.dart';
+export 'src/cli/runner.dart';

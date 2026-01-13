@@ -1,0 +1,88 @@
+[
+  {
+    "id": "1",
+    "name": "Colors",
+    "variables": [
+      {
+        "id": "1",
+        "name": "primary"
+      },
+      {
+        "id": "2",
+        "name": "secondary"
+      },
+      {
+        "id": "3",
+        "name": "background"
+      }
+    ],
+    "variants": [
+      {
+        "id": "1",
+        "name": "Light",
+        "values": [
+          {
+            "color": {
+              "red": 0.2,
+              "green": 0.4,
+              "blue": 0.8,
+              "alpha": 1.0,
+              "colorSpace": "COLOR_SPACE_SRGB"
+            }
+          },
+          {
+            "color": {
+              "red": 0.8,
+              "green": 0.2,
+              "blue": 0.4,
+              "alpha": 1.0,
+              "colorSpace": "COLOR_SPACE_SRGB"
+            }
+          },
+          {
+            "color": {
+              "red": 0.95,
+              "green": 0.95,
+              "blue": 0.95,
+              "alpha": 1.0,
+              "colorSpace": "COLOR_SPACE_SRGB"
+            }
+          }
+        ]
+      },
+      {
+        "id": "2",
+        "name": "Dark",
+        "values": [
+          {
+            "color": {
+              "red": 0.4,
+              "green": 0.6,
+              "blue": 1.0,
+              "alpha": 1.0,
+              "colorSpace": "COLOR_SPACE_SRGB"
+            }
+          },
+          {
+            "color": {
+              "red": 1.0,
+              "green": 0.4,
+              "blue": 0.6,
+              "alpha": 1.0,
+              "colorSpace": "COLOR_SPACE_SRGB"
+            }
+          },
+          {
+            "color": {
+              "red": 0.1,
+              "green": 0.1,
+              "blue": 0.1,
+              "alpha": 1.0,
+              "colorSpace": "COLOR_SPACE_SRGB"
+            }
+          }
+        ]
+      }
+    ]
+  }
+]

@@ -14,8 +14,6 @@ class VariableCollectionDartExporter {
     DartBuffer buffer,
     VariableCollection value,
   ) {
-    final buffer = DartBuffer();
-
     // Choose generation strategy based on number of variants
     if (value.variants.length == 1) {
       _writeSingleModeClass(context, buffer, value);

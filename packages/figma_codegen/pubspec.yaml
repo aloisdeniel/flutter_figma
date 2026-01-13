@@ -12,3 +12,7 @@ dev_dependencies:
   orbe_proto: ^0.1.5
 dependencies:
   recase: ^4.1.0
+  args: ^2.5.0
+
+executables:
+  figma_cli:
