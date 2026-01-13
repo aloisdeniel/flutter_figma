@@ -1,5 +1,5 @@
 name: figma_plugin
-description: The figma plugin to generate flutter_figma trees.
+description: The figma plugin to generate Flutter code.
 version: 0.0.1
 publish_to: none
 
@@ -7,8 +7,8 @@ environment:
   sdk: ^3.6.0
 
 dependencies:
-  binui:
-    path: ../../packages/binui/
+  figma_codegen:
+    path: ../../packages/figma_codegen/
 
 dev_dependencies:
   lints: ^4.0.0

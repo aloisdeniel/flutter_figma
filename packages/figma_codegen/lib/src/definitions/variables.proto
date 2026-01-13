@@ -1,0 +1,165 @@
+
+syntax = "proto3";
+
+package definitions;
+
+// Alias
+
+message Alias {
+  oneof type {
+    ConstantAlias constant = 1;
+    VariableAlias variable = 2;
+  }
+}
+
+message ConstantAlias {
+  Value value = 1;
+}
+
+message VariableAlias {
+  int32 collectionId = 1;
+  int32 variableId = 2;
+  Value defaultValue = 3;
+}
+
+
+// Variable collections
+
+message VariableCollection {
+  int32 id = 1;
+  string name = 2;
+  optional string documentation = 3;
+  repeated VariableCollectionEntry variables = 4; 
+  repeated VariableCollectionVariant variants = 5;
+}
+
+message VariableCollectionEntry {
+  int32 id = 1;
+  string name = 2;
+  optional string documentation = 3;
+}
+
+message VariableCollectionVariant {
+  int32 id = 1;
+  string name = 2;
+  optional string documentation = 3;
+  repeated Value values = 4; // Also defines the type
+}
+
+// Values
+
+message Value {
+  oneof type{
+    Alias alias = 1;
+    string stringValue = 2;
+    double doubleValue = 3;
+    bool boolean = 4;
+    Color color = 5;
+    BorderSide borderSide = 6;
+    Gradient gradient = 7;
+    CornerRadius cornerRadius = 8;
+    TextStyle textStyle = 9;
+  }
+}
+
+message Offset {
+  double x = 1;
+  double y = 2;
+}
+
+// Radius
+
+message CornerRadius {
+  double topLeft = 1;
+  double topRight = 2;
+  double bottomLeft = 3;
+  double bottomRight = 4;
+  double smoothing = 5; // 0-1, for squircle corners
+}
+
+// Color
+
+enum ColorSpace {
+  COLOR_SPACE_SRGB = 0;
+  COLOR_SPACE_EXTENDED_SRGB = 1;
+  COLOR_SPACE_DISPLAY_P3 = 2;
+}
+
+message Color {
+  double red = 1;
+  double green = 2;
+  double blue = 3;
+  double alpha = 4;
+  ColorSpace colorSpace = 5;
+}
+
+// Border
+
+message BorderSide {
+  double width = 1;
+  double strokeAlign = 2;
+}
+
+// Text Style
+
+enum FontStyle {
+  FONT_STYLE_REGULAR = 0;
+  FONT_STYLE_ITALIC = 1;
+}
+
+enum LetterSpacingUnit {
+  LETTER_SPACING_PIXELS = 0;
+  LETTER_SPACING_PERCENT = 1;
+}
+
+message FontName {
+  string family = 1;
+  FontStyle style = 2;
+  int32 weight = 3; // 100-900
+}
+
+message LetterSpacing {
+  double value = 1;
+  LetterSpacingUnit unit = 2;
+}
+
+message LineHeight {
+  oneof type {
+    double pixels = 1;
+    double percent = 2;
+    bool autoHeight = 3;
+  }
+}
+
+message TextStyle {
+  FontName fontName = 1;
+  double fontSize = 2;
+  LetterSpacing letterSpacing = 3;
+  LineHeight lineHeight = 4;
+}
+
+// Gradient
+
+message Gradient {
+  oneof type {
+    LinearGradient linear = 1;
+    RadialGradient radial = 2;
+  }
+}
+
+message GradientStop {
+  double offset = 1;
+  Color color = 2;
+}
+
+message LinearGradient {
+  repeated GradientStop stops = 1;
+  Offset begin = 2;
+  Offset end = 3;
+}
+
+message RadialGradient {
+  repeated GradientStop stops = 1;
+  Offset center = 2;
+  double radius = 3;
+}

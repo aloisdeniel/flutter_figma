@@ -1,3 +1,0 @@
-class FigmaImportOptions {
-  const FigmaImportOptions();
-}
