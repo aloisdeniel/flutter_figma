@@ -4,6 +4,7 @@ import 'package:figma_codegen/src/cli/exceptions.dart';
 import 'package:figma_codegen/src/cli/file_operations.dart';
 import 'package:figma_codegen/src/cli/output_format.dart';
 import 'package:figma_codegen/src/definitions/variables.pb.dart';
+import 'package:figma_codegen/src/exporter/css/exporter.dart';
 import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
 import 'package:figma_codegen/src/exporter/json/exporter.dart';
 import 'package:figma_codegen/src/importers/json/importer.dart';
@@ -69,6 +70,15 @@ class CliRunner {
         case OutputFormat.dart:
           final exporter = FlutterExporter();
           final context = FlutterExportContext(collections: collections);
+          output = exporter.exportVariableCollections(context);
+          break;
+
+        case OutputFormat.css:
+          final exporter = CssExporter();
+          final context = CssExportContext(
+            collections: collections,
+            prettyPrint: prettyPrint,
+          );
           output = exporter.exportVariableCollections(context);
           break;
       }

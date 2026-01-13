@@ -2,6 +2,7 @@ library;
 
 export 'src/definitions/variables.dart';
 
+export 'src/exporter/css/exporter.dart';
 export 'src/exporter/flutter/exporter.dart';
 export 'src/exporter/json/exporter.dart';
 
