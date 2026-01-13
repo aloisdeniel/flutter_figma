@@ -1,5 +1,5 @@
 name: figma_codegen
-description: A starting point for Dart libraries or applications.
+description: Code generation tools for Figma designs. Generate Flutter widgets and styles from Figma files.
 version: 0.1.0
 repository: https://github.com/aloisdeniel/flutter_figma
 
