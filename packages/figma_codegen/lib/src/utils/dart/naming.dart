@@ -9,6 +9,7 @@ abstract class Naming {
     if (hashIndex != -1) {
       name = name.substring(0, hashIndex);
     }
+    name = name.replaceAll('/', '_');
     // Remove any remaining invalid characters (keep only alphanumeric, underscore, space, dash)
     name = name.replaceAll(RegExp(r'[^a-zA-Z0-9_\s\-]'), '');
     return name.trim();

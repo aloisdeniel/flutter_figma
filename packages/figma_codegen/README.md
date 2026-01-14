@@ -45,16 +45,16 @@ dependencies:
 
 ```bash
 # Generate Dart code from Figma variable collections
-figma_cli -i vars.json -o lib/theme/variables.dart -f dart
+figma_codegen -i vars.json -o lib/theme/variables.dart -f dart
 
 # Export to CSS custom properties
-figma_cli -i vars.json -o styles.css -f css
+figma_codegen -i vars.json -o styles.css -f css
 
 # Export to JSON with pretty printing
-figma_cli -i vars.json -o output.json -f json --pretty
+figma_codegen -i vars.json -o output.json -f json --pretty
 
 # Export to JSON without pretty printing
-figma_cli -i vars.json -o output.json -f json --no-pretty
+figma_codegen -i vars.json -o output.json -f json --no-pretty
 ```
 
 ### Options

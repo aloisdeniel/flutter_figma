@@ -1,6 +1,6 @@
 name: figma_codegen
 description: Code generation tools for Figma designs. Generate Flutter widgets and styles from Figma files.
-version: 0.1.0
+version: 0.1.2
 repository: https://github.com/aloisdeniel/flutter_figma
 
 environment:
@@ -17,4 +17,4 @@ dev_dependencies:
   orbe_proto: ^0.1.5
 
 executables:
-  figma_cli:
+  figma_codegen:
