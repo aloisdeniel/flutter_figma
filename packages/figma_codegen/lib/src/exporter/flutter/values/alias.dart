@@ -35,8 +35,6 @@ class AliasDartExporter {
       // Fallback to default value if collection not found
       throw Exception('Variable collection not found');
     }
-    final collectionFieldName = Naming.fieldName(collection.name);
-
     final variable = collection.findEntry(value.variableId);
 
     if (variable == null) {
@@ -45,8 +43,13 @@ class AliasDartExporter {
     }
     final variableFieldName = Naming.fieldName(variable.name);
 
+    if (value.collectionId == context.currentCollectionId) {
+      return variableFieldName;
+    }
+
     // Use the local `variables` variable declared at the beginning of build()
     // variables.<collectionFieldName>.<variableFieldName>
+    final collectionFieldName = Naming.fieldName(collection.name);
     return '$variablesInstanceName.$collectionFieldName.$variableFieldName';
   }
 }

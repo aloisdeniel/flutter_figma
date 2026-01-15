@@ -3,8 +3,22 @@ import 'package:figma_codegen/src/exporter/flutter/variables/variables.dart';
 import 'package:figma_codegen/src/utils/dart/buffer.dart';
 
 class FlutterExportContext {
-  const FlutterExportContext({required this.collections});
+  const FlutterExportContext({
+    required this.collections,
+    this.currentCollectionId,
+  });
   final List<VariableCollection> collections;
+  final int? currentCollectionId;
+
+  /// Returns a new context with the specified current collection ID.
+  ///
+  /// This affects how aliased variables are referenced.
+  FlutterExportContext withCurrentCollectionId(int collectionId) {
+    return FlutterExportContext(
+      collections: collections,
+      currentCollectionId: collectionId,
+    );
+  }
 
   /// Collects aliased collections as a map of collectionId -> collectionName.
   Map<int, String> collectAliasedCollectionsMap(VariableCollection definition) {

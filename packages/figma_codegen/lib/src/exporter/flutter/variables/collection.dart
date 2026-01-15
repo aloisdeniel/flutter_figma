@@ -15,11 +15,12 @@ class VariableCollectionDartExporter {
     DartBuffer buffer,
     VariableCollection value,
   ) {
+    final collectionContext = context.withCurrentCollectionId(value.id);
     // Choose generation strategy based on number of variants
     if (value.variants.length == 1) {
-      _writeSingleModeClass(context, buffer, value);
+      _writeSingleModeClass(collectionContext, buffer, value);
     } else {
-      _writeMultiModeClasses(context, buffer, value);
+      _writeMultiModeClasses(collectionContext, buffer, value);
     }
   }
 }

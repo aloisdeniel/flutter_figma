@@ -1,5 +1,6 @@
 import 'package:figma_codegen/src/definitions/variables.pb.dart';
 import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
+import 'package:figma_codegen/src/exporter/flutter/values/alias.dart';
 import 'package:figma_codegen/src/exporter/flutter/values/value.dart';
 
 class TextStyleDartExporter {
@@ -21,9 +22,10 @@ class TextStyleDartExporter {
       Value_Type.doubleValue,
     );
     buffer.write(', fontSize: $fontSize');
-    if (value.hasFontName() && value.fontName.weight.value != 0) {
+    if (value.hasFontName() && value.fontName.hasWeight()) {
       final fw = const FontWeightDartExporter().serialize(
-        value.fontName.weight.value.toInt(),
+        context,
+        value.fontName.weight,
       );
       buffer.write(', fontWeight: $fw');
     }
@@ -52,7 +54,31 @@ class TextStyleDartExporter {
 class FontWeightDartExporter {
   const FontWeightDartExporter();
 
-  String serialize(int value) {
-    return 'fl.FontWeight.w$value';
+  String serialize(FlutterExportContext context, NumberValue value) {
+    if (value.hasAlias()) {
+      final alias = const AliasDartExporter().serialize(
+        context,
+        value.alias,
+        Value_Type.doubleValue,
+      );
+      return '''fl.FontWeight.values.firstWhere(
+      (e) => $alias <= e.value.toInt(),
+      orElse: () => fl.FontWeight.w400,
+    )''';
+    }
+    // ignore: prefer_interpolation_to_compose_strings
+    return 'fl.' +
+        switch (value.value) {
+          double v when v <= 1.0 => 'FontWeight.w400',
+          double v when v <= 101.0 => 'FontWeight.w100',
+          double v when v <= 201.0 => 'FontWeight.w200',
+          double v when v <= 301.0 => 'FontWeight.w300',
+          double v when v <= 401.0 => 'FontWeight.w400',
+          double v when v <= 501.0 => 'FontWeight.w500',
+          double v when v <= 601.0 => 'FontWeight.w600',
+          double v when v <= 701.0 => 'FontWeight.w700',
+          double v when v <= 801.0 => 'FontWeight.w800',
+          _ => 'FontWeight.w900',
+        };
   }
 }

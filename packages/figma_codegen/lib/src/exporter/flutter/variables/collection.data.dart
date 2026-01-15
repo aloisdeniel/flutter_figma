@@ -40,30 +40,16 @@ void _writeSingleModeClass(
     final value = variant.values[i];
     final name = Naming.fieldName(variable.name);
 
-    var alias = value.getAlias();
-    if (alias != null && alias.whichType() == Alias_Type.variable) {
-      // This is an alias to another collection's variable
-      final varAlias = alias.variable;
-      final targetCollection = context.collections.findVariableCollection(
-        varAlias.collectionId,
-      );
-      if (targetCollection != null) {
-        final targetVariable = targetCollection.findEntry(varAlias.variableId);
-        if (targetVariable != null) {
-          final collectionFieldName = Naming.fieldName(targetCollection.name);
-          final variableFieldName = Naming.fieldName(targetVariable.name);
-          buffer.writeln(
-            'get $name => alias.$collectionFieldName.$variableFieldName;',
-          );
-        }
-      }
+    // This is a constant value
+    final serializedValue = const FlutterValueExporter().serialize(
+      context,
+      value,
+      value.whichType(),
+    );
+    var aliases = value.getDescendantAliases();
+    if (aliases.isNotEmpty) {
+      buffer.writeln('late final $name = $serializedValue;');
     } else {
-      // This is a constant value
-      final serializedValue = const FlutterValueExporter().serialize(
-        context,
-        value,
-        value.whichType(),
-      );
       buffer.writeln('final $name = $serializedValue;');
     }
   }

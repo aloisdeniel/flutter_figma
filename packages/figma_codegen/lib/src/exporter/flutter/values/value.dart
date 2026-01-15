@@ -15,25 +15,23 @@ class FlutterValueExporter {
     Value value,
     Value_Type expectedType,
   ) {
-    String alias(Alias alias) =>
-        const AliasDartExporter().serialize(context, alias, expectedType);
     return switch (value.whichType()) {
-      Value_Type.stringValue => switch (value.stringValue.hasAlias()) {
-        true => alias(value.stringValue.alias),
-        false => "'${value.stringValue.value.replaceAll("'", "\\'")}'",
-      },
-      Value_Type.doubleValue => switch (value.doubleValue.hasAlias()) {
-        true => alias(value.doubleValue.alias),
-        false => value.doubleValue.value.toString(),
-      },
-      Value_Type.boolean => switch (value.boolean.hasAlias()) {
-        true => alias(value.boolean.alias),
-        false => value.boolean.value.toString(),
-      },
-      Value_Type.color => switch (value.color.hasAlias()) {
-        true => alias(value.color.alias),
-        false => const ColorDartExporter().serialize(value.color.value),
-      },
+      Value_Type.stringValue => const StringValueExporter().serialize(
+        context,
+        value.stringValue,
+      ),
+      Value_Type.doubleValue => const NumberValueExporter().serialize(
+        context,
+        value.doubleValue,
+      ),
+      Value_Type.boolean => const BooleanValueExporter().serialize(
+        context,
+        value.boolean,
+      ),
+      Value_Type.color => const ColorValueExporter().serialize(
+        context,
+        value.color,
+      ),
       Value_Type.borderSide => const BorderSideDartExporter().serialize(
         value.borderSide,
       ),
@@ -61,5 +59,69 @@ class FlutterValueExporter {
       Value_Type.textStyle => 'fl.TextStyle',
       Value_Type.notSet => throw Exception(),
     };
+  }
+}
+
+class StringValueExporter {
+  const StringValueExporter();
+
+  String serialize(FlutterExportContext context, StringValue value) {
+    if (value.hasAlias()) {
+      return const AliasDartExporter().serialize(
+        context,
+        value.alias,
+        Value_Type.stringValue,
+      );
+    }
+    return "'${value.value.replaceAll("'", "\\'")}'";
+  }
+}
+
+class NumberValueExporter {
+  const NumberValueExporter();
+
+  String serialize(FlutterExportContext context, NumberValue value) {
+    if (value.hasAlias()) {
+      return const AliasDartExporter().serialize(
+        context,
+        value.alias,
+        Value_Type.doubleValue,
+      );
+    }
+    var result = value.value.toString();
+    if (result.contains('.') == false) {
+      result = '$result.0';
+    }
+    return result;
+  }
+}
+
+class ColorValueExporter {
+  const ColorValueExporter();
+
+  String serialize(FlutterExportContext context, ColorValue value) {
+    if (value.hasAlias()) {
+      return const AliasDartExporter().serialize(
+        context,
+        value.alias,
+        Value_Type.color,
+      );
+    }
+    return const ColorDartExporter().serialize(value.value);
+  }
+}
+
+class BooleanValueExporter {
+  const BooleanValueExporter();
+
+  String serialize(FlutterExportContext context, BooleanValue value) {
+    if (value.hasAlias()) {
+      return const AliasDartExporter().serialize(
+        context,
+        value.alias,
+        Value_Type.boolean,
+      );
+    }
+    return value.value.toString();
   }
 }
