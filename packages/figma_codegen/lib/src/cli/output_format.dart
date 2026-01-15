@@ -1,7 +1,6 @@
 enum OutputFormat {
   json,
-  dart,
-  css;
+  dart;
 
   static OutputFormat fromString(String value) {
     return OutputFormat.values.firstWhere(

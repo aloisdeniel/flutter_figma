@@ -183,7 +183,7 @@ Future<Value> _convertVariableValue(
               green: (value['g'] as num).toDouble(),
               blue: (value['b'] as num).toDouble(),
               alpha: (value['a'] as num).toDouble(),
-              colorSpace: ColorSpace.COLOR_SPACE_DISPLAY_P3,
+              colorSpace: ColorSpace.COLOR_SPACE_EXTENDED_SRGB,
             ),
           ),
         );
@@ -230,17 +230,20 @@ Future<VariableCollection?> _importStyles(
   for (final style in paintStyles) {
     final paints = style.paints.toDart;
     if (paints.isNotEmpty) {
-      final paint = paints[0];
-      final value = _convertPaintToValue(paint);
-      if (value != null) {
-        entries.add(
-          VariableCollectionEntry(
-            id: context.identifiers.get('style/${style.id}'),
-            name: style.name,
-            documentation: style.description,
-          ),
-        );
-        values.add(value);
+      for (var i = 0; i < paints.length; i++) {
+        final paint = paints[i];
+        // TODO resolve aliases
+        final value = _convertPaintToValue(paint);
+        if (value != null) {
+          entries.add(
+            VariableCollectionEntry(
+              id: context.identifiers.get('style/${style.id}/$i'),
+              name: style.name + (i == 0 ? '' : i.toString()),
+              documentation: style.description,
+            ),
+          );
+          values.add(value);
+        }
       }
     }
   }

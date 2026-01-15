@@ -17,18 +17,13 @@ void main(List<String> arguments) async {
       help: 'Input JSON file path',
       mandatory: true,
     )
-    ..addOption(
-      'output',
-      abbr: 'o',
-      help: 'Output file path',
-      mandatory: true,
-    )
+    ..addOption('output', abbr: 'o', help: 'Output file path', mandatory: true)
     ..addOption(
       'format',
       abbr: 'f',
-      help: 'Output format (json, dart, or css)',
+      help: 'Output format (json, or dart)',
       mandatory: true,
-      allowed: ['json', 'dart', 'css'],
+      allowed: ['json', 'dart'],
     )
     ..addFlag(
       'pretty',
@@ -92,7 +87,9 @@ void main(List<String> arguments) async {
 void _printUsage(ArgParser parser) {
   stdout.writeln('Usage: figma_cli [options]');
   stdout.writeln();
-  stdout.writeln('Import Figma variable collections from JSON and export as JSON, Dart, or CSS.');
+  stdout.writeln(
+    'Import Figma variable collections from JSON and export as JSON, Dart, or CSS.',
+  );
   stdout.writeln();
   stdout.writeln('Options:');
   stdout.writeln(parser.usage);
@@ -100,7 +97,9 @@ void _printUsage(ArgParser parser) {
   stdout.writeln('Examples:');
   stdout.writeln('  figma_cli -i vars.json -o lib/theme/vars.dart -f dart');
   stdout.writeln('  figma_cli -i vars.json -o styles.css -f css');
-  stdout.writeln('  figma_cli --input vars.json --output output.json --format json');
+  stdout.writeln(
+    '  figma_cli --input vars.json --output output.json --format json',
+  );
   stdout.writeln('  figma_cli -i vars.json -o output.json -f json --no-pretty');
 }
 

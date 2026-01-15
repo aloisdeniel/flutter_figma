@@ -443,15 +443,22 @@ final $typed_data.Uint8List colorDescriptor = $convert.base64Decode(
 const BorderSide$json = {
   '1': 'BorderSide',
   '2': [
-    {'1': 'width', '3': 1, '5': 1, '8': {}, '10': 'width'},
+    {
+      '1': 'width',
+      '3': 1,
+      '5': 11,
+      '6': '.definitions.NumberValue',
+      '8': {},
+      '10': 'width'
+    },
     {'1': 'strokeAlign', '3': 2, '5': 1, '8': {}, '10': 'strokeAlign'},
   ],
 };
 
 /// Descriptor for `BorderSide`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List borderSideDescriptor = $convert.base64Decode(
-    'CgpCb3JkZXJTaWRlEhQKBXdpZHRoGAEoAUIAUgV3aWR0aBIgCgtzdHJva2VBbGlnbhgCKAFCAF'
-    'ILc3Ryb2tlQWxpZ24=');
+    'CgpCb3JkZXJTaWRlEi4KBXdpZHRoGAEoCzIYLmRlZmluaXRpb25zLk51bWJlclZhbHVlQgBSBX'
+    'dpZHRoEiAKC3N0cm9rZUFsaWduGAIoAUIAUgtzdHJva2VBbGlnbg==');
 
 @$core.Deprecated('Use fontNameDescriptor instead')
 const FontName$json = {
@@ -627,7 +634,7 @@ const GradientStop$json = {
       '1': 'color',
       '3': 2,
       '5': 11,
-      '6': '.definitions.Color',
+      '6': '.definitions.ColorValue',
       '8': {},
       '10': 'color'
     },
@@ -636,8 +643,8 @@ const GradientStop$json = {
 
 /// Descriptor for `GradientStop`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List gradientStopDescriptor = $convert.base64Decode(
-    'CgxHcmFkaWVudFN0b3ASFgoGb2Zmc2V0GAEoAUIAUgZvZmZzZXQSKAoFY29sb3IYAigLMhIuZG'
-    'VmaW5pdGlvbnMuQ29sb3JCAFIFY29sb3I=');
+    'CgxHcmFkaWVudFN0b3ASFgoGb2Zmc2V0GAEoAUIAUgZvZmZzZXQSLQoFY29sb3IYAigLMhcuZG'
+    'VmaW5pdGlvbnMuQ29sb3JWYWx1ZUIAUgVjb2xvcg==');
 
 @$core.Deprecated('Use linearGradientDescriptor instead')
 const LinearGradient$json = {

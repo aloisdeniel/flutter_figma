@@ -1158,7 +1158,7 @@ class Color extends $pb.GeneratedMessage {
 
 class BorderSide extends $pb.GeneratedMessage {
   factory BorderSide({
-    $core.double? width,
+    NumberValue? width,
     $core.double? strokeAlign,
   }) {
     final result = create();
@@ -1180,7 +1180,8 @@ class BorderSide extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'BorderSide',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..aD(1, _omitFieldNames ? '' : 'width')
+    ..aOM<NumberValue>(1, _omitFieldNames ? '' : 'width',
+        subBuilder: NumberValue.create)
     ..aD(2, _omitFieldNames ? '' : 'strokeAlign', protoName: 'strokeAlign')
     ..hasRequiredFields = false;
 
@@ -1203,13 +1204,15 @@ class BorderSide extends $pb.GeneratedMessage {
   static BorderSide? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.double get width => $_getN(0);
+  NumberValue get width => $_getN(0);
   @$pb.TagNumber(1)
-  set width($core.double value) => $_setDouble(0, value);
+  set width(NumberValue value) => $_setField(1, value);
   @$pb.TagNumber(1)
   $core.bool hasWidth() => $_has(0);
   @$pb.TagNumber(1)
   void clearWidth() => $_clearField(1);
+  @$pb.TagNumber(1)
+  NumberValue ensureWidth() => $_ensure(0);
 
   @$pb.TagNumber(2)
   $core.double get strokeAlign => $_getN(1);
@@ -1660,7 +1663,7 @@ class Gradient extends $pb.GeneratedMessage {
 class GradientStop extends $pb.GeneratedMessage {
   factory GradientStop({
     $core.double? offset,
-    Color? color,
+    ColorValue? color,
   }) {
     final result = create();
     if (offset != null) result.offset = offset;
@@ -1682,7 +1685,8 @@ class GradientStop extends $pb.GeneratedMessage {
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
     ..aD(1, _omitFieldNames ? '' : 'offset')
-    ..aOM<Color>(2, _omitFieldNames ? '' : 'color', subBuilder: Color.create)
+    ..aOM<ColorValue>(2, _omitFieldNames ? '' : 'color',
+        subBuilder: ColorValue.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1714,15 +1718,15 @@ class GradientStop extends $pb.GeneratedMessage {
   void clearOffset() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  Color get color => $_getN(1);
+  ColorValue get color => $_getN(1);
   @$pb.TagNumber(2)
-  set color(Color value) => $_setField(2, value);
+  set color(ColorValue value) => $_setField(2, value);
   @$pb.TagNumber(2)
   $core.bool hasColor() => $_has(1);
   @$pb.TagNumber(2)
   void clearColor() => $_clearField(2);
   @$pb.TagNumber(2)
-  Color ensureColor() => $_ensure(1);
+  ColorValue ensureColor() => $_ensure(1);
 }
 
 class LinearGradient extends $pb.GeneratedMessage {

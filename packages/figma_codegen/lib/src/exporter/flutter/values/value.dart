@@ -35,7 +35,10 @@ class FlutterValueExporter {
       Value_Type.borderSide => const BorderSideDartExporter().serialize(
         value.borderSide,
       ),
-      Value_Type.gradient => GradientDartExporter().serialize(value.gradient),
+      Value_Type.gradient => GradientFlutterExporter().serialize(
+        context,
+        value.gradient,
+      ),
       Value_Type.textStyle => const TextStyleDartExporter().serialize(
         context,
         value.textStyle,

@@ -194,6 +194,20 @@ extension ValueExtension on Value {
                 aliases.add(value.textStyle.fontName.weight.alias);
               }
             }
+          case Value_Type.gradient:
+            switch (value.gradient.whichType()) {
+              case Gradient_Type.linear:
+                for (final stop in value.gradient.linear.stops) {
+                  collectAliases(Value(color: stop.color));
+                }
+              case Gradient_Type.radial:
+                for (final stop in value.gradient.radial.stops) {
+                  collectAliases(Value(color: stop.color));
+                }
+
+              default:
+            }
+            break;
           default:
           // Already handled
         }

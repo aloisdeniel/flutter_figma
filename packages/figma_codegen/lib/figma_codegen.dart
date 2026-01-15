@@ -2,8 +2,6 @@ library;
 
 export 'src/definitions/variables.dart';
 
-export 'src/exporter/css/exporter.dart';
-export 'src/exporter/css/values/color.dart' show ColorFormat;
 export 'src/exporter/flutter/exporter.dart';
 export 'src/exporter/json/exporter.dart';
 

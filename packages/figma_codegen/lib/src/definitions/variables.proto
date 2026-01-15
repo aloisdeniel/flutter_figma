@@ -108,7 +108,7 @@ message Color {
 // Border
 
 message BorderSide {
-  double width = 1;
+  NumberValue width = 1;
   double strokeAlign = 2;
 }
 
@@ -162,7 +162,7 @@ message Gradient {
 
 message GradientStop {
   double offset = 1;
-  Color color = 2;
+  ColorValue color = 2;
 }
 
 message LinearGradient {

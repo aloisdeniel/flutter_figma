@@ -1,22 +1,26 @@
 import 'package:figma_codegen/src/definitions/variables.pb.dart';
-import 'package:figma_codegen/src/exporter/flutter/values/color.dart';
+import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
+import 'package:figma_codegen/src/exporter/flutter/values/value.dart';
 
-class GradientDartExporter {
-  const GradientDartExporter();
+class GradientFlutterExporter {
+  const GradientFlutterExporter();
 
-  String serialize(Gradient value) {
+  String serialize(FlutterExportContext context, Gradient value) {
     return switch (value.whichType()) {
-      Gradient_Type.linear => _serializeLinearGradient(value.linear),
-      Gradient_Type.radial => _serializeRadialGradient(value.radial),
+      Gradient_Type.linear => _serializeLinearGradient(context, value.linear),
+      Gradient_Type.radial => _serializeRadialGradient(context, value.radial),
       Gradient_Type.notSet => throw Exception('Gradient type not set'),
     };
   }
 
-  String _serializeLinearGradient(LinearGradient gradient) {
+  String _serializeLinearGradient(
+    FlutterExportContext context,
+    LinearGradient gradient,
+  ) {
     final stops = gradient.stops.map((stop) => stop.offset).join(', ');
     final colors = gradient.stops
         .map((stop) {
-          return const ColorDartExporter().serialize(stop.color);
+          return const ColorValueExporter().serialize(context, stop.color);
         })
         .join(', ');
 
@@ -26,11 +30,14 @@ class GradientDartExporter {
     return 'fl.LinearGradient(colors: [$colors], stops: [$stops], begin: $begin, end: $end)';
   }
 
-  String _serializeRadialGradient(RadialGradient gradient) {
+  String _serializeRadialGradient(
+    FlutterExportContext context,
+    RadialGradient gradient,
+  ) {
     final stops = gradient.stops.map((stop) => stop.offset).join(', ');
     final colors = gradient.stops
         .map((stop) {
-          return const ColorDartExporter().serialize(stop.color);
+          return const ColorValueExporter().serialize(context, stop.color);
         })
         .join(', ');
 
