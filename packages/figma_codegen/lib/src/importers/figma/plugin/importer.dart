@@ -233,7 +233,7 @@ Future<VariableCollection?> _importStyles(
     if (paints.isNotEmpty) {
       for (var i = 0; i < paints.length; i++) {
         final paint = paints[i];
-        final value = await _convertPaintToValue(paint, context);
+        final value = await _convertPaintToValue(style, paint, context);
         if (value != null) {
           entries.add(
             VariableCollectionEntry(
@@ -558,13 +558,16 @@ Future<List<GradientStop>> _convertGradientStops(
 }
 
 Future<Value?> _convertPaintToValue(
+  figma_api.PaintStyle paintStyle,
   figma_api.Paint paint,
   ImportContext<FigmaImportOptions> context,
 ) async {
   final type = paint.type;
 
   if (type == 'SOLID') {
-    final boundVariablesValue = paint.getProperty('boundVariables'.jsify()!);
+    final boundVariablesValue = paintStyle.getProperty(
+      'boundVariables'.jsify()!,
+    );
     final boundVariables = boundVariablesValue == null
         ? null
         : boundVariablesValue.dartify();
