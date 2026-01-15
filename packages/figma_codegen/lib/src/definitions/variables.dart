@@ -173,4 +173,34 @@ extension ValueExtension on Value {
     }
     return null;
   }
+
+  List<Alias> getDescendantAliases() {
+    final aliases = <Alias>[];
+    void collectAliases(Value value) {
+      final alias = value.getAlias();
+      if (alias != null) {
+        aliases.add(alias);
+      } else {
+        switch (value.whichType()) {
+          case Value_Type.textStyle:
+            if (value.textStyle.fontSize.hasAlias()) {
+              aliases.add(value.textStyle.fontSize.alias);
+            }
+            if (value.textStyle.hasFontName()) {
+              if (value.textStyle.fontName.family.hasAlias()) {
+                aliases.add(value.textStyle.fontName.family.alias);
+              }
+              if (value.textStyle.fontName.weight.hasAlias()) {
+                aliases.add(value.textStyle.fontName.weight.alias);
+              }
+            }
+          default:
+          // Already handled
+        }
+      }
+    }
+
+    collectAliases(this);
+    return aliases;
+  }
 }

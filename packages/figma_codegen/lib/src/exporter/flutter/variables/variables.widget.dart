@@ -125,33 +125,17 @@ List<String> _buildAliasAssignments(
   final assignments = <String>[];
 
   for (final collection in context.collections) {
-    final aliasedCollectionIds = <int>{};
+    // Collect alias information
+    final aliasedCollections = context.collectAliasedCollectionsMap(collection);
 
-    // Find all collections referenced by this collection's variants
-    for (final variant in collection.variants) {
-      for (final value in variant.values) {
-        final alias = value.getAlias();
-        if (alias != null && alias.whichType() == Alias_Type.variable) {
-          final collectionId = alias.variable.collectionId;
-          if (collectionId != collection.id) {
-            aliasedCollectionIds.add(collectionId);
-          }
-        }
-      }
-    }
-
-    if (aliasedCollectionIds.isNotEmpty) {
+    if (aliasedCollections.isNotEmpty) {
       final collectionFieldName = Naming.fieldName(collection.name);
       final aliasFields = <String>[];
 
-      for (final aliasedId in aliasedCollectionIds) {
-        final aliasedCollection = context.collections.findVariableCollection(
-          aliasedId,
-        );
-        if (aliasedCollection != null) {
-          final aliasedFieldName = Naming.fieldName(aliasedCollection.name);
-          aliasFields.add('$aliasedFieldName: $aliasedFieldName');
-        }
+      for (final entry in aliasedCollections.entries) {
+        final collectionName = entry.value;
+        final fieldName = Naming.fieldName(collectionName);
+        aliasFields.add('$fieldName: $fieldName');
       }
 
       if (aliasFields.isNotEmpty) {

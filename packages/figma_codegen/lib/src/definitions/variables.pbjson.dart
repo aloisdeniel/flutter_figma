@@ -549,7 +549,14 @@ const TextStyle$json = {
       '8': {},
       '10': 'fontName'
     },
-    {'1': 'fontSize', '3': 2, '5': 1, '8': {}, '10': 'fontSize'},
+    {
+      '1': 'fontSize',
+      '3': 2,
+      '5': 11,
+      '6': '.definitions.NumberValue',
+      '8': {},
+      '10': 'fontSize'
+    },
     {
       '1': 'letterSpacing',
       '3': 3,
@@ -572,9 +579,10 @@ const TextStyle$json = {
 /// Descriptor for `TextStyle`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List textStyleDescriptor = $convert.base64Decode(
     'CglUZXh0U3R5bGUSMQoIZm9udE5hbWUYASgLMhUuZGVmaW5pdGlvbnMuRm9udE5hbWVCAFIIZm'
-    '9udE5hbWUSGgoIZm9udFNpemUYAigBQgBSCGZvbnRTaXplEkAKDWxldHRlclNwYWNpbmcYAygL'
-    'MhouZGVmaW5pdGlvbnMuTGV0dGVyU3BhY2luZ0IAUg1sZXR0ZXJTcGFjaW5nEjcKCmxpbmVIZW'
-    'lnaHQYBCgLMhcuZGVmaW5pdGlvbnMuTGluZUhlaWdodEIAUgpsaW5lSGVpZ2h0');
+    '9udE5hbWUSNAoIZm9udFNpemUYAigLMhguZGVmaW5pdGlvbnMuTnVtYmVyVmFsdWVCAFIIZm9u'
+    'dFNpemUSQAoNbGV0dGVyU3BhY2luZxgDKAsyGi5kZWZpbml0aW9ucy5MZXR0ZXJTcGFjaW5nQg'
+    'BSDWxldHRlclNwYWNpbmcSNwoKbGluZUhlaWdodBgEKAsyFy5kZWZpbml0aW9ucy5MaW5lSGVp'
+    'Z2h0QgBSCmxpbmVIZWlnaHQ=');
 
 @$core.Deprecated('Use gradientDescriptor instead')
 const Gradient$json = {

@@ -3,7 +3,9 @@ import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
 import 'package:figma_codegen/src/utils/dart/naming.dart';
 
 class AliasDartExporter {
-  const AliasDartExporter();
+  const AliasDartExporter({this.variablesInstanceName = 'alias'});
+
+  final String variablesInstanceName;
 
   String serialize(
     FlutterExportContext context,
@@ -16,15 +18,7 @@ class AliasDartExporter {
         value.variable,
         expectedType,
       ),
-      _ => switch (expectedType) {
-        Value_Type.color => 'fl.Color(0xFF000000)',
-        Value_Type.boolean => 'false',
-        Value_Type.doubleValue => '0.0',
-        Value_Type.stringValue => "''",
-        Value_Type.cornerRadius => 'fl.borderRadius.zero',
-        // TODO others
-        _ => 'null',
-      },
+      _ => throw Exception('Alias type not supported'),
     };
   }
 
@@ -53,6 +47,6 @@ class AliasDartExporter {
 
     // Use the local `variables` variable declared at the beginning of build()
     // variables.<collectionFieldName>.<variableFieldName>
-    return 'variables.$collectionFieldName.$variableFieldName';
+    return '$variablesInstanceName.$collectionFieldName.$variableFieldName';
   }
 }

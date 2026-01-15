@@ -24,11 +24,11 @@ class FlutterValueExporter {
       },
       Value_Type.doubleValue => switch (value.doubleValue.hasAlias()) {
         true => alias(value.doubleValue.alias),
-        false => value.doubleValue.toString(),
+        false => value.doubleValue.value.toString(),
       },
       Value_Type.boolean => switch (value.boolean.hasAlias()) {
         true => alias(value.boolean.alias),
-        false => value.boolean.toString(),
+        false => value.boolean.value.toString(),
       },
       Value_Type.color => switch (value.color.hasAlias()) {
         true => alias(value.color.alias),
@@ -39,6 +39,7 @@ class FlutterValueExporter {
       ),
       Value_Type.gradient => GradientDartExporter().serialize(value.gradient),
       Value_Type.textStyle => const TextStyleDartExporter().serialize(
+        context,
         value.textStyle,
       ),
       Value_Type.cornerRadius => const CornerRadiusDartExporter().serialize(

@@ -1473,7 +1473,7 @@ class LineHeight extends $pb.GeneratedMessage {
 class TextStyle extends $pb.GeneratedMessage {
   factory TextStyle({
     FontName? fontName,
-    $core.double? fontSize,
+    NumberValue? fontSize,
     LetterSpacing? letterSpacing,
     LineHeight? lineHeight,
   }) {
@@ -1500,7 +1500,8 @@ class TextStyle extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOM<FontName>(1, _omitFieldNames ? '' : 'fontName',
         protoName: 'fontName', subBuilder: FontName.create)
-    ..aD(2, _omitFieldNames ? '' : 'fontSize', protoName: 'fontSize')
+    ..aOM<NumberValue>(2, _omitFieldNames ? '' : 'fontSize',
+        protoName: 'fontSize', subBuilder: NumberValue.create)
     ..aOM<LetterSpacing>(3, _omitFieldNames ? '' : 'letterSpacing',
         protoName: 'letterSpacing', subBuilder: LetterSpacing.create)
     ..aOM<LineHeight>(4, _omitFieldNames ? '' : 'lineHeight',
@@ -1537,13 +1538,15 @@ class TextStyle extends $pb.GeneratedMessage {
   FontName ensureFontName() => $_ensure(0);
 
   @$pb.TagNumber(2)
-  $core.double get fontSize => $_getN(1);
+  NumberValue get fontSize => $_getN(1);
   @$pb.TagNumber(2)
-  set fontSize($core.double value) => $_setDouble(1, value);
+  set fontSize(NumberValue value) => $_setField(2, value);
   @$pb.TagNumber(2)
   $core.bool hasFontSize() => $_has(1);
   @$pb.TagNumber(2)
   void clearFontSize() => $_clearField(2);
+  @$pb.TagNumber(2)
+  NumberValue ensureFontSize() => $_ensure(1);
 
   @$pb.TagNumber(3)
   LetterSpacing get letterSpacing => $_getN(2);

@@ -146,7 +146,7 @@ message LineHeight {
 
 message TextStyle {
   FontName fontName = 1;
-  double fontSize = 2;
+  NumberValue fontSize = 2;
   LetterSpacing letterSpacing = 3;
   LineHeight lineHeight = 4;
 }

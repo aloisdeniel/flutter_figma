@@ -1,4 +1,5 @@
 import 'dart:js_interop';
+import 'dart:js_interop_unsafe';
 
 import 'package:figma_codegen/src/definitions/variables.pb.dart';
 import 'package:figma_codegen/src/importers/context.dart';
@@ -255,45 +256,67 @@ Future<VariableCollection?> _importStyles(
         documentation: style.description,
       ),
     );
-    final styleMap = style.dartify() as Map;
-    final boundVariables = styleMap['boundVariables'].dartify() as Map;
+    final boundVariables =
+        style.getProperty('boundVariables'.jsify()!).dartify() as Map;
 
-    StringValue family = await () async {
-      if (boundVariables.containsKey('fontName')) {
-        final variableInfo = boundVariables['fontName'];
-        if (variableInfo != null && variableInfo is Map) {
-          final figmaVariableId = variableInfo['id'] as String;
+    Future<Alias?> getBoundAlias(String name) async {
+      final variableInfo = boundVariables[name];
+      if (variableInfo is Map) {
+        final figmaVariableId = variableInfo['id'] as String;
 
-          final variable = await figma_api.figma.variables
-              .getVariableByIdAsync(figmaVariableId)
-              .toDart;
-          if (variable == null) {
-            throw Exception(
-              'Variable for text style fontName not found: $figmaVariableId',
-            );
-          }
-          return StringValue(
-            alias: Alias(
-              variable: VariableAlias(
-                collectionId: context.identifiers.get(
-                  'variable_collection/${variable.variableCollectionId}',
-                ),
-                variableId: context.identifiers.get(
-                  'variable/$figmaVariableId',
-                ),
-              ),
-            ),
+        final variable = await figma_api.figma.variables
+            .getVariableByIdAsync(figmaVariableId)
+            .toDart;
+        if (variable == null) {
+          throw Exception(
+            'Variable for text style fontFamily not found: $figmaVariableId',
           );
         }
+        return Alias(
+          variable: VariableAlias(
+            collectionId: context.identifiers.get(
+              'variable_collection/${variable.variableCollectionId}',
+            ),
+            variableId: context.identifiers.get('variable/$figmaVariableId'),
+          ),
+        );
       }
-      return StringValue(value: style.fontName.family);
-    }();
+      return null;
+    }
+
+    final fontFamily = switch (await getBoundAlias('fontFamily')) {
+      Alias alias => StringValue(alias: alias),
+      null => StringValue(value: style.fontName.family),
+    };
+
+    final fontSize = switch (await getBoundAlias('fontSize')) {
+      Alias alias => NumberValue(alias: alias),
+      null => NumberValue(value: style.fontSize.toDouble()),
+    };
+
+    final fontWeight = switch (await getBoundAlias('fontWeight')) {
+      Alias alias => NumberValue(alias: alias),
+      null => NumberValue(
+        value: switch (style.fontName.style) {
+          "Normal" => 400.0,
+          "Bold" => 700.0,
+          "Black" => 900.0,
+          "Light" => 300.0,
+          "Thin" => 100.0,
+          "Extra Bold" => 800.0,
+          "Semi Bold" => 600.0,
+          "Medium" => 500.0,
+          "Extra Light" => 200.0,
+          _ => 400.0,
+        },
+      ),
+    };
 
     values.add(
       Value(
         textStyle: TextStyle(
-          fontName: FontName(family: family),
-          fontSize: style.fontSize.toDouble(),
+          fontName: FontName(family: fontFamily, weight: fontWeight),
+          fontSize: fontSize,
         ),
       ),
     );

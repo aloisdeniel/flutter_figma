@@ -1,32 +1,5 @@
 part of 'collection.dart';
 
-/// Collects aliased collections as a map of collectionId -> collectionName.
-Map<int, String> _collectAliasedCollectionsMap(
-  FlutterExportContext context,
-  VariableCollection definition,
-) {
-  final aliasedCollections = <int, String>{};
-  for (final variant in definition.variants) {
-    for (var i = 0; i < variant.values.length; i++) {
-      final value = variant.values[i];
-      final alias = value.getAlias();
-      if (alias != null && alias.whichType() == Alias_Type.variable) {
-        final collectionId = alias.variable.collectionId;
-        if (collectionId != definition.id &&
-            !aliasedCollections.containsKey(collectionId)) {
-          final collection = context.collections.findVariableCollection(
-            collectionId,
-          );
-          if (collection != null) {
-            aliasedCollections[collectionId] = collection.name;
-          }
-        }
-      }
-    }
-  }
-  return aliasedCollections;
-}
-
 /// Generates a simple class for collections with only one mode/variant.
 void _writeSingleModeClass(
   FlutterExportContext context,
@@ -38,7 +11,7 @@ void _writeSingleModeClass(
   final variant = definition.variants.first;
 
   // Collect alias information
-  final aliasedCollections = _collectAliasedCollectionsMap(context, definition);
+  final aliasedCollections = context.collectAliasedCollectionsMap(definition);
 
   // Simple class (not sealed)
   buffer.writeln('class $dataClassName {');
@@ -120,7 +93,7 @@ void _writeMultiModeClasses(
   buffer.writeln();
 
   // Collect alias information
-  final aliasedCollections = _collectAliasedCollectionsMap(context, definition);
+  final aliasedCollections = context.collectAliasedCollectionsMap(definition);
 
   // Sealed base class
   buffer.writeln('sealed class $dataClassName {');

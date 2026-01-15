@@ -1,10 +1,40 @@
-import 'package:figma_codegen/src/definitions/variables.pb.dart';
+import 'package:figma_codegen/src/definitions/variables.dart';
 import 'package:figma_codegen/src/exporter/flutter/variables/variables.dart';
 import 'package:figma_codegen/src/utils/dart/buffer.dart';
 
 class FlutterExportContext {
   const FlutterExportContext({required this.collections});
   final List<VariableCollection> collections;
+
+  /// Collects aliased collections as a map of collectionId -> collectionName.
+  Map<int, String> collectAliasedCollectionsMap(VariableCollection definition) {
+    final aliasedCollections = <int, String>{};
+    void addAliasedCollection(Alias alias) {
+      if (alias.whichType() == Alias_Type.variable) {
+        final collectionId = alias.variable.collectionId;
+        if (collectionId != definition.id &&
+            !aliasedCollections.containsKey(collectionId)) {
+          final collection = collections.findVariableCollection(collectionId);
+          if (collection != null) {
+            aliasedCollections[collectionId] = collection.name;
+          }
+        }
+      }
+    }
+
+    for (final variant in definition.variants) {
+      for (var i = 0; i < variant.values.length; i++) {
+        final value = variant.values[i];
+        final aliases = value.getDescendantAliases();
+        if (aliases.isNotEmpty) {
+          for (final alias in aliases) {
+            addAliasedCollection(alias);
+          }
+        }
+      }
+    }
+    return aliasedCollections;
+  }
 }
 
 class FlutterExporter {
