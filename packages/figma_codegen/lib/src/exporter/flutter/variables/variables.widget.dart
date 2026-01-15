@@ -130,9 +130,9 @@ List<String> _buildAliasAssignments(
     // Find all collections referenced by this collection's variants
     for (final variant in collection.variants) {
       for (final value in variant.values) {
-        if (value.whichType() == Value_Type.alias &&
-            value.alias.whichType() == Alias_Type.variable) {
-          final collectionId = value.alias.variable.collectionId;
+        final alias = value.getAlias();
+        if (alias != null && alias.whichType() == Alias_Type.variable) {
+          final collectionId = alias.variable.collectionId;
           if (collectionId != collection.id) {
             aliasedCollectionIds.add(collectionId);
           }

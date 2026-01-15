@@ -13,13 +13,13 @@ class CssTextStyleExporter {
       final fontName = style.fontName;
 
       // Font family with quotes for safety
-      if (fontName.family.isNotEmpty) {
-        properties['font-family'] = "'${fontName.family}'";
+      if (fontName.family.value.isNotEmpty) {
+        properties['font-family'] = "'${fontName.family.value}'";
       }
 
       // Font weight (100-900)
-      if (fontName.weight != 0) {
-        properties['font-weight'] = '${fontName.weight}';
+      if (fontName.weight.value != 0) {
+        properties['font-weight'] = '${fontName.weight.value}';
       }
 
       // Font style (italic/normal)
@@ -34,13 +34,13 @@ class CssTextStyleExporter {
     }
 
     // Letter spacing
-    if (style.hasLetterSpacing() && style.letterSpacing.value != 0) {
+    if (style.hasLetterSpacing() && style.letterSpacing.value.value != 0) {
       final letterSpacing = style.letterSpacing;
       final unit =
           letterSpacing.unit == LetterSpacingUnit.LETTER_SPACING_PERCENT
-              ? '%'
-              : 'px';
-      properties['letter-spacing'] = '${letterSpacing.value}$unit';
+          ? '%'
+          : 'px';
+      properties['letter-spacing'] = '${letterSpacing.value.value}$unit';
     }
 
     // Line height

@@ -7,21 +7,14 @@ package definitions;
 
 message Alias {
   oneof type {
-    ConstantAlias constant = 1;
-    VariableAlias variable = 2;
+    VariableAlias variable = 1;
   }
-}
-
-message ConstantAlias {
-  Value value = 1;
 }
 
 message VariableAlias {
   int32 collectionId = 1;
   int32 variableId = 2;
-  Value defaultValue = 3;
 }
-
 
 // Variable collections
 
@@ -50,16 +43,35 @@ message VariableCollectionVariant {
 
 message Value {
   oneof type{
-    Alias alias = 1;
-    string stringValue = 2;
-    double doubleValue = 3;
-    bool boolean = 4;
-    Color color = 5;
-    BorderSide borderSide = 6;
-    Gradient gradient = 7;
-    CornerRadius cornerRadius = 8;
-    TextStyle textStyle = 9;
+    StringValue stringValue = 1;
+    NumberValue doubleValue = 2;
+    BooleanValue boolean = 3;
+    ColorValue color = 4;
+    BorderSide borderSide = 5;
+    Gradient gradient = 6;
+    CornerRadius cornerRadius = 7;
+    TextStyle textStyle = 8;
   }
+}
+
+message BooleanValue {
+  bool value = 1;
+  optional Alias alias = 2;
+}
+
+message ColorValue {
+  Color value = 1;
+  optional Alias alias = 2;
+}
+
+message StringValue {
+  string value = 1;
+  optional Alias alias = 2;
+}
+
+message NumberValue {
+  double value = 1;
+  optional Alias alias = 2;
 }
 
 message Offset {
@@ -112,14 +124,15 @@ enum LetterSpacingUnit {
   LETTER_SPACING_PERCENT = 1;
 }
 
+
 message FontName {
-  string family = 1;
-  FontStyle style = 2;
-  int32 weight = 3; // 100-900
+  StringValue family = 1;
+  NumberValue weight = 2; // 100-900
+  FontStyle style = 3;
 }
 
 message LetterSpacing {
-  double value = 1;
+  NumberValue value = 1;
   LetterSpacingUnit unit = 2;
 }
 

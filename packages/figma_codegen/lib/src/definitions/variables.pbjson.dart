@@ -63,17 +63,8 @@ const Alias$json = {
   '1': 'Alias',
   '2': [
     {
-      '1': 'constant',
-      '3': 1,
-      '5': 11,
-      '6': '.definitions.ConstantAlias',
-      '8': {},
-      '9': 0,
-      '10': 'constant'
-    },
-    {
       '1': 'variable',
-      '3': 2,
+      '3': 1,
       '5': 11,
       '6': '.definitions.VariableAlias',
       '8': {},
@@ -88,29 +79,8 @@ const Alias$json = {
 
 /// Descriptor for `Alias`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List aliasDescriptor = $convert.base64Decode(
-    'CgVBbGlhcxI4Cghjb25zdGFudBgBKAsyGi5kZWZpbml0aW9ucy5Db25zdGFudEFsaWFzQgBIAF'
-    'IIY29uc3RhbnQSOAoIdmFyaWFibGUYAigLMhouZGVmaW5pdGlvbnMuVmFyaWFibGVBbGlhc0IA'
-    'SABSCHZhcmlhYmxlQgYKBHR5cGU=');
-
-@$core.Deprecated('Use constantAliasDescriptor instead')
-const ConstantAlias$json = {
-  '1': 'ConstantAlias',
-  '2': [
-    {
-      '1': 'value',
-      '3': 1,
-      '5': 11,
-      '6': '.definitions.Value',
-      '8': {},
-      '10': 'value'
-    },
-  ],
-};
-
-/// Descriptor for `ConstantAlias`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List constantAliasDescriptor = $convert.base64Decode(
-    'Cg1Db25zdGFudEFsaWFzEigKBXZhbHVlGAEoCzISLmRlZmluaXRpb25zLlZhbHVlQgBSBXZhbH'
-    'Vl');
+    'CgVBbGlhcxI4Cgh2YXJpYWJsZRgBKAsyGi5kZWZpbml0aW9ucy5WYXJpYWJsZUFsaWFzQgBIAF'
+    'IIdmFyaWFibGVCBgoEdHlwZQ==');
 
 @$core.Deprecated('Use variableAliasDescriptor instead')
 const VariableAlias$json = {
@@ -118,22 +88,13 @@ const VariableAlias$json = {
   '2': [
     {'1': 'collectionId', '3': 1, '5': 5, '8': {}, '10': 'collectionId'},
     {'1': 'variableId', '3': 2, '5': 5, '8': {}, '10': 'variableId'},
-    {
-      '1': 'defaultValue',
-      '3': 3,
-      '5': 11,
-      '6': '.definitions.Value',
-      '8': {},
-      '10': 'defaultValue'
-    },
   ],
 };
 
 /// Descriptor for `VariableAlias`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List variableAliasDescriptor = $convert.base64Decode(
     'Cg1WYXJpYWJsZUFsaWFzEiIKDGNvbGxlY3Rpb25JZBgBKAVCAFIMY29sbGVjdGlvbklkEh4KCn'
-    'ZhcmlhYmxlSWQYAigFQgBSCnZhcmlhYmxlSWQSNgoMZGVmYXVsdFZhbHVlGAMoCzISLmRlZmlu'
-    'aXRpb25zLlZhbHVlQgBSDGRlZmF1bHRWYWx1ZQ==');
+    'ZhcmlhYmxlSWQYAigFQgBSCnZhcmlhYmxlSWQ=');
 
 @$core.Deprecated('Use variableCollectionDescriptor instead')
 const VariableCollection$json = {
@@ -238,29 +199,44 @@ const Value$json = {
   '1': 'Value',
   '2': [
     {
-      '1': 'alias',
+      '1': 'stringValue',
       '3': 1,
       '5': 11,
-      '6': '.definitions.Alias',
+      '6': '.definitions.StringValue',
       '8': {},
       '9': 0,
-      '10': 'alias'
+      '10': 'stringValue'
     },
-    {'1': 'stringValue', '3': 2, '5': 9, '8': {}, '9': 0, '10': 'stringValue'},
-    {'1': 'doubleValue', '3': 3, '5': 1, '8': {}, '9': 0, '10': 'doubleValue'},
-    {'1': 'boolean', '3': 4, '5': 8, '8': {}, '9': 0, '10': 'boolean'},
+    {
+      '1': 'doubleValue',
+      '3': 2,
+      '5': 11,
+      '6': '.definitions.NumberValue',
+      '8': {},
+      '9': 0,
+      '10': 'doubleValue'
+    },
+    {
+      '1': 'boolean',
+      '3': 3,
+      '5': 11,
+      '6': '.definitions.BooleanValue',
+      '8': {},
+      '9': 0,
+      '10': 'boolean'
+    },
     {
       '1': 'color',
-      '3': 5,
+      '3': 4,
       '5': 11,
-      '6': '.definitions.Color',
+      '6': '.definitions.ColorValue',
       '8': {},
       '9': 0,
       '10': 'color'
     },
     {
       '1': 'borderSide',
-      '3': 6,
+      '3': 5,
       '5': 11,
       '6': '.definitions.BorderSide',
       '8': {},
@@ -269,7 +245,7 @@ const Value$json = {
     },
     {
       '1': 'gradient',
-      '3': 7,
+      '3': 6,
       '5': 11,
       '6': '.definitions.Gradient',
       '8': {},
@@ -278,7 +254,7 @@ const Value$json = {
     },
     {
       '1': 'cornerRadius',
-      '3': 8,
+      '3': 7,
       '5': 11,
       '6': '.definitions.CornerRadius',
       '8': {},
@@ -287,7 +263,7 @@ const Value$json = {
     },
     {
       '1': 'textStyle',
-      '3': 9,
+      '3': 8,
       '5': 11,
       '6': '.definitions.TextStyle',
       '8': {},
@@ -302,14 +278,110 @@ const Value$json = {
 
 /// Descriptor for `Value`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List valueDescriptor = $convert.base64Decode(
-    'CgVWYWx1ZRIqCgVhbGlhcxgBKAsyEi5kZWZpbml0aW9ucy5BbGlhc0IASABSBWFsaWFzEiIKC3'
-    'N0cmluZ1ZhbHVlGAIoCUIASABSC3N0cmluZ1ZhbHVlEiIKC2RvdWJsZVZhbHVlGAMoAUIASABS'
-    'C2RvdWJsZVZhbHVlEhoKB2Jvb2xlYW4YBCgIQgBIAFIHYm9vbGVhbhIqCgVjb2xvchgFKAsyEi'
-    '5kZWZpbml0aW9ucy5Db2xvckIASABSBWNvbG9yEjkKCmJvcmRlclNpZGUYBigLMhcuZGVmaW5p'
-    'dGlvbnMuQm9yZGVyU2lkZUIASABSCmJvcmRlclNpZGUSMwoIZ3JhZGllbnQYBygLMhUuZGVmaW'
-    '5pdGlvbnMuR3JhZGllbnRCAEgAUghncmFkaWVudBI/Cgxjb3JuZXJSYWRpdXMYCCgLMhkuZGVm'
-    'aW5pdGlvbnMuQ29ybmVyUmFkaXVzQgBIAFIMY29ybmVyUmFkaXVzEjYKCXRleHRTdHlsZRgJKA'
-    'syFi5kZWZpbml0aW9ucy5UZXh0U3R5bGVCAEgAUgl0ZXh0U3R5bGVCBgoEdHlwZQ==');
+    'CgVWYWx1ZRI8CgtzdHJpbmdWYWx1ZRgBKAsyGC5kZWZpbml0aW9ucy5TdHJpbmdWYWx1ZUIASA'
+    'BSC3N0cmluZ1ZhbHVlEjwKC2RvdWJsZVZhbHVlGAIoCzIYLmRlZmluaXRpb25zLk51bWJlclZh'
+    'bHVlQgBIAFILZG91YmxlVmFsdWUSNQoHYm9vbGVhbhgDKAsyGS5kZWZpbml0aW9ucy5Cb29sZW'
+    'FuVmFsdWVCAEgAUgdib29sZWFuEi8KBWNvbG9yGAQoCzIXLmRlZmluaXRpb25zLkNvbG9yVmFs'
+    'dWVCAEgAUgVjb2xvchI5Cgpib3JkZXJTaWRlGAUoCzIXLmRlZmluaXRpb25zLkJvcmRlclNpZG'
+    'VCAEgAUgpib3JkZXJTaWRlEjMKCGdyYWRpZW50GAYoCzIVLmRlZmluaXRpb25zLkdyYWRpZW50'
+    'QgBIAFIIZ3JhZGllbnQSPwoMY29ybmVyUmFkaXVzGAcoCzIZLmRlZmluaXRpb25zLkNvcm5lcl'
+    'JhZGl1c0IASABSDGNvcm5lclJhZGl1cxI2Cgl0ZXh0U3R5bGUYCCgLMhYuZGVmaW5pdGlvbnMu'
+    'VGV4dFN0eWxlQgBIAFIJdGV4dFN0eWxlQgYKBHR5cGU=');
+
+@$core.Deprecated('Use booleanValueDescriptor instead')
+const BooleanValue$json = {
+  '1': 'BooleanValue',
+  '2': [
+    {'1': 'value', '3': 1, '5': 8, '8': {}, '10': 'value'},
+    {
+      '1': 'alias',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.definitions.Alias',
+      '8': {},
+      '10': 'alias'
+    },
+  ],
+};
+
+/// Descriptor for `BooleanValue`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List booleanValueDescriptor = $convert.base64Decode(
+    'CgxCb29sZWFuVmFsdWUSFAoFdmFsdWUYASgIQgBSBXZhbHVlEioKBWFsaWFzGAIgASgLMhIuZG'
+    'VmaW5pdGlvbnMuQWxpYXNCAFIFYWxpYXM=');
+
+@$core.Deprecated('Use colorValueDescriptor instead')
+const ColorValue$json = {
+  '1': 'ColorValue',
+  '2': [
+    {
+      '1': 'value',
+      '3': 1,
+      '5': 11,
+      '6': '.definitions.Color',
+      '8': {},
+      '10': 'value'
+    },
+    {
+      '1': 'alias',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.definitions.Alias',
+      '8': {},
+      '10': 'alias'
+    },
+  ],
+};
+
+/// Descriptor for `ColorValue`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List colorValueDescriptor = $convert.base64Decode(
+    'CgpDb2xvclZhbHVlEigKBXZhbHVlGAEoCzISLmRlZmluaXRpb25zLkNvbG9yQgBSBXZhbHVlEi'
+    'oKBWFsaWFzGAIgASgLMhIuZGVmaW5pdGlvbnMuQWxpYXNCAFIFYWxpYXM=');
+
+@$core.Deprecated('Use stringValueDescriptor instead')
+const StringValue$json = {
+  '1': 'StringValue',
+  '2': [
+    {'1': 'value', '3': 1, '5': 9, '8': {}, '10': 'value'},
+    {
+      '1': 'alias',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.definitions.Alias',
+      '8': {},
+      '10': 'alias'
+    },
+  ],
+};
+
+/// Descriptor for `StringValue`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List stringValueDescriptor = $convert.base64Decode(
+    'CgtTdHJpbmdWYWx1ZRIUCgV2YWx1ZRgBKAlCAFIFdmFsdWUSKgoFYWxpYXMYAiABKAsyEi5kZW'
+    'Zpbml0aW9ucy5BbGlhc0IAUgVhbGlhcw==');
+
+@$core.Deprecated('Use numberValueDescriptor instead')
+const NumberValue$json = {
+  '1': 'NumberValue',
+  '2': [
+    {'1': 'value', '3': 1, '5': 1, '8': {}, '10': 'value'},
+    {
+      '1': 'alias',
+      '3': 2,
+      '4': 1,
+      '5': 11,
+      '6': '.definitions.Alias',
+      '8': {},
+      '10': 'alias'
+    },
+  ],
+};
+
+/// Descriptor for `NumberValue`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List numberValueDescriptor = $convert.base64Decode(
+    'CgtOdW1iZXJWYWx1ZRIUCgV2YWx1ZRgBKAFCAFIFdmFsdWUSKgoFYWxpYXMYAiABKAsyEi5kZW'
+    'Zpbml0aW9ucy5BbGlhc0IAUgVhbGlhcw==');
 
 @$core.Deprecated('Use offsetDescriptor instead')
 const Offset$json = {
@@ -385,29 +457,51 @@ final $typed_data.Uint8List borderSideDescriptor = $convert.base64Decode(
 const FontName$json = {
   '1': 'FontName',
   '2': [
-    {'1': 'family', '3': 1, '5': 9, '8': {}, '10': 'family'},
+    {
+      '1': 'family',
+      '3': 1,
+      '5': 11,
+      '6': '.definitions.StringValue',
+      '8': {},
+      '10': 'family'
+    },
+    {
+      '1': 'weight',
+      '3': 2,
+      '5': 11,
+      '6': '.definitions.NumberValue',
+      '8': {},
+      '10': 'weight'
+    },
     {
       '1': 'style',
-      '3': 2,
+      '3': 3,
       '5': 14,
       '6': '.definitions.FontStyle',
       '8': {},
       '10': 'style'
     },
-    {'1': 'weight', '3': 3, '5': 5, '8': {}, '10': 'weight'},
   ],
 };
 
 /// Descriptor for `FontName`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List fontNameDescriptor = $convert.base64Decode(
-    'CghGb250TmFtZRIWCgZmYW1pbHkYASgJQgBSBmZhbWlseRIsCgVzdHlsZRgCKA4yFi5kZWZpbm'
-    'l0aW9ucy5Gb250U3R5bGVCAFIFc3R5bGUSFgoGd2VpZ2h0GAMoBUIAUgZ3ZWlnaHQ=');
+    'CghGb250TmFtZRIwCgZmYW1pbHkYASgLMhguZGVmaW5pdGlvbnMuU3RyaW5nVmFsdWVCAFIGZm'
+    'FtaWx5EjAKBndlaWdodBgCKAsyGC5kZWZpbml0aW9ucy5OdW1iZXJWYWx1ZUIAUgZ3ZWlnaHQS'
+    'LAoFc3R5bGUYAygOMhYuZGVmaW5pdGlvbnMuRm9udFN0eWxlQgBSBXN0eWxl');
 
 @$core.Deprecated('Use letterSpacingDescriptor instead')
 const LetterSpacing$json = {
   '1': 'LetterSpacing',
   '2': [
-    {'1': 'value', '3': 1, '5': 1, '8': {}, '10': 'value'},
+    {
+      '1': 'value',
+      '3': 1,
+      '5': 11,
+      '6': '.definitions.NumberValue',
+      '8': {},
+      '10': 'value'
+    },
     {
       '1': 'unit',
       '3': 2,
@@ -421,8 +515,9 @@ const LetterSpacing$json = {
 
 /// Descriptor for `LetterSpacing`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List letterSpacingDescriptor = $convert.base64Decode(
-    'Cg1MZXR0ZXJTcGFjaW5nEhQKBXZhbHVlGAEoAUIAUgV2YWx1ZRIyCgR1bml0GAIoDjIeLmRlZm'
-    'luaXRpb25zLkxldHRlclNwYWNpbmdVbml0QgBSBHVuaXQ=');
+    'Cg1MZXR0ZXJTcGFjaW5nEi4KBXZhbHVlGAEoCzIYLmRlZmluaXRpb25zLk51bWJlclZhbHVlQg'
+    'BSBXZhbHVlEjIKBHVuaXQYAigOMh4uZGVmaW5pdGlvbnMuTGV0dGVyU3BhY2luZ1VuaXRCAFIE'
+    'dW5pdA==');
 
 @$core.Deprecated('Use lineHeightDescriptor instead')
 const LineHeight$json = {

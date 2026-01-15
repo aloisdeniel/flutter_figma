@@ -15,16 +15,25 @@ class FlutterValueExporter {
     Value value,
     Value_Type expectedType,
   ) {
+    String alias(Alias alias) =>
+        const AliasDartExporter().serialize(context, alias, expectedType);
     return switch (value.whichType()) {
-      Value_Type.alias => const AliasDartExporter().serialize(
-        context,
-        value.alias,
-        expectedType,
-      ),
-      Value_Type.stringValue => "'${value.stringValue.replaceAll("'", "\\'")}'",
-      Value_Type.doubleValue => value.doubleValue.toString(),
-      Value_Type.boolean => value.boolean.toString(),
-      Value_Type.color => const ColorDartExporter().serialize(value.color),
+      Value_Type.stringValue => switch (value.stringValue.hasAlias()) {
+        true => alias(value.stringValue.alias),
+        false => "'${value.stringValue.value.replaceAll("'", "\\'")}'",
+      },
+      Value_Type.doubleValue => switch (value.doubleValue.hasAlias()) {
+        true => alias(value.doubleValue.alias),
+        false => value.doubleValue.toString(),
+      },
+      Value_Type.boolean => switch (value.boolean.hasAlias()) {
+        true => alias(value.boolean.alias),
+        false => value.boolean.toString(),
+      },
+      Value_Type.color => switch (value.color.hasAlias()) {
+        true => alias(value.color.alias),
+        false => const ColorDartExporter().serialize(value.color.value),
+      },
       Value_Type.borderSide => const BorderSideDartExporter().serialize(
         value.borderSide,
       ),
@@ -39,15 +48,6 @@ class FlutterValueExporter {
     };
   }
 
-  static String getTypeName(FlutterExportContext context, Value value) {
-    return switch (value.whichType()) {
-      Value_Type.alias => mapTypeName(
-        context.collections.resolveAliasType(value.alias)!,
-      ),
-      _ => mapTypeName(value.whichType()),
-    };
-  }
-
   static String mapTypeName(Value_Type type) {
     return switch (type) {
       Value_Type.color => 'fl.Color',
@@ -58,7 +58,7 @@ class FlutterValueExporter {
       Value_Type.doubleValue => 'double',
       Value_Type.borderSide => 'fl.BorderSide',
       Value_Type.textStyle => 'fl.TextStyle',
-      Value_Type.notSet || Value_Type.alias => throw Exception(),
+      Value_Type.notSet => throw Exception(),
     };
   }
 }

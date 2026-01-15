@@ -34,14 +34,76 @@ extension LibraryExtension on List<VariableCollection> {
     return result?.whichType();
   }
 
+  Value? resolveValue(
+    Value value, {
+    List<VariableCollectionVariantValue> variableCollectionVariants = const [],
+  }) {
+    switch (value.whichType()) {
+      case Value_Type.color:
+        if (value.color.hasAlias()) {
+          final resolved = resolveAlias(
+            value.color.alias,
+            variableCollectionVariants: variableCollectionVariants,
+          );
+          if (resolved == null) return null;
+          return resolveValue(
+            resolved,
+            variableCollectionVariants: variableCollectionVariants,
+          );
+        }
+        return value;
+      case Value_Type.stringValue:
+        if (value.stringValue.hasAlias()) {
+          final resolved = resolveAlias(
+            value.stringValue.alias,
+            variableCollectionVariants: variableCollectionVariants,
+          );
+          if (resolved == null) return null;
+          return resolveValue(
+            resolved,
+            variableCollectionVariants: variableCollectionVariants,
+          );
+        }
+        return value;
+      case Value_Type.doubleValue:
+        if (value.doubleValue.hasAlias()) {
+          final resolved = resolveAlias(
+            value.doubleValue.alias,
+            variableCollectionVariants: variableCollectionVariants,
+          );
+          if (resolved == null) return null;
+          return resolveValue(
+            resolved,
+            variableCollectionVariants: variableCollectionVariants,
+          );
+        }
+        return value;
+      case Value_Type.boolean:
+        if (value.boolean.hasAlias()) {
+          final resolved = resolveAlias(
+            value.boolean.alias,
+            variableCollectionVariants: variableCollectionVariants,
+          );
+          if (resolved == null) return null;
+          return resolveValue(
+            resolved,
+            variableCollectionVariants: variableCollectionVariants,
+          );
+        }
+        return value;
+      case Value_Type.notSet:
+        return null;
+      default:
+        return value;
+    }
+  }
+
   Value? resolveAlias(
     Alias alias, {
     List<VariableCollectionVariantValue> variableCollectionVariants = const [],
   }) {
-    final result = () {
+    return () {
       switch (alias.whichType()) {
-        case Alias_Type.constant:
-          return alias.constant.value;
         case Alias_Type.variable:
           final collection = findVariableCollection(
             alias.variable.collectionId,
@@ -67,13 +129,6 @@ extension LibraryExtension on List<VariableCollection> {
           return null;
       }
     }();
-    if (result?.whichType() == Value_Type.alias) {
-      return resolveAlias(
-        result!.alias,
-        variableCollectionVariants: variableCollectionVariants,
-      );
-    }
-    return result;
   }
 }
 
@@ -92,5 +147,30 @@ extension VariableCollectionExtension on VariableCollection {
     final variant = findVariant(variantId);
     if (variant == null) return null;
     return variant.values[index];
+  }
+}
+
+extension ValueExtension on Value {
+  Alias? getAlias() {
+    switch (whichType()) {
+      case Value_Type.color:
+        if (color.hasAlias()) {
+          return color.alias;
+        }
+      case Value_Type.stringValue:
+        if (stringValue.hasAlias()) {
+          return stringValue.alias;
+        }
+      case Value_Type.doubleValue:
+        if (doubleValue.hasAlias()) {
+          return doubleValue.alias;
+        }
+      case Value_Type.boolean:
+        if (boolean.hasAlias()) {
+          return boolean.alias;
+        }
+      default:
+    }
+    return null;
   }
 }

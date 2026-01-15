@@ -94,11 +94,6 @@ Future<List<VariableCollection>> _importVariableCollections(
           .toDart;
 
       if (variable != null) {
-        print('  Creating variable entry: ${variable.name}');
-        print('    figmaId: $figmaId');
-        print('    variableKey: $variableKey');
-        print('    -> variableId: $variableId');
-
         variableEntries.add(
           VariableCollectionEntry(
             id: variableId,
@@ -124,86 +119,100 @@ Future<List<VariableCollection>> _importVariableCollections(
   return collections;
 }
 
+Future<Alias> _convertVariableAlias(
+  dynamic value,
+  ImportContext<FigmaImportOptions> context,
+) async {
+  final figmaVariableId = value['id'] as String;
+
+  // Look up the variable to find its collection
+  final variable = await figma_api.figma.variables
+      .getVariableByIdAsync(figmaVariableId)
+      .toDart;
+
+  if (variable == null) {
+    print('WARNING: Variable alias target not found: $figmaVariableId');
+    throw Exception('Variable alias target not found: $figmaVariableId');
+  }
+
+  // Use consistent key format for collection and variable IDs
+  final collectionKey = 'variable_collection/${variable.variableCollectionId}';
+  final variableKey = 'variable/$figmaVariableId';
+
+  print('Resolving alias:');
+  print('  figmaVariableId: $figmaVariableId');
+  print('  variable.variableCollectionId: ${variable.variableCollectionId}');
+
+  final collectionId = context.identifiers.get(collectionKey);
+  final variableId = context.identifiers.get(variableKey);
+
+  print('  -> collectionId: $collectionId');
+  print('  -> variableId: $variableId');
+
+  return Alias(
+    variable: VariableAlias(collectionId: collectionId, variableId: variableId),
+  );
+}
+
 Future<Value> _convertVariableValue(
   dynamic value,
   String resolvedType,
   ImportContext<FigmaImportOptions> context,
 ) async {
   // Check if the value is a variable alias
+  Alias? alias;
   if (value is Map) {
     final type = value['type'];
     if (type == 'VARIABLE_ALIAS') {
-      final figmaVariableId = value['id'] as String;
-
-      // Look up the variable to find its collection
-      final variable = await figma_api.figma.variables
-          .getVariableByIdAsync(figmaVariableId)
-          .toDart;
-
-      if (variable == null) {
-        print('WARNING: Variable alias target not found: $figmaVariableId');
-        return Value(stringValue: 'unresolved alias: $figmaVariableId');
-      }
-
-      // Use consistent key format for collection and variable IDs
-      final collectionKey =
-          'variable_collection/${variable.variableCollectionId}';
-      final variableKey = 'variable/$figmaVariableId';
-
-      print('Resolving alias:');
-      print('  figmaVariableId: $figmaVariableId');
-      print(
-        '  variable.variableCollectionId: ${variable.variableCollectionId}',
-      );
-      print('  collectionKey: $collectionKey');
-      print('  variableKey: $variableKey');
-
-      final collectionId = context.identifiers.get(collectionKey);
-      final variableId = context.identifiers.get(variableKey);
-
-      print('  -> collectionId: $collectionId');
-      print('  -> variableId: $variableId');
-
-      return Value(
-        alias: Alias(
-          variable: VariableAlias(
-            collectionId: collectionId,
-            variableId: variableId,
-          ),
-        ),
-      );
+      alias = await _convertVariableAlias(value, context);
     }
   }
 
   // Handle direct values
   switch (resolvedType) {
     case 'COLOR':
+      if (alias != null) {
+        return Value(color: ColorValue(alias: alias));
+      }
       if (value is Map) {
         return Value(
-          color: Color(
-            red: (value['r'] as num).toDouble(),
-            green: (value['g'] as num).toDouble(),
-            blue: (value['b'] as num).toDouble(),
-            alpha: (value['a'] as num).toDouble(),
-            colorSpace: ColorSpace.COLOR_SPACE_DISPLAY_P3,
+          color: ColorValue(
+            value: Color(
+              red: (value['r'] as num).toDouble(),
+              green: (value['g'] as num).toDouble(),
+              blue: (value['b'] as num).toDouble(),
+              alpha: (value['a'] as num).toDouble(),
+              colorSpace: ColorSpace.COLOR_SPACE_DISPLAY_P3,
+            ),
           ),
         );
       }
-      return Value(stringValue: 'invalid color');
+      return Value(stringValue: StringValue(value: 'invalid color'));
     case 'FLOAT':
+      if (alias != null) {
+        return Value(doubleValue: NumberValue(alias: alias));
+      }
       if (value is num) {
-        return Value(doubleValue: value.toDouble());
+        return Value(doubleValue: NumberValue(value: value.toDouble()));
       }
-      return Value(doubleValue: (value as JSNumber).toDartDouble);
+      return Value(
+        doubleValue: NumberValue(value: (value as JSNumber).toDartDouble),
+      );
     case 'STRING':
-      return Value(stringValue: value.toString());
-    case 'BOOLEAN':
-      if (value is bool) {
-        return Value(boolean: value);
+      if (alias != null) {
+        return Value(stringValue: StringValue(alias: alias));
       }
-      return Value(boolean: (value as JSBoolean).toDart);
+      return Value(stringValue: StringValue(value: value.toString()));
+    case 'BOOLEAN':
+      if (alias != null) {
+        return Value(boolean: BooleanValue(alias: alias));
+      }
+      if (value is bool) {
+        return Value(boolean: BooleanValue(value: value));
+      }
+      return Value(boolean: BooleanValue(value: (value as JSBoolean).toDart));
     default:
-      return Value(stringValue: 'unsupported');
+      return Value(stringValue: StringValue(value: 'unsupported'));
   }
 }
 
@@ -246,10 +255,44 @@ Future<VariableCollection?> _importStyles(
         documentation: style.description,
       ),
     );
+    final styleMap = style.dartify() as Map;
+    final boundVariables = styleMap['boundVariables'].dartify() as Map;
+
+    StringValue family = await () async {
+      if (boundVariables.containsKey('fontName')) {
+        final variableInfo = boundVariables['fontName'];
+        if (variableInfo != null && variableInfo is Map) {
+          final figmaVariableId = variableInfo['id'] as String;
+
+          final variable = await figma_api.figma.variables
+              .getVariableByIdAsync(figmaVariableId)
+              .toDart;
+          if (variable == null) {
+            throw Exception(
+              'Variable for text style fontName not found: $figmaVariableId',
+            );
+          }
+          return StringValue(
+            alias: Alias(
+              variable: VariableAlias(
+                collectionId: context.identifiers.get(
+                  'variable_collection/${variable.variableCollectionId}',
+                ),
+                variableId: context.identifiers.get(
+                  'variable/$figmaVariableId',
+                ),
+              ),
+            ),
+          );
+        }
+      }
+      return StringValue(value: style.fontName.family);
+    }();
+
     values.add(
       Value(
         textStyle: TextStyle(
-          fontName: FontName(family: style.fontName.family),
+          fontName: FontName(family: family),
           fontSize: style.fontSize.toDouble(),
         ),
       ),
@@ -276,12 +319,14 @@ Value? _convertPaintToValue(figma_api.Paint paint) {
     if (color != null) {
       final opacity = paint.opacity ?? 1.0;
       return Value(
-        color: Color(
-          red: color.r.toDouble(),
-          green: color.g.toDouble(),
-          blue: color.b.toDouble(),
-          alpha: opacity.toDouble(),
-          colorSpace: ColorSpace.COLOR_SPACE_SRGB,
+        color: ColorValue(
+          value: Color(
+            red: color.r.toDouble(),
+            green: color.g.toDouble(),
+            blue: color.b.toDouble(),
+            alpha: opacity.toDouble(),
+            colorSpace: ColorSpace.COLOR_SPACE_SRGB,
+          ),
         ),
       );
     }

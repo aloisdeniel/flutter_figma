@@ -1,6 +1,5 @@
 import 'package:figma_codegen/src/definitions/variables.dart';
 import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
-import 'package:figma_codegen/src/exporter/flutter/values/value.dart';
 import 'package:figma_codegen/src/utils/dart/naming.dart';
 
 class AliasDartExporter {
@@ -15,11 +14,6 @@ class AliasDartExporter {
       Alias_Type.variable => _serializeVariableAlias(
         context,
         value.variable,
-        expectedType,
-      ),
-      Alias_Type.constant => _serializeConstantAlias(
-        context,
-        value.constant,
         expectedType,
       ),
       _ => switch (expectedType) {
@@ -45,11 +39,7 @@ class AliasDartExporter {
 
     if (collection == null) {
       // Fallback to default value if collection not found
-      return const FlutterValueExporter().serialize(
-        context,
-        value.defaultValue,
-        expectedType,
-      );
+      throw Exception('Variable collection not found');
     }
     final collectionFieldName = Naming.fieldName(collection.name);
 
@@ -57,28 +47,12 @@ class AliasDartExporter {
 
     if (variable == null) {
       // Fallback to default value if variable not found
-      return const FlutterValueExporter().serialize(
-        context,
-        value.defaultValue,
-        expectedType,
-      );
+      throw Exception('Variable not found');
     }
     final variableFieldName = Naming.fieldName(variable.name);
 
     // Use the local `variables` variable declared at the beginning of build()
     // variables.<collectionFieldName>.<variableFieldName>
     return 'variables.$collectionFieldName.$variableFieldName';
-  }
-
-  String _serializeConstantAlias(
-    FlutterExportContext context,
-    ConstantAlias value,
-    Value_Type expectedType,
-  ) {
-    return const FlutterValueExporter().serialize(
-      context,
-      value.value,
-      expectedType,
-    );
   }
 }

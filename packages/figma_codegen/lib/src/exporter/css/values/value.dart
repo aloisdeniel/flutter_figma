@@ -11,25 +11,20 @@ class CssValueExporter {
   /// Returns null for text styles (they need special handling at collection level)
   String? serialize(CssExportContext context, Value value) {
     // Resolve aliases to their actual values
-    if (value.whichType() == Value_Type.alias) {
-      final resolved = context.collections.resolveAlias(value.alias);
-      if (resolved != null) {
-        return serialize(context, resolved);
-      }
-      return null;
-    }
-
     return _serializeValue(context, value);
   }
 
   String? _serializeValue(CssExportContext context, Value value) {
     switch (value.whichType()) {
       case Value_Type.color:
-        return CssColorExporter().serialize(value.color, context.colorFormat);
+        return CssColorExporter().serialize(
+          value.color.value,
+          context.colorFormat,
+        );
 
       case Value_Type.doubleValue:
         // Return number as-is (consumers can add units if needed)
-        final num = value.doubleValue;
+        final num = value.doubleValue.value;
         // Remove trailing zeros for cleaner output
         if (num == num.roundToDouble()) {
           return num.round().toString();
@@ -62,10 +57,6 @@ class CssValueExporter {
       case Value_Type.borderSide:
         // Just return the width for simplicity
         return '${value.borderSide.width}px';
-
-      case Value_Type.alias:
-        // Should have been resolved above
-        return null;
 
       case Value_Type.notSet:
         return null;

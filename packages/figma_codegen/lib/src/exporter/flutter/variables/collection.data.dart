@@ -9,9 +9,9 @@ Map<int, String> _collectAliasedCollectionsMap(
   for (final variant in definition.variants) {
     for (var i = 0; i < variant.values.length; i++) {
       final value = variant.values[i];
-      if (value.whichType() == Value_Type.alias &&
-          value.alias.whichType() == Alias_Type.variable) {
-        final collectionId = value.alias.variable.collectionId;
+      final alias = value.getAlias();
+      if (alias != null && alias.whichType() == Alias_Type.variable) {
+        final collectionId = alias.variable.collectionId;
         if (collectionId != definition.id &&
             !aliasedCollections.containsKey(collectionId)) {
           final collection = context.collections.findVariableCollection(
@@ -67,15 +67,15 @@ void _writeSingleModeClass(
     final value = variant.values[i];
     final name = Naming.fieldName(variable.name);
 
-    if (value.whichType() == Value_Type.alias &&
-        value.alias.whichType() == Alias_Type.variable) {
+    var alias = value.getAlias();
+    if (alias != null && alias.whichType() == Alias_Type.variable) {
       // This is an alias to another collection's variable
-      final alias = value.alias.variable;
+      final varAlias = alias.variable;
       final targetCollection = context.collections.findVariableCollection(
-        alias.collectionId,
+        varAlias.collectionId,
       );
       if (targetCollection != null) {
-        final targetVariable = targetCollection.findEntry(alias.variableId);
+        final targetVariable = targetCollection.findEntry(varAlias.variableId);
         if (targetVariable != null) {
           final collectionFieldName = Naming.fieldName(targetCollection.name);
           final variableFieldName = Naming.fieldName(targetVariable.name);
@@ -167,7 +167,7 @@ void _writeMultiModeClasses(
     final variable = definition.variables[i];
     final defaultValue = definition.variants.first.values[i];
     final name = Naming.fieldName(variable.name);
-    final type = FlutterValueExporter.getTypeName(context, defaultValue);
+    final type = FlutterValueExporter.mapTypeName(defaultValue.whichType());
     buffer.writeln('$type get $name;');
   }
 
@@ -193,15 +193,17 @@ void _writeMultiModeClasses(
       buffer.writeln();
       buffer.writeln('@override');
 
-      if (value.whichType() == Value_Type.alias &&
-          value.alias.whichType() == Alias_Type.variable) {
+      var alias = value.getAlias();
+      if (alias != null && alias.whichType() == Alias_Type.variable) {
         // This is an alias to another collection's variable
-        final alias = value.alias.variable;
+        final varAlias = alias.variable;
         final targetCollection = context.collections.findVariableCollection(
-          alias.collectionId,
+          varAlias.collectionId,
         );
         if (targetCollection != null) {
-          final targetVariable = targetCollection.findEntry(alias.variableId);
+          final targetVariable = targetCollection.findEntry(
+            varAlias.variableId,
+          );
           if (targetVariable != null) {
             final collectionFieldName = Naming.fieldName(targetCollection.name);
             final variableFieldName = Naming.fieldName(targetVariable.name);

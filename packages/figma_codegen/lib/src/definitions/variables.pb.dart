@@ -20,15 +20,13 @@ export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 
 export 'variables.pbenum.dart';
 
-enum Alias_Type { constant, variable, notSet }
+enum Alias_Type { variable, notSet }
 
 class Alias extends $pb.GeneratedMessage {
   factory Alias({
-    ConstantAlias? constant,
     VariableAlias? variable,
   }) {
     final result = create();
-    if (constant != null) result.constant = constant;
     if (variable != null) result.variable = variable;
     return result;
   }
@@ -43,18 +41,15 @@ class Alias extends $pb.GeneratedMessage {
       create()..mergeFromJson(json, registry);
 
   static const $core.Map<$core.int, Alias_Type> _Alias_TypeByTag = {
-    1: Alias_Type.constant,
-    2: Alias_Type.variable,
+    1: Alias_Type.variable,
     0: Alias_Type.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
       _omitMessageNames ? '' : 'Alias',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..oo(0, [1, 2])
-    ..aOM<ConstantAlias>(1, _omitFieldNames ? '' : 'constant',
-        subBuilder: ConstantAlias.create)
-    ..aOM<VariableAlias>(2, _omitFieldNames ? '' : 'variable',
+    ..oo(0, [1])
+    ..aOM<VariableAlias>(1, _omitFieldNames ? '' : 'variable',
         subBuilder: VariableAlias.create)
     ..hasRequiredFields = false;
 
@@ -77,101 +72,30 @@ class Alias extends $pb.GeneratedMessage {
   static Alias? _defaultInstance;
 
   @$pb.TagNumber(1)
-  @$pb.TagNumber(2)
   Alias_Type whichType() => _Alias_TypeByTag[$_whichOneof(0)]!;
   @$pb.TagNumber(1)
-  @$pb.TagNumber(2)
   void clearType() => $_clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
-  ConstantAlias get constant => $_getN(0);
+  VariableAlias get variable => $_getN(0);
   @$pb.TagNumber(1)
-  set constant(ConstantAlias value) => $_setField(1, value);
+  set variable(VariableAlias value) => $_setField(1, value);
   @$pb.TagNumber(1)
-  $core.bool hasConstant() => $_has(0);
+  $core.bool hasVariable() => $_has(0);
   @$pb.TagNumber(1)
-  void clearConstant() => $_clearField(1);
+  void clearVariable() => $_clearField(1);
   @$pb.TagNumber(1)
-  ConstantAlias ensureConstant() => $_ensure(0);
-
-  @$pb.TagNumber(2)
-  VariableAlias get variable => $_getN(1);
-  @$pb.TagNumber(2)
-  set variable(VariableAlias value) => $_setField(2, value);
-  @$pb.TagNumber(2)
-  $core.bool hasVariable() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearVariable() => $_clearField(2);
-  @$pb.TagNumber(2)
-  VariableAlias ensureVariable() => $_ensure(1);
-}
-
-class ConstantAlias extends $pb.GeneratedMessage {
-  factory ConstantAlias({
-    Value? value,
-  }) {
-    final result = create();
-    if (value != null) result.value = value;
-    return result;
-  }
-
-  ConstantAlias._();
-
-  factory ConstantAlias.fromBuffer($core.List<$core.int> data,
-          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromBuffer(data, registry);
-  factory ConstantAlias.fromJson($core.String json,
-          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
-      create()..mergeFromJson(json, registry);
-
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
-      _omitMessageNames ? '' : 'ConstantAlias',
-      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
-      createEmptyInstance: create)
-    ..aOM<Value>(1, _omitFieldNames ? '' : 'value', subBuilder: Value.create)
-    ..hasRequiredFields = false;
-
-  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  ConstantAlias clone() => deepCopy();
-  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
-  ConstantAlias copyWith(void Function(ConstantAlias) updates) =>
-      super.copyWith((message) => updates(message as ConstantAlias))
-          as ConstantAlias;
-
-  @$core.override
-  $pb.BuilderInfo get info_ => _i;
-
-  @$core.pragma('dart2js:noInline')
-  static ConstantAlias create() => ConstantAlias._();
-  @$core.override
-  ConstantAlias createEmptyInstance() => create();
-  @$core.pragma('dart2js:noInline')
-  static ConstantAlias getDefault() => _defaultInstance ??=
-      $pb.GeneratedMessage.$_defaultFor<ConstantAlias>(create);
-  static ConstantAlias? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  Value get value => $_getN(0);
-  @$pb.TagNumber(1)
-  set value(Value value) => $_setField(1, value);
-  @$pb.TagNumber(1)
-  $core.bool hasValue() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearValue() => $_clearField(1);
-  @$pb.TagNumber(1)
-  Value ensureValue() => $_ensure(0);
+  VariableAlias ensureVariable() => $_ensure(0);
 }
 
 class VariableAlias extends $pb.GeneratedMessage {
   factory VariableAlias({
     $core.int? collectionId,
     $core.int? variableId,
-    Value? defaultValue,
   }) {
     final result = create();
     if (collectionId != null) result.collectionId = collectionId;
     if (variableId != null) result.variableId = variableId;
-    if (defaultValue != null) result.defaultValue = defaultValue;
     return result;
   }
 
@@ -190,8 +114,6 @@ class VariableAlias extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aI(1, _omitFieldNames ? '' : 'collectionId', protoName: 'collectionId')
     ..aI(2, _omitFieldNames ? '' : 'variableId', protoName: 'variableId')
-    ..aOM<Value>(3, _omitFieldNames ? '' : 'defaultValue',
-        protoName: 'defaultValue', subBuilder: Value.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -230,17 +152,6 @@ class VariableAlias extends $pb.GeneratedMessage {
   $core.bool hasVariableId() => $_has(1);
   @$pb.TagNumber(2)
   void clearVariableId() => $_clearField(2);
-
-  @$pb.TagNumber(3)
-  Value get defaultValue => $_getN(2);
-  @$pb.TagNumber(3)
-  set defaultValue(Value value) => $_setField(3, value);
-  @$pb.TagNumber(3)
-  $core.bool hasDefaultValue() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearDefaultValue() => $_clearField(3);
-  @$pb.TagNumber(3)
-  Value ensureDefaultValue() => $_ensure(2);
 }
 
 class VariableCollection extends $pb.GeneratedMessage {
@@ -500,7 +411,6 @@ class VariableCollectionVariant extends $pb.GeneratedMessage {
 }
 
 enum Value_Type {
-  alias,
   stringValue,
   doubleValue,
   boolean,
@@ -514,18 +424,16 @@ enum Value_Type {
 
 class Value extends $pb.GeneratedMessage {
   factory Value({
-    Alias? alias,
-    $core.String? stringValue,
-    $core.double? doubleValue,
-    $core.bool? boolean,
-    Color? color,
+    StringValue? stringValue,
+    NumberValue? doubleValue,
+    BooleanValue? boolean,
+    ColorValue? color,
     BorderSide? borderSide,
     Gradient? gradient,
     CornerRadius? cornerRadius,
     TextStyle? textStyle,
   }) {
     final result = create();
-    if (alias != null) result.alias = alias;
     if (stringValue != null) result.stringValue = stringValue;
     if (doubleValue != null) result.doubleValue = doubleValue;
     if (boolean != null) result.boolean = boolean;
@@ -547,34 +455,36 @@ class Value extends $pb.GeneratedMessage {
       create()..mergeFromJson(json, registry);
 
   static const $core.Map<$core.int, Value_Type> _Value_TypeByTag = {
-    1: Value_Type.alias,
-    2: Value_Type.stringValue,
-    3: Value_Type.doubleValue,
-    4: Value_Type.boolean,
-    5: Value_Type.color,
-    6: Value_Type.borderSide,
-    7: Value_Type.gradient,
-    8: Value_Type.cornerRadius,
-    9: Value_Type.textStyle,
+    1: Value_Type.stringValue,
+    2: Value_Type.doubleValue,
+    3: Value_Type.boolean,
+    4: Value_Type.color,
+    5: Value_Type.borderSide,
+    6: Value_Type.gradient,
+    7: Value_Type.cornerRadius,
+    8: Value_Type.textStyle,
     0: Value_Type.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
       _omitMessageNames ? '' : 'Value',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..oo(0, [1, 2, 3, 4, 5, 6, 7, 8, 9])
-    ..aOM<Alias>(1, _omitFieldNames ? '' : 'alias', subBuilder: Alias.create)
-    ..aOS(2, _omitFieldNames ? '' : 'stringValue', protoName: 'stringValue')
-    ..aD(3, _omitFieldNames ? '' : 'doubleValue', protoName: 'doubleValue')
-    ..aOB(4, _omitFieldNames ? '' : 'boolean')
-    ..aOM<Color>(5, _omitFieldNames ? '' : 'color', subBuilder: Color.create)
-    ..aOM<BorderSide>(6, _omitFieldNames ? '' : 'borderSide',
+    ..oo(0, [1, 2, 3, 4, 5, 6, 7, 8])
+    ..aOM<StringValue>(1, _omitFieldNames ? '' : 'stringValue',
+        protoName: 'stringValue', subBuilder: StringValue.create)
+    ..aOM<NumberValue>(2, _omitFieldNames ? '' : 'doubleValue',
+        protoName: 'doubleValue', subBuilder: NumberValue.create)
+    ..aOM<BooleanValue>(3, _omitFieldNames ? '' : 'boolean',
+        subBuilder: BooleanValue.create)
+    ..aOM<ColorValue>(4, _omitFieldNames ? '' : 'color',
+        subBuilder: ColorValue.create)
+    ..aOM<BorderSide>(5, _omitFieldNames ? '' : 'borderSide',
         protoName: 'borderSide', subBuilder: BorderSide.create)
-    ..aOM<Gradient>(7, _omitFieldNames ? '' : 'gradient',
+    ..aOM<Gradient>(6, _omitFieldNames ? '' : 'gradient',
         subBuilder: Gradient.create)
-    ..aOM<CornerRadius>(8, _omitFieldNames ? '' : 'cornerRadius',
+    ..aOM<CornerRadius>(7, _omitFieldNames ? '' : 'cornerRadius',
         protoName: 'cornerRadius', subBuilder: CornerRadius.create)
-    ..aOM<TextStyle>(9, _omitFieldNames ? '' : 'textStyle',
+    ..aOM<TextStyle>(8, _omitFieldNames ? '' : 'textStyle',
         protoName: 'textStyle', subBuilder: TextStyle.create)
     ..hasRequiredFields = false;
 
@@ -604,7 +514,6 @@ class Value extends $pb.GeneratedMessage {
   @$pb.TagNumber(6)
   @$pb.TagNumber(7)
   @$pb.TagNumber(8)
-  @$pb.TagNumber(9)
   Value_Type whichType() => _Value_TypeByTag[$_whichOneof(0)]!;
   @$pb.TagNumber(1)
   @$pb.TagNumber(2)
@@ -614,101 +523,368 @@ class Value extends $pb.GeneratedMessage {
   @$pb.TagNumber(6)
   @$pb.TagNumber(7)
   @$pb.TagNumber(8)
-  @$pb.TagNumber(9)
   void clearType() => $_clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
-  Alias get alias => $_getN(0);
+  StringValue get stringValue => $_getN(0);
   @$pb.TagNumber(1)
-  set alias(Alias value) => $_setField(1, value);
+  set stringValue(StringValue value) => $_setField(1, value);
   @$pb.TagNumber(1)
-  $core.bool hasAlias() => $_has(0);
+  $core.bool hasStringValue() => $_has(0);
   @$pb.TagNumber(1)
-  void clearAlias() => $_clearField(1);
+  void clearStringValue() => $_clearField(1);
   @$pb.TagNumber(1)
-  Alias ensureAlias() => $_ensure(0);
+  StringValue ensureStringValue() => $_ensure(0);
 
   @$pb.TagNumber(2)
-  $core.String get stringValue => $_getSZ(1);
+  NumberValue get doubleValue => $_getN(1);
   @$pb.TagNumber(2)
-  set stringValue($core.String value) => $_setString(1, value);
+  set doubleValue(NumberValue value) => $_setField(2, value);
   @$pb.TagNumber(2)
-  $core.bool hasStringValue() => $_has(1);
+  $core.bool hasDoubleValue() => $_has(1);
   @$pb.TagNumber(2)
-  void clearStringValue() => $_clearField(2);
+  void clearDoubleValue() => $_clearField(2);
+  @$pb.TagNumber(2)
+  NumberValue ensureDoubleValue() => $_ensure(1);
 
   @$pb.TagNumber(3)
-  $core.double get doubleValue => $_getN(2);
+  BooleanValue get boolean => $_getN(2);
   @$pb.TagNumber(3)
-  set doubleValue($core.double value) => $_setDouble(2, value);
+  set boolean(BooleanValue value) => $_setField(3, value);
   @$pb.TagNumber(3)
-  $core.bool hasDoubleValue() => $_has(2);
+  $core.bool hasBoolean() => $_has(2);
   @$pb.TagNumber(3)
-  void clearDoubleValue() => $_clearField(3);
+  void clearBoolean() => $_clearField(3);
+  @$pb.TagNumber(3)
+  BooleanValue ensureBoolean() => $_ensure(2);
 
   @$pb.TagNumber(4)
-  $core.bool get boolean => $_getBF(3);
+  ColorValue get color => $_getN(3);
   @$pb.TagNumber(4)
-  set boolean($core.bool value) => $_setBool(3, value);
+  set color(ColorValue value) => $_setField(4, value);
   @$pb.TagNumber(4)
-  $core.bool hasBoolean() => $_has(3);
+  $core.bool hasColor() => $_has(3);
   @$pb.TagNumber(4)
-  void clearBoolean() => $_clearField(4);
+  void clearColor() => $_clearField(4);
+  @$pb.TagNumber(4)
+  ColorValue ensureColor() => $_ensure(3);
 
   @$pb.TagNumber(5)
-  Color get color => $_getN(4);
+  BorderSide get borderSide => $_getN(4);
   @$pb.TagNumber(5)
-  set color(Color value) => $_setField(5, value);
+  set borderSide(BorderSide value) => $_setField(5, value);
   @$pb.TagNumber(5)
-  $core.bool hasColor() => $_has(4);
+  $core.bool hasBorderSide() => $_has(4);
   @$pb.TagNumber(5)
-  void clearColor() => $_clearField(5);
+  void clearBorderSide() => $_clearField(5);
   @$pb.TagNumber(5)
-  Color ensureColor() => $_ensure(4);
+  BorderSide ensureBorderSide() => $_ensure(4);
 
   @$pb.TagNumber(6)
-  BorderSide get borderSide => $_getN(5);
+  Gradient get gradient => $_getN(5);
   @$pb.TagNumber(6)
-  set borderSide(BorderSide value) => $_setField(6, value);
+  set gradient(Gradient value) => $_setField(6, value);
   @$pb.TagNumber(6)
-  $core.bool hasBorderSide() => $_has(5);
+  $core.bool hasGradient() => $_has(5);
   @$pb.TagNumber(6)
-  void clearBorderSide() => $_clearField(6);
+  void clearGradient() => $_clearField(6);
   @$pb.TagNumber(6)
-  BorderSide ensureBorderSide() => $_ensure(5);
+  Gradient ensureGradient() => $_ensure(5);
 
   @$pb.TagNumber(7)
-  Gradient get gradient => $_getN(6);
+  CornerRadius get cornerRadius => $_getN(6);
   @$pb.TagNumber(7)
-  set gradient(Gradient value) => $_setField(7, value);
+  set cornerRadius(CornerRadius value) => $_setField(7, value);
   @$pb.TagNumber(7)
-  $core.bool hasGradient() => $_has(6);
+  $core.bool hasCornerRadius() => $_has(6);
   @$pb.TagNumber(7)
-  void clearGradient() => $_clearField(7);
+  void clearCornerRadius() => $_clearField(7);
   @$pb.TagNumber(7)
-  Gradient ensureGradient() => $_ensure(6);
+  CornerRadius ensureCornerRadius() => $_ensure(6);
 
   @$pb.TagNumber(8)
-  CornerRadius get cornerRadius => $_getN(7);
+  TextStyle get textStyle => $_getN(7);
   @$pb.TagNumber(8)
-  set cornerRadius(CornerRadius value) => $_setField(8, value);
+  set textStyle(TextStyle value) => $_setField(8, value);
   @$pb.TagNumber(8)
-  $core.bool hasCornerRadius() => $_has(7);
+  $core.bool hasTextStyle() => $_has(7);
   @$pb.TagNumber(8)
-  void clearCornerRadius() => $_clearField(8);
+  void clearTextStyle() => $_clearField(8);
   @$pb.TagNumber(8)
-  CornerRadius ensureCornerRadius() => $_ensure(7);
+  TextStyle ensureTextStyle() => $_ensure(7);
+}
 
-  @$pb.TagNumber(9)
-  TextStyle get textStyle => $_getN(8);
-  @$pb.TagNumber(9)
-  set textStyle(TextStyle value) => $_setField(9, value);
-  @$pb.TagNumber(9)
-  $core.bool hasTextStyle() => $_has(8);
-  @$pb.TagNumber(9)
-  void clearTextStyle() => $_clearField(9);
-  @$pb.TagNumber(9)
-  TextStyle ensureTextStyle() => $_ensure(8);
+class BooleanValue extends $pb.GeneratedMessage {
+  factory BooleanValue({
+    $core.bool? value,
+    Alias? alias,
+  }) {
+    final result = create();
+    if (value != null) result.value = value;
+    if (alias != null) result.alias = alias;
+    return result;
+  }
+
+  BooleanValue._();
+
+  factory BooleanValue.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory BooleanValue.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'BooleanValue',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aOB(1, _omitFieldNames ? '' : 'value')
+    ..aOM<Alias>(2, _omitFieldNames ? '' : 'alias', subBuilder: Alias.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  BooleanValue clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  BooleanValue copyWith(void Function(BooleanValue) updates) =>
+      super.copyWith((message) => updates(message as BooleanValue))
+          as BooleanValue;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static BooleanValue create() => BooleanValue._();
+  @$core.override
+  BooleanValue createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static BooleanValue getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<BooleanValue>(create);
+  static BooleanValue? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.bool get value => $_getBF(0);
+  @$pb.TagNumber(1)
+  set value($core.bool value) => $_setBool(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasValue() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearValue() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  Alias get alias => $_getN(1);
+  @$pb.TagNumber(2)
+  set alias(Alias value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasAlias() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearAlias() => $_clearField(2);
+  @$pb.TagNumber(2)
+  Alias ensureAlias() => $_ensure(1);
+}
+
+class ColorValue extends $pb.GeneratedMessage {
+  factory ColorValue({
+    Color? value,
+    Alias? alias,
+  }) {
+    final result = create();
+    if (value != null) result.value = value;
+    if (alias != null) result.alias = alias;
+    return result;
+  }
+
+  ColorValue._();
+
+  factory ColorValue.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory ColorValue.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'ColorValue',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aOM<Color>(1, _omitFieldNames ? '' : 'value', subBuilder: Color.create)
+    ..aOM<Alias>(2, _omitFieldNames ? '' : 'alias', subBuilder: Alias.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ColorValue clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ColorValue copyWith(void Function(ColorValue) updates) =>
+      super.copyWith((message) => updates(message as ColorValue)) as ColorValue;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ColorValue create() => ColorValue._();
+  @$core.override
+  ColorValue createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static ColorValue getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<ColorValue>(create);
+  static ColorValue? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  Color get value => $_getN(0);
+  @$pb.TagNumber(1)
+  set value(Color value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasValue() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearValue() => $_clearField(1);
+  @$pb.TagNumber(1)
+  Color ensureValue() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  Alias get alias => $_getN(1);
+  @$pb.TagNumber(2)
+  set alias(Alias value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasAlias() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearAlias() => $_clearField(2);
+  @$pb.TagNumber(2)
+  Alias ensureAlias() => $_ensure(1);
+}
+
+class StringValue extends $pb.GeneratedMessage {
+  factory StringValue({
+    $core.String? value,
+    Alias? alias,
+  }) {
+    final result = create();
+    if (value != null) result.value = value;
+    if (alias != null) result.alias = alias;
+    return result;
+  }
+
+  StringValue._();
+
+  factory StringValue.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory StringValue.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'StringValue',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'value')
+    ..aOM<Alias>(2, _omitFieldNames ? '' : 'alias', subBuilder: Alias.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  StringValue clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  StringValue copyWith(void Function(StringValue) updates) =>
+      super.copyWith((message) => updates(message as StringValue))
+          as StringValue;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static StringValue create() => StringValue._();
+  @$core.override
+  StringValue createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static StringValue getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<StringValue>(create);
+  static StringValue? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get value => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set value($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasValue() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearValue() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  Alias get alias => $_getN(1);
+  @$pb.TagNumber(2)
+  set alias(Alias value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasAlias() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearAlias() => $_clearField(2);
+  @$pb.TagNumber(2)
+  Alias ensureAlias() => $_ensure(1);
+}
+
+class NumberValue extends $pb.GeneratedMessage {
+  factory NumberValue({
+    $core.double? value,
+    Alias? alias,
+  }) {
+    final result = create();
+    if (value != null) result.value = value;
+    if (alias != null) result.alias = alias;
+    return result;
+  }
+
+  NumberValue._();
+
+  factory NumberValue.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory NumberValue.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'NumberValue',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aD(1, _omitFieldNames ? '' : 'value')
+    ..aOM<Alias>(2, _omitFieldNames ? '' : 'alias', subBuilder: Alias.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NumberValue clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  NumberValue copyWith(void Function(NumberValue) updates) =>
+      super.copyWith((message) => updates(message as NumberValue))
+          as NumberValue;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static NumberValue create() => NumberValue._();
+  @$core.override
+  NumberValue createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static NumberValue getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<NumberValue>(create);
+  static NumberValue? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.double get value => $_getN(0);
+  @$pb.TagNumber(1)
+  set value($core.double value) => $_setDouble(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasValue() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearValue() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  Alias get alias => $_getN(1);
+  @$pb.TagNumber(2)
+  set alias(Alias value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasAlias() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearAlias() => $_clearField(2);
+  @$pb.TagNumber(2)
+  Alias ensureAlias() => $_ensure(1);
 }
 
 class Offset extends $pb.GeneratedMessage {
@@ -1047,14 +1223,14 @@ class BorderSide extends $pb.GeneratedMessage {
 
 class FontName extends $pb.GeneratedMessage {
   factory FontName({
-    $core.String? family,
+    StringValue? family,
+    NumberValue? weight,
     FontStyle? style,
-    $core.int? weight,
   }) {
     final result = create();
     if (family != null) result.family = family;
-    if (style != null) result.style = style;
     if (weight != null) result.weight = weight;
+    if (style != null) result.style = style;
     return result;
   }
 
@@ -1071,10 +1247,12 @@ class FontName extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'FontName',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'family')
-    ..aE<FontStyle>(2, _omitFieldNames ? '' : 'style',
+    ..aOM<StringValue>(1, _omitFieldNames ? '' : 'family',
+        subBuilder: StringValue.create)
+    ..aOM<NumberValue>(2, _omitFieldNames ? '' : 'weight',
+        subBuilder: NumberValue.create)
+    ..aE<FontStyle>(3, _omitFieldNames ? '' : 'style',
         enumValues: FontStyle.values)
-    ..aI(3, _omitFieldNames ? '' : 'weight')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1096,36 +1274,40 @@ class FontName extends $pb.GeneratedMessage {
   static FontName? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.String get family => $_getSZ(0);
+  StringValue get family => $_getN(0);
   @$pb.TagNumber(1)
-  set family($core.String value) => $_setString(0, value);
+  set family(StringValue value) => $_setField(1, value);
   @$pb.TagNumber(1)
   $core.bool hasFamily() => $_has(0);
   @$pb.TagNumber(1)
   void clearFamily() => $_clearField(1);
+  @$pb.TagNumber(1)
+  StringValue ensureFamily() => $_ensure(0);
 
   @$pb.TagNumber(2)
-  FontStyle get style => $_getN(1);
+  NumberValue get weight => $_getN(1);
   @$pb.TagNumber(2)
-  set style(FontStyle value) => $_setField(2, value);
+  set weight(NumberValue value) => $_setField(2, value);
   @$pb.TagNumber(2)
-  $core.bool hasStyle() => $_has(1);
+  $core.bool hasWeight() => $_has(1);
   @$pb.TagNumber(2)
-  void clearStyle() => $_clearField(2);
+  void clearWeight() => $_clearField(2);
+  @$pb.TagNumber(2)
+  NumberValue ensureWeight() => $_ensure(1);
 
   @$pb.TagNumber(3)
-  $core.int get weight => $_getIZ(2);
+  FontStyle get style => $_getN(2);
   @$pb.TagNumber(3)
-  set weight($core.int value) => $_setSignedInt32(2, value);
+  set style(FontStyle value) => $_setField(3, value);
   @$pb.TagNumber(3)
-  $core.bool hasWeight() => $_has(2);
+  $core.bool hasStyle() => $_has(2);
   @$pb.TagNumber(3)
-  void clearWeight() => $_clearField(3);
+  void clearStyle() => $_clearField(3);
 }
 
 class LetterSpacing extends $pb.GeneratedMessage {
   factory LetterSpacing({
-    $core.double? value,
+    NumberValue? value,
     LetterSpacingUnit? unit,
   }) {
     final result = create();
@@ -1147,7 +1329,8 @@ class LetterSpacing extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'LetterSpacing',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..aD(1, _omitFieldNames ? '' : 'value')
+    ..aOM<NumberValue>(1, _omitFieldNames ? '' : 'value',
+        subBuilder: NumberValue.create)
     ..aE<LetterSpacingUnit>(2, _omitFieldNames ? '' : 'unit',
         enumValues: LetterSpacingUnit.values)
     ..hasRequiredFields = false;
@@ -1172,13 +1355,15 @@ class LetterSpacing extends $pb.GeneratedMessage {
   static LetterSpacing? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.double get value => $_getN(0);
+  NumberValue get value => $_getN(0);
   @$pb.TagNumber(1)
-  set value($core.double value) => $_setDouble(0, value);
+  set value(NumberValue value) => $_setField(1, value);
   @$pb.TagNumber(1)
   $core.bool hasValue() => $_has(0);
   @$pb.TagNumber(1)
   void clearValue() => $_clearField(1);
+  @$pb.TagNumber(1)
+  NumberValue ensureValue() => $_ensure(0);
 
   @$pb.TagNumber(2)
   LetterSpacingUnit get unit => $_getN(1);

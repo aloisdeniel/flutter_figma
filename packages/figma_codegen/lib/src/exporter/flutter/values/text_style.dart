@@ -9,13 +9,13 @@ class TextStyleDartExporter {
       buffer.write("fontFamily: '${value.fontName.family}'");
     }
     buffer.write(', fontSize: ${value.fontSize}');
-    if (value.hasFontName() && value.fontName.weight != 0) {
+    if (value.hasFontName() && value.fontName.weight.value != 0) {
       final fw = const FontWeightDartExporter().serialize(
-        value.fontName.weight,
+        value.fontName.weight.value.toInt(),
       );
       buffer.write(', fontWeight: $fw');
     }
-    if (value.hasLetterSpacing() && value.letterSpacing.value != 0) {
+    if (value.hasLetterSpacing() && value.letterSpacing.value.value != 0) {
       buffer.write(', letterSpacing: ${value.letterSpacing.value}');
     }
     if (value.hasLineHeight()) {
