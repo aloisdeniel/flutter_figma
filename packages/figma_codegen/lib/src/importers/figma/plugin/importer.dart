@@ -1,5 +1,6 @@
 import 'dart:js_interop';
 import 'dart:js_interop_unsafe';
+import 'dart:math' as math;
 
 import 'package:figma_codegen/src/definitions/variables.pb.dart';
 import 'package:figma_codegen/src/importers/context.dart';
@@ -232,8 +233,7 @@ Future<VariableCollection?> _importStyles(
     if (paints.isNotEmpty) {
       for (var i = 0; i < paints.length; i++) {
         final paint = paints[i];
-        // TODO resolve aliases
-        final value = _convertPaintToValue(paint);
+        final value = await _convertPaintToValue(paint, context);
         if (value != null) {
           entries.add(
             VariableCollectionEntry(
@@ -337,31 +337,268 @@ Future<VariableCollection?> _importStyles(
   );
 }
 
-Value? _convertPaintToValue(figma_api.Paint paint) {
-  final type = paint.type;
+Future<Alias?> _resolveBoundAlias(
+  dynamic boundVariables,
+  String field,
+  ImportContext<FigmaImportOptions> context,
+) async {
+  if (boundVariables is Map) {
+    final aliasValue = boundVariables[field];
+    if (aliasValue is Map) {
+      return _convertVariableAlias(aliasValue, context);
+    }
+  }
+  return null;
+}
 
-  if (type == 'SOLID') {
-    final color = paint.color;
-    if (color != null) {
-      final opacity = paint.opacity ?? 1.0;
-      return Value(
-        color: ColorValue(
-          value: Color(
-            red: color.r.toDouble(),
-            green: color.g.toDouble(),
-            blue: color.b.toDouble(),
-            alpha: opacity.toDouble(),
-            colorSpace: ColorSpace.COLOR_SPACE_SRGB,
-          ),
-        ),
+ColorValue? _colorValueFromComponents({
+  required num red,
+  required num green,
+  required num blue,
+  required num alpha,
+  Alias? alias,
+}) {
+  if (alias != null) {
+    return ColorValue(alias: alias);
+  }
+
+  return ColorValue(
+    value: Color(
+      red: red.toDouble(),
+      green: green.toDouble(),
+      blue: blue.toDouble(),
+      alpha: alpha.toDouble(),
+      colorSpace: ColorSpace.COLOR_SPACE_SRGB,
+    ),
+  );
+}
+
+ColorValue? _colorValueFromPaintColor(
+  dynamic color,
+  double opacity,
+  Alias? alias,
+) {
+  if (color is figma_api.RGB) {
+    return _colorValueFromComponents(
+      red: color.r,
+      green: color.g,
+      blue: color.b,
+      alpha: opacity,
+      alias: alias,
+    );
+  }
+
+  if (color is figma_api.RGBA) {
+    return _colorValueFromComponents(
+      red: color.r,
+      green: color.g,
+      blue: color.b,
+      alpha: color.a * opacity,
+      alias: alias,
+    );
+  }
+
+  if (color is Map) {
+    final red = color['r'] as num?;
+    final green = color['g'] as num?;
+    final blue = color['b'] as num?;
+    final alpha = (color['a'] as num?) ?? 1.0;
+
+    if (red != null && green != null && blue != null) {
+      return _colorValueFromComponents(
+        red: red,
+        green: green,
+        blue: blue,
+        alpha: alpha * opacity,
+        alias: alias,
       );
     }
   }
 
-  // TODO: Add gradient support when needed
-  // if (type == 'GRADIENT_LINEAR' || type == 'GRADIENT_RADIAL' || type == 'GRADIENT_ANGULAR') {
-  //   ...
-  // }
+  return alias != null ? ColorValue(alias: alias) : null;
+}
+
+List<List<double>>? _parseTransform(dynamic transformValue) {
+  if (transformValue == null) {
+    return null;
+  }
+
+  final dartValue = transformValue is JSAny
+      ? transformValue.dartify()
+      : transformValue;
+  if (dartValue is! List || dartValue.length < 2) {
+    return null;
+  }
+
+  final row0 = dartValue[0];
+  final row1 = dartValue[1];
+  if (row0 is! List || row1 is! List || row0.length < 3 || row1.length < 3) {
+    return null;
+  }
+
+  return [
+    [
+      (row0[0] as num).toDouble(),
+      (row0[1] as num).toDouble(),
+      (row0[2] as num).toDouble(),
+    ],
+    [
+      (row1[0] as num).toDouble(),
+      (row1[1] as num).toDouble(),
+      (row1[2] as num).toDouble(),
+    ],
+  ];
+}
+
+Offset _transformPoint(List<List<double>> transform, double x, double y) {
+  final transformedX =
+      transform[0][0] * x + transform[0][1] * y + transform[0][2];
+  final transformedY =
+      transform[1][0] * x + transform[1][1] * y + transform[1][2];
+  return Offset(x: transformedX, y: transformedY);
+}
+
+Offset _alignmentOffset(Offset point) {
+  return Offset(x: point.x * 2 - 1, y: point.y * 2 - 1);
+}
+
+LinearGradient _linearGradientFromStops(
+  List<GradientStop> stops,
+  List<List<double>>? transform,
+) {
+  if (transform == null) {
+    return LinearGradient(
+      stops: stops,
+      begin: Offset(x: -1.0, y: 0.0),
+      end: Offset(x: 1.0, y: 0.0),
+    );
+  }
+
+  final rawBegin = _transformPoint(transform, 0.0, 0.0);
+  final rawEnd = _transformPoint(transform, 1.0, 0.0);
+
+  return LinearGradient(
+    stops: stops,
+    begin: _alignmentOffset(rawBegin),
+    end: _alignmentOffset(rawEnd),
+  );
+}
+
+RadialGradient _radialGradientFromStops(
+  List<GradientStop> stops,
+  List<List<double>>? transform,
+) {
+  if (transform == null) {
+    return RadialGradient(
+      stops: stops,
+      center: Offset(x: 0.0, y: 0.0),
+      radius: 0.5,
+    );
+  }
+
+  final rawCenter = _transformPoint(transform, 0.5, 0.5);
+  final radiusPoint = _transformPoint(transform, 1.0, 0.5);
+  final dx = radiusPoint.x - rawCenter.x;
+  final dy = radiusPoint.y - rawCenter.y;
+  final radius = math.sqrt(dx * dx + dy * dy);
+
+  return RadialGradient(
+    stops: stops,
+    center: _alignmentOffset(rawCenter),
+    radius: radius,
+  );
+}
+
+Future<List<GradientStop>> _convertGradientStops(
+  figma_api.Paint paint,
+  ImportContext<FigmaImportOptions> context,
+) async {
+  final gradientStopsValue = paint.getProperty('gradientStops'.jsify()!);
+  if (gradientStopsValue == null) {
+    return [];
+  }
+
+  final stopsValue = gradientStopsValue.dartify();
+  if (stopsValue is! List) {
+    return [];
+  }
+
+  final opacity = (paint.opacity ?? 1.0).toDouble();
+  final stops = <GradientStop>[];
+
+  for (final stopValue in stopsValue) {
+    if (stopValue is! Map) {
+      continue;
+    }
+
+    final positionValue = stopValue['position'];
+    if (positionValue is! num) {
+      continue;
+    }
+
+    final alias = await _resolveBoundAlias(
+      stopValue['boundVariables'],
+      'color',
+      context,
+    );
+    final colorValue = _colorValueFromPaintColor(
+      stopValue['color'],
+      opacity,
+      alias,
+    );
+
+    if (colorValue != null) {
+      stops.add(
+        GradientStop(offset: positionValue.toDouble(), color: colorValue),
+      );
+    }
+  }
+
+  return stops;
+}
+
+Future<Value?> _convertPaintToValue(
+  figma_api.Paint paint,
+  ImportContext<FigmaImportOptions> context,
+) async {
+  final type = paint.type;
+
+  if (type == 'SOLID') {
+    final boundVariablesValue = paint.getProperty('boundVariables'.jsify()!);
+    final boundVariables = boundVariablesValue == null
+        ? null
+        : boundVariablesValue.dartify();
+    final alias = await _resolveBoundAlias(boundVariables, 'color', context);
+    final colorValue = _colorValueFromPaintColor(
+      paint.color,
+      (paint.opacity ?? 1.0).toDouble(),
+      alias,
+    );
+
+    if (colorValue != null) {
+      return Value(color: colorValue);
+    }
+  }
+
+  if (type == 'GRADIENT_LINEAR' || type == 'GRADIENT_RADIAL') {
+    final stops = await _convertGradientStops(paint, context);
+    if (stops.isEmpty) {
+      return null;
+    }
+
+    final transformValue = paint.getProperty('gradientTransform'.jsify()!);
+    final transform = _parseTransform(transformValue);
+
+    if (type == 'GRADIENT_LINEAR') {
+      return Value(
+        gradient: Gradient(linear: _linearGradientFromStops(stops, transform)),
+      );
+    }
+
+    return Value(
+      gradient: Gradient(radial: _radialGradientFromStops(stops, transform)),
+    );
+  }
 
   return null;
 }
