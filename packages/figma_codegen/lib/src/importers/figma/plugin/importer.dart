@@ -7,6 +7,7 @@ import 'package:figma_codegen/src/importers/context.dart';
 import 'package:figma_codegen/src/importers/figma/base.dart';
 import 'package:figma_codegen/src/importers/figma/plugin/figma.dart'
     as figma_api;
+import 'package:figma_codegen/src/utils/dart/naming.dart';
 
 class FigmaImporter extends FigmaImporterBase {
   const FigmaImporter();
@@ -218,7 +219,7 @@ Future<Value> _convertVariableValue(
   }
 }
 
-/// Imports Figma styles (paint, text, effect) as a "Styles" variable collection.
+/// Imports Figma styles (paint, text, effect) as a styles variable collection.
 Future<VariableCollection?> _importStyles(
   ImportContext<FigmaImportOptions> context,
 ) async {
@@ -331,7 +332,7 @@ Future<VariableCollection?> _importStyles(
 
   return VariableCollection(
     id: context.identifiers.get('variable_collection/styles'),
-    name: 'Styles',
+    name: Naming.typeName(context.options.naming.stylesCollection),
     variables: entries,
     variants: [VariableCollectionVariant(name: 'default', values: values)],
   );

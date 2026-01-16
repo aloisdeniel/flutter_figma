@@ -6,10 +6,14 @@ class FigmaImportOptions {
     this.importStyles = true,
     this.fileKey,
     this.personalAccessToken,
+    this.naming = const (stylesCollection: 'Styles'),
   });
 
   /// Whether to import styles from the Figma file as a "Styles" collection.
   final bool importStyles;
+
+  /// Naming options for the imported collections.
+  final ({String stylesCollection}) naming;
 
   /// The Figma file key to import from.
   ///
