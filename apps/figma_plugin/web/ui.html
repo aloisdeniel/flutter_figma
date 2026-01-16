@@ -4,18 +4,15 @@
   <meta charset="utf-8">
   <title>Flutter Figma Code Generator</title>
   <style>
-    :root {
-      --bg-primary: #1e1e1e;
-      --bg-secondary: #2c2c2c;
-      --bg-tertiary: #383838;
-      --text-primary: #e0e0e0;
-      --text-secondary: #a0a0a0;
-      --text-muted: #757575;
-      --border-color: #444444;
-      --accent-color: #18a0fb;
-      --accent-hover: #0d8ee0;
-      --item-hover: #383838;
-      --item-selected: #2c3b49;
+    .figma-dark .options-button,
+    .figma-dark button,
+    .figma-dark pre {
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.45);
+    }
+
+    .figma-dark .options-popover,
+    .figma-dark .copy-notification {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
     }
 
     * {
@@ -25,12 +22,12 @@
     }
 
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
       height: 100vh;
       display: flex;
       flex-direction: column;
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      background: var(--figma-color-bg);
+      color: var(--figma-color-text);
       overflow: hidden;
     }
 
@@ -38,21 +35,25 @@
       flex: 1;
       display: flex;
       overflow: hidden;
+      background: var(--figma-color-bg);
     }
 
     .footer {
-      padding: 12px 16px;
-      border-top: 1px solid var(--border-color);
+      padding: 10px 12px;
+      border-top: 1px solid var(--figma-color-border);
       display: flex;
       justify-content: space-between;
       align-items: center;
-      background: var(--bg-secondary);
+      background: var(--figma-color-bg-secondary);
+      gap: 12px;
     }
 
     .footer-actions {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .options-button {
@@ -60,25 +61,32 @@
       display: flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      background: var(--bg-secondary);
+      padding: 6px 10px;
+      border: 1px solid var(--figma-color-border-strong);
+      border-radius: 6px;
+      background: var(--figma-color-bg);
       cursor: pointer;
       font-size: 11px;
       font-weight: 500;
-      color: var(--text-primary);
+      color: var(--figma-color-text);
       transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     }
 
     .options-button:hover {
-      background: var(--bg-tertiary);
-      border-color: #666;
+      background: var(--figma-color-bg-hover);
+      border-color: var(--figma-color-border-strong);
+    }
+
+    .options-button:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--figma-color-border-selected);
     }
 
     .options-button.active {
-      background: var(--bg-tertiary);
-      border-color: var(--accent-color);
+      background: var(--figma-color-bg-selected);
+      border-color: var(--figma-color-border-selected);
+      box-shadow: 0 0 0 2px var(--figma-color-border-selected);
     }
 
     .options-button-icon {
@@ -94,17 +102,17 @@
       position: absolute;
       bottom: calc(100% + 8px);
       left: 0;
-      min-width: 280px;
-      background: var(--bg-secondary);
-      border: 1px solid var(--border-color);
-      border-radius: 6px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      min-width: 260px;
+      background: var(--figma-color-bg-secondary);
+      border: 1px solid var(--figma-color-border-strong);
+      border-radius: 8px;
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
       opacity: 0;
       visibility: hidden;
       transform: translateY(8px);
       transition: all 0.2s ease;
       z-index: 1000;
-      padding: 12px;
+      padding: 10px;
     }
 
     .options-popover.show {
@@ -114,7 +122,7 @@
     }
 
     .options-section {
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .options-section:last-child {
@@ -125,30 +133,30 @@
       display: block;
       font-size: 10px;
       font-weight: 600;
-      color: var(--text-secondary);
+      color: var(--figma-color-text-secondary);
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
       margin-bottom: 8px;
     }
 
     .format-options {
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 6px;
     }
 
     .format-option {
       display: flex;
       align-items: center;
       gap: 8px;
-      padding: 8px;
-      border-radius: 4px;
+      padding: 6px 8px;
+      border-radius: 6px;
       cursor: pointer;
       transition: background 0.15s ease;
     }
 
     .format-option:hover {
-      background: var(--bg-tertiary);
+      background: var(--figma-color-bg-hover);
     }
 
     .format-option input[type="radio"] {
@@ -159,7 +167,7 @@
     .format-option label {
       flex: 1;
       font-size: 12px;
-      color: var(--text-primary);
+      color: var(--figma-color-text);
       cursor: pointer;
     }
 
@@ -174,12 +182,12 @@
       align-items: center;
       gap: 8px;
       padding: 6px 8px;
-      border-radius: 4px;
+      border-radius: 6px;
       transition: background 0.15s ease;
     }
 
     .export-option:hover {
-      background: var(--bg-tertiary);
+      background: var(--figma-color-bg-hover);
     }
 
     .export-option input[type="checkbox"] {
@@ -190,58 +198,76 @@
     .export-option label {
       flex: 1;
       font-size: 11px;
-      color: var(--text-primary);
+      color: var(--figma-color-text);
       cursor: pointer;
     }
 
     .export-option select {
       flex: 1;
       padding: 4px 8px;
-      border: 1px solid var(--border-color);
-      border-radius: 3px;
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      border: 1px solid var(--figma-color-border);
+      border-radius: 6px;
+      background: var(--figma-color-bg);
+      color: var(--figma-color-text);
       font-size: 11px;
       cursor: pointer;
     }
 
     .export-option select:focus {
       outline: none;
-      border-color: var(--accent-color);
+      box-shadow: 0 0 0 2px var(--figma-color-border-selected);
+      border-color: var(--figma-color-border-selected);
     }
 
     .options-divider {
       height: 1px;
-      background: var(--border-color);
-      margin: 12px 0;
+      background: var(--figma-color-border);
+      margin: 10px 0;
     }
 
     button {
       padding: 6px 12px;
-      border: 1px solid var(--border-color);
-      border-radius: 4px;
-      background: var(--bg-secondary);
+      border: 1px solid var(--figma-color-border-strong);
+      border-radius: 6px;
+      background: var(--figma-color-bg);
       cursor: pointer;
       font-size: 11px;
       font-weight: 500;
-      color: var(--text-primary);
+      color: var(--figma-color-text);
       transition: all 0.15s ease;
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     }
 
     button:hover {
-      background: var(--bg-tertiary);
-      border-color: #666;
+      background: var(--figma-color-bg-hover);
+      border-color: var(--figma-color-border-strong);
+    }
+
+    button:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--figma-color-border-selected);
     }
 
     button:active {
-      background: #444;
+      background: var(--figma-color-bg-pressed);
+    }
+
+    #copy-btn {
+      background: var(--figma-color-bg-brand);
+      border-color: var(--figma-color-bg-brand);
+      color: var(--figma-color-text-onbrand);
+    }
+
+    #copy-btn:hover {
+      background: var(--figma-color-bg-brand-hover);
+      border-color: var(--figma-color-bg-brand-hover);
     }
 
     .code-container {
       flex: 1;
       overflow: auto;
       padding: 16px;
-      background: var(--bg-primary);
+      background: var(--figma-color-bg);
     }
 
     pre {
@@ -251,12 +277,12 @@
       line-height: 1.6;
       white-space: pre-wrap;
       word-wrap: break-word;
-      background: var(--bg-secondary);
-      color: var(--text-primary);
+      background: var(--figma-color-bg-secondary);
+      color: var(--figma-color-text);
       padding: 16px;
-      border-radius: 6px;
-      border: 1px solid var(--border-color);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+      border-radius: 8px;
+      border: 1px solid var(--figma-color-border);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
     }
 
     .placeholder {
@@ -264,36 +290,46 @@
       align-items: center;
       justify-content: center;
       height: 100%;
-      color: var(--text-muted);
+      color: var(--figma-color-text-tertiary);
       font-size: 13px;
       text-align: center;
       padding: 32px;
     }
 
     .placeholder-content {
-      max-width: 300px;
+      max-width: 280px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      align-items: center;
     }
 
     .placeholder-icon {
-      font-size: 48px;
-      margin-bottom: 16px;
-      opacity: 0.3;
+      width: 56px;
+      height: 56px;
+      border-radius: 16px;
+      background: var(--figma-color-bg-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 28px;
+      color: var(--figma-color-text-secondary);
     }
 
     .copy-notification {
       position: fixed;
       top: 16px;
       right: 16px;
-      background: var(--accent-color);
-      color: white;
-      padding: 8px 16px;
-      border-radius: 4px;
+      background: var(--figma-color-bg-inverse);
+      color: var(--figma-color-text-oninverse);
+      padding: 8px 14px;
+      border-radius: 8px;
       font-size: 12px;
       font-weight: 500;
       opacity: 0;
       transition: opacity 0.2s ease;
       pointer-events: none;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
     }
 
     .copy-notification.show {
@@ -302,7 +338,7 @@
 
     .status-indicator {
       font-size: 11px;
-      color: var(--text-secondary);
+      color: var(--figma-color-text-secondary);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -312,7 +348,7 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--accent-color);
+      background: var(--figma-color-bg-brand);
       animation: pulse 2s infinite;
     }
 
@@ -355,9 +391,9 @@
           </div>
         </div>
 
-        <div class="options-divider"></div>
 
         <div class="options-section" id="export-options-section">
+          <div class="options-divider"></div>
           <span class="options-label">Options</span>
           <div class="export-options" id="export-options">
             <!-- Options will be dynamically inserted based on format -->
@@ -472,9 +508,9 @@
       const statusDot = document.querySelector('.status-dot');
       statusText.textContent = text;
       if (hasCode) {
-        statusDot.style.background = '#0ac97f';
+        statusDot.style.background = 'var(--figma-color-bg-success)';
       } else {
-        statusDot.style.background = '#18a0fb';
+        statusDot.style.background = 'var(--figma-color-bg-brand)';
       }
     }
 

@@ -24,7 +24,8 @@ OutputFormat _currentFormat = OutputFormat.dart;
 Map<String, dynamic> _currentOptions = {};
 
 void main() {
-  figma.showUI(htmlContent, ShowUIOptions(width: 800, height: 600));
+  final uiOptions = ShowUIOptions(width: 800, height: 600)..themeColors = true;
+  figma.showUI(htmlContent, uiOptions);
 
   // Listen for selection changes
   figma.on(
