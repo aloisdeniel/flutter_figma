@@ -217,6 +217,45 @@ void _writeVariablesWidget(
     // Fields
     buffer.writeln('final VariableMode mode;');
     buffer.writeln('final VariableCollections data;');
+    buffer.writeln();
+
+    // Factory override constructor
+    buffer.writeln('factory Variables.override(');
+    buffer.indent();
+    buffer.writeln('fl.BuildContext context, {');
+    buffer.indent();
+    buffer.writeln('fl.Key? key,');
+    buffer.writeln('required fl.Widget child,');
+    for (final collection in context.collections) {
+      if (collection.variants.length > 1) {
+        final typeName = Naming.typeName(collection.name);
+        final fieldName = Naming.fieldName(collection.name);
+        buffer.writeln('${typeName}Mode? $fieldName,');
+      }
+    }
+    buffer.unindent();
+    buffer.writeln('}) {');
+    buffer.indent();
+    buffer.writeln('final mode = Variables.modeOf(context);');
+    buffer.writeln('return Variables(');
+    buffer.indent();
+    buffer.writeln('key: key,');
+    buffer.writeln('mode: mode!.copyWith(');
+    buffer.indent();
+    for (final collection in context.collections) {
+      if (collection.variants.length > 1) {
+        final fieldName = Naming.fieldName(collection.name);
+        buffer.writeln('$fieldName: $fieldName,');
+      }
+    }
+    buffer.unindent();
+    buffer.writeln('),');
+    buffer.writeln('child: child,');
+    buffer.unindent();
+    buffer.writeln(');');
+    buffer.unindent();
+    buffer.writeln('}');
+    buffer.unindent();
   } else {
     // Constructor without mode parameter (all single-mode)
     buffer.writeln('Variables({super.key, required super.child})');
