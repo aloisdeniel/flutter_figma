@@ -10,6 +10,10 @@ void _generateInheritedWidget(DartBuffer buffer, FlutterExportContext context) {
     // Generate VariableMode typedef (record of all mode enums for multi-mode collections)
     _writeVariableModeTypedef(buffer, context);
     buffer.writeln();
+
+    // Generate extension with copyWith for VariableMode
+    _writeVariableModeExtension(buffer, context);
+    buffer.writeln();
   }
 
   // Generate VariableCollections class
@@ -36,6 +40,49 @@ void _writeVariableModeTypedef(
   if (modeFields.isNotEmpty) {
     buffer.writeln('typedef VariableMode = ({${modeFields.join(', ')}});');
   }
+}
+
+void _writeVariableModeExtension(
+  DartBuffer buffer,
+  FlutterExportContext context,
+) {
+  final modeFields = <({String typeName, String fieldName})>[];
+  for (final collection in context.collections) {
+    if (collection.variants.length > 1) {
+      modeFields.add((
+        typeName: Naming.typeName(collection.name),
+        fieldName: Naming.fieldName(collection.name),
+      ));
+    }
+  }
+
+  if (modeFields.isEmpty) {
+    return;
+  }
+
+  buffer.writeln('extension VariableModeExtension on VariableMode {');
+  buffer.indent();
+  buffer.writeln('VariableMode copyWith({');
+  buffer.indent();
+  for (final field in modeFields) {
+    buffer.writeln('${field.typeName}Mode? ${field.fieldName},');
+  }
+  buffer.unindent();
+  buffer.writeln('}) {');
+  buffer.indent();
+  buffer.writeln('return (');
+  buffer.indent();
+  for (final field in modeFields) {
+    buffer.writeln(
+      '${field.fieldName}: ${field.fieldName} ?? this.${field.fieldName},',
+    );
+  }
+  buffer.unindent();
+  buffer.writeln(');');
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.unindent();
+  buffer.writeln('}');
 }
 
 void _writeVariableCollectionsClass(
