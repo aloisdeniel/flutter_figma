@@ -16,12 +16,22 @@ extension type ExportOptions._(JSObject _) implements JSObject {
   external bool? get prettyPrint;
   external String? get colorFormat;
   external bool? get includeComments;
+  external String? get stylesCollectionName;
+  external String? get rootName;
 }
 
 enum OutputFormat { dart, json }
 
 OutputFormat _currentFormat = OutputFormat.dart;
 Map<String, dynamic> _currentOptions = {};
+
+String? _normalizeOption(String? value) {
+  final trimmed = value?.trim();
+  if (trimmed == null || trimmed.isEmpty) {
+    return null;
+  }
+  return trimmed;
+}
 
 void main() {
   final uiOptions = ShowUIOptions(width: 800, height: 600)..themeColors = true;
@@ -54,12 +64,16 @@ void main() {
           if (opts.colorFormat != null) 'colorFormat': opts.colorFormat,
           if (opts.includeComments != null)
             'includeComments': opts.includeComments,
+          if (opts.stylesCollectionName != null)
+            'stylesCollectionName': opts.stylesCollectionName,
+          if (opts.rootName != null) 'rootName': opts.rootName,
         };
       }
 
       _generateCode();
       return;
     }
+
     if (msg.type == 'close') {
       figma.closePlugin();
       return;
@@ -70,17 +84,30 @@ void main() {
 Future<void> _generateCode() async {
   print('Generating code...');
 
+  final stylesCollectionName = _normalizeOption(
+    _currentOptions['stylesCollectionName'] as String?,
+  );
+
+  final importOptions = stylesCollectionName == null
+      ? const FigmaImportOptions()
+      : FigmaImportOptions(
+          naming: (stylesCollection: stylesCollectionName),
+        );
+
   final importer = FigmaImporter();
   final library = await importer.importVariableCollections(
-    ImportContext(const FigmaImportOptions()),
+    ImportContext(importOptions),
   );
 
   String variablesCode;
   switch (_currentFormat) {
     case OutputFormat.dart:
       final generator = FlutterExporter();
+      final rootName = _normalizeOption(_currentOptions['rootName'] as String?);
+      final flutterNaming = (root: rootName ?? 'Variables');
       variablesCode = await generator.exportVariableCollections(
-          FlutterExportContext(collections: library));
+        FlutterExportContext(collections: library, naming: flutterNaming),
+      );
       break;
     case OutputFormat.json:
       final generator = JsonExporter();

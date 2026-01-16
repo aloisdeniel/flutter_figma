@@ -202,7 +202,8 @@
       cursor: pointer;
     }
 
-    .export-option select {
+    .export-option select,
+    .export-option input[type="text"] {
       flex: 1;
       padding: 4px 8px;
       border: 1px solid var(--figma-color-border);
@@ -213,7 +214,12 @@
       cursor: pointer;
     }
 
-    .export-option select:focus {
+    .export-option input[type="text"] {
+      cursor: text;
+    }
+
+    .export-option select:focus,
+    .export-option input[type="text"]:focus {
       outline: none;
       box-shadow: 0 0 0 2px var(--figma-color-border-selected);
       border-color: var(--figma-color-border-selected);
@@ -416,8 +422,14 @@
     let currentCode = '';
     let currentFormat = 'dart';
     let exportOptions = {
-      dart: {},
-      json: { prettyPrint: true },
+      dart: {
+        stylesCollectionName: 'Styles',
+        rootName: 'Variables',
+      },
+      json: {
+        prettyPrint: true,
+        stylesCollectionName: 'Styles',
+      },
     };
 
     // Auto-generate code on load
@@ -569,15 +581,44 @@
       optionsContainer.innerHTML = '';
 
       if (currentFormat === 'dart') {
-        optionsSection.style.display = 'none';
+        optionsSection.style.display = 'block';
+        optionsContainer.innerHTML = `
+          <div class="export-option">
+            <label for="dart-styles">Styles collection</label>
+            <input type="text" id="dart-styles" value="${escapeHtml(exportOptions.dart.stylesCollectionName || '')}">
+          </div>
+          <div class="export-option">
+            <label for="dart-root">Root class</label>
+            <input type="text" id="dart-root" value="${escapeHtml(exportOptions.dart.rootName || '')}">
+          </div>
+        `;
+
+        document.getElementById('dart-styles').addEventListener('input', (e) => {
+          exportOptions.dart.stylesCollectionName = e.target.value;
+          regenerateCode();
+        });
+
+        document.getElementById('dart-root').addEventListener('input', (e) => {
+          exportOptions.dart.rootName = e.target.value;
+          regenerateCode();
+        });
       } else if (currentFormat === 'json') {
         optionsSection.style.display = 'block';
         optionsContainer.innerHTML = `
+          <div class="export-option">
+            <label for="json-styles">Styles collection</label>
+            <input type="text" id="json-styles" value="${escapeHtml(exportOptions.json.stylesCollectionName || '')}">
+          </div>
           <div class="export-option">
             <input type="checkbox" id="json-pretty" ${exportOptions.json.prettyPrint ? 'checked' : ''}>
             <label for="json-pretty">Pretty Print</label>
           </div>
         `;
+
+        document.getElementById('json-styles').addEventListener('input', (e) => {
+          exportOptions.json.stylesCollectionName = e.target.value;
+          regenerateCode();
+        });
 
         document.getElementById('json-pretty').addEventListener('change', (e) => {
           exportOptions.json.prettyPrint = e.target.checked;
