@@ -1,32 +1,59 @@
 part of 'variables.dart';
 
 void _generateInheritedWidget(DartBuffer buffer, FlutterExportContext context) {
+  final rootTypeName = _rootTypeName(context);
+  final rootSingularTypeName = _rootSingularTypeName(context);
+
   // Check if we have any multi-mode collections
   final hasMultiModeCollections = context.collections.any(
     (c) => c.variants.length > 1,
   );
 
   if (hasMultiModeCollections) {
-    // Generate VariableMode typedef (record of all mode enums for multi-mode collections)
-    _writeVariableModeTypedef(buffer, context);
+    // Generate mode typedef (record of all mode enums for multi-mode collections)
+    _writeVariableModeTypedef(buffer, context, rootSingularTypeName);
     buffer.writeln();
 
-    // Generate extension with copyWith for VariableMode
-    _writeVariableModeExtension(buffer, context);
+    // Generate extension with copyWith for mode
+    _writeVariableModeExtension(buffer, context, rootSingularTypeName);
     buffer.writeln();
   }
 
-  // Generate VariableCollections class
-  _writeVariableCollectionsClass(buffer, context, hasMultiModeCollections);
+  // Generate collections class
+  _writeVariableCollectionsClass(
+    buffer,
+    context,
+    hasMultiModeCollections,
+    rootSingularTypeName,
+  );
   buffer.writeln();
 
-  // Generate Variables InheritedWidget
-  _writeVariablesWidget(buffer, context, hasMultiModeCollections);
+  // Generate root InheritedWidget
+  _writeVariablesWidget(
+    buffer,
+    context,
+    hasMultiModeCollections,
+    rootTypeName,
+    rootSingularTypeName,
+  );
+}
+
+String _rootTypeName(FlutterExportContext context) {
+  return Naming.typeName(context.naming.root);
+}
+
+String _rootSingularTypeName(FlutterExportContext context) {
+  final rootTypeName = _rootTypeName(context);
+  if (rootTypeName.endsWith('s') && rootTypeName.length > 1) {
+    return rootTypeName.substring(0, rootTypeName.length - 1);
+  }
+  return rootTypeName;
 }
 
 void _writeVariableModeTypedef(
   DartBuffer buffer,
   FlutterExportContext context,
+  String rootSingularTypeName,
 ) {
   final modeFields = <String>[];
   for (final collection in context.collections) {
@@ -38,13 +65,16 @@ void _writeVariableModeTypedef(
     }
   }
   if (modeFields.isNotEmpty) {
-    buffer.writeln('typedef VariableMode = ({${modeFields.join(', ')}});');
+    buffer.writeln(
+      'typedef ${rootSingularTypeName}Mode = ({${modeFields.join(', ')}});',
+    );
   }
 }
 
 void _writeVariableModeExtension(
   DartBuffer buffer,
   FlutterExportContext context,
+  String rootSingularTypeName,
 ) {
   final modeFields = <({String typeName, String fieldName})>[];
   for (final collection in context.collections) {
@@ -60,9 +90,11 @@ void _writeVariableModeExtension(
     return;
   }
 
-  buffer.writeln('extension VariableModeExtension on VariableMode {');
+  buffer.writeln(
+    'extension ${rootSingularTypeName}ModeExtension on ${rootSingularTypeName}Mode {',
+  );
   buffer.indent();
-  buffer.writeln('VariableMode copyWith({');
+  buffer.writeln('${rootSingularTypeName}Mode copyWith({');
   buffer.indent();
   for (final field in modeFields) {
     buffer.writeln('${field.typeName}Mode? ${field.fieldName},');
@@ -89,8 +121,9 @@ void _writeVariableCollectionsClass(
   DartBuffer buffer,
   FlutterExportContext context,
   bool hasMultiModeCollections,
+  String rootSingularTypeName,
 ) {
-  buffer.writeln('class VariableCollections {');
+  buffer.writeln('class ${rootSingularTypeName}Collections {');
   buffer.indent();
 
   // Private constructor
@@ -100,17 +133,17 @@ void _writeVariableCollectionsClass(
     constructorArgs.add('required this.$fieldName');
   }
   buffer.writeln(
-    'const VariableCollections._({${constructorArgs.join(', ')}});',
+    'const ${rootSingularTypeName}Collections._({${constructorArgs.join(', ')}});',
   );
   buffer.writeln();
 
   // Factory - different signature based on whether we have multi-mode collections
   if (hasMultiModeCollections) {
     buffer.writeln(
-      'factory VariableCollections.fromModes(VariableMode mode) {',
+      'factory ${rootSingularTypeName}Collections.fromModes(${rootSingularTypeName}Mode mode) {',
     );
   } else {
-    buffer.writeln('factory VariableCollections() {');
+    buffer.writeln('factory ${rootSingularTypeName}Collections() {');
   }
   buffer.indent();
 
@@ -146,7 +179,9 @@ void _writeVariableCollectionsClass(
     final fieldName = Naming.fieldName(collection.name);
     returnArgs.add('$fieldName: $fieldName');
   }
-  buffer.writeln('return VariableCollections._(${returnArgs.join(', ')});');
+  buffer.writeln(
+    'return ${rootSingularTypeName}Collections._(${returnArgs.join(', ')});',
+  );
 
   buffer.unindent();
   buffer.writeln('}');
@@ -200,27 +235,31 @@ void _writeVariablesWidget(
   DartBuffer buffer,
   FlutterExportContext context,
   bool hasMultiModeCollections,
+  String rootTypeName,
+  String rootSingularTypeName,
 ) {
-  buffer.writeln('class Variables extends fl.InheritedWidget {');
+  buffer.writeln('class ${rootTypeName} extends fl.InheritedWidget {');
   buffer.indent();
 
   if (hasMultiModeCollections) {
     // Constructor with mode parameter
     buffer.writeln(
-      'Variables({super.key, required super.child, required this.mode})',
+      '${rootTypeName}({super.key, required super.child, required this.mode})',
     );
     buffer.indent();
-    buffer.writeln(': data = VariableCollections.fromModes(mode);');
+    buffer.writeln(
+      ': data = ${rootSingularTypeName}Collections.fromModes(mode);',
+    );
     buffer.unindent();
     buffer.writeln();
 
     // Fields
-    buffer.writeln('final VariableMode mode;');
-    buffer.writeln('final VariableCollections data;');
+    buffer.writeln('final ${rootSingularTypeName}Mode mode;');
+    buffer.writeln('final ${rootSingularTypeName}Collections data;');
     buffer.writeln();
 
     // Factory override constructor
-    buffer.writeln('factory Variables.override(');
+    buffer.writeln('factory ${rootTypeName}.override(');
     buffer.indent();
     buffer.writeln('fl.BuildContext context, {');
     buffer.indent();
@@ -236,8 +275,8 @@ void _writeVariablesWidget(
     buffer.unindent();
     buffer.writeln('}) {');
     buffer.indent();
-    buffer.writeln('final mode = Variables.modeOf(context);');
-    buffer.writeln('return Variables(');
+    buffer.writeln('final mode = ${rootTypeName}.modeOf(context);');
+    buffer.writeln('return ${rootTypeName}(');
     buffer.indent();
     buffer.writeln('key: key,');
     buffer.writeln('mode: mode!.copyWith(');
@@ -258,20 +297,22 @@ void _writeVariablesWidget(
     buffer.unindent();
   } else {
     // Constructor without mode parameter (all single-mode)
-    buffer.writeln('Variables({super.key, required super.child})');
+    buffer.writeln('${rootTypeName}({super.key, required super.child})');
     buffer.indent();
-    buffer.writeln(': data = VariableCollections();');
+    buffer.writeln(': data = ${rootSingularTypeName}Collections();');
     buffer.unindent();
     buffer.writeln();
 
     // Fields
-    buffer.writeln('final VariableCollections data;');
+    buffer.writeln('final ${rootSingularTypeName}Collections data;');
   }
   buffer.writeln();
 
   // updateShouldNotify
   buffer.writeln('@override');
-  buffer.writeln('bool updateShouldNotify(covariant Variables oldWidget) {');
+  buffer.writeln(
+    'bool updateShouldNotify(covariant ${rootTypeName} oldWidget) {',
+  );
   buffer.indent();
   if (hasMultiModeCollections) {
     buffer.writeln('return mode != oldWidget.mode;');
@@ -284,11 +325,11 @@ void _writeVariablesWidget(
 
   // maybeOf
   buffer.writeln(
-    'static VariableCollections? maybeOf(fl.BuildContext context) {',
+    'static ${rootSingularTypeName}Collections? maybeOf(fl.BuildContext context) {',
   );
   buffer.indent();
   buffer.writeln(
-    'final instance = context.dependOnInheritedWidgetOfExactType<Variables>();',
+    'final instance = context.dependOnInheritedWidgetOfExactType<${rootTypeName}>();',
   );
   buffer.writeln('return instance?.data;');
   buffer.unindent();
@@ -296,10 +337,14 @@ void _writeVariablesWidget(
   buffer.writeln();
 
   // of
-  buffer.writeln('static VariableCollections of(fl.BuildContext context) {');
+  buffer.writeln(
+    'static ${rootSingularTypeName}Collections of(fl.BuildContext context) {',
+  );
   buffer.indent();
   buffer.writeln('final data = maybeOf(context);');
-  buffer.writeln("assert(data != null, 'No Variables found in context');");
+  buffer.writeln(
+    "assert(data != null, 'No ${rootTypeName} found in context');",
+  );
   buffer.writeln('return data!;');
   buffer.unindent();
   buffer.writeln('}');
@@ -307,10 +352,12 @@ void _writeVariablesWidget(
   if (hasMultiModeCollections) {
     buffer.writeln();
     // modeOf
-    buffer.writeln('static VariableMode? modeOf(fl.BuildContext context) {');
+    buffer.writeln(
+      'static ${rootSingularTypeName}Mode? modeOf(fl.BuildContext context) {',
+    );
     buffer.indent();
     buffer.writeln(
-      'final instance = context.dependOnInheritedWidgetOfExactType<Variables>();',
+      'final instance = context.dependOnInheritedWidgetOfExactType<${rootTypeName}>();',
     );
     buffer.writeln('return instance?.mode;');
     buffer.unindent();

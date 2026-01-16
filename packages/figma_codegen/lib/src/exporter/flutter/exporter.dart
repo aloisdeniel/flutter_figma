@@ -6,7 +6,9 @@ class FlutterExportContext {
   const FlutterExportContext({
     required this.collections,
     this.currentCollectionId,
+    this.naming = const (root: 'Variables'),
   });
+  final ({String root}) naming;
   final List<VariableCollection> collections;
   final int? currentCollectionId;
 
@@ -17,6 +19,7 @@ class FlutterExportContext {
     return FlutterExportContext(
       collections: collections,
       currentCollectionId: collectionId,
+      naming: naming,
     );
   }
 
