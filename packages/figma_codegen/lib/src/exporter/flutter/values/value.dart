@@ -56,7 +56,7 @@ class FlutterValueExporter {
       Value_Type.cornerRadius => 'fl.BorderRadius',
       Value_Type.gradient => 'fl.Gradient',
       Value_Type.boolean => 'bool',
-      Value_Type.stringValue => 'string',
+      Value_Type.stringValue => 'String',
       Value_Type.doubleValue => 'double',
       Value_Type.borderSide => 'fl.BorderSide',
       Value_Type.textStyle => 'fl.TextStyle',
