@@ -1,4 +1,22 @@
-part of 'collection.dart';
+import 'package:figma_codegen/src/definitions/variables.dart';
+import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
+import 'package:figma_codegen/src/exporter/flutter/values/value.dart';
+import 'package:figma_codegen/src/utils/dart/buffer.dart';
+import 'package:figma_codegen/src/utils/dart/dart.dart';
+import 'package:figma_codegen/src/utils/dart/naming.dart';
+
+void writeFlatCollectionDataClass(
+  FlutterExportContext context,
+  DartBuffer buffer,
+  VariableCollection definition,
+) {
+  // Choose generation strategy based on number of variants
+  if (definition.variants.length == 1) {
+    _writeSingleModeClass(context, buffer, definition);
+  } else {
+    _writeMultiModeClasses(context, buffer, definition);
+  }
+}
 
 /// Generates a simple class for collections with only one mode/variant.
 void _writeSingleModeClass(

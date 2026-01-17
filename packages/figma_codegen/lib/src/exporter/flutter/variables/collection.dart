@@ -1,11 +1,8 @@
 import 'package:figma_codegen/src/definitions/variables.dart';
 import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
-import 'package:figma_codegen/src/exporter/flutter/values/value.dart';
+import 'package:figma_codegen/src/exporter/flutter/variables/collection.flat_data.dart';
+import 'package:figma_codegen/src/exporter/flutter/variables/collection.tree_data.dart';
 import 'package:figma_codegen/src/utils/dart/buffer.dart';
-import 'package:figma_codegen/src/utils/dart/dart.dart';
-import 'package:figma_codegen/src/utils/dart/naming.dart';
-
-part 'collection.data.dart';
 
 class VariableCollectionDartExporter {
   const VariableCollectionDartExporter();
@@ -16,11 +13,10 @@ class VariableCollectionDartExporter {
     VariableCollection value,
   ) {
     final collectionContext = context.withCurrentCollectionId(value.id);
-    // Choose generation strategy based on number of variants
-    if (value.variants.length == 1) {
-      _writeSingleModeClass(collectionContext, buffer, value);
+    if (context.collectionStructure == VariableCollectionDataStructure.flat) {
+      writeFlatCollectionDataClass(collectionContext, buffer, value);
     } else {
-      _writeMultiModeClasses(collectionContext, buffer, value);
+      writeTreeCollectionDataClasse(collectionContext, buffer, value);
     }
   }
 }

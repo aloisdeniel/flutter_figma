@@ -2,15 +2,19 @@ import 'package:figma_codegen/src/definitions/variables.dart';
 import 'package:figma_codegen/src/exporter/flutter/variables/variables.dart';
 import 'package:figma_codegen/src/utils/dart/buffer.dart';
 
+enum VariableCollectionDataStructure { flat, tree }
+
 class FlutterExportContext {
   const FlutterExportContext({
     required this.collections,
     this.currentCollectionId,
     this.naming = const (root: 'Variables'),
+    this.collectionStructure = VariableCollectionDataStructure.flat,
   });
   final ({String root}) naming;
   final List<VariableCollection> collections;
   final int? currentCollectionId;
+  final VariableCollectionDataStructure collectionStructure;
 
   /// Returns a new context with the specified current collection ID.
   ///
@@ -20,6 +24,7 @@ class FlutterExportContext {
       collections: collections,
       currentCollectionId: collectionId,
       naming: naming,
+      collectionStructure: collectionStructure,
     );
   }
 
