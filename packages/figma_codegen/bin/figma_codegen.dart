@@ -6,6 +6,7 @@ import 'package:args/args.dart';
 import 'package:figma_codegen/src/cli/exceptions.dart';
 import 'package:figma_codegen/src/cli/output_format.dart';
 import 'package:figma_codegen/src/cli/runner.dart';
+import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
 
 const String version = '1.0.0';
 
@@ -24,6 +25,12 @@ void main(List<String> arguments) async {
       help: 'Output format (json, or dart)',
       mandatory: true,
       allowed: ['json', 'dart'],
+    )
+    ..addOption(
+      'collection-structure',
+      help: 'Dart collection structure (flat, or tree)',
+      defaultsTo: 'flat',
+      allowed: ['flat', 'tree'],
     )
     ..addFlag(
       'pretty',
@@ -59,11 +66,17 @@ void main(List<String> arguments) async {
 
     final format = OutputFormat.fromString(results['format'] as String);
 
+    final structureValue = results['collection-structure'] as String;
+    final collectionStructure = structureValue == 'tree'
+        ? VariableCollectionDataStructure.tree
+        : VariableCollectionDataStructure.flat;
+
     final runner = CliRunner(
       inputPath: results['input'] as String,
       outputPath: results['output'] as String,
       format: format,
       prettyPrint: results['pretty'] as bool,
+      collectionStructure: collectionStructure,
     );
 
     await runner.run();
@@ -96,7 +109,9 @@ void _printUsage(ArgParser parser) {
   stdout.writeln();
   stdout.writeln('Examples:');
   stdout.writeln('  figma_cli -i vars.json -o lib/theme/vars.dart -f dart');
-  stdout.writeln('  figma_cli -i vars.json -o styles.css -f css');
+  stdout.writeln(
+    '  figma_cli -i vars.json -o lib/theme/vars.dart -f dart --collection-structure tree',
+  );
   stdout.writeln(
     '  figma_cli --input vars.json --output output.json --format json',
   );

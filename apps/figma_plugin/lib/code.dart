@@ -18,6 +18,7 @@ extension type ExportOptions._(JSObject _) implements JSObject {
   external bool? get includeComments;
   external String? get stylesCollectionName;
   external String? get rootName;
+  external String? get collectionStructure;
 }
 
 enum OutputFormat { dart, json }
@@ -67,6 +68,8 @@ void main() {
           if (opts.stylesCollectionName != null)
             'stylesCollectionName': opts.stylesCollectionName,
           if (opts.rootName != null) 'rootName': opts.rootName,
+          if (opts.collectionStructure != null)
+            'collectionStructure': opts.collectionStructure,
         };
       }
 
@@ -104,9 +107,18 @@ Future<void> _generateCode() async {
     case OutputFormat.dart:
       final generator = FlutterExporter();
       final rootName = _normalizeOption(_currentOptions['rootName'] as String?);
+      final structureValue =
+          _normalizeOption(_currentOptions['collectionStructure'] as String?);
       final flutterNaming = (root: rootName ?? 'Variables');
+      final collectionStructure = structureValue == 'tree'
+          ? VariableCollectionDataStructure.tree
+          : VariableCollectionDataStructure.flat;
       variablesCode = await generator.exportVariableCollections(
-        FlutterExportContext(collections: library, naming: flutterNaming),
+        FlutterExportContext(
+          collections: library,
+          naming: flutterNaming,
+          collectionStructure: collectionStructure,
+        ),
       );
       break;
     case OutputFormat.json:

@@ -14,12 +14,14 @@ class CliRunner {
     required this.outputPath,
     required this.format,
     required this.prettyPrint,
+    this.collectionStructure = VariableCollectionDataStructure.flat,
   });
 
   final String inputPath;
   final String outputPath;
   final OutputFormat format;
   final bool prettyPrint;
+  final VariableCollectionDataStructure collectionStructure;
 
   Future<void> run() async {
     // Step 1: Read input file
@@ -68,7 +70,10 @@ class CliRunner {
 
         case OutputFormat.dart:
           final exporter = FlutterExporter();
-          final context = FlutterExportContext(collections: collections);
+          final context = FlutterExportContext(
+            collections: collections,
+            collectionStructure: collectionStructure,
+          );
           output = exporter.exportVariableCollections(context);
           break;
       }

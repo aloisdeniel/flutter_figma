@@ -191,8 +191,9 @@ void writeTreeCollectionDataClasse(
   void writeChildrenGetters(
     CollectionTreeNode node,
     List<String> pathSegments,
-    bool useOverride,
-  ) {
+    bool useOverride, {
+    VariableCollectionVariant? variant,
+  }) {
     final childEntries = node.children.entries.toList()
       ..sort((a, b) => a.key.compareTo(b.key));
     for (final entry in childEntries) {
@@ -202,7 +203,12 @@ void writeTreeCollectionDataClasse(
       if (useOverride) {
         buffer.writeln();
         buffer.writeln('@override');
-        buffer.writeln('final $childTypeName $fieldName = $childTypeName();');
+        final implementationType = variant == null
+            ? childTypeName
+            : '_${childTypeName.replaceFirst(dataClassName, '')}${Naming.typeName(variant.name)}';
+        buffer.writeln(
+          'final $childTypeName $fieldName = $implementationType();',
+        );
       } else {
         buffer.writeln('$childTypeName get $fieldName;');
       }
@@ -301,7 +307,7 @@ void writeTreeCollectionDataClasse(
     buffer.indent();
     buffer.writeln('$variantClassName();');
 
-    writeChildrenGetters(node, pathSegments, true);
+    writeChildrenGetters(node, pathSegments, true, variant: variant);
     for (final variable in node.variables) {
       writeMultiModeLeafGetter(variable, variant);
     }
@@ -313,11 +319,10 @@ void writeTreeCollectionDataClasse(
     final childEntries = node.children.entries.toList()
       ..sort((a, b) => a.key.compareTo(b.key));
     for (final entry in childEntries) {
-      writeMultiModeVariantNode(
-        entry.value,
-        [...pathSegments, entry.key],
-        variant,
-      );
+      writeMultiModeVariantNode(entry.value, [
+        ...pathSegments,
+        entry.key,
+      ], variant);
     }
   }
 

@@ -398,6 +398,7 @@
       dart: {
         stylesCollectionName: 'Styles',
         rootName: 'Variables',
+        collectionStructure: 'flat',
       },
       json: {
         prettyPrint: true,
@@ -533,6 +534,13 @@
             <label for="dart-root">Root class</label>
             <input type="text" id="dart-root" value="${escapeHtml(exportOptions.dart.rootName || '')}">
           </div>
+          <div class="export-option">
+            <label for="dart-structure">Collection structure</label>
+            <select id="dart-structure">
+              <option value="flat" ${exportOptions.dart.collectionStructure === 'flat' ? 'selected' : ''}>Flat</option>
+              <option value="tree" ${exportOptions.dart.collectionStructure === 'tree' ? 'selected' : ''}>Tree</option>
+            </select>
+          </div>
         `;
 
         document.getElementById('dart-styles').addEventListener('input', (e) => {
@@ -542,6 +550,11 @@
 
         document.getElementById('dart-root').addEventListener('input', (e) => {
           exportOptions.dart.rootName = e.target.value;
+          regenerateCode();
+        });
+
+        document.getElementById('dart-structure').addEventListener('change', (e) => {
+          exportOptions.dart.collectionStructure = e.target.value;
           regenerateCode();
         });
       } else if (currentFormat === 'json') {
