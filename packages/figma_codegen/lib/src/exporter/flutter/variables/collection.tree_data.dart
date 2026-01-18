@@ -99,7 +99,7 @@ void writeTreeCollectionDataClasse(
     return Naming.fieldName(segment);
   }
 
-  void writeAliasRecord() {
+  void writeAliasField({required bool isLate}) {
     if (aliasedCollections.isEmpty) return;
     final aliasFields = <String>[];
     for (final entry in aliasedCollections.entries) {
@@ -108,8 +108,11 @@ void writeTreeCollectionDataClasse(
       final fieldName = Naming.fieldName(collectionName);
       aliasFields.add('$typeName $fieldName');
     }
-    buffer.writeln('late ({${aliasFields.join(', ')}}) alias;');
-    buffer.writeln();
+    final modifier = isLate ? 'late ' : 'final ';
+    buffer.writeln('${modifier}({${aliasFields.join(', ')}}) alias;');
+    if (isLate) {
+      buffer.writeln();
+    }
   }
 
   void writeVariantEnum() {
@@ -206,8 +209,11 @@ void writeTreeCollectionDataClasse(
         final implementationType = variant == null
             ? childTypeName
             : '_${childTypeName.replaceFirst(dataClassName, '')}${Naming.typeName(variant.name)}';
+        final constructorArgs = variant != null && aliasedCollections.isNotEmpty
+            ? '(alias: alias)'
+            : '()';
         buffer.writeln(
-          'final $childTypeName $fieldName = $implementationType();',
+          'final $childTypeName $fieldName = $implementationType$constructorArgs;',
         );
       } else {
         buffer.writeln('$childTypeName get $fieldName;');
@@ -223,7 +229,7 @@ void writeTreeCollectionDataClasse(
     buffer.writeln();
 
     if (pathSegments.isEmpty) {
-      writeAliasRecord();
+      writeAliasField(isLate: true);
     }
 
     writeChildrenGetters(node, pathSegments, true);
@@ -265,7 +271,11 @@ void writeTreeCollectionDataClasse(
             '_${typeName.replaceFirst(dataClassName, '')}${Naming.typeName(variant.name)}';
         buffer.writeln('case ${baseTypeName}Mode.$variantEnumValue:');
         buffer.indent();
-        buffer.writeln('return $variantClassName();');
+        if (aliasedCollections.isNotEmpty) {
+          buffer.writeln('return $variantClassName(alias: alias);');
+        } else {
+          buffer.writeln('return $variantClassName();');
+        }
         buffer.unindent();
       }
       buffer.unindent();
@@ -274,7 +284,7 @@ void writeTreeCollectionDataClasse(
       buffer.writeln('}');
       buffer.writeln();
 
-      writeAliasRecord();
+      writeAliasField(isLate: true);
     }
 
     writeChildrenGetters(node, pathSegments, false);
@@ -305,7 +315,13 @@ void writeTreeCollectionDataClasse(
         '_${baseTypeNameLocal.replaceFirst(dataClassName, '')}$variantTypeSuffix';
     buffer.writeln('class $variantClassName extends $baseTypeNameLocal {');
     buffer.indent();
-    buffer.writeln('$variantClassName();');
+    if (aliasedCollections.isNotEmpty) {
+      buffer.writeln('$variantClassName({required this.alias});');
+      writeAliasField(isLate: false);
+      buffer.writeln();
+    } else {
+      buffer.writeln('$variantClassName();');
+    }
 
     writeChildrenGetters(node, pathSegments, true, variant: variant);
     for (final variable in node.variables) {
