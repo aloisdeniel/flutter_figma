@@ -23,10 +23,14 @@ export 'vector_graphics.pbenum.dart';
 class VectorGraphics extends $pb.GeneratedMessage {
   factory VectorGraphics({
     $core.String? name,
+    Vector? offset,
+    Vector? size,
     VectorNode? root,
   }) {
     final result = create();
     if (name != null) result.name = name;
+    if (offset != null) result.offset = offset;
+    if (size != null) result.size = size;
     if (root != null) result.root = root;
     return result;
   }
@@ -45,7 +49,9 @@ class VectorGraphics extends $pb.GeneratedMessage {
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'name')
-    ..aOM<VectorNode>(2, _omitFieldNames ? '' : 'root',
+    ..aOM<Vector>(2, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
+    ..aOM<Vector>(3, _omitFieldNames ? '' : 'size', subBuilder: Vector.create)
+    ..aOM<VectorNode>(4, _omitFieldNames ? '' : 'root',
         subBuilder: VectorNode.create)
     ..hasRequiredFields = false;
 
@@ -78,15 +84,37 @@ class VectorGraphics extends $pb.GeneratedMessage {
   void clearName() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  VectorNode get root => $_getN(1);
+  Vector get offset => $_getN(1);
   @$pb.TagNumber(2)
-  set root(VectorNode value) => $_setField(2, value);
+  set offset(Vector value) => $_setField(2, value);
   @$pb.TagNumber(2)
-  $core.bool hasRoot() => $_has(1);
+  $core.bool hasOffset() => $_has(1);
   @$pb.TagNumber(2)
-  void clearRoot() => $_clearField(2);
+  void clearOffset() => $_clearField(2);
   @$pb.TagNumber(2)
-  VectorNode ensureRoot() => $_ensure(1);
+  Vector ensureOffset() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  Vector get size => $_getN(2);
+  @$pb.TagNumber(3)
+  set size(Vector value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasSize() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearSize() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Vector ensureSize() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  VectorNode get root => $_getN(3);
+  @$pb.TagNumber(4)
+  set root(VectorNode value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasRoot() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearRoot() => $_clearField(4);
+  @$pb.TagNumber(4)
+  VectorNode ensureRoot() => $_ensure(3);
 }
 
 enum VectorNode_Type { network, group, frame, notSet }

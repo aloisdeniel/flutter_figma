@@ -127,8 +127,24 @@ const VectorGraphics$json = {
   '2': [
     {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
     {
-      '1': 'root',
+      '1': 'offset',
       '3': 2,
+      '5': 11,
+      '6': '.definitions.Vector',
+      '8': {},
+      '10': 'offset'
+    },
+    {
+      '1': 'size',
+      '3': 3,
+      '5': 11,
+      '6': '.definitions.Vector',
+      '8': {},
+      '10': 'size'
+    },
+    {
+      '1': 'root',
+      '3': 4,
       '5': 11,
       '6': '.definitions.VectorNode',
       '8': {},
@@ -139,8 +155,10 @@ const VectorGraphics$json = {
 
 /// Descriptor for `VectorGraphics`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List vectorGraphicsDescriptor = $convert.base64Decode(
-    'Cg5WZWN0b3JHcmFwaGljcxISCgRuYW1lGAEoCUIAUgRuYW1lEisKBHJvb3QYAigLMhcuZGVmaW'
-    '5pdGlvbnMuVmVjdG9yTm9kZUIAUgRyb290');
+    'Cg5WZWN0b3JHcmFwaGljcxISCgRuYW1lGAEoCUIAUgRuYW1lEisKBm9mZnNldBgCKAsyEy5kZW'
+    'Zpbml0aW9ucy5WZWN0b3JCAFIGb2Zmc2V0EicKBHNpemUYAygLMhMuZGVmaW5pdGlvbnMuVmVj'
+    'dG9yQgBSBHNpemUSKwoEcm9vdBgEKAsyFy5kZWZpbml0aW9ucy5WZWN0b3JOb2RlQgBSBHJvb3'
+    'Q=');
 
 @$core.Deprecated('Use vectorNodeDescriptor instead')
 const VectorNode$json = {

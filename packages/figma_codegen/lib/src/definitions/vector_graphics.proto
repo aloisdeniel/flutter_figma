@@ -6,7 +6,9 @@ package definitions;
 
 message VectorGraphics {
   string name = 1;
-  VectorNode root = 2;
+  Vector offset = 2;
+  Vector size = 3;
+  VectorNode root = 4;
 }
 
 message VectorNode {

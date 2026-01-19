@@ -30,7 +30,14 @@ class FigmaVectorNetworksImporter {
     for (final node in targets) {
       final root = await _vectorNode(node, context);
       if (root != null) {
-        result.add(VectorGraphics(name: node.name, root: root));
+        result.add(
+          VectorGraphics(
+            name: node.name,
+            offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
+            size: Vector(x: node.width.toDouble(), y: node.height.toDouble()),
+            root: root,
+          ),
+        );
       }
     }
 

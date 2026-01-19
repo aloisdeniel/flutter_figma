@@ -27,7 +27,25 @@ void _writeCustomPainter(
   VectorGraphics vectorGraphics,
   FlutterExportContext context,
 ) {
-  final className = '${Naming.typeName(vectorGraphics.name)}Painter';
+  final widgetName = Naming.typeName(vectorGraphics.name);
+  final className = '${widgetName}Painter';
+  final size = vectorGraphics.hasSize() ? vectorGraphics.size : Vector();
+
+  buffer.writeln('class $widgetName extends fl.StatelessWidget {');
+  buffer.indent();
+  buffer.writeln('const $widgetName({super.key});');
+  buffer.writeln();
+  buffer.writeln('@override');
+  buffer.writeln('fl.Widget build(fl.BuildContext context) {');
+  buffer.indent();
+  buffer.writeln(
+    'return fl.CustomPaint(size: const fl.Size(${_formatDouble(size.x)}, ${_formatDouble(size.y)}), painter: const $className());',
+  );
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.writeln();
 
   buffer.writeln('class $className extends fl.CustomPainter {');
   buffer.indent();
@@ -327,4 +345,12 @@ String _pathFillType(WindingRule rule) {
     WindingRule.NONZERO => 'ui.PathFillType.nonZero',
     _ => 'ui.PathFillType.nonZero',
   };
+}
+
+String _formatDouble(double value) {
+  var formatted = value.toString();
+  if (!formatted.contains('.')) {
+    formatted = '$formatted.0';
+  }
+  return formatted;
 }
