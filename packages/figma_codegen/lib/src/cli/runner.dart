@@ -82,8 +82,8 @@ class CliRunner {
             ),
             vectorGraphics: FlutterVectorGraphicsExportOptions(
               format: FlutterVectorGraphicsFormat.canvas,
+              vectorGraphics: library.vectorGraphics,
             ),
-            vectorNetworks: library.vectorNetworks,
           );
           output = exporter.exportVariableCollections(context);
           break;

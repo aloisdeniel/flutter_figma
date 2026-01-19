@@ -10,7 +10,7 @@ import 'package:figma_codegen/src/importers/figma/plugin/figma.dart'
 class FigmaVectorNetworksImporter {
   const FigmaVectorNetworksImporter();
 
-  Future<List<VectorNetwork>> import(
+  Future<List<VectorGraphics>> import(
     ImportContext<FigmaImportOptions> context,
   ) async {
     final selection = figma_api.figma.currentPage.selection.toDart;
@@ -25,11 +25,11 @@ class FigmaVectorNetworksImporter {
     final targets = componentNodes.isNotEmpty ? componentNodes : selection;
     print('Found ${targets.length} target nodes for vector network import.');
 
-    final networks = await Future.wait(
+    final vectors = await Future.wait(
       targets.map((node) => _vectorNetworkFromNode(node, context)),
     );
 
-    return networks.whereType<VectorNetwork>().toList(growable: false);
+    return vectors.whereType<VectorGraphics>().toList(growable: false);
   }
 }
 
@@ -41,7 +41,7 @@ figma_api.VectorNode? asVectorNode(figma_api.SceneNode node) {
   return null;
 }
 
-Future<VectorNetwork?> _vectorNetworkFromNode(
+Future<List<VectorNetwork>> _vectorNetworkFromNode(
   figma_api.SceneNode node,
   ImportContext<FigmaImportOptions> context,
 ) async {
@@ -50,24 +50,28 @@ Future<VectorNetwork?> _vectorNetworkFromNode(
   final vectorNode = asVectorNode(node);
   if (vectorNode != null) {
     print('Node is a VectorNode.');
-    return await _vectorNetworkFromVectorNode(vectorNode, node.name, context);
+    final network = await _vectorNetworkFromVectorNode(
+      vectorNode,
+      node.name,
+      context,
+    );
+    return network != null ? [network] : [];
   }
 
   final children = node.getProperty('children'.jsify()!);
   print('Children property: $children');
   if (children is! JSArray) {
-    return null;
+    return const [];
   }
 
+  // TODO only works for groups, we must manage frames too (coordinates, background, crop, ...)
   final dartChildren = children.toDart;
   for (final child in dartChildren) {
-    final vectorNode = asVectorNode(child as figma_api.SceneNode);
-    if (vectorNode != null) {
-      return await _vectorNetworkFromVectorNode(vectorNode, node.name, context);
-    }
+    print('Processing child node: $child');
+    return await _vectorNetworkFromNode(child as figma_api.SceneNode, context);
   }
 
-  return null;
+  return const [];
 }
 
 Future<VectorNetwork?> _vectorNetworkFromVectorNode(
@@ -91,7 +95,7 @@ Future<VectorNetwork?> _vectorNetworkFromVectorNode(
   if (rawRegions != null) {
     for (final region in rawRegions) {
       print('Processing region: $region for VectorNetwork: $name.');
-      final converted = await _vectorRegionFromFigma(region, node, context);
+      final converted = _vectorRegionFromFigma(region, node, context);
       if (converted != null) {
         regions.add(converted);
       }

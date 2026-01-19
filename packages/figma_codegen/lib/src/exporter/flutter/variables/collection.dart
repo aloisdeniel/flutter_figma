@@ -17,7 +17,6 @@ class VariableCollectionDartExporter {
     final collectionContext = FlutterExportContext(
       variables: context.variables.withCurrentCollectionId(value.id),
       vectorGraphics: context.vectorGraphics,
-      vectorNetworks: context.vectorNetworks,
     );
     if (context.variables.collectionStructure ==
         VariableCollectionDataStructure.flat) {

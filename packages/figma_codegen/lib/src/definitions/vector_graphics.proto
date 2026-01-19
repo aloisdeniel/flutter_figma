@@ -4,6 +4,11 @@ package definitions;
 
 // Network
 
+message VectorGraphics {
+  string name = 1;
+  repeated VectorNetwork networks = 2;
+}
+
 message VectorNetwork {
   string name = 1;
   repeated VectorVertex vertices = 2;

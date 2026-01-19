@@ -1,3 +1,5 @@
+import 'package:figma_codegen/src/definitions/vector_graphics.pb.dart';
+
 enum FlutterVectorGraphicsFormat {
   /// As a sequence of canvas drawing commands.
   canvas,
@@ -8,6 +10,7 @@ enum FlutterVectorGraphicsFormat {
 
 class FlutterVectorGraphicsExportOptions {
   const FlutterVectorGraphicsExportOptions({
+    required this.vectorGraphics,
     required this.format,
     this.stylesClass = false,
   });
@@ -17,4 +20,6 @@ class FlutterVectorGraphicsExportOptions {
 
   /// Generates a class with all the colors used to draw shapes and strokes.
   final bool stylesClass;
+
+  final List<VectorGraphics> vectorGraphics;
 }

@@ -11,6 +11,6 @@ class FigmaImporter extends FigmaImporterBase {
   Future<Library> import(ImportContext<FigmaImportOptions> context) async {
     final collections = await FigmaVariablesImporter().import(context);
     final vectorNetworks = await FigmaVectorNetworksImporter().import(context);
-    return Library(variables: collections, vectorNetworks: vectorNetworks);
+    return Library(variables: collections, vectorGraphics: vectorNetworks);
   }
 }

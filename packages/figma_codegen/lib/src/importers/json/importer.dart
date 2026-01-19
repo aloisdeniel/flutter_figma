@@ -38,18 +38,18 @@ class JsonImporter {
       throw FormatException('Expected a JSON array of VertexNetworks.');
     }
 
-    final vertexNetworks = decodedVertexNetworks
-        .map<VectorNetwork>((item) {
+    final vectorGraphics = decodedVertexNetworks
+        .map((item) {
           if (item is! Map<String, dynamic>) {
             throw FormatException(
               'Expected each item to be a JSON object representing a VertexNetwork.',
             );
           }
-          return VectorNetwork()..mergeFromProto3Json(item);
+          return VectorGraphics()..mergeFromProto3Json(item);
         })
-        .whereType<VectorNetwork>()
+        .whereType<VectorGraphics>()
         .toList();
 
-    return Library(vectorNetworks: vertexNetworks, variables: collecions);
+    return Library(vectorGraphics: vectorGraphics, variables: collecions);
   }
 }

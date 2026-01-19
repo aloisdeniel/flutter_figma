@@ -568,9 +568,7 @@ Future<Value?> _convertPaintToValue(
     final boundVariablesValue = paintStyle.getProperty(
       'boundVariables'.jsify()!,
     );
-    final boundVariables = boundVariablesValue == null
-        ? null
-        : boundVariablesValue.dartify();
+    final boundVariables = boundVariablesValue?.dartify();
     final alias = await _resolveBoundAlias(boundVariables, 'color', context);
     final colorValue = _colorValueFromPaintColor(
       paint.color,

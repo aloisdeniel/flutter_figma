@@ -121,6 +121,28 @@ final $typed_data.Uint8List gradientTypeDescriptor = $convert.base64Decode(
     'CgxHcmFkaWVudFR5cGUSCgoGTElORUFSEAASCgoGUkFESUFMEAESCwoHQU5HVUxBUhACEgsKB0'
     'RJQU1PTkQQAw==');
 
+@$core.Deprecated('Use vectorGraphicsDescriptor instead')
+const VectorGraphics$json = {
+  '1': 'VectorGraphics',
+  '2': [
+    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
+    {
+      '1': 'networks',
+      '3': 2,
+      '4': 3,
+      '5': 11,
+      '6': '.definitions.VectorNetwork',
+      '8': {},
+      '10': 'networks'
+    },
+  ],
+};
+
+/// Descriptor for `VectorGraphics`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List vectorGraphicsDescriptor = $convert.base64Decode(
+    'Cg5WZWN0b3JHcmFwaGljcxISCgRuYW1lGAEoCUIAUgRuYW1lEjgKCG5ldHdvcmtzGAIgAygLMh'
+    'ouZGVmaW5pdGlvbnMuVmVjdG9yTmV0d29ya0IAUghuZXR3b3Jrcw==');
+
 @$core.Deprecated('Use vectorNetworkDescriptor instead')
 const VectorNetwork$json = {
   '1': 'VectorNetwork',

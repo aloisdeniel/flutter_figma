@@ -20,6 +20,67 @@ export 'package:protobuf/protobuf.dart' show GeneratedMessageGenericExtensions;
 
 export 'vector_graphics.pbenum.dart';
 
+class VectorGraphics extends $pb.GeneratedMessage {
+  factory VectorGraphics({
+    $core.String? name,
+    $core.Iterable<VectorNetwork>? networks,
+  }) {
+    final result = create();
+    if (name != null) result.name = name;
+    if (networks != null) result.networks.addAll(networks);
+    return result;
+  }
+
+  VectorGraphics._();
+
+  factory VectorGraphics.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory VectorGraphics.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'VectorGraphics',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'name')
+    ..pPM<VectorNetwork>(2, _omitFieldNames ? '' : 'networks',
+        subBuilder: VectorNetwork.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorGraphics clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorGraphics copyWith(void Function(VectorGraphics) updates) =>
+      super.copyWith((message) => updates(message as VectorGraphics))
+          as VectorGraphics;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static VectorGraphics create() => VectorGraphics._();
+  @$core.override
+  VectorGraphics createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static VectorGraphics getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<VectorGraphics>(create);
+  static VectorGraphics? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get name => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set name($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasName() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearName() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $pb.PbList<VectorNetwork> get networks => $_getList(1);
+}
+
 class VectorNetwork extends $pb.GeneratedMessage {
   factory VectorNetwork({
     $core.String? name,
