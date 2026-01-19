@@ -127,30 +127,82 @@ const VectorGraphics$json = {
   '2': [
     {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
     {
-      '1': 'networks',
+      '1': 'root',
       '3': 2,
-      '4': 3,
       '5': 11,
-      '6': '.definitions.VectorNetwork',
+      '6': '.definitions.VectorNode',
       '8': {},
-      '10': 'networks'
+      '10': 'root'
     },
   ],
 };
 
 /// Descriptor for `VectorGraphics`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List vectorGraphicsDescriptor = $convert.base64Decode(
-    'Cg5WZWN0b3JHcmFwaGljcxISCgRuYW1lGAEoCUIAUgRuYW1lEjgKCG5ldHdvcmtzGAIgAygLMh'
-    'ouZGVmaW5pdGlvbnMuVmVjdG9yTmV0d29ya0IAUghuZXR3b3Jrcw==');
+    'Cg5WZWN0b3JHcmFwaGljcxISCgRuYW1lGAEoCUIAUgRuYW1lEisKBHJvb3QYAigLMhcuZGVmaW'
+    '5pdGlvbnMuVmVjdG9yTm9kZUIAUgRyb290');
+
+@$core.Deprecated('Use vectorNodeDescriptor instead')
+const VectorNode$json = {
+  '1': 'VectorNode',
+  '2': [
+    {
+      '1': 'network',
+      '3': 1,
+      '5': 11,
+      '6': '.definitions.VectorNetwork',
+      '8': {},
+      '9': 0,
+      '10': 'network'
+    },
+    {
+      '1': 'group',
+      '3': 2,
+      '5': 11,
+      '6': '.definitions.VectorGroup',
+      '8': {},
+      '9': 0,
+      '10': 'group'
+    },
+    {
+      '1': 'frame',
+      '3': 3,
+      '5': 11,
+      '6': '.definitions.VectorFrame',
+      '8': {},
+      '9': 0,
+      '10': 'frame'
+    },
+  ],
+  '8': [
+    {'1': 'type'},
+  ],
+};
+
+/// Descriptor for `VectorNode`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List vectorNodeDescriptor = $convert.base64Decode(
+    'CgpWZWN0b3JOb2RlEjYKB25ldHdvcmsYASgLMhouZGVmaW5pdGlvbnMuVmVjdG9yTmV0d29ya0'
+    'IASABSB25ldHdvcmsSMAoFZ3JvdXAYAigLMhguZGVmaW5pdGlvbnMuVmVjdG9yR3JvdXBCAEgA'
+    'UgVncm91cBIwCgVmcmFtZRgDKAsyGC5kZWZpbml0aW9ucy5WZWN0b3JGcmFtZUIASABSBWZyYW'
+    '1lQgYKBHR5cGU=');
 
 @$core.Deprecated('Use vectorNetworkDescriptor instead')
 const VectorNetwork$json = {
   '1': 'VectorNetwork',
   '2': [
     {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
+    {'1': 'opacity', '3': 2, '5': 1, '8': {}, '10': 'opacity'},
+    {
+      '1': 'offset',
+      '3': 3,
+      '5': 11,
+      '6': '.definitions.Vector',
+      '8': {},
+      '10': 'offset'
+    },
     {
       '1': 'vertices',
-      '3': 2,
+      '3': 4,
       '4': 3,
       '5': 11,
       '6': '.definitions.VectorVertex',
@@ -159,7 +211,7 @@ const VectorNetwork$json = {
     },
     {
       '1': 'segments',
-      '3': 3,
+      '3': 5,
       '4': 3,
       '5': 11,
       '6': '.definitions.VectorSegment',
@@ -168,7 +220,7 @@ const VectorNetwork$json = {
     },
     {
       '1': 'regions',
-      '3': 4,
+      '3': 6,
       '4': 3,
       '5': 11,
       '6': '.definitions.VectorRegion',
@@ -180,10 +232,67 @@ const VectorNetwork$json = {
 
 /// Descriptor for `VectorNetwork`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List vectorNetworkDescriptor = $convert.base64Decode(
-    'Cg1WZWN0b3JOZXR3b3JrEhIKBG5hbWUYASgJQgBSBG5hbWUSNwoIdmVydGljZXMYAiADKAsyGS'
-    '5kZWZpbml0aW9ucy5WZWN0b3JWZXJ0ZXhCAFIIdmVydGljZXMSOAoIc2VnbWVudHMYAyADKAsy'
-    'Gi5kZWZpbml0aW9ucy5WZWN0b3JTZWdtZW50QgBSCHNlZ21lbnRzEjUKB3JlZ2lvbnMYBCADKA'
-    'syGS5kZWZpbml0aW9ucy5WZWN0b3JSZWdpb25CAFIHcmVnaW9ucw==');
+    'Cg1WZWN0b3JOZXR3b3JrEhIKBG5hbWUYASgJQgBSBG5hbWUSGAoHb3BhY2l0eRgCKAFCAFIHb3'
+    'BhY2l0eRIrCgZvZmZzZXQYAygLMhMuZGVmaW5pdGlvbnMuVmVjdG9yQgBSBm9mZnNldBI3Cgh2'
+    'ZXJ0aWNlcxgEIAMoCzIZLmRlZmluaXRpb25zLlZlY3RvclZlcnRleEIAUgh2ZXJ0aWNlcxI4Cg'
+    'hzZWdtZW50cxgFIAMoCzIaLmRlZmluaXRpb25zLlZlY3RvclNlZ21lbnRCAFIIc2VnbWVudHMS'
+    'NQoHcmVnaW9ucxgGIAMoCzIZLmRlZmluaXRpb25zLlZlY3RvclJlZ2lvbkIAUgdyZWdpb25z');
+
+@$core.Deprecated('Use vectorGroupDescriptor instead')
+const VectorGroup$json = {
+  '1': 'VectorGroup',
+  '2': [
+    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
+    {'1': 'opacity', '3': 2, '5': 1, '8': {}, '10': 'opacity'},
+    {
+      '1': 'children',
+      '3': 3,
+      '4': 3,
+      '5': 11,
+      '6': '.definitions.VectorNode',
+      '8': {},
+      '10': 'children'
+    },
+  ],
+};
+
+/// Descriptor for `VectorGroup`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List vectorGroupDescriptor = $convert.base64Decode(
+    'CgtWZWN0b3JHcm91cBISCgRuYW1lGAEoCUIAUgRuYW1lEhgKB29wYWNpdHkYAigBQgBSB29wYW'
+    'NpdHkSNQoIY2hpbGRyZW4YAyADKAsyFy5kZWZpbml0aW9ucy5WZWN0b3JOb2RlQgBSCGNoaWxk'
+    'cmVu');
+
+@$core.Deprecated('Use vectorFrameDescriptor instead')
+const VectorFrame$json = {
+  '1': 'VectorFrame',
+  '2': [
+    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
+    {'1': 'opacity', '3': 2, '5': 1, '8': {}, '10': 'opacity'},
+    {
+      '1': 'offset',
+      '3': 3,
+      '5': 11,
+      '6': '.definitions.Vector',
+      '8': {},
+      '10': 'offset'
+    },
+    {
+      '1': 'children',
+      '3': 4,
+      '4': 3,
+      '5': 11,
+      '6': '.definitions.VectorNode',
+      '8': {},
+      '10': 'children'
+    },
+  ],
+};
+
+/// Descriptor for `VectorFrame`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List vectorFrameDescriptor = $convert.base64Decode(
+    'CgtWZWN0b3JGcmFtZRISCgRuYW1lGAEoCUIAUgRuYW1lEhgKB29wYWNpdHkYAigBQgBSB29wYW'
+    'NpdHkSKwoGb2Zmc2V0GAMoCzITLmRlZmluaXRpb25zLlZlY3RvckIAUgZvZmZzZXQSNQoIY2hp'
+    'bGRyZW4YBCADKAsyFy5kZWZpbml0aW9ucy5WZWN0b3JOb2RlQgBSCGNoaWxkcmVu');
 
 @$core.Deprecated('Use vectorVertexDescriptor instead')
 const VectorVertex$json = {

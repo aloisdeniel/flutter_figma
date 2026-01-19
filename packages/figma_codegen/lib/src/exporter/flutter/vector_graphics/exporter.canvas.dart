@@ -1,6 +1,7 @@
 import 'package:figma_codegen/src/definitions/vector_graphics.pb.dart';
 import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
 import 'package:figma_codegen/src/utils/dart/buffer.dart';
+import 'package:figma_codegen/src/utils/dart/naming.dart';
 
 /// Generates a method which draws vector graphics using Flutter's Canvas API.
 class FlutterVectorCanvasExporter {
@@ -26,7 +27,304 @@ void _writeCustomPainter(
   VectorGraphics vectorGraphics,
   FlutterExportContext context,
 ) {
-  // TODO: Implement the actual drawing logic based on vectorGraphics data.
-  // It should generate a CustomPainter class that uses the Canvas API to draw the various operations from the vector networks.
-  // All networks are drawn in the same order as they appear in the vectorGraphics.
+  final className = '${Naming.typeName(vectorGraphics.name)}Painter';
+
+  buffer.writeln('class $className extends fl.CustomPainter {');
+  buffer.indent();
+  buffer.writeln('const $className();');
+  buffer.writeln();
+
+  buffer.writeln('@override');
+  buffer.writeln('void paint(ui.Canvas canvas, fl.Size size) {');
+  buffer.indent();
+  buffer.writeln('final paint = ui.Paint();');
+  buffer.writeln('final bounds = fl.Offset.zero & size;');
+  buffer.writeln();
+
+  _writeNode(buffer, vectorGraphics.root, context);
+
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.writeln();
+
+  buffer.writeln('@override');
+  buffer.writeln(
+    'bool shouldRepaint(covariant $className oldDelegate) => false;',
+  );
+
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.writeln();
+}
+
+void _writeNode(
+  DartBuffer buffer,
+  VectorNode node,
+  FlutterExportContext context,
+) {
+  void saveOpacityLayerIfNeeded(double opacity) {
+    if (opacity < 1.0) {
+      buffer.writeln(
+        'canvas.saveLayer(bounds, ui.Paint()..color = ui.Color.fromRGBO(255, 255, 255, ${opacity.toStringAsFixed(6)}));',
+      );
+      buffer.writeln();
+    }
+  }
+
+  void restoreOpacityLayerIfNeeded(double opacity) {
+    if (opacity < 1.0) {
+      buffer.writeln('canvas.restore();');
+      buffer.writeln();
+    }
+  }
+
+  switch (node.whichType()) {
+    case VectorNode_Type.network:
+      buffer.writeln('canvas.save();');
+      buffer.writeln(
+        'canvas.translate(${node.network.offset.x}, ${node.network.offset.y});',
+      );
+      saveOpacityLayerIfNeeded(node.network.opacity);
+      for (final region in node.network.regions) {
+        _writeRegion(buffer, node.network, region, context);
+      }
+      restoreOpacityLayerIfNeeded(node.network.opacity);
+      buffer.writeln('canvas.restore();');
+    case VectorNode_Type.group:
+      // TODO only if opacity != 1.0
+      buffer.writeln('canvas.save();');
+      saveOpacityLayerIfNeeded(node.group.opacity);
+      for (final child in node.group.children) {
+        _writeNode(buffer, child, context);
+      }
+      restoreOpacityLayerIfNeeded(node.group.opacity);
+      buffer.writeln('canvas.restore();');
+    case VectorNode_Type.frame:
+      buffer.writeln('canvas.save();');
+      buffer.writeln(
+        'canvas.translate(${node.network.offset.x}, ${node.network.offset.y});',
+      );
+      saveOpacityLayerIfNeeded(node.frame.opacity);
+      for (final child in node.frame.children) {
+        _writeNode(buffer, child, context);
+      }
+      restoreOpacityLayerIfNeeded(node.frame.opacity);
+      buffer.writeln('canvas.restore();');
+    case VectorNode_Type.notSet:
+  }
+}
+
+void _writeRegion(
+  DartBuffer buffer,
+  VectorNetwork network,
+  VectorRegion region,
+  FlutterExportContext context,
+) {
+  if (region.loops.isEmpty || region.fills.isEmpty) {
+    return;
+  }
+
+  buffer.writeln('{');
+  buffer.indent();
+  buffer.writeln('final path = ui.Path();');
+  buffer.writeln('path.fillType = ${_pathFillType(region.windingRule)};');
+
+  for (final loop in region.loops) {
+    _writeLoop(buffer, network, loop);
+  }
+
+  buffer.writeln('paint.style = ui.PaintingStyle.fill;');
+  for (final fill in region.fills) {
+    _writePaintAssignment(buffer, fill, context);
+    buffer.writeln('canvas.drawPath(path, paint);');
+  }
+
+  buffer.unindent();
+  buffer.writeln('}');
+}
+
+void _writeLoop(
+  DartBuffer buffer,
+  VectorNetwork network,
+  VectorRegionLoop loop,
+) {
+  if (loop.segments.isEmpty) {
+    return;
+  }
+
+  buffer.writeln('{');
+  buffer.indent();
+
+  final firstSegment = network.segments[loop.segments.first];
+  final firstVertex = network.vertices[firstSegment.start];
+  buffer.writeln('path.moveTo(${firstVertex.x}, ${firstVertex.y});');
+
+  for (final segmentIndex in loop.segments) {
+    final segment = network.segments[segmentIndex];
+    final startVertex = network.vertices[segment.start];
+    final endVertex = network.vertices[segment.end];
+    if (segment.hasTangentStart() || segment.hasTangentEnd()) {
+      final tangentStart = segment.hasTangentStart()
+          ? Vector(
+              x: startVertex.x + segment.tangentStart.x,
+              y: startVertex.y + segment.tangentStart.y,
+            )
+          : Vector(x: startVertex.x, y: startVertex.y);
+      final tangentEnd = segment.hasTangentEnd()
+          ? Vector(
+              x: endVertex.x + segment.tangentEnd.x,
+              y: endVertex.y + segment.tangentEnd.y,
+            )
+          : Vector(x: endVertex.x, y: endVertex.y);
+      buffer.writeln(
+        'path.cubicTo(${tangentStart.x}, ${tangentStart.y}, ${tangentEnd.x}, ${tangentEnd.y}, ${endVertex.x}, ${endVertex.y});',
+      );
+    } else {
+      buffer.writeln('path.lineTo(${endVertex.x}, ${endVertex.y});');
+    }
+  }
+
+  buffer.writeln('path.close();');
+
+  buffer.unindent();
+  buffer.writeln('}');
+}
+
+void _writePaintAssignment(
+  DartBuffer buffer,
+  Paint paint,
+  FlutterExportContext context,
+) {
+  buffer.writeln('paint');
+  buffer.indent();
+  buffer.writeln('..blendMode = ${_blendMode(paint)}');
+
+  switch (paint.whichType()) {
+    case Paint_Type.solid:
+      buffer.writeln(
+        '..color = ${_solidPaintColor(paint.solid, paint.opacity, context)}',
+      );
+    case Paint_Type.gradient:
+      _writeGradientAssignment(buffer, paint.gradient, paint.opacity, context);
+    case Paint_Type.notSet:
+      buffer.writeln('..color = const ui.Color(0x00000000)');
+  }
+
+  buffer.unindent();
+  buffer.writeln(';');
+}
+
+String _blendMode(Paint paint) {
+  if (!paint.hasBlendMode()) {
+    return 'ui.BlendMode.srcOver';
+  }
+
+  return switch (paint.blendMode) {
+    BlendMode.NORMAL => 'ui.BlendMode.srcOver',
+    BlendMode.DARKEN => 'ui.BlendMode.darken',
+    BlendMode.MULTIPLY => 'ui.BlendMode.multiply',
+    BlendMode.LINEAR_BURN => 'ui.BlendMode.darken',
+    BlendMode.COLOR_BURN => 'ui.BlendMode.colorBurn',
+    BlendMode.LIGHTEN => 'ui.BlendMode.lighten',
+    BlendMode.SCREEN => 'ui.BlendMode.screen',
+    BlendMode.LINEAR_DODGE => 'ui.BlendMode.plus',
+    BlendMode.COLOR_DODGE => 'ui.BlendMode.colorDodge',
+    BlendMode.OVERLAY => 'ui.BlendMode.overlay',
+    BlendMode.SOFT_LIGHT => 'ui.BlendMode.softLight',
+    BlendMode.HARD_LIGHT => 'ui.BlendMode.hardLight',
+    BlendMode.DIFFERENCE => 'ui.BlendMode.difference',
+    BlendMode.EXCLUSION => 'ui.BlendMode.exclusion',
+    BlendMode.HUE => 'ui.BlendMode.hue',
+    BlendMode.SATURATION => 'ui.BlendMode.saturation',
+    BlendMode.COLOR => 'ui.BlendMode.color',
+    BlendMode.LUMINOSITY => 'ui.BlendMode.luminosity',
+    _ => 'ui.BlendMode.srcOver',
+  };
+}
+
+String _solidPaintColor(
+  SolidPaint paint,
+  double opacity,
+  FlutterExportContext context,
+) {
+  if (!paint.hasValue()) {
+    return 'const ui.Color(0x00000000)';
+  }
+
+  final color = paint.value;
+  final alpha = (color.a * opacity).clamp(0.0, 1.0).toStringAsFixed(6);
+  return 'ui.Color.from(red: ${_colorChannel(color.r)}, green: ${_colorChannel(color.g)}, blue: ${_colorChannel(color.b)}, alpha: $alpha)';
+}
+
+String _colorChannel(double value) {
+  return value.toStringAsFixed(6);
+}
+
+void _writeGradientAssignment(
+  DartBuffer buffer,
+  GradientPaint gradient,
+  double opacity,
+  FlutterExportContext context,
+) {
+  final colorStops = gradient.gradientStops;
+  final colors = colorStops
+      .map((stop) => _stopColor(stop, opacity, context))
+      .join(', ');
+  final stops = colorStops.map((stop) => stop.position).join(', ');
+
+  switch (gradient.type) {
+    case GradientType.LINEAR:
+      buffer.writeln(
+        '..shader = ui.Gradient.linear(' //
+        'fl.Offset.zero, fl.Offset(bounds.width, 0), ' //
+        '[$colors], [$stops])',
+      );
+      buffer.writeln(
+        '..color = ui.Color.from(red: 1, green: 1, blue: 1, alpha: ${opacity.toStringAsFixed(6)})',
+      );
+    case GradientType.RADIAL:
+      buffer.writeln(
+        '..shader = ui.Gradient.radial(' //
+        'fl.Offset(bounds.width * 0.5, bounds.height * 0.5), ' //
+        '(bounds.width * 0.5), ' //
+        '[$colors], [$stops])',
+      );
+      buffer.writeln(
+        '..color = ui.Color.fromRGBO(255, 255, 255, ${opacity.toStringAsFixed(6)})',
+      );
+    case GradientType.ANGULAR:
+      buffer.writeln(
+        '..shader = ui.Gradient.sweep(' //
+        'fl.Offset(bounds.width * 0.5, bounds.height * 0.5), ' //
+        '[$colors], [$stops])',
+      );
+      buffer.writeln(
+        '..color = ui.Color.fromRGBO(255, 255, 255, ${opacity.toStringAsFixed(6)})',
+      );
+    case GradientType.DIAMOND:
+      buffer.writeln(
+        '..color = ui.Color.fromRGBO(255, 0, 255, ${opacity.toStringAsFixed(6)})',
+      );
+  }
+}
+
+String _stopColor(
+  ColorStop stop,
+  double opacity,
+  FlutterExportContext context,
+) {
+  if (!stop.hasValue()) {
+    return 'const ui.Color(0x00000000)';
+  }
+  final color = stop.value;
+  final alpha = (color.a * opacity).clamp(0.0, 1.0).toStringAsFixed(6);
+  return 'ui.Color.fromRGBO(${_colorChannel(color.r)}, ${_colorChannel(color.g)}, ${_colorChannel(color.b)}, $alpha)';
+}
+
+String _pathFillType(WindingRule rule) {
+  return switch (rule) {
+    WindingRule.EVENODD => 'ui.PathFillType.evenOdd',
+    WindingRule.NONZERO => 'ui.PathFillType.nonZero',
+    _ => 'ui.PathFillType.nonZero',
+  };
 }

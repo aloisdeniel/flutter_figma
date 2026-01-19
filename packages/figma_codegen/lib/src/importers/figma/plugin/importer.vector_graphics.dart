@@ -25,53 +25,91 @@ class FigmaVectorNetworksImporter {
     final targets = componentNodes.isNotEmpty ? componentNodes : selection;
     print('Found ${targets.length} target nodes for vector network import.');
 
-    final vectors = await Future.wait(
-      targets.map((node) => _vectorNetworkFromNode(node, context)),
-    );
+    final result = <VectorGraphics>[];
 
-    return vectors.whereType<VectorGraphics>().toList(growable: false);
+    for (final node in targets) {
+      final root = await _vectorNode(node, context);
+      if (root != null) {
+        result.add(VectorGraphics(name: node.name, root: root));
+      }
+    }
+
+    return result;
   }
 }
 
-figma_api.VectorNode? asVectorNode(figma_api.SceneNode node) {
-  final type = node.getProperty('type'.jsify()!).dartify() as String;
-  if (type == 'VECTOR') {
-    return node as figma_api.VectorNode;
-  }
-  return null;
+String nodeType(figma_api.SceneNode node) {
+  return node.getProperty('type'.jsify()!).dartify() as String;
 }
 
-Future<List<VectorNetwork>> _vectorNetworkFromNode(
+bool isGroup(figma_api.SceneNode node) {
+  return nodeType(node) == 'GROUP';
+}
+
+double nodeOpacity(figma_api.SceneNode node) {
+  final hasOpacity = node.hasProperty('opacity'.jsify()!).dartify() as bool;
+  if (!hasOpacity) {
+    return 1.0;
+  }
+  return node.getProperty('opacity'.jsify()!).dartify() as double;
+}
+
+Future<List<VectorNode>> childrenNodes(
   figma_api.SceneNode node,
   ImportContext<FigmaImportOptions> context,
 ) async {
-  print('Processing node: ${node.name} (${node.id})');
-
-  final vectorNode = asVectorNode(node);
-  if (vectorNode != null) {
-    print('Node is a VectorNode.');
-    final network = await _vectorNetworkFromVectorNode(
-      vectorNode,
-      node.name,
-      context,
-    );
-    return network != null ? [network] : [];
-  }
-
   final children = node.getProperty('children'.jsify()!);
   print('Children property: $children');
   if (children is! JSArray) {
-    return const [];
+    return [];
   }
 
-  // TODO only works for groups, we must manage frames too (coordinates, background, crop, ...)
   final dartChildren = children.toDart;
+  final result = <VectorNode>[];
   for (final child in dartChildren) {
     print('Processing child node: $child');
-    return await _vectorNetworkFromNode(child as figma_api.SceneNode, context);
-  }
+    final node = await _vectorNode(child as figma_api.SceneNode, context);
 
-  return const [];
+    if (node != null) {
+      result.add(node);
+    }
+  }
+  return result;
+}
+
+Future<VectorNode?> _vectorNode(
+  figma_api.SceneNode node,
+  ImportContext<FigmaImportOptions> context,
+) async {
+  switch (nodeType(node)) {
+    case 'VECTOR':
+      final network = await _vectorNetworkFromVectorNode(
+        node as figma_api.VectorNode,
+        node.name,
+        context,
+      );
+      return VectorNode(network: network);
+    case 'FRAME': // TODO backgrounds, clipping, ...
+      final children = await childrenNodes(node, context);
+      return VectorNode(
+        frame: VectorFrame(
+          offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
+          name: node.name,
+          opacity: nodeOpacity(node),
+          children: children,
+        ),
+      );
+    case 'GROUP':
+    default:
+      final children = await childrenNodes(node, context);
+      return VectorNode(
+        group: VectorGroup(
+          name: node.name,
+          opacity: nodeOpacity(node),
+          children: children,
+        ),
+      );
+  }
 }
 
 Future<VectorNetwork?> _vectorNetworkFromVectorNode(
@@ -80,21 +118,17 @@ Future<VectorNetwork?> _vectorNetworkFromVectorNode(
   ImportContext<FigmaImportOptions> context,
 ) async {
   final vectorNetwork = node.vectorNetwork;
-  print('Extracting VectorNetwork: $vectorNetwork');
   final vertices = vectorNetwork.vertices.toDart
       .map((vertex) => _vectorVertexFromFigma(vertex, node))
       .toList(growable: false);
-  print('Converted vertices: ${vertices.length} for VectorNetwork: $name.');
   final segments = vectorNetwork.segments.toDart
       .map(_vectorSegmentFromFigma)
       .toList(growable: false);
-  print('Converted segments: ${segments.length} for VectorNetwork: $name.');
 
   final regions = <VectorRegion>[];
   final rawRegions = vectorNetwork.regions?.toDart;
   if (rawRegions != null) {
     for (final region in rawRegions) {
-      print('Processing region: $region for VectorNetwork: $name.');
       final converted = _vectorRegionFromFigma(region, node, context);
       if (converted != null) {
         regions.add(converted);
@@ -104,6 +138,8 @@ Future<VectorNetwork?> _vectorNetworkFromVectorNode(
 
   return VectorNetwork(
     name: name,
+    offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
+    opacity: nodeOpacity(node),
     vertices: vertices,
     segments: segments,
     regions: regions,
@@ -206,6 +242,8 @@ Paint? _paintFromFigma(
   final blendMode = _parseBlendMode(paint.blendMode);
   final type = paint.type;
 
+  print('Converting paint of type: $type with opacity: $opacity');
+
   if (type == 'SOLID') {
     return Paint(
       opacity: opacity,
@@ -229,17 +267,19 @@ SolidPaint _solidPaintFromFigma(
   figma_api.Paint paint,
   ImportContext<FigmaImportOptions> context,
 ) {
-  final alias = _resolvePaintAlias(paint, context);
-  if (alias != null) {
-    return SolidPaint(bound: alias);
-  }
+  /// TODO Support paint aliases
+  /// final alias = _resolvePaintAlias(paint, context);
+  ///if (alias != null) {
+  ///  return SolidPaint(bound: alias);
+  ///}
 
   final color = paint.color;
   if (color == null) {
     return SolidPaint();
   }
 
-  final colorValue = _rgbaFromColor(color, (paint.opacity ?? 1.0).toDouble());
+  print('Converting solid paint color: $color');
+  final colorValue = _rgbFromColor(color, (paint.opacity ?? 1.0).toDouble());
   return SolidPaint(value: colorValue);
 }
 
@@ -256,6 +296,19 @@ GradientPaint _gradientPaintFromFigma(
   );
 }
 
+RGBA _rgbFromColor(dynamic color, double opacity) {
+  if (color is figma_api.RGB) {
+    return RGBA(
+      r: color.r.toDouble(),
+      g: color.g.toDouble(),
+      b: color.b.toDouble(),
+      a: opacity,
+    );
+  }
+
+  return RGBA(a: opacity);
+}
+
 RGBA _rgbaFromColor(dynamic color, double opacity) {
   if (color is figma_api.RGBA) {
     return RGBA(
@@ -263,15 +316,6 @@ RGBA _rgbaFromColor(dynamic color, double opacity) {
       g: color.g.toDouble(),
       b: color.b.toDouble(),
       a: color.a.toDouble() * opacity,
-    );
-  }
-
-  if (color is figma_api.RGB) {
-    return RGBA(
-      r: color.r.toDouble(),
-      g: color.g.toDouble(),
-      b: color.b.toDouble(),
-      a: opacity,
     );
   }
 

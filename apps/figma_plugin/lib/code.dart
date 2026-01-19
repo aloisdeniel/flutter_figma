@@ -136,6 +136,7 @@ Future<void> _generateCode() async {
         vectorGraphics: FlutterVectorGraphicsExportOptions(
           format: format,
           stylesClass: stylesClass,
+          vectorGraphics: library.vectorGraphics,
         ),
         variables: FlutterVariablesExportOptions(
           collections: library.variables,
@@ -143,7 +144,6 @@ Future<void> _generateCode() async {
           collectionStructure: VariableCollectionDataStructure.flat,
           useGoogleFonts: false,
         ),
-        vectorNetworks: library.vectorNetworks,
       ),
     );
   } else {
@@ -163,8 +163,9 @@ Future<void> _generateCode() async {
             _currentVariablesOptions['useGoogleFonts'] as bool? ?? false;
         generatedCode = generator.exportVariableCollections(
           FlutterExportContext(
-            vectorGraphics: const FlutterVectorGraphicsExportOptions(
+            vectorGraphics: FlutterVectorGraphicsExportOptions(
               format: FlutterVectorGraphicsFormat.canvas,
+              vectorGraphics: library.vectorGraphics,
             ),
             variables: FlutterVariablesExportOptions(
               collections: library.variables,
@@ -172,7 +173,6 @@ Future<void> _generateCode() async {
               collectionStructure: collectionStructure,
               useGoogleFonts: useGoogleFonts,
             ),
-            vectorNetworks: library.vectorNetworks,
           ),
         );
         break;

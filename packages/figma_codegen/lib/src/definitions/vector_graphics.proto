@@ -6,14 +6,37 @@ package definitions;
 
 message VectorGraphics {
   string name = 1;
-  repeated VectorNetwork networks = 2;
+  VectorNode root = 2;
+}
+
+message VectorNode {
+  oneof type {
+    VectorNetwork network = 1;
+    VectorGroup group = 2;
+    VectorFrame frame = 3;
+  }
 }
 
 message VectorNetwork {
   string name = 1;
-  repeated VectorVertex vertices = 2;
-  repeated VectorSegment segments = 3;
-  repeated VectorRegion regions = 4;
+  double opacity = 2;
+  Vector offset = 3;
+  repeated VectorVertex vertices = 4;
+  repeated VectorSegment segments = 5;
+  repeated VectorRegion regions = 6;
+}
+
+message VectorGroup {
+  string name = 1;
+  double opacity = 2;
+  repeated VectorNode children = 3;
+}
+
+message VectorFrame {
+  string name = 1;
+  double opacity = 2;
+  Vector offset = 3;
+  repeated VectorNode children = 4;
 }
 
 enum StrokeCap {

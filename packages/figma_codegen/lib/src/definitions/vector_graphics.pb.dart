@@ -23,11 +23,11 @@ export 'vector_graphics.pbenum.dart';
 class VectorGraphics extends $pb.GeneratedMessage {
   factory VectorGraphics({
     $core.String? name,
-    $core.Iterable<VectorNetwork>? networks,
+    VectorNode? root,
   }) {
     final result = create();
     if (name != null) result.name = name;
-    if (networks != null) result.networks.addAll(networks);
+    if (root != null) result.root = root;
     return result;
   }
 
@@ -45,8 +45,8 @@ class VectorGraphics extends $pb.GeneratedMessage {
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'name')
-    ..pPM<VectorNetwork>(2, _omitFieldNames ? '' : 'networks',
-        subBuilder: VectorNetwork.create)
+    ..aOM<VectorNode>(2, _omitFieldNames ? '' : 'root',
+        subBuilder: VectorNode.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -78,18 +78,134 @@ class VectorGraphics extends $pb.GeneratedMessage {
   void clearName() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  $pb.PbList<VectorNetwork> get networks => $_getList(1);
+  VectorNode get root => $_getN(1);
+  @$pb.TagNumber(2)
+  set root(VectorNode value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasRoot() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearRoot() => $_clearField(2);
+  @$pb.TagNumber(2)
+  VectorNode ensureRoot() => $_ensure(1);
+}
+
+enum VectorNode_Type { network, group, frame, notSet }
+
+class VectorNode extends $pb.GeneratedMessage {
+  factory VectorNode({
+    VectorNetwork? network,
+    VectorGroup? group,
+    VectorFrame? frame,
+  }) {
+    final result = create();
+    if (network != null) result.network = network;
+    if (group != null) result.group = group;
+    if (frame != null) result.frame = frame;
+    return result;
+  }
+
+  VectorNode._();
+
+  factory VectorNode.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory VectorNode.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static const $core.Map<$core.int, VectorNode_Type> _VectorNode_TypeByTag = {
+    1: VectorNode_Type.network,
+    2: VectorNode_Type.group,
+    3: VectorNode_Type.frame,
+    0: VectorNode_Type.notSet
+  };
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'VectorNode',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..oo(0, [1, 2, 3])
+    ..aOM<VectorNetwork>(1, _omitFieldNames ? '' : 'network',
+        subBuilder: VectorNetwork.create)
+    ..aOM<VectorGroup>(2, _omitFieldNames ? '' : 'group',
+        subBuilder: VectorGroup.create)
+    ..aOM<VectorFrame>(3, _omitFieldNames ? '' : 'frame',
+        subBuilder: VectorFrame.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorNode clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorNode copyWith(void Function(VectorNode) updates) =>
+      super.copyWith((message) => updates(message as VectorNode)) as VectorNode;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static VectorNode create() => VectorNode._();
+  @$core.override
+  VectorNode createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static VectorNode getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<VectorNode>(create);
+  static VectorNode? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  @$pb.TagNumber(2)
+  @$pb.TagNumber(3)
+  VectorNode_Type whichType() => _VectorNode_TypeByTag[$_whichOneof(0)]!;
+  @$pb.TagNumber(1)
+  @$pb.TagNumber(2)
+  @$pb.TagNumber(3)
+  void clearType() => $_clearField($_whichOneof(0));
+
+  @$pb.TagNumber(1)
+  VectorNetwork get network => $_getN(0);
+  @$pb.TagNumber(1)
+  set network(VectorNetwork value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasNetwork() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearNetwork() => $_clearField(1);
+  @$pb.TagNumber(1)
+  VectorNetwork ensureNetwork() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  VectorGroup get group => $_getN(1);
+  @$pb.TagNumber(2)
+  set group(VectorGroup value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasGroup() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearGroup() => $_clearField(2);
+  @$pb.TagNumber(2)
+  VectorGroup ensureGroup() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  VectorFrame get frame => $_getN(2);
+  @$pb.TagNumber(3)
+  set frame(VectorFrame value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasFrame() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearFrame() => $_clearField(3);
+  @$pb.TagNumber(3)
+  VectorFrame ensureFrame() => $_ensure(2);
 }
 
 class VectorNetwork extends $pb.GeneratedMessage {
   factory VectorNetwork({
     $core.String? name,
+    $core.double? opacity,
+    Vector? offset,
     $core.Iterable<VectorVertex>? vertices,
     $core.Iterable<VectorSegment>? segments,
     $core.Iterable<VectorRegion>? regions,
   }) {
     final result = create();
     if (name != null) result.name = name;
+    if (opacity != null) result.opacity = opacity;
+    if (offset != null) result.offset = offset;
     if (vertices != null) result.vertices.addAll(vertices);
     if (segments != null) result.segments.addAll(segments);
     if (regions != null) result.regions.addAll(regions);
@@ -110,11 +226,13 @@ class VectorNetwork extends $pb.GeneratedMessage {
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'name')
-    ..pPM<VectorVertex>(2, _omitFieldNames ? '' : 'vertices',
+    ..aD(2, _omitFieldNames ? '' : 'opacity')
+    ..aOM<Vector>(3, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
+    ..pPM<VectorVertex>(4, _omitFieldNames ? '' : 'vertices',
         subBuilder: VectorVertex.create)
-    ..pPM<VectorSegment>(3, _omitFieldNames ? '' : 'segments',
+    ..pPM<VectorSegment>(5, _omitFieldNames ? '' : 'segments',
         subBuilder: VectorSegment.create)
-    ..pPM<VectorRegion>(4, _omitFieldNames ? '' : 'regions',
+    ..pPM<VectorRegion>(6, _omitFieldNames ? '' : 'regions',
         subBuilder: VectorRegion.create)
     ..hasRequiredFields = false;
 
@@ -147,13 +265,193 @@ class VectorNetwork extends $pb.GeneratedMessage {
   void clearName() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  $pb.PbList<VectorVertex> get vertices => $_getList(1);
+  $core.double get opacity => $_getN(1);
+  @$pb.TagNumber(2)
+  set opacity($core.double value) => $_setDouble(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasOpacity() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearOpacity() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $pb.PbList<VectorSegment> get segments => $_getList(2);
+  Vector get offset => $_getN(2);
+  @$pb.TagNumber(3)
+  set offset(Vector value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasOffset() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearOffset() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Vector ensureOffset() => $_ensure(2);
 
   @$pb.TagNumber(4)
-  $pb.PbList<VectorRegion> get regions => $_getList(3);
+  $pb.PbList<VectorVertex> get vertices => $_getList(3);
+
+  @$pb.TagNumber(5)
+  $pb.PbList<VectorSegment> get segments => $_getList(4);
+
+  @$pb.TagNumber(6)
+  $pb.PbList<VectorRegion> get regions => $_getList(5);
+}
+
+class VectorGroup extends $pb.GeneratedMessage {
+  factory VectorGroup({
+    $core.String? name,
+    $core.double? opacity,
+    $core.Iterable<VectorNode>? children,
+  }) {
+    final result = create();
+    if (name != null) result.name = name;
+    if (opacity != null) result.opacity = opacity;
+    if (children != null) result.children.addAll(children);
+    return result;
+  }
+
+  VectorGroup._();
+
+  factory VectorGroup.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory VectorGroup.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'VectorGroup',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'name')
+    ..aD(2, _omitFieldNames ? '' : 'opacity')
+    ..pPM<VectorNode>(3, _omitFieldNames ? '' : 'children',
+        subBuilder: VectorNode.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorGroup clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorGroup copyWith(void Function(VectorGroup) updates) =>
+      super.copyWith((message) => updates(message as VectorGroup))
+          as VectorGroup;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static VectorGroup create() => VectorGroup._();
+  @$core.override
+  VectorGroup createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static VectorGroup getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<VectorGroup>(create);
+  static VectorGroup? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get name => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set name($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasName() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearName() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.double get opacity => $_getN(1);
+  @$pb.TagNumber(2)
+  set opacity($core.double value) => $_setDouble(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasOpacity() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearOpacity() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $pb.PbList<VectorNode> get children => $_getList(2);
+}
+
+class VectorFrame extends $pb.GeneratedMessage {
+  factory VectorFrame({
+    $core.String? name,
+    $core.double? opacity,
+    Vector? offset,
+    $core.Iterable<VectorNode>? children,
+  }) {
+    final result = create();
+    if (name != null) result.name = name;
+    if (opacity != null) result.opacity = opacity;
+    if (offset != null) result.offset = offset;
+    if (children != null) result.children.addAll(children);
+    return result;
+  }
+
+  VectorFrame._();
+
+  factory VectorFrame.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory VectorFrame.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'VectorFrame',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'name')
+    ..aD(2, _omitFieldNames ? '' : 'opacity')
+    ..aOM<Vector>(3, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
+    ..pPM<VectorNode>(4, _omitFieldNames ? '' : 'children',
+        subBuilder: VectorNode.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorFrame clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorFrame copyWith(void Function(VectorFrame) updates) =>
+      super.copyWith((message) => updates(message as VectorFrame))
+          as VectorFrame;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static VectorFrame create() => VectorFrame._();
+  @$core.override
+  VectorFrame createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static VectorFrame getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<VectorFrame>(create);
+  static VectorFrame? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get name => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set name($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasName() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearName() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.double get opacity => $_getN(1);
+  @$pb.TagNumber(2)
+  set opacity($core.double value) => $_setDouble(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasOpacity() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearOpacity() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  Vector get offset => $_getN(2);
+  @$pb.TagNumber(3)
+  set offset(Vector value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasOffset() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearOffset() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Vector ensureOffset() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  $pb.PbList<VectorNode> get children => $_getList(3);
 }
 
 class VectorVertex extends $pb.GeneratedMessage {
