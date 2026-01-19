@@ -1,6 +1,6 @@
 enum FlutterVectorGraphicsFormat {
   /// As a sequence of canvas drawing commands.
-  code,
+  canvas,
 
   /// As a binary encoded string of a vector_graphics object.
   vectorGraphicsBase64,

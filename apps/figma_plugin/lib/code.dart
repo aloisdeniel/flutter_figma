@@ -120,6 +120,9 @@ Future<void> _generateCode() async {
           _currentOptions['useGoogleFonts'] as bool? ?? false;
       variablesCode = await generator.exportVariableCollections(
         FlutterExportContext(
+          vectorGraphics: FlutterVectorGraphicsExportOptions(
+            format: FlutterVectorGraphicsFormat.canvas,
+          ),
           variables: FlutterVariablesExportOptions(
             collections: library.variables,
             naming: flutterNaming,

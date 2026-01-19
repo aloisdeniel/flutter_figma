@@ -6,6 +6,7 @@ import 'package:figma_codegen/src/cli/output_format.dart';
 import 'package:figma_codegen/src/definitions/library.dart';
 import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
 import 'package:figma_codegen/src/exporter/flutter/variables/options.dart';
+import 'package:figma_codegen/src/exporter/flutter/vector_graphics/options.dart';
 import 'package:figma_codegen/src/exporter/json/exporter.dart';
 import 'package:figma_codegen/src/importers/json/importer.dart';
 
@@ -78,6 +79,9 @@ class CliRunner {
               collections: library.variables,
               collectionStructure: collectionStructure,
               useGoogleFonts: useGoogleFonts,
+            ),
+            vectorGraphics: FlutterVectorGraphicsExportOptions(
+              format: FlutterVectorGraphicsFormat.canvas,
             ),
           );
           output = exporter.exportVariableCollections(context);
