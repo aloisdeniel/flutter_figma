@@ -175,7 +175,9 @@ void _writeLoop(
 
   final firstSegment = network.segments[loop.segments.first];
   final firstVertex = network.vertices[firstSegment.start];
-  buffer.writeln('path.moveTo(${firstVertex.x}, ${firstVertex.y});');
+  buffer.writeln(
+    'path.moveTo(${_formatDouble(firstVertex.x)}, ${_formatDouble(firstVertex.y)});',
+  );
 
   for (final segmentIndex in loop.segments) {
     final segment = network.segments[segmentIndex];
@@ -195,10 +197,12 @@ void _writeLoop(
             )
           : Vector(x: endVertex.x, y: endVertex.y);
       buffer.writeln(
-        'path.cubicTo(${tangentStart.x}, ${tangentStart.y}, ${tangentEnd.x}, ${tangentEnd.y}, ${endVertex.x}, ${endVertex.y});',
+        'path.cubicTo(${_formatDouble(tangentStart.x)}, ${_formatDouble(tangentStart.y)}, ${_formatDouble(tangentEnd.x)}, ${_formatDouble(tangentEnd.y)}, ${_formatDouble(endVertex.x)}, ${_formatDouble(endVertex.y)});',
       );
     } else {
-      buffer.writeln('path.lineTo(${endVertex.x}, ${endVertex.y});');
+      buffer.writeln(
+        'path.lineTo(${_formatDouble(endVertex.x)}, ${_formatDouble(endVertex.y)});',
+      );
     }
   }
 
@@ -271,11 +275,7 @@ String _solidPaintColor(
 
   final color = paint.value;
   final alpha = (color.a * opacity).clamp(0.0, 1.0).toStringAsFixed(6);
-  return 'ui.Color.from(red: ${_colorChannel(color.r)}, green: ${_colorChannel(color.g)}, blue: ${_colorChannel(color.b)}, alpha: $alpha)';
-}
-
-String _colorChannel(double value) {
-  return value.toStringAsFixed(6);
+  return 'ui.Color.from(red: ${_formatDouble(color.r)}, green: ${_formatDouble(color.g)}, blue: ${_formatDouble(color.b)}, alpha: $alpha)';
 }
 
 void _writeGradientAssignment(
@@ -336,7 +336,7 @@ String _stopColor(
   }
   final color = stop.value;
   final alpha = (color.a * opacity).clamp(0.0, 1.0).toStringAsFixed(6);
-  return 'ui.Color.fromRGBO(${_colorChannel(color.r)}, ${_colorChannel(color.g)}, ${_colorChannel(color.b)}, $alpha)';
+  return 'ui.Color.from(ref: ${_formatDouble(color.r)}, green: ${_formatDouble(color.g)}, blue: ${_formatDouble(color.b)}, alpha: $alpha)';
 }
 
 String _pathFillType(WindingRule rule) {
@@ -348,7 +348,7 @@ String _pathFillType(WindingRule rule) {
 }
 
 String _formatDouble(double value) {
-  var formatted = value.toString();
+  var formatted = value.toStringAsFixed(6);
   if (!formatted.contains('.')) {
     formatted = '$formatted.0';
   }

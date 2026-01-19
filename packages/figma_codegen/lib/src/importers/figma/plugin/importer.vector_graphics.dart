@@ -66,7 +66,6 @@ Future<List<VectorNode>> childrenNodes(
   ImportContext<FigmaImportOptions> context,
 ) async {
   final children = node.getProperty('children'.jsify()!);
-  print('Children property: $children');
   if (children is! JSArray) {
     return [];
   }
@@ -74,7 +73,6 @@ Future<List<VectorNode>> childrenNodes(
   final dartChildren = children.toDart;
   final result = <VectorNode>[];
   for (final child in dartChildren) {
-    print('Processing child node: $child');
     final node = await _vectorNode(child as figma_api.SceneNode, context);
 
     if (node != null) {
@@ -249,8 +247,6 @@ Paint? _paintFromFigma(
   final blendMode = _parseBlendMode(paint.blendMode);
   final type = paint.type;
 
-  print('Converting paint of type: $type with opacity: $opacity');
-
   if (type == 'SOLID') {
     return Paint(
       opacity: opacity,
@@ -285,7 +281,6 @@ SolidPaint _solidPaintFromFigma(
     return SolidPaint();
   }
 
-  print('Converting solid paint color: $color');
   final colorValue = _rgbFromColor(color, (paint.opacity ?? 1.0).toDouble());
   return SolidPaint(value: colorValue);
 }
