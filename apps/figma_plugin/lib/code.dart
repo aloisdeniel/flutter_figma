@@ -19,6 +19,7 @@ extension type ExportOptions._(JSObject _) implements JSObject {
   external String? get stylesCollectionName;
   external String? get rootName;
   external String? get collectionStructure;
+  external bool? get useGoogleFonts;
 }
 
 enum OutputFormat { dart, json }
@@ -70,6 +71,8 @@ void main() {
           if (opts.rootName != null) 'rootName': opts.rootName,
           if (opts.collectionStructure != null)
             'collectionStructure': opts.collectionStructure,
+          if (opts.useGoogleFonts != null)
+            'useGoogleFonts': opts.useGoogleFonts,
         };
       }
 
@@ -113,13 +116,17 @@ Future<void> _generateCode() async {
       final collectionStructure = structureValue == 'tree'
           ? VariableCollectionDataStructure.tree
           : VariableCollectionDataStructure.flat;
+      final useGoogleFonts =
+          _currentOptions['useGoogleFonts'] as bool? ?? false;
       variablesCode = await generator.exportVariableCollections(
         FlutterExportContext(
           collections: library,
           naming: flutterNaming,
           collectionStructure: collectionStructure,
+          useGoogleFonts: useGoogleFonts,
         ),
       );
+
       break;
     case OutputFormat.json:
       final generator = JsonExporter();

@@ -7,46 +7,93 @@ class TextStyleDartExporter {
   const TextStyleDartExporter();
 
   String serialize(FlutterExportContext context, TextStyle value) {
-    final buffer = StringBuffer('fl.TextStyle(');
-    if (value.hasFontName()) {
+    final buffer = StringBuffer();
+    var hasArguments = false;
+    if (context.useGoogleFonts && value.hasFontName()) {
       final fontFamily = const FlutterValueExporter().serialize(
         context,
         Value(stringValue: value.fontName.family),
         Value_Type.stringValue,
       );
-      buffer.write("fontFamily: $fontFamily");
+      buffer.write('gf.GoogleFonts.getFont($fontFamily');
+      hasArguments = true;
+    } else {
+      buffer.write('fl.TextStyle(');
+      if (value.hasFontName()) {
+        final fontFamily = const FlutterValueExporter().serialize(
+          context,
+          Value(stringValue: value.fontName.family),
+          Value_Type.stringValue,
+        );
+        buffer.write("fontFamily: $fontFamily");
+        hasArguments = true;
+      }
     }
     final fontSize = const FlutterValueExporter().serialize(
       context,
       Value(doubleValue: value.fontSize),
       Value_Type.doubleValue,
     );
-    buffer.write(', fontSize: $fontSize');
-    if (value.hasFontName() && value.fontName.hasWeight()) {
-      final fw = const FontWeightDartExporter().serialize(
-        context,
-        value.fontName.weight,
-      );
-      buffer.write(', fontWeight: $fw');
-    }
-    if (value.hasLetterSpacing() && value.letterSpacing.value.value != 0) {
-      final letterSpacing = const FlutterValueExporter().serialize(
-        context,
-        Value(doubleValue: value.letterSpacing.value),
-        Value_Type.doubleValue,
-      );
-      buffer.write(', letterSpacing: $letterSpacing');
-    }
-    if (value.hasLineHeight()) {
-      final lineHeight = value.lineHeight;
-      if (lineHeight.hasPixels()) {
-        // Convert pixel line height to a multiplier based on fontSize
-        buffer.write(', height: ${lineHeight.pixels} / $fontSize');
-      } else if (lineHeight.hasPercent()) {
-        buffer.write(', height: ${lineHeight.percent / 100}');
+    if (context.useGoogleFonts && value.hasFontName()) {
+      buffer.write(', textStyle: fl.TextStyle(');
+      buffer.write('fontSize: $fontSize');
+      if (value.fontName.hasWeight()) {
+        final fw = const FontWeightDartExporter().serialize(
+          context,
+          value.fontName.weight,
+        );
+        buffer.write(', fontWeight: $fw');
       }
+      if (value.hasLetterSpacing() && value.letterSpacing.value.value != 0) {
+        final letterSpacing = const FlutterValueExporter().serialize(
+          context,
+          Value(doubleValue: value.letterSpacing.value),
+          Value_Type.doubleValue,
+        );
+        buffer.write(', letterSpacing: $letterSpacing');
+      }
+      if (value.hasLineHeight()) {
+        final lineHeight = value.lineHeight;
+        if (lineHeight.hasPixels()) {
+          // Convert pixel line height to a multiplier based on fontSize
+          buffer.write(', height: ${lineHeight.pixels} / $fontSize');
+        } else if (lineHeight.hasPercent()) {
+          buffer.write(', height: ${lineHeight.percent / 100}');
+        }
+      }
+      buffer.write(')');
+      buffer.write(')');
+    } else {
+      if (hasArguments) {
+        buffer.write(', ');
+      }
+      buffer.write('fontSize: $fontSize');
+      if (value.hasFontName() && value.fontName.hasWeight()) {
+        final fw = const FontWeightDartExporter().serialize(
+          context,
+          value.fontName.weight,
+        );
+        buffer.write(', fontWeight: $fw');
+      }
+      if (value.hasLetterSpacing() && value.letterSpacing.value.value != 0) {
+        final letterSpacing = const FlutterValueExporter().serialize(
+          context,
+          Value(doubleValue: value.letterSpacing.value),
+          Value_Type.doubleValue,
+        );
+        buffer.write(', letterSpacing: $letterSpacing');
+      }
+      if (value.hasLineHeight()) {
+        final lineHeight = value.lineHeight;
+        if (lineHeight.hasPixels()) {
+          // Convert pixel line height to a multiplier based on fontSize
+          buffer.write(', height: ${lineHeight.pixels} / $fontSize');
+        } else if (lineHeight.hasPercent()) {
+          buffer.write(', height: ${lineHeight.percent / 100}');
+        }
+      }
+      buffer.write(')');
     }
-    buffer.write(')');
     return buffer.toString();
   }
 }

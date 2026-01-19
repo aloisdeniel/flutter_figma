@@ -10,11 +10,13 @@ class FlutterExportContext {
     this.currentCollectionId,
     this.naming = const (root: 'Variables'),
     this.collectionStructure = VariableCollectionDataStructure.flat,
+    this.useGoogleFonts = false,
   });
   final ({String root}) naming;
   final List<VariableCollection> collections;
   final int? currentCollectionId;
   final VariableCollectionDataStructure collectionStructure;
+  final bool useGoogleFonts;
 
   /// Returns a new context with the specified current collection ID.
   ///
@@ -25,6 +27,7 @@ class FlutterExportContext {
       currentCollectionId: collectionId,
       naming: naming,
       collectionStructure: collectionStructure,
+      useGoogleFonts: useGoogleFonts,
     );
   }
 
@@ -65,6 +68,9 @@ class FlutterExporter {
 
     buffer.writeln("import 'dart:ui' as ui;");
     buffer.writeln("import 'package:flutter/widgets.dart' as fl;");
+    if (context.useGoogleFonts) {
+      buffer.writeln("import 'package:google_fonts/google_fonts.dart' as gf;");
+    }
     buffer.writeln();
 
     final exporter = VariablesDartExporter();

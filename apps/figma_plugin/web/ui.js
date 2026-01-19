@@ -6,6 +6,7 @@ let exportOptions = {
     stylesCollectionName: 'Styles',
     rootName: 'Variables',
     collectionStructure: 'flat',
+    useGoogleFonts: false,
   },
   json: {
     prettyPrint: true,
@@ -147,6 +148,10 @@ function updateExportOptions() {
               <option value="tree" ${exportOptions.dart.collectionStructure === 'tree' ? 'selected' : ''}>Tree</option>
             </select>
           </div>
+          <div class="export-option">
+            <input type="checkbox" id="dart-google-fonts" ${exportOptions.dart.useGoogleFonts ? 'checked' : ''}>
+            <label for="dart-google-fonts">Use Google Fonts</label>
+          </div>
         `;
 
     document.getElementById('dart-styles').addEventListener('input', (e) => {
@@ -161,6 +166,11 @@ function updateExportOptions() {
 
     document.getElementById('dart-structure').addEventListener('change', (e) => {
       exportOptions.dart.collectionStructure = e.target.value;
+      regenerateCode();
+    });
+
+    document.getElementById('dart-google-fonts').addEventListener('change', (e) => {
+      exportOptions.dart.useGoogleFonts = e.target.checked;
       regenerateCode();
     });
   } else if (currentFormat === 'json') {

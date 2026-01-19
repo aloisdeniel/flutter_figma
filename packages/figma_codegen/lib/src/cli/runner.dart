@@ -15,6 +15,7 @@ class CliRunner {
     required this.format,
     required this.prettyPrint,
     this.collectionStructure = VariableCollectionDataStructure.flat,
+    this.useGoogleFonts = false,
   });
 
   final String inputPath;
@@ -22,6 +23,7 @@ class CliRunner {
   final OutputFormat format;
   final bool prettyPrint;
   final VariableCollectionDataStructure collectionStructure;
+  final bool useGoogleFonts;
 
   Future<void> run() async {
     // Step 1: Read input file
@@ -73,6 +75,7 @@ class CliRunner {
           final context = FlutterExportContext(
             collections: collections,
             collectionStructure: collectionStructure,
+            useGoogleFonts: useGoogleFonts,
           );
           output = exporter.exportVariableCollections(context);
           break;
