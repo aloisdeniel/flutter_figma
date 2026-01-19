@@ -13,11 +13,6 @@ class FigmaVectorNetworksImporter {
   Future<List<VectorNetwork>> import(
     ImportContext<FigmaImportOptions> context,
   ) async {
-    // TODO import the selected vector graphics from Figma and convert the vector nodes networks
-    // into VectorNetwork instances.
-    //
-    // If multiple component definitions are selected, then create a VectorNetwork for each of them.
-    // Else the list returns only one element.
     final selection = figma_api.figma.currentPage.selection.toDart;
     if (selection.isEmpty) {
       return const [];
@@ -28,6 +23,7 @@ class FigmaVectorNetworksImporter {
         .toList(growable: false);
 
     final targets = componentNodes.isNotEmpty ? componentNodes : selection;
+    print('Found ${targets.length} target nodes for vector network import.');
 
     final networks = await Future.wait(
       targets.map((node) => _vectorNetworkFromNode(node, context)),
@@ -37,23 +33,37 @@ class FigmaVectorNetworksImporter {
   }
 }
 
+figma_api.VectorNode? asVectorNode(figma_api.SceneNode node) {
+  final type = node.getProperty('type'.jsify()!).dartify() as String;
+  if (type == 'VECTOR') {
+    return node as figma_api.VectorNode;
+  }
+  return null;
+}
+
 Future<VectorNetwork?> _vectorNetworkFromNode(
   figma_api.SceneNode node,
   ImportContext<FigmaImportOptions> context,
 ) async {
-  if (node is figma_api.VectorNode) {
-    return await _vectorNetworkFromVectorNode(node, node.name, context);
+  print('Processing node: ${node.name} (${node.id})');
+
+  final vectorNode = asVectorNode(node);
+  if (vectorNode != null) {
+    print('Node is a VectorNode.');
+    return await _vectorNetworkFromVectorNode(vectorNode, node.name, context);
   }
 
   final children = node.getProperty('children'.jsify()!);
+  print('Children property: $children');
   if (children is! JSArray) {
     return null;
   }
 
   final dartChildren = children.toDart;
   for (final child in dartChildren) {
-    if (child is figma_api.VectorNode) {
-      return await _vectorNetworkFromVectorNode(child, node.name, context);
+    final vectorNode = asVectorNode(child as figma_api.SceneNode);
+    if (vectorNode != null) {
+      return await _vectorNetworkFromVectorNode(vectorNode, node.name, context);
     }
   }
 
@@ -66,17 +76,21 @@ Future<VectorNetwork?> _vectorNetworkFromVectorNode(
   ImportContext<FigmaImportOptions> context,
 ) async {
   final vectorNetwork = node.vectorNetwork;
+  print('Extracting VectorNetwork: $vectorNetwork');
   final vertices = vectorNetwork.vertices.toDart
       .map((vertex) => _vectorVertexFromFigma(vertex, node))
       .toList(growable: false);
+  print('Converted vertices: ${vertices.length} for VectorNetwork: $name.');
   final segments = vectorNetwork.segments.toDart
       .map(_vectorSegmentFromFigma)
       .toList(growable: false);
+  print('Converted segments: ${segments.length} for VectorNetwork: $name.');
 
   final regions = <VectorRegion>[];
   final rawRegions = vectorNetwork.regions?.toDart;
   if (rawRegions != null) {
     for (final region in rawRegions) {
+      print('Processing region: $region for VectorNetwork: $name.');
       final converted = await _vectorRegionFromFigma(region, node, context);
       if (converted != null) {
         regions.add(converted);
@@ -120,7 +134,20 @@ VectorVertex _vectorVertexFromFigma(
 }
 
 VectorSegment _vectorSegmentFromFigma(figma_api.VectorSegment segment) {
-  return VectorSegment(start: segment.start, end: segment.end);
+  return VectorSegment(
+    start: segment.start,
+    end: segment.end,
+    tangentStart: _vectorFromFigma(segment.tangentStart),
+    tangentEnd: _vectorFromFigma(segment.tangentEnd),
+  );
+}
+
+Vector? _vectorFromFigma(figma_api.Vector? vector) {
+  if (vector == null) {
+    return null;
+  }
+
+  return Vector(x: vector.x.toDouble(), y: vector.y.toDouble());
 }
 
 VectorRegion? _vectorRegionFromFigma(

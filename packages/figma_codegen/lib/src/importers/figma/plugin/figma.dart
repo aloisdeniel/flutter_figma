@@ -1143,6 +1143,8 @@ extension type VectorVertex._(JSObject _) implements JSObject {
 extension type VectorSegment._(JSObject _) implements JSObject {
   external int get start;
   external int get end;
+  external Vector? get tangentStart;
+  external Vector? get tangentEnd;
 }
 
 extension type VectorRegion._(JSObject _) implements JSObject {

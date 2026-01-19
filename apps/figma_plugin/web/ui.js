@@ -1,5 +1,6 @@
 
 let currentCode = '';
+let currentMode = 'variables';
 let currentFormat = 'dart';
 let exportOptions = {
   dart: {
@@ -12,15 +13,51 @@ let exportOptions = {
     prettyPrint: true,
     stylesCollectionName: 'Styles',
   },
+  vector: {
+    format: 'canvas',
+    stylesClass: false,
+  },
 };
 
 // Auto-generate code on load
 window.addEventListener('load', () => {
   updateStatus('Generating code...', false);
+  updateTabUI();
   updateExportOptions();
   parent.postMessage({
     pluginMessage: { type: 'generate' }
   }, '*');
+});
+
+const tabButtons = document.querySelectorAll('.tab-button');
+
+function updateTabUI() {
+  tabButtons.forEach((button) => {
+    button.classList.toggle('active', button.dataset.mode === currentMode);
+  });
+
+  const formatSection = document.getElementById('format-options-section');
+  if (formatSection) {
+    formatSection.style.display = currentMode === 'variables' ? 'block' : 'none';
+  }
+
+  document.getElementById('current-format').textContent =
+    currentMode === 'variables'
+      ? currentFormat.charAt(0).toUpperCase() + currentFormat.slice(1)
+      : 'Vector';
+}
+
+tabButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const mode = button.dataset.mode;
+    if (!mode || mode === currentMode) {
+      return;
+    }
+    currentMode = mode;
+    updateTabUI();
+    updateExportOptions();
+    regenerateCode();
+  });
 });
 
 window.onmessage = (event) => {
@@ -117,8 +154,7 @@ function escapeHtml(text) {
 document.querySelectorAll('input[name="format"]').forEach(radio => {
   radio.addEventListener('change', () => {
     currentFormat = radio.value;
-    document.getElementById('current-format').textContent =
-      currentFormat.charAt(0).toUpperCase() + currentFormat.slice(1);
+    updateTabUI();
     updateExportOptions();
     regenerateCode();
   });
@@ -130,69 +166,96 @@ function updateExportOptions() {
 
   optionsContainer.innerHTML = '';
 
-  if (currentFormat === 'dart') {
+  if (currentMode === 'variables') {
+    optionsSection.style.display = 'block';
+
+    if (currentFormat === 'dart') {
+      optionsContainer.innerHTML = `
+            <div class="export-option">
+              <label for="dart-styles">Styles collection</label>
+              <input type="text" id="dart-styles" value="${escapeHtml(exportOptions.dart.stylesCollectionName || '')}">
+            </div>
+            <div class="export-option">
+              <label for="dart-root">Root class</label>
+              <input type="text" id="dart-root" value="${escapeHtml(exportOptions.dart.rootName || '')}">
+            </div>
+            <div class="export-option">
+              <label for="dart-structure">Collection structure</label>
+              <select id="dart-structure">
+                <option value="flat" ${exportOptions.dart.collectionStructure === 'flat' ? 'selected' : ''}>Flat</option>
+                <option value="tree" ${exportOptions.dart.collectionStructure === 'tree' ? 'selected' : ''}>Tree</option>
+              </select>
+            </div>
+            <div class="export-option">
+              <input type="checkbox" id="dart-google-fonts" ${exportOptions.dart.useGoogleFonts ? 'checked' : ''}>
+              <label for="dart-google-fonts">Use Google Fonts</label>
+            </div>
+          `;
+
+      document.getElementById('dart-styles').addEventListener('input', (e) => {
+        exportOptions.dart.stylesCollectionName = e.target.value;
+        regenerateCode();
+      });
+
+      document.getElementById('dart-root').addEventListener('input', (e) => {
+        exportOptions.dart.rootName = e.target.value;
+        regenerateCode();
+      });
+
+      document.getElementById('dart-structure').addEventListener('change', (e) => {
+        exportOptions.dart.collectionStructure = e.target.value;
+        regenerateCode();
+      });
+
+      document.getElementById('dart-google-fonts').addEventListener('change', (e) => {
+        exportOptions.dart.useGoogleFonts = e.target.checked;
+        regenerateCode();
+      });
+    } else if (currentFormat === 'json') {
+      optionsContainer.innerHTML = `
+            <div class="export-option">
+              <label for="json-styles">Styles collection</label>
+              <input type="text" id="json-styles" value="${escapeHtml(exportOptions.json.stylesCollectionName || '')}">
+            </div>
+            <div class="export-option">
+              <input type="checkbox" id="json-pretty" ${exportOptions.json.prettyPrint ? 'checked' : ''}>
+              <label for="json-pretty">Pretty Print</label>
+            </div>
+          `;
+
+      document.getElementById('json-styles').addEventListener('input', (e) => {
+        exportOptions.json.stylesCollectionName = e.target.value;
+        regenerateCode();
+      });
+
+      document.getElementById('json-pretty').addEventListener('change', (e) => {
+        exportOptions.json.prettyPrint = e.target.checked;
+        regenerateCode();
+      });
+    }
+  } else if (currentMode === 'vector') {
     optionsSection.style.display = 'block';
     optionsContainer.innerHTML = `
           <div class="export-option">
-            <label for="dart-styles">Styles collection</label>
-            <input type="text" id="dart-styles" value="${escapeHtml(exportOptions.dart.stylesCollectionName || '')}">
-          </div>
-          <div class="export-option">
-            <label for="dart-root">Root class</label>
-            <input type="text" id="dart-root" value="${escapeHtml(exportOptions.dart.rootName || '')}">
-          </div>
-          <div class="export-option">
-            <label for="dart-structure">Collection structure</label>
-            <select id="dart-structure">
-              <option value="flat" ${exportOptions.dart.collectionStructure === 'flat' ? 'selected' : ''}>Flat</option>
-              <option value="tree" ${exportOptions.dart.collectionStructure === 'tree' ? 'selected' : ''}>Tree</option>
+            <label for="vector-format">Format</label>
+            <select id="vector-format">
+              <option value="canvas" ${exportOptions.vector.format === 'canvas' ? 'selected' : ''}>Canvas</option>
+              <option value="vectorGraphicsBase64" ${exportOptions.vector.format === 'vectorGraphicsBase64' ? 'selected' : ''}>Vector graphics (base64)</option>
             </select>
           </div>
           <div class="export-option">
-            <input type="checkbox" id="dart-google-fonts" ${exportOptions.dart.useGoogleFonts ? 'checked' : ''}>
-            <label for="dart-google-fonts">Use Google Fonts</label>
+            <input type="checkbox" id="vector-styles" ${exportOptions.vector.stylesClass ? 'checked' : ''}>
+            <label for="vector-styles">Generate styles class</label>
           </div>
         `;
 
-    document.getElementById('dart-styles').addEventListener('input', (e) => {
-      exportOptions.dart.stylesCollectionName = e.target.value;
+    document.getElementById('vector-format').addEventListener('change', (e) => {
+      exportOptions.vector.format = e.target.value;
       regenerateCode();
     });
 
-    document.getElementById('dart-root').addEventListener('input', (e) => {
-      exportOptions.dart.rootName = e.target.value;
-      regenerateCode();
-    });
-
-    document.getElementById('dart-structure').addEventListener('change', (e) => {
-      exportOptions.dart.collectionStructure = e.target.value;
-      regenerateCode();
-    });
-
-    document.getElementById('dart-google-fonts').addEventListener('change', (e) => {
-      exportOptions.dart.useGoogleFonts = e.target.checked;
-      regenerateCode();
-    });
-  } else if (currentFormat === 'json') {
-    optionsSection.style.display = 'block';
-    optionsContainer.innerHTML = `
-          <div class="export-option">
-            <label for="json-styles">Styles collection</label>
-            <input type="text" id="json-styles" value="${escapeHtml(exportOptions.json.stylesCollectionName || '')}">
-          </div>
-          <div class="export-option">
-            <input type="checkbox" id="json-pretty" ${exportOptions.json.prettyPrint ? 'checked' : ''}>
-            <label for="json-pretty">Pretty Print</label>
-          </div>
-        `;
-
-    document.getElementById('json-styles').addEventListener('input', (e) => {
-      exportOptions.json.stylesCollectionName = e.target.value;
-      regenerateCode();
-    });
-
-    document.getElementById('json-pretty').addEventListener('change', (e) => {
-      exportOptions.json.prettyPrint = e.target.checked;
+    document.getElementById('vector-styles').addEventListener('change', (e) => {
+      exportOptions.vector.stylesClass = e.target.checked;
       regenerateCode();
     });
   }
@@ -203,7 +266,8 @@ function regenerateCode() {
     pluginMessage: {
       type: 'format-changed',
       format: currentFormat,
-      options: exportOptions[currentFormat]
+      mode: currentMode,
+      options: exportOptions[currentMode === 'variables' ? currentFormat : 'vector']
     }
   }, '*');
 }

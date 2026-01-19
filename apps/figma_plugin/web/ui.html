@@ -6,6 +6,12 @@
   <style>{{CSS}}</style>
 </head>
 <body>
+  <div class="top-bar">
+    <div class="tab-group">
+      <button class="tab-button active" data-mode="variables" type="button">Variables</button>
+      <button class="tab-button" data-mode="vector" type="button">Vector Graphics</button>
+    </div>
+  </div>
   <div class="main-content">
     <aside class="options-panel">
       <div>
@@ -15,7 +21,7 @@
         </div>
         <div class="options-panel-subtitle">Code settings</div>
       </div>
-      <div class="options-panel-section">
+      <div class="options-panel-section" id="format-options-section">
         <div class="options-section">
           <span class="options-label">Export Format</span>
           <div class="format-options">

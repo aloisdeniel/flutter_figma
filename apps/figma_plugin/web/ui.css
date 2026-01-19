@@ -14,6 +14,47 @@ body {
   overflow: hidden;
 }
 
+.top-bar {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--figma-color-border);
+  background: var(--figma-color-bg);
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
+
+.tab-group {
+  display: inline-flex;
+  gap: 6px;
+  padding: 4px;
+  border-radius: 10px;
+  background: var(--figma-color-bg-secondary);
+}
+
+.tab-button {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  background: transparent;
+  color: var(--figma-color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.tab-button:hover {
+  color: var(--figma-color-text);
+  background: var(--figma-color-bg-hover);
+}
+
+.tab-button.active {
+  background: var(--figma-color-bg);
+  border-color: var(--figma-color-border);
+  color: var(--figma-color-text);
+}
+
 .main-content {
   flex: 1;
   display: flex;
