@@ -85,7 +85,9 @@ void writeTreeCollectionDataClasse(
   final root = CollectionTreeNode.fromCollection(definition);
   final baseTypeName = Naming.typeName(definition.name);
   final dataClassName = '${baseTypeName}Data';
-  final aliasedCollections = context.collectAliasedCollectionsMap(definition);
+  final aliasedCollections = context.variables.collectAliasedCollectionsMap(
+    definition,
+  );
 
   String nodeTypeName(List<String> pathSegments) {
     if (pathSegments.isEmpty) {
@@ -148,9 +150,8 @@ void writeTreeCollectionDataClasse(
     final alias = value.getAlias();
     if (alias != null && alias.whichType() == Alias_Type.variable) {
       final varAlias = alias.variable;
-      final targetCollection = context.collections.findVariableCollection(
-        varAlias.collectionId,
-      );
+      final targetCollection = context.variables.collections
+          .findVariableCollection(varAlias.collectionId);
       if (targetCollection == null) return null;
       final targetVariable = targetCollection.findEntry(varAlias.variableId);
       if (targetVariable == null) return null;

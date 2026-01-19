@@ -6,7 +6,7 @@ import 'package:args/args.dart';
 import 'package:figma_codegen/src/cli/exceptions.dart';
 import 'package:figma_codegen/src/cli/output_format.dart';
 import 'package:figma_codegen/src/cli/runner.dart';
-import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
+import 'package:figma_codegen/src/exporter/flutter/variables/options.dart';
 
 const String version = '1.0.0';
 

@@ -27,7 +27,7 @@ class AliasDartExporter {
     VariableAlias value,
     Value_Type expectedType,
   ) {
-    final collection = context.collections.findVariableCollection(
+    final collection = context.variables.collections.findVariableCollection(
       value.collectionId,
     );
 
@@ -43,7 +43,7 @@ class AliasDartExporter {
     }
     final variableFieldName = Naming.fieldName(variable.name);
 
-    if (value.collectionId == context.currentCollectionId) {
+    if (value.collectionId == context.variables.currentCollectionId) {
       return variableFieldName;
     }
 

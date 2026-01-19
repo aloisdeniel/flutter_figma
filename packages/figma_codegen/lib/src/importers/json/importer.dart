@@ -1,19 +1,26 @@
 import 'dart:convert';
 
+import 'package:figma_codegen/src/definitions/library.dart';
 import 'package:figma_codegen/src/definitions/variables.pb.dart';
+import 'package:figma_codegen/src/definitions/vector_graphics.pb.dart';
 
 class JsonImporter {
   const JsonImporter();
 
-  Future<List<VariableCollection>> importVariableCollections(
-    String content,
-  ) async {
+  Future<Library> import(String content) async {
     final decoded = jsonDecode(content);
-    if (decoded is! List<dynamic>) {
+
+    if (decoded is! Map) {
+      throw FormatException('Expected a JSON map.');
+    }
+
+    final decodedCollections = decoded['variables'];
+
+    if (decodedCollections is! List) {
       throw FormatException('Expected a JSON array of VariableCollections.');
     }
 
-    return decoded
+    final collecions = decodedCollections
         .map<VariableCollection>((item) {
           if (item is! Map<String, dynamic>) {
             throw FormatException(
@@ -24,5 +31,25 @@ class JsonImporter {
         })
         .whereType<VariableCollection>()
         .toList();
+
+    final decodedVertexNetworks = decoded['vertexNetworks'];
+
+    if (decodedVertexNetworks is! List) {
+      throw FormatException('Expected a JSON array of VertexNetworks.');
+    }
+
+    final vertexNetworks = decodedVertexNetworks
+        .map<VectorNetwork>((item) {
+          if (item is! Map<String, dynamic>) {
+            throw FormatException(
+              'Expected each item to be a JSON object representing a VertexNetwork.',
+            );
+          }
+          return VectorNetwork()..mergeFromProto3Json(item);
+        })
+        .whereType<VectorNetwork>()
+        .toList();
+
+    return Library(vectorNetworks: vertexNetworks, variables: collecions);
   }
 }

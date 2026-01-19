@@ -3,8 +3,9 @@ import 'dart:io';
 import 'package:figma_codegen/src/cli/exceptions.dart';
 import 'package:figma_codegen/src/cli/file_operations.dart';
 import 'package:figma_codegen/src/cli/output_format.dart';
-import 'package:figma_codegen/src/definitions/variables.pb.dart';
+import 'package:figma_codegen/src/definitions/library.dart';
 import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
+import 'package:figma_codegen/src/exporter/flutter/variables/options.dart';
 import 'package:figma_codegen/src/exporter/json/exporter.dart';
 import 'package:figma_codegen/src/importers/json/importer.dart';
 
@@ -36,10 +37,10 @@ class CliRunner {
     }
 
     // Step 2: Import variable collections
-    final List<VariableCollection> collections;
+    final Library library;
     try {
       final importer = JsonImporter();
-      collections = await importer.importVariableCollections(content);
+      library = await importer.import(content);
     } on FormatException catch (e) {
       throw InvalidInputException(
         'Invalid JSON format: ${e.message}\n'
@@ -50,7 +51,7 @@ class CliRunner {
     }
 
     // Step 3: Validate collections
-    if (collections.isEmpty) {
+    if (library.variables.isEmpty) {
       throw InvalidInputException(
         'No variable collections found in input file.\n'
         'The input must contain at least one variable collection.',
@@ -64,7 +65,7 @@ class CliRunner {
         case OutputFormat.json:
           final exporter = JsonExporter();
           final context = JsonExportContext(
-            collections: collections,
+            collections: library.variables,
             prettyPrint: prettyPrint,
           );
           output = exporter.exportVariableCollections(context);
@@ -73,9 +74,11 @@ class CliRunner {
         case OutputFormat.dart:
           final exporter = FlutterExporter();
           final context = FlutterExportContext(
-            collections: collections,
-            collectionStructure: collectionStructure,
-            useGoogleFonts: useGoogleFonts,
+            variables: FlutterVariablesExportOptions(
+              collections: library.variables,
+              collectionStructure: collectionStructure,
+              useGoogleFonts: useGoogleFonts,
+            ),
           );
           output = exporter.exportVariableCollections(context);
           break;

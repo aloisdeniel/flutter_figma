@@ -101,7 +101,7 @@ Future<void> _generateCode() async {
         );
 
   final importer = FigmaImporter();
-  final library = await importer.importVariableCollections(
+  final library = await importer.import(
     ImportContext(importOptions),
   );
 
@@ -120,10 +120,12 @@ Future<void> _generateCode() async {
           _currentOptions['useGoogleFonts'] as bool? ?? false;
       variablesCode = await generator.exportVariableCollections(
         FlutterExportContext(
-          collections: library,
-          naming: flutterNaming,
-          collectionStructure: collectionStructure,
-          useGoogleFonts: useGoogleFonts,
+          variables: FlutterVariablesExportOptions(
+            collections: library.variables,
+            naming: flutterNaming,
+            collectionStructure: collectionStructure,
+            useGoogleFonts: useGoogleFonts,
+          ),
         ),
       );
 
@@ -132,7 +134,8 @@ Future<void> _generateCode() async {
       final generator = JsonExporter();
       final prettyPrint = _currentOptions['prettyPrint'] as bool? ?? true;
       variablesCode = await generator.exportVariableCollections(
-        JsonExportContext(collections: library, prettyPrint: prettyPrint),
+        JsonExportContext(
+            collections: library.variables, prettyPrint: prettyPrint),
       );
       break;
   }

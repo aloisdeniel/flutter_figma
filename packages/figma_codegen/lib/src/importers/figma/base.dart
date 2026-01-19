@@ -1,4 +1,4 @@
-import 'package:figma_codegen/src/definitions/variables.pb.dart';
+import 'package:figma_codegen/src/definitions/library.dart';
 import 'package:figma_codegen/src/importers/context.dart';
 
 class FigmaImportOptions {
@@ -29,7 +29,5 @@ class FigmaImportOptions {
 abstract class FigmaImporterBase {
   const FigmaImporterBase();
 
-  Future<List<VariableCollection>> importVariableCollections(
-    ImportContext<FigmaImportOptions> context,
-  );
+  Future<Library> import(ImportContext<FigmaImportOptions> context);
 }

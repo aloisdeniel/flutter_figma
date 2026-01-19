@@ -9,7 +9,7 @@ class TextStyleDartExporter {
   String serialize(FlutterExportContext context, TextStyle value) {
     final buffer = StringBuffer();
     var hasArguments = false;
-    if (context.useGoogleFonts && value.hasFontName()) {
+    if (context.variables.useGoogleFonts && value.hasFontName()) {
       final fontFamily = const FlutterValueExporter().serialize(
         context,
         Value(stringValue: value.fontName.family),
@@ -34,7 +34,7 @@ class TextStyleDartExporter {
       Value(doubleValue: value.fontSize),
       Value_Type.doubleValue,
     );
-    if (context.useGoogleFonts && value.hasFontName()) {
+    if (context.variables.useGoogleFonts && value.hasFontName()) {
       buffer.write(', textStyle: fl.TextStyle(');
       buffer.write('fontSize: $fontSize');
       if (value.fontName.hasWeight()) {

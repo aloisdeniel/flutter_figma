@@ -4,6 +4,8 @@ import 'package:figma_codegen/src/exporter/flutter/variables/collection.flat_dat
 import 'package:figma_codegen/src/exporter/flutter/variables/collection.tree_data.dart';
 import 'package:figma_codegen/src/utils/dart/buffer.dart';
 
+import 'options.dart';
+
 class VariableCollectionDartExporter {
   const VariableCollectionDartExporter();
 
@@ -12,8 +14,11 @@ class VariableCollectionDartExporter {
     DartBuffer buffer,
     VariableCollection value,
   ) {
-    final collectionContext = context.withCurrentCollectionId(value.id);
-    if (context.collectionStructure == VariableCollectionDataStructure.flat) {
+    final collectionContext = FlutterExportContext(
+      variables: context.variables.withCurrentCollectionId(value.id),
+    );
+    if (context.variables.collectionStructure ==
+        VariableCollectionDataStructure.flat) {
       writeFlatCollectionDataClass(collectionContext, buffer, value);
     } else {
       writeTreeCollectionDataClasse(collectionContext, buffer, value);

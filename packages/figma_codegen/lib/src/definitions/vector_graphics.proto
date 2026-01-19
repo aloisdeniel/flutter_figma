@@ -1,0 +1,148 @@
+syntax = "proto3";
+
+package definitions;
+
+// Network
+
+message VectorNetwork {
+  string name = 1;
+  repeated VectorVertex vertices = 2;
+  repeated VectorSegment segments = 3;
+  repeated VectorRegion regions = 4;
+}
+
+enum StrokeCap {
+  BUTT = 0;
+  ROUND = 1;
+  SQUARE = 2;
+}
+
+enum StrokeJoin {
+  MITER = 0;
+  BEVEL = 1;
+  ROUND = 2;
+}
+
+enum HandleMirroring {
+  NONE = 0;
+  MIRROR = 1;
+  AVERAGE = 2;
+  ALIGN = 3;
+}
+
+message VectorVertex {
+  double x = 1;
+  double y = 2;
+  optional StrokeCap strokeCap = 3;
+  optional StrokeJoin strokeJoin = 4;
+  optional double cornerRadius = 5;
+  optional HandleMirroring handleMirroring = 6;
+}
+
+message Vector {
+  double x = 1;
+  double y = 2;
+}
+
+message VectorSegment {
+  int32 start = 1;
+  int32 end = 2;
+  optional Vector tangentStart = 3;
+  optional Vector tangentEnd = 4;
+}
+
+enum WindingRule {
+  NONZERO = 0;
+  EVENODD = 1;
+}
+
+message VectorRegionLoop {
+  repeated int32 segments = 1;
+}
+
+message VectorRegion {
+  WindingRule windingRule = 1;
+  repeated VectorRegionLoop loops = 2;
+  repeated Paint fills = 3;
+}
+
+// Paints
+
+enum BlendMode {
+  NORMAL = 0;
+  DARKEN = 1;
+  MULTIPLY = 2;
+  LINEAR_BURN = 3;
+  COLOR_BURN = 4;
+  LIGHTEN = 5;
+  SCREEN = 6;
+  LINEAR_DODGE = 7;
+  COLOR_DODGE = 8;
+  OVERLAY = 9;
+  SOFT_LIGHT = 10;
+  HARD_LIGHT = 11;
+  DIFFERENCE = 12;
+  EXCLUSION = 13;
+  HUE = 14;
+  SATURATION = 15;
+  COLOR = 16;
+  LUMINOSITY = 17;
+}
+
+message RGBA {
+  double r = 1;
+  double g = 2;
+  double b = 3;
+  double a = 4;
+}
+
+message Transform {
+  double m00 = 1;
+  double m01 = 2;
+  double m10 = 3;
+  double m11 = 4;
+  double m02 = 5;
+  double m12 = 6;
+}
+
+message Paint {
+  double opacity = 1;
+  optional BlendMode blendMode = 2;
+  oneof type {
+    SolidPaint solid = 3;
+    GradientPaint gradient = 4;
+  }
+}
+
+message BoundVariable {
+  int32 collectionId = 1;
+  int32 variableId = 2;
+}
+
+message SolidPaint {
+  oneof color {
+    RGBA value = 1;
+    BoundVariable bound = 2;
+  }
+}
+
+message ColorStop {
+  double position = 1;
+  oneof color {
+    RGBA value = 2;
+    BoundVariable bound = 3;
+  }
+}
+
+enum GradientType {
+  LINEAR = 0;
+  RADIAL = 1;
+  ANGULAR = 2;
+  DIAMOND = 3;
+}
+
+message GradientPaint {
+  GradientType type = 1;
+  Transform gradientTransform = 2;
+  repeated ColorStop gradientStops = 3;
+}

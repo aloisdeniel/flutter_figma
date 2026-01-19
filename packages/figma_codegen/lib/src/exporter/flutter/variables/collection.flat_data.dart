@@ -29,7 +29,9 @@ void _writeSingleModeClass(
   final variant = definition.variants.first;
 
   // Collect alias information
-  final aliasedCollections = context.collectAliasedCollectionsMap(definition);
+  final aliasedCollections = context.variables.collectAliasedCollectionsMap(
+    definition,
+  );
 
   // Simple class (not sealed)
   buffer.writeln('class $dataClassName {');
@@ -97,7 +99,9 @@ void _writeMultiModeClasses(
   buffer.writeln();
 
   // Collect alias information
-  final aliasedCollections = context.collectAliasedCollectionsMap(definition);
+  final aliasedCollections = context.variables.collectAliasedCollectionsMap(
+    definition,
+  );
 
   // Sealed base class
   buffer.writeln('sealed class $dataClassName {');
@@ -174,9 +178,8 @@ void _writeMultiModeClasses(
       if (alias != null && alias.whichType() == Alias_Type.variable) {
         // This is an alias to another collection's variable
         final varAlias = alias.variable;
-        final targetCollection = context.collections.findVariableCollection(
-          varAlias.collectionId,
-        );
+        final targetCollection = context.variables.collections
+            .findVariableCollection(varAlias.collectionId);
         if (targetCollection != null) {
           final targetVariable = targetCollection.findEntry(
             varAlias.variableId,

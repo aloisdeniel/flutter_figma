@@ -1,7 +1,10 @@
 library;
 
+export 'src/definitions/library.dart';
 export 'src/definitions/variables.dart';
+export 'src/definitions/vector_graphics.pb.dart';
 
+export 'src/exporter/flutter/variables/options.dart';
 export 'src/exporter/flutter/exporter.dart';
 export 'src/exporter/json/exporter.dart';
 

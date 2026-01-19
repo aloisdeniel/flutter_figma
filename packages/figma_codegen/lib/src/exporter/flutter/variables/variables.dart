@@ -12,7 +12,7 @@ class VariablesDartExporter {
   void serialize(FlutterExportContext context, DartBuffer buffer) {
     _generateInheritedWidget(buffer, context);
 
-    for (var collection in context.collections) {
+    for (var collection in context.variables.collections) {
       final exporter = VariableCollectionDartExporter();
       exporter.serialize(context, buffer, collection);
     }
