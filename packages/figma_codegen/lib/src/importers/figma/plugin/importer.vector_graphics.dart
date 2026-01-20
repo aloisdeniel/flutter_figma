@@ -539,22 +539,19 @@ BoundVariable? _resolvePaintAlias(
     return null;
   }
 
-  final map = boundVariables.dartify();
-  if (map is! Map) {
+  final colorValue = boundVariables.getProperty('color'.jsify()!);
+  if (colorValue is! JSObject) {
     return null;
   }
 
-  final colorValue = map['color'];
-  if (colorValue is! Map) {
-    return null;
-  }
-
-  final type = colorValue['type'];
+  final typeValue = colorValue.getProperty('type'.jsify()!);
+  final type = typeValue.dartify();
   if (type != 'VARIABLE_ALIAS') {
     return null;
   }
 
-  final figmaVariableId = colorValue['id'];
+  final idValue = colorValue.getProperty('id'.jsify()!);
+  final figmaVariableId = idValue.dartify();
   if (figmaVariableId is! String) {
     return null;
   }
@@ -651,13 +648,7 @@ BoundVariable? _resolveStopAlias(
     return null;
   }
 
-  final info = _boundVariableInfo(figmaVariableId, context);
-  return info == null
-      ? null
-      : BoundVariable(
-          collectionName: info.collectionName,
-          variableName: info.variableName,
-        );
+  return _boundVariableInfo(figmaVariableId, context);
 }
 
 RGBA _rgbaFromDynamicColor(dynamic value, double opacity) {
