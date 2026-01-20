@@ -111,6 +111,22 @@ Future<VectorNode?> _vectorNode(
   ImportContext<FigmaImportOptions> context,
 ) async {
   switch (nodeType(node)) {
+    case 'LINE':
+      print('Parsing line node: ${node.name}');
+      final lineNode = node as figma_api.LineNode;
+      final width = lineNode.width.toDouble();
+      return VectorNode(
+        name: lineNode.name,
+        opacity: nodeOpacity(lineNode),
+        transform: _nodeTransform(lineNode),
+        network: VectorNetwork(
+          vertices: [
+            VectorVertex(x: 0.0, y: 0.0),
+            VectorVertex(x: width, y: 0.0),
+          ],
+          segments: [VectorSegment(start: 0, end: 1)],
+        ),
+      );
     case 'VECTOR':
       print('Parsing vector node: ${node.name}');
       final network = await _vectorNetworkFromVectorNode(
