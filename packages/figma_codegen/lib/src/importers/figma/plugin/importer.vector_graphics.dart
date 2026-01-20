@@ -98,8 +98,12 @@ GeometryProperty _geometryNode(
 ) {
   final fills = _convertNodeFills('fills', node, context);
   final strokes = _convertNodeFills('strokes', node, context);
-  // TODO stroke weight support
-  return GeometryProperty(fills: fills, strokes: strokes);
+  final strokeWeight = node.getProperty('strokeWeight'.jsify()!);
+  return GeometryProperty(
+    fills: fills,
+    strokes: strokes,
+    strokeWeight: (strokeWeight.dartify() as num?)?.toDouble() ?? 1.0,
+  );
 }
 
 Future<VectorNode?> _vectorNode(

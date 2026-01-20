@@ -82,7 +82,7 @@ void _writeNode(
   FlutterExportContext context,
 ) {
   // Transform
-  buffer.writeln('// ${node.whichType()} "${node.name}"');
+  buffer.writeln('// ${node.whichType().name.toUpperCase()} "${node.name}"');
   buffer.writeln('canvas.save();');
   _writeNodeTransform(buffer, node);
   _writeNodeOpacity(buffer, node);
@@ -96,6 +96,7 @@ void _writeNode(
           _writeRegion(buffer, node.network, region, context);
         }
       }
+      _writeNetworkStrokesFromSegments(buffer, node.network, context);
     case VectorNode_Type.group:
       for (final child in node.group.children) {
         _writeNode(buffer, child, context);
@@ -173,11 +174,14 @@ void _writeRectangle(
   buffer.writeln(
     'final rect = fl.Rect.fromLTWH(0, 0, ${_formatDouble(width)}, ${_formatDouble(height)});',
   );
-  buffer.writeln('paint.style = ui.PaintingStyle.fill;');
-  for (final fill in rectangle.geometry.fills) {
-    _writePaintAssignment(buffer, fill, context);
-    buffer.writeln('canvas.drawRect(rect, paint);');
+  if (rectangle.geometry.fills.isNotEmpty) {
+    buffer.writeln('paint.style = ui.PaintingStyle.fill;');
+    for (final fill in rectangle.geometry.fills) {
+      _writePaintAssignment(buffer, fill, context);
+      buffer.writeln('canvas.drawRect(rect, paint);');
+    }
   }
+  _writeRectangleStrokes(buffer, rectangle, context);
 }
 
 void _writeEllipse(
@@ -204,22 +208,35 @@ void _writeEllipse(
   final hasInnerRadius = innerRadius > 0.0;
 
   if (isFullCircle && !hasInnerRadius) {
-    buffer.writeln('paint.style = ui.PaintingStyle.fill;');
-    for (final fill in ellipse.geometry.fills) {
-      _writePaintAssignment(buffer, fill, context);
-      buffer.writeln('canvas.drawOval(rect, paint);');
+    if (ellipse.geometry.fills.isNotEmpty) {
+      buffer.writeln('paint.style = ui.PaintingStyle.fill;');
+      for (final fill in ellipse.geometry.fills) {
+        _writePaintAssignment(buffer, fill, context);
+        buffer.writeln('canvas.drawOval(rect, paint);');
+      }
     }
+    _writeEllipseStrokes(buffer, ellipse, context, 'rect');
     return;
   }
 
   if (!hasInnerRadius) {
-    buffer.writeln('paint.style = ui.PaintingStyle.fill;');
-    for (final fill in ellipse.geometry.fills) {
-      _writePaintAssignment(buffer, fill, context);
-      buffer.writeln(
-        'canvas.drawArc(rect, ${_formatDouble(arcStart)}, ${_formatDouble(sweep)}, true, paint);',
-      );
+    if (ellipse.geometry.fills.isNotEmpty) {
+      buffer.writeln('paint.style = ui.PaintingStyle.fill;');
+      for (final fill in ellipse.geometry.fills) {
+        _writePaintAssignment(buffer, fill, context);
+        buffer.writeln(
+          'canvas.drawArc(rect, ${_formatDouble(arcStart)}, ${_formatDouble(sweep)}, true, paint);',
+        );
+      }
     }
+    _writeEllipseStrokes(
+      buffer,
+      ellipse,
+      context,
+      'rect',
+      arcStart: arcStart,
+      sweep: sweep,
+    );
     return;
   }
 
@@ -249,11 +266,14 @@ void _writeEllipse(
     );
     buffer.writeln('path.close();');
   }
-  buffer.writeln('paint.style = ui.PaintingStyle.fill;');
-  for (final fill in ellipse.geometry.fills) {
-    _writePaintAssignment(buffer, fill, context);
-    buffer.writeln('canvas.drawPath(path, paint);');
+  if (ellipse.geometry.fills.isNotEmpty) {
+    buffer.writeln('paint.style = ui.PaintingStyle.fill;');
+    for (final fill in ellipse.geometry.fills) {
+      _writePaintAssignment(buffer, fill, context);
+      buffer.writeln('canvas.drawPath(path, paint);');
+    }
   }
+  _writePathStrokes(buffer, ellipse.geometry, context, 'path');
 }
 
 void _writePolygon(
@@ -299,6 +319,7 @@ void _writePolygon(
       buffer.writeln('canvas.drawPath(path, paint);');
     }
   }
+  _writePathStrokes(buffer, polygon.geometry, context, 'path');
 }
 
 void _writeFrameClip(DartBuffer buffer, VectorFrame frame) {
@@ -389,6 +410,100 @@ void _writeNetworkFillFromSegments(
   }
   buffer.unindent();
   buffer.writeln('}');
+}
+
+void _writeNetworkStrokesFromSegments(
+  DartBuffer buffer,
+  VectorNetwork network,
+  FlutterExportContext context,
+) {
+  if (network.segments.isEmpty || network.geometry.strokes.isEmpty) {
+    return;
+  }
+
+  final loops = _networkLoops(network);
+  if (loops.isEmpty) {
+    print('No loops found for strokes in network');
+    return;
+  }
+
+  buffer.writeln('{');
+  buffer.indent();
+  buffer.writeln('final path = ui.Path();');
+  for (final loop in loops) {
+    _writeLoop(buffer, network, loop);
+  }
+  _writePathStrokes(buffer, network.geometry, context, 'path');
+  buffer.unindent();
+  buffer.writeln('}');
+}
+
+void _writeRectangleStrokes(
+  DartBuffer buffer,
+  VectorRectangle rectangle,
+  FlutterExportContext context,
+) {
+  if (rectangle.geometry.strokes.isEmpty ||
+      rectangle.geometry.strokeWeight <= 0) {
+    return;
+  }
+
+  buffer.writeln('paint.style = ui.PaintingStyle.stroke;');
+  buffer.writeln(
+    'paint.strokeWidth = ${_formatDouble(rectangle.geometry.strokeWeight)};',
+  );
+  for (final stroke in rectangle.geometry.strokes) {
+    _writePaintAssignment(buffer, stroke, context);
+    buffer.writeln('canvas.drawRect(rect, paint);');
+  }
+}
+
+void _writeEllipseStrokes(
+  DartBuffer buffer,
+  VectorEllipse ellipse,
+  FlutterExportContext context,
+  String rectName, {
+  double? arcStart,
+  double? sweep,
+}) {
+  if (ellipse.geometry.strokes.isEmpty || ellipse.geometry.strokeWeight <= 0) {
+    return;
+  }
+
+  buffer.writeln('paint.style = ui.PaintingStyle.stroke;');
+  buffer.writeln(
+    'paint.strokeWidth = ${_formatDouble(ellipse.geometry.strokeWeight)};',
+  );
+  for (final stroke in ellipse.geometry.strokes) {
+    _writePaintAssignment(buffer, stroke, context);
+    if (arcStart == null || sweep == null) {
+      buffer.writeln('canvas.drawOval($rectName, paint);');
+    } else {
+      buffer.writeln(
+        'canvas.drawArc($rectName, ${_formatDouble(arcStart)}, ${_formatDouble(sweep)}, false, paint);',
+      );
+    }
+  }
+}
+
+void _writePathStrokes(
+  DartBuffer buffer,
+  GeometryProperty geometry,
+  FlutterExportContext context,
+  String pathName,
+) {
+  if (geometry.strokes.isEmpty || geometry.strokeWeight <= 0) {
+    return;
+  }
+
+  buffer.writeln('paint.style = ui.PaintingStyle.stroke;');
+  buffer.writeln(
+    'paint.strokeWidth = ${_formatDouble(geometry.strokeWeight)};',
+  );
+  for (final stroke in geometry.strokes) {
+    _writePaintAssignment(buffer, stroke, context);
+    buffer.writeln('canvas.drawPath($pathName, paint);');
+  }
 }
 
 List<VectorRegionLoop> _networkLoops(VectorNetwork network) {
