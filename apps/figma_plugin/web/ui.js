@@ -15,7 +15,6 @@ let exportOptions = {
   },
   vector: {
     format: 'canvas',
-    stylesClass: false,
   },
 };
 
@@ -248,20 +247,11 @@ function updateExportOptions() {
       });
     }
   } else if (currentMode === 'vector') {
-    optionsSection.style.display = 'block';
     if (currentFormat === 'dart') {
-      optionsContainer.innerHTML = `
-            <div class="export-option">
-              <input type="checkbox" id="vector-styles" ${exportOptions.vector.stylesClass ? 'checked' : ''}>
-              <label for="vector-styles">Generate styles class</label>
-            </div>
-          `;
-
-      document.getElementById('vector-styles').addEventListener('change', (e) => {
-        exportOptions.vector.stylesClass = e.target.checked;
-        regenerateCode();
-      });
+      optionsSection.style.display = 'none';
+      optionsContainer.innerHTML = '';
     } else {
+      optionsSection.style.display = 'block';
       optionsContainer.innerHTML = `
             <div class="export-option">
               <input type="checkbox" id="vector-json-pretty" ${exportOptions.json.prettyPrint ? 'checked' : ''}>

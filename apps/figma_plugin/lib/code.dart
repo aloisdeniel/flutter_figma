@@ -75,9 +75,6 @@ void main() {
         if (opts.format != null) {
           _currentVectorOptions['format'] = opts.format;
         }
-        if (opts.stylesClass != null) {
-          _currentVectorOptions['stylesClass'] = opts.stylesClass;
-        }
         if (opts.prettyPrint != null) {
           _currentVariablesOptions['prettyPrint'] = opts.prettyPrint;
         }
