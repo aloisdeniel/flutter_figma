@@ -29,15 +29,19 @@ body {
   gap: 6px;
   padding: 4px;
   border-radius: 10px;
-  background: var(--figma-color-bg-secondary);
+}
+
+
+.tab-group:hover {
+  background: var(--figma-color-bg:hover);
 }
 
 .tab-button {
-  border: 1px solid transparent;
+  border: none;
   border-radius: 8px;
   padding: 6px 12px;
   font-size: 11px;
-  font-weight: 600;
+  font-weight: 400;
   background: transparent;
   color: var(--figma-color-text-secondary);
   cursor: pointer;
@@ -45,14 +49,14 @@ body {
 }
 
 .tab-button:hover {
+  background: var(--figma-color-bg-selected-hover);
   color: var(--figma-color-text);
-  background: var(--figma-color-bg-hover);
 }
 
 .tab-button.active {
-  background: var(--figma-color-bg);
-  border-color: var(--figma-color-border);
+  background: var(--figma-color-bg-selected);
   color: var(--figma-color-text);
+  font-weight: 600;
 }
 
 .main-content {
@@ -69,6 +73,12 @@ body {
   justify-content: space-between;
   align-items: center;
   gap: 12px;
+}
+
+.footer-format {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .footer-actions {
@@ -134,37 +144,6 @@ body {
   margin-bottom: 8px;
 }
 
-.format-options {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.format-option {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 6px 8px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-
-.format-option:hover {
-  background: var(--figma-color-bg-hover);
-}
-
-.format-option input[type="radio"] {
-  margin: 0;
-  cursor: pointer;
-}
-
-.format-option label {
-  flex: 1;
-  font-size: 12px;
-  color: var(--figma-color-text);
-  cursor: pointer;
-}
 
 .export-options {
   display: flex;
@@ -312,6 +291,26 @@ pre {
   color: var(--figma-color-text-secondary);
 }
 
+.loading-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 12px;
+  font-size: 12px;
+  color: var(--figma-color-text-secondary);
+}
+
+.loading-spinner {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 3px solid var(--figma-color-border);
+  border-top-color: var(--figma-color-bg-brand);
+  animation: spin 1s linear infinite;
+}
+
 .copy-notification {
   position: fixed;
   top: 16px;
@@ -331,23 +330,7 @@ pre {
   opacity: 1;
 }
 
-.status-indicator {
-  font-size: 11px;
-  color: var(--figma-color-text-secondary);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.status-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--figma-color-bg-brand);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }

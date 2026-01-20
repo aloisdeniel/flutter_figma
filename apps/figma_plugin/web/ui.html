@@ -21,21 +21,6 @@
         </div>
         <div class="options-panel-subtitle">Code settings</div>
       </div>
-      <div class="options-panel-section" id="format-options-section">
-        <div class="options-section">
-          <span class="options-label">Export Format</span>
-          <div class="format-options">
-            <div class="format-option">
-              <input type="radio" id="format-dart" name="format" value="dart" checked>
-              <label for="format-dart">Dart</label>
-            </div>
-            <div class="format-option">
-              <input type="radio" id="format-json" name="format" value="json">
-              <label for="format-json">JSON</label>
-            </div>
-          </div>
-        </div>
-      </div>
       <div class="options-panel-section" id="export-options-section">
         <span class="options-label">Options</span>
         <div class="export-options" id="export-options">
@@ -54,9 +39,17 @@
   </div>
 
   <div class="footer">
-    <div class="status-indicator" id="status">
-      <span class="status-dot"></span>
-      <span id="status-text">Waiting</span>
+    <div class="footer-format" id="footer-format">
+      <div class="tab-group" id="variable-format-toggle">
+        <label class="tab-button" for="format-dart">
+          <input type="radio" id="format-dart" name="format" value="dart" checked>
+          <span>Dart</span>
+        </label>
+        <label class="tab-button" for="format-json">
+          <input type="radio" id="format-json" name="format" value="json">
+          <span>JSON</span>
+        </label>
+      </div>
     </div>
     <div class="footer-actions">
       <button id="copy-btn" style="display: none;">Copy Code</button>

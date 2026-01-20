@@ -21,7 +21,7 @@ let exportOptions = {
 
 // Auto-generate code on load
 window.addEventListener('load', () => {
-  updateStatus('Generating code...', false);
+  showLoadingState('Generating code...');
   updateTabUI();
   updateExportOptions();
   parent.postMessage({
@@ -36,9 +36,27 @@ function updateTabUI() {
     button.classList.toggle('active', button.dataset.mode === currentMode);
   });
 
-  const formatSection = document.getElementById('format-options-section');
-  if (formatSection) {
-    formatSection.style.display = currentMode === 'variables' ? 'block' : 'none';
+  const variableFormatToggle = document.getElementById('variable-format-toggle');
+  const vectorFormatToggle = document.getElementById('vector-format-toggle');
+  if (variableFormatToggle) {
+    variableFormatToggle.style.display = currentMode === 'variables' ? 'flex' : 'none';
+  }
+  if (vectorFormatToggle) {
+    vectorFormatToggle.style.display = currentMode === 'vector' ? 'flex' : 'none';
+  }
+
+  const formatDart = document.getElementById('format-dart');
+  if (formatDart) {
+    formatDart.checked = currentFormat === 'dart';
+  }
+  const formatJson = document.getElementById('format-json');
+  if (formatJson) {
+    formatJson.checked = currentFormat === 'json';
+  }
+
+  const vectorFormatSelect = document.getElementById('vector-format-select');
+  if (vectorFormatSelect) {
+    vectorFormatSelect.value = exportOptions.vector.format || 'canvas';
   }
 
   document.getElementById('current-format').textContent =
@@ -68,7 +86,6 @@ window.onmessage = (event) => {
     document.getElementById('code_container').innerHTML =
       '<pre>' + escapeHtml(currentCode) + '</pre>';
     document.getElementById('copy-btn').style.display = 'block';
-    updateStatus('Code generated', true);
   } else if (msg.type === 'no-selection') {
     currentCode = '';
     document.getElementById('code_container').innerHTML =
@@ -78,7 +95,6 @@ window.onmessage = (event) => {
             </div>
           </div>`;
     document.getElementById('copy-btn').style.display = 'none';
-    updateStatus('Waiting for selection', false);
   }
 };
 
@@ -133,15 +149,13 @@ function showCopyNotification(message) {
   }, 2000);
 }
 
-function updateStatus(text, hasCode) {
-  const statusText = document.getElementById('status-text');
-  const statusDot = document.querySelector('.status-dot');
-  statusText.textContent = text;
-  if (hasCode) {
-    statusDot.style.background = 'var(--figma-color-bg-success)';
-  } else {
-    statusDot.style.background = 'var(--figma-color-bg-brand)';
-  }
+function showLoadingState(message) {
+  document.getElementById('code_container').innerHTML = `
+    <div class="loading-state">
+      <div class="loading-spinner"></div>
+      <div>${escapeHtml(message || 'Generating code...')}</div>
+    </div>`;
+  document.getElementById('copy-btn').style.display = 'none';
 }
 
 function escapeHtml(text) {
@@ -237,22 +251,10 @@ function updateExportOptions() {
     optionsSection.style.display = 'block';
     optionsContainer.innerHTML = `
           <div class="export-option">
-            <label for="vector-format">Format</label>
-            <select id="vector-format">
-              <option value="canvas" ${exportOptions.vector.format === 'canvas' ? 'selected' : ''}>Canvas</option>
-              <option value="vectorGraphicsBase64" ${exportOptions.vector.format === 'vectorGraphicsBase64' ? 'selected' : ''}>Vector graphics (base64)</option>
-            </select>
-          </div>
-          <div class="export-option">
             <input type="checkbox" id="vector-styles" ${exportOptions.vector.stylesClass ? 'checked' : ''}>
             <label for="vector-styles">Generate styles class</label>
           </div>
         `;
-
-    document.getElementById('vector-format').addEventListener('change', (e) => {
-      exportOptions.vector.format = e.target.value;
-      regenerateCode();
-    });
 
     document.getElementById('vector-styles').addEventListener('change', (e) => {
       exportOptions.vector.stylesClass = e.target.checked;
@@ -262,6 +264,7 @@ function updateExportOptions() {
 }
 
 function regenerateCode() {
+  showLoadingState('Generating code...');
   parent.postMessage({
     pluginMessage: {
       type: 'format-changed',
@@ -270,4 +273,12 @@ function regenerateCode() {
       options: exportOptions[currentMode === 'variables' ? currentFormat : 'vector']
     }
   }, '*');
+}
+
+const vectorFormatSelect = document.getElementById('vector-format-select');
+if (vectorFormatSelect) {
+  vectorFormatSelect.addEventListener('change', (e) => {
+    exportOptions.vector.format = e.target.value;
+    regenerateCode();
+  });
 }

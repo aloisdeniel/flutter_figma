@@ -66,7 +66,7 @@ class CliRunner {
         case OutputFormat.json:
           final exporter = JsonExporter();
           final context = JsonExportContext(
-            collections: library.variables,
+            library: library,
             prettyPrint: prettyPrint,
           );
           output = exporter.exportVariableCollections(context);
