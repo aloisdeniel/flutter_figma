@@ -18,7 +18,10 @@ class FlutterVectorCanvasExporter {
     for (final vectorGraphics in context.vectorGraphics.vectorGraphics) {
       final widgetName = Naming.typeName(vectorGraphics.name);
       final styles = _collectBoundVariableStyles([vectorGraphics]);
-      final stylesClassName = styles.isNotEmpty ? '${widgetName}Styles' : null;
+      final stylesClassName =
+          context.vectorGraphics.stylesClass && styles.isNotEmpty
+              ? '${widgetName}Styles'
+              : null;
       if (stylesClassName != null) {
         _writeStylesClass(buffer, context, styles, stylesClassName);
       }

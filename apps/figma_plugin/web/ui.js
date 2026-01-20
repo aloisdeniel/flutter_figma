@@ -39,7 +39,7 @@ function updateTabUI() {
   const variableFormatToggle = document.getElementById('variable-format-toggle');
   const vectorFormatToggle = document.getElementById('vector-format-toggle');
   if (variableFormatToggle) {
-    variableFormatToggle.style.display = currentMode === 'variables' ? 'flex' : 'none';
+    variableFormatToggle.style.display = 'flex';
   }
   if (vectorFormatToggle) {
     vectorFormatToggle.style.display = currentMode === 'vector' ? 'flex' : 'none';
@@ -59,10 +59,10 @@ function updateTabUI() {
     vectorFormatSelect.value = exportOptions.vector.format || 'canvas';
   }
 
-  document.getElementById('current-format').textContent =
-    currentMode === 'variables'
-      ? currentFormat.charAt(0).toUpperCase() + currentFormat.slice(1)
-      : 'Vector';
+  const formatLabel = currentFormat === 'json'
+    ? 'JSON'
+    : 'Dart';
+  document.getElementById('current-format').textContent = formatLabel;
 }
 
 tabButtons.forEach((button) => {
@@ -249,28 +249,47 @@ function updateExportOptions() {
     }
   } else if (currentMode === 'vector') {
     optionsSection.style.display = 'block';
-    optionsContainer.innerHTML = `
-          <div class="export-option">
-            <input type="checkbox" id="vector-styles" ${exportOptions.vector.stylesClass ? 'checked' : ''}>
-            <label for="vector-styles">Generate styles class</label>
-          </div>
-        `;
+    if (currentFormat === 'dart') {
+      optionsContainer.innerHTML = `
+            <div class="export-option">
+              <input type="checkbox" id="vector-styles" ${exportOptions.vector.stylesClass ? 'checked' : ''}>
+              <label for="vector-styles">Generate styles class</label>
+            </div>
+          `;
 
-    document.getElementById('vector-styles').addEventListener('change', (e) => {
-      exportOptions.vector.stylesClass = e.target.checked;
-      regenerateCode();
-    });
+      document.getElementById('vector-styles').addEventListener('change', (e) => {
+        exportOptions.vector.stylesClass = e.target.checked;
+        regenerateCode();
+      });
+    } else {
+      optionsContainer.innerHTML = `
+            <div class="export-option">
+              <input type="checkbox" id="vector-json-pretty" ${exportOptions.json.prettyPrint ? 'checked' : ''}>
+              <label for="vector-json-pretty">Pretty Print</label>
+            </div>
+          `;
+
+      document.getElementById('vector-json-pretty').addEventListener('change', (e) => {
+        exportOptions.json.prettyPrint = e.target.checked;
+        regenerateCode();
+      });
+    }
   }
 }
 
 function regenerateCode() {
   showLoadingState('Generating code...');
+  const options = currentMode === 'variables'
+    ? exportOptions[currentFormat]
+    : currentFormat === 'json'
+      ? exportOptions.json
+      : exportOptions.vector;
   parent.postMessage({
     pluginMessage: {
       type: 'format-changed',
       format: currentFormat,
       mode: currentMode,
-      options: exportOptions[currentMode === 'variables' ? currentFormat : 'vector']
+      options
     }
   }, '*');
 }

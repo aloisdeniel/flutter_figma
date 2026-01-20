@@ -72,25 +72,34 @@ void main() {
       // Store options if provided
       if (msg.options != null) {
         final opts = msg.options as ExportOptions;
-        if (_currentMode == OutputMode.vector) {
-          _currentVectorOptions = {
-            if (opts.format != null) 'format': opts.format,
-            if (opts.stylesClass != null) 'stylesClass': opts.stylesClass,
-          };
-        } else {
-          _currentVariablesOptions = {
-            if (opts.prettyPrint != null) 'prettyPrint': opts.prettyPrint,
-            if (opts.colorFormat != null) 'colorFormat': opts.colorFormat,
-            if (opts.includeComments != null)
-              'includeComments': opts.includeComments,
-            if (opts.stylesCollectionName != null)
-              'stylesCollectionName': opts.stylesCollectionName,
-            if (opts.rootName != null) 'rootName': opts.rootName,
-            if (opts.collectionStructure != null)
-              'collectionStructure': opts.collectionStructure,
-            if (opts.useGoogleFonts != null)
-              'useGoogleFonts': opts.useGoogleFonts,
-          };
+        if (opts.format != null) {
+          _currentVectorOptions['format'] = opts.format;
+        }
+        if (opts.stylesClass != null) {
+          _currentVectorOptions['stylesClass'] = opts.stylesClass;
+        }
+        if (opts.prettyPrint != null) {
+          _currentVariablesOptions['prettyPrint'] = opts.prettyPrint;
+        }
+        if (opts.colorFormat != null) {
+          _currentVariablesOptions['colorFormat'] = opts.colorFormat;
+        }
+        if (opts.includeComments != null) {
+          _currentVariablesOptions['includeComments'] = opts.includeComments;
+        }
+        if (opts.stylesCollectionName != null) {
+          _currentVariablesOptions['stylesCollectionName'] =
+              opts.stylesCollectionName;
+        }
+        if (opts.rootName != null) {
+          _currentVariablesOptions['rootName'] = opts.rootName;
+        }
+        if (opts.collectionStructure != null) {
+          _currentVariablesOptions['collectionStructure'] =
+              opts.collectionStructure;
+        }
+        if (opts.useGoogleFonts != null) {
+          _currentVariablesOptions['useGoogleFonts'] = opts.useGoogleFonts;
         }
       }
 
@@ -125,27 +134,38 @@ Future<void> _generateCode() async {
 
   String generatedCode;
   if (_currentMode == OutputMode.vector) {
-    final generator = FlutterExporter();
-    final formatValue = _currentVectorOptions['format'] as String?;
-    final format = formatValue == 'vectorGraphicsBase64'
-        ? FlutterVectorGraphicsFormat.vectorGraphicsBase64
-        : FlutterVectorGraphicsFormat.canvas;
-    final stylesClass = _currentVectorOptions['stylesClass'] as bool? ?? false;
-    generatedCode = generator.exportVectorGraphics(
-      FlutterExportContext(
-        vectorGraphics: FlutterVectorGraphicsExportOptions(
-          format: format,
-          stylesClass: stylesClass,
-          vectorGraphics: library.vectorGraphics,
-        ),
-        variables: FlutterVariablesExportOptions(
-          collections: library.variables,
-          naming: (root: 'Variables'),
-          collectionStructure: VariableCollectionDataStructure.flat,
-          useGoogleFonts: false,
-        ),
-      ),
-    );
+    switch (_currentFormat) {
+      case OutputFormat.dart:
+        final generator = FlutterExporter();
+        final formatValue = _currentVectorOptions['format'] as String?;
+        final format = formatValue == 'vectorGraphicsBase64'
+            ? FlutterVectorGraphicsFormat.vectorGraphicsBase64
+            : FlutterVectorGraphicsFormat.canvas;
+        final stylesClass =
+            _currentVectorOptions['stylesClass'] as bool? ?? false;
+        generatedCode = generator.exportVectorGraphics(
+          FlutterExportContext(
+            vectorGraphics: FlutterVectorGraphicsExportOptions(
+              format: format,
+              stylesClass: stylesClass,
+              vectorGraphics: library.vectorGraphics,
+            ),
+            variables: FlutterVariablesExportOptions(
+              collections: library.variables,
+              naming: (root: 'Variables'),
+              collectionStructure: VariableCollectionDataStructure.flat,
+              useGoogleFonts: false,
+            ),
+          ),
+        );
+      case OutputFormat.json:
+        final generator = JsonExporter();
+        final prettyPrint =
+            _currentVariablesOptions['prettyPrint'] as bool? ?? true;
+        generatedCode = generator.exportVectorGraphics(
+          JsonExportContext(library: library, prettyPrint: prettyPrint),
+        );
+    }
   } else {
     switch (_currentFormat) {
       case OutputFormat.dart:
@@ -182,7 +202,7 @@ Future<void> _generateCode() async {
             _currentVariablesOptions['prettyPrint'] as bool? ?? true;
         generatedCode = generator.exportVariableCollections(
           JsonExportContext(
-            collections: library.variables,
+            library: library,
             prettyPrint: prettyPrint,
           ),
         );
