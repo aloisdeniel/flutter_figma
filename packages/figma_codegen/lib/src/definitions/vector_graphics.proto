@@ -197,8 +197,8 @@ message Paint {
 }
 
 message BoundVariable {
-  int32 collectionId = 1;
-  int32 variableId = 2;
+  String collectionName = 1;
+  String variableName = 2;
 }
 
 message SolidPaint {

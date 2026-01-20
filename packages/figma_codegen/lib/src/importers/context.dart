@@ -2,7 +2,18 @@ class ImportContext<TOptions> {
   ImportContext(this.options);
 
   final identifiers = IdentifierGenerator();
+  final boundVariables = <String, BoundVariableInfo>{};
   final TOptions options;
+}
+
+class BoundVariableInfo {
+  const BoundVariableInfo({
+    required this.collectionName,
+    required this.variableName,
+  });
+
+  final String collectionName;
+  final String variableName;
 }
 
 class IdentifierGenerator {

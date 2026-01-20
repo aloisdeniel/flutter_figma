@@ -477,11 +477,10 @@ SolidPaint _solidPaintFromFigma(
   figma_api.Paint paint,
   ImportContext<FigmaImportOptions> context,
 ) {
-  /// TODO Support paint aliases
-  /// final alias = _resolvePaintAlias(paint, context);
-  ///if (alias != null) {
-  ///  return SolidPaint(bound: alias);
-  ///}
+  final alias = _resolvePaintAlias(paint, context);
+  if (alias != null) {
+    return SolidPaint(bound: alias);
+  }
 
   final color = paint.color;
   if (color == null) {
@@ -560,11 +559,21 @@ BoundVariable? _resolvePaintAlias(
     return null;
   }
 
+  return _boundVariableInfo(figmaVariableId, context);
+}
+
+BoundVariable? _boundVariableInfo(
+  String figmaVariableId,
+  ImportContext<FigmaImportOptions> context,
+) {
+  final variable = context.boundVariables[figmaVariableId];
+  if (variable == null) {
+    return null;
+  }
+
   return BoundVariable(
-    collectionId: context.identifiers.get(
-      'variable_collection/$figmaVariableId',
-    ),
-    variableId: context.identifiers.get('variable/$figmaVariableId'),
+    collectionName: variable.collectionName,
+    variableName: variable.variableName,
   );
 }
 
@@ -642,12 +651,13 @@ BoundVariable? _resolveStopAlias(
     return null;
   }
 
-  return BoundVariable(
-    collectionId: context.identifiers.get(
-      'variable_collection/$figmaVariableId',
-    ),
-    variableId: context.identifiers.get('variable/$figmaVariableId'),
-  );
+  final info = _boundVariableInfo(figmaVariableId, context);
+  return info == null
+      ? null
+      : BoundVariable(
+          collectionName: info.collectionName,
+          variableName: info.variableName,
+        );
 }
 
 RGBA _rgbaFromDynamicColor(dynamic value, double opacity) {

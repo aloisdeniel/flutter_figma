@@ -1907,12 +1907,12 @@ class Paint extends $pb.GeneratedMessage {
 
 class BoundVariable extends $pb.GeneratedMessage {
   factory BoundVariable({
-    $core.int? collectionId,
-    $core.int? variableId,
+    $core.String? collectionName,
+    $core.String? variableName,
   }) {
     final result = create();
-    if (collectionId != null) result.collectionId = collectionId;
-    if (variableId != null) result.variableId = variableId;
+    if (collectionName != null) result.collectionName = collectionName;
+    if (variableName != null) result.variableName = variableName;
     return result;
   }
 
@@ -1929,8 +1929,9 @@ class BoundVariable extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'BoundVariable',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..aI(1, _omitFieldNames ? '' : 'collectionId', protoName: 'collectionId')
-    ..aI(2, _omitFieldNames ? '' : 'variableId', protoName: 'variableId')
+    ..aOS(1, _omitFieldNames ? '' : 'collectionName',
+        protoName: 'collectionName')
+    ..aOS(2, _omitFieldNames ? '' : 'variableName', protoName: 'variableName')
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -1953,22 +1954,22 @@ class BoundVariable extends $pb.GeneratedMessage {
   static BoundVariable? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.int get collectionId => $_getIZ(0);
+  $core.String get collectionName => $_getSZ(0);
   @$pb.TagNumber(1)
-  set collectionId($core.int value) => $_setSignedInt32(0, value);
+  set collectionName($core.String value) => $_setString(0, value);
   @$pb.TagNumber(1)
-  $core.bool hasCollectionId() => $_has(0);
+  $core.bool hasCollectionName() => $_has(0);
   @$pb.TagNumber(1)
-  void clearCollectionId() => $_clearField(1);
+  void clearCollectionName() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  $core.int get variableId => $_getIZ(1);
+  $core.String get variableName => $_getSZ(1);
   @$pb.TagNumber(2)
-  set variableId($core.int value) => $_setSignedInt32(1, value);
+  set variableName($core.String value) => $_setString(1, value);
   @$pb.TagNumber(2)
-  $core.bool hasVariableId() => $_has(1);
+  $core.bool hasVariableName() => $_has(1);
   @$pb.TagNumber(2)
-  void clearVariableId() => $_clearField(2);
+  void clearVariableName() => $_clearField(2);
 }
 
 enum SolidPaint_Color { value, bound, notSet }

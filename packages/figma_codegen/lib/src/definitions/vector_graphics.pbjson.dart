@@ -837,15 +837,15 @@ final $typed_data.Uint8List paintDescriptor = $convert.base64Decode(
 const BoundVariable$json = {
   '1': 'BoundVariable',
   '2': [
-    {'1': 'collectionId', '3': 1, '5': 5, '8': {}, '10': 'collectionId'},
-    {'1': 'variableId', '3': 2, '5': 5, '8': {}, '10': 'variableId'},
+    {'1': 'collectionName', '3': 1, '5': 9, '8': {}, '10': 'collectionName'},
+    {'1': 'variableName', '3': 2, '5': 9, '8': {}, '10': 'variableName'},
   ],
 };
 
 /// Descriptor for `BoundVariable`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List boundVariableDescriptor = $convert.base64Decode(
-    'Cg1Cb3VuZFZhcmlhYmxlEiIKDGNvbGxlY3Rpb25JZBgBKAVCAFIMY29sbGVjdGlvbklkEh4KCn'
-    'ZhcmlhYmxlSWQYAigFQgBSCnZhcmlhYmxlSWQ=');
+    'Cg1Cb3VuZFZhcmlhYmxlEiYKDmNvbGxlY3Rpb25OYW1lGAEoCUIAUg5jb2xsZWN0aW9uTmFtZR'
+    'IiCgx2YXJpYWJsZU5hbWUYAigJQgBSDHZhcmlhYmxlTmFtZQ==');
 
 @$core.Deprecated('Use solidPaintDescriptor instead')
 const SolidPaint$json = {

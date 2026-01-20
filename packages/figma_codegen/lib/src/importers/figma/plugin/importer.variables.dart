@@ -96,6 +96,10 @@ Future<List<VariableCollection>> _importVariableCollections(
           .toDart;
 
       if (variable != null) {
+        context.boundVariables[figmaId] = BoundVariableInfo(
+          collectionName: collectionName,
+          variableName: variable.name,
+        );
         variableEntries.add(
           VariableCollectionEntry(
             id: variableId,

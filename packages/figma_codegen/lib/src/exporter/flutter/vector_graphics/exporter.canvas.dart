@@ -1,5 +1,7 @@
 import 'package:figma_codegen/src/definitions/vector_graphics.pb.dart';
+import 'package:figma_codegen/src/definitions/variables.dart';
 import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
+import 'package:figma_codegen/src/exporter/flutter/values/value.dart';
 import 'package:figma_codegen/src/utils/dart/buffer.dart';
 import 'package:figma_codegen/src/utils/dart/naming.dart';
 
@@ -13,6 +15,13 @@ class FlutterVectorCanvasExporter {
     buffer.writeln("import 'package:flutter/widgets.dart' as fl;");
     buffer.writeln();
 
+    final styles = _collectBoundVariableStyles(
+      context.vectorGraphics.vectorGraphics,
+    );
+    if (styles.isNotEmpty) {
+      _writeStylesClass(buffer, context, styles);
+    }
+
     for (final vectorGraphics in context.vectorGraphics.vectorGraphics) {
       _writeCustomPainter(buffer, vectorGraphics, context);
     }
@@ -21,6 +30,180 @@ class FlutterVectorCanvasExporter {
 
     return buffer.toString();
   }
+}
+
+Map<String, Set<String>> _collectBoundVariableStyles(
+  List<VectorGraphics> vectorGraphics,
+) {
+  final styles = <String, Set<String>>{};
+  for (final graphic in vectorGraphics) {
+    _collectNodeBoundVariables(styles, graphic.root);
+  }
+  return styles;
+}
+
+void _collectNodeBoundVariables(
+  Map<String, Set<String>> styles,
+  VectorNode node,
+) {
+  switch (node.whichType()) {
+    case VectorNode_Type.network:
+      _collectGeometryBoundVariables(styles, node.network.geometry);
+      for (final region in node.network.regions) {
+        for (final fill in region.fills) {
+          _collectPaintBoundVariables(styles, fill);
+        }
+      }
+    case VectorNode_Type.rectangle:
+      _collectGeometryBoundVariables(styles, node.rectangle.geometry);
+    case VectorNode_Type.ellipse:
+      _collectGeometryBoundVariables(styles, node.ellipse.geometry);
+    case VectorNode_Type.polygon:
+      _collectGeometryBoundVariables(styles, node.polygon.geometry);
+    case VectorNode_Type.frame:
+      _collectGeometryBoundVariables(styles, node.frame.geometry);
+      for (final child in node.frame.children) {
+        _collectNodeBoundVariables(styles, child);
+      }
+    case VectorNode_Type.group:
+      for (final child in node.group.children) {
+        _collectNodeBoundVariables(styles, child);
+      }
+    case VectorNode_Type.notSet:
+      break;
+  }
+}
+
+void _collectGeometryBoundVariables(
+  Map<String, Set<String>> styles,
+  GeometryProperty geometry,
+) {
+  for (final paint in geometry.fills) {
+    _collectPaintBoundVariables(styles, paint);
+  }
+  for (final paint in geometry.strokes) {
+    _collectPaintBoundVariables(styles, paint);
+  }
+}
+
+void _collectPaintBoundVariables(Map<String, Set<String>> styles, Paint paint) {
+  switch (paint.whichType()) {
+    case Paint_Type.solid:
+      final solid = paint.solid;
+      if (solid.whichColor() == SolidPaint_Color.bound) {
+        final bound = solid.bound;
+        _addBoundVariable(styles, bound);
+      }
+    case Paint_Type.gradient:
+      for (final stop in paint.gradient.gradientStops) {
+        if (stop.whichColor() == ColorStop_Color.bound) {
+          final bound = stop.bound;
+          _addBoundVariable(styles, bound);
+        }
+      }
+    case Paint_Type.notSet:
+      break;
+  }
+}
+
+void _addBoundVariable(Map<String, Set<String>> styles, BoundVariable bound) {
+  final collectionName = bound.collectionName;
+  final variableName = bound.variableName;
+  if (collectionName.isEmpty || variableName.isEmpty) {
+    return;
+  }
+
+  final collection = styles.putIfAbsent(collectionName, () => {});
+  collection.add(variableName);
+}
+
+void _writeStylesClass(
+  DartBuffer buffer,
+  FlutterExportContext context,
+  Map<String, Set<String>> styles,
+) {
+  final entries = styles.entries.toList()
+    ..sort((a, b) => a.key.compareTo(b.key));
+  final collections = <String, VariableCollection>{
+    for (final collection in context.variables.collections)
+      collection.name: collection,
+  };
+
+  final resolvedEntries = <String, _StyleCollection>{
+    for (final entry in entries)
+      if (collections[entry.key] != null)
+        entry.key: _StyleCollection(
+          collection: collections[entry.key]!,
+          variableNames: entry.value,
+        ),
+  };
+
+  if (resolvedEntries.isEmpty) {
+    return;
+  }
+
+  buffer.writeln('class Styles {');
+  buffer.indent();
+  buffer.writeln('const Styles();');
+  buffer.writeln();
+
+  for (final entry in resolvedEntries.entries) {
+    final className = '${Naming.typeName(entry.key)}Styles';
+    final fieldName = Naming.fieldName(entry.key);
+    buffer.writeln('static const $className $fieldName = $className();');
+  }
+
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.writeln();
+
+  for (final entry in resolvedEntries.entries) {
+    final className = '${Naming.typeName(entry.key)}Styles';
+    final collection = entry.value.collection;
+    buffer.writeln('class $className {');
+    buffer.indent();
+    buffer.writeln('const $className();');
+
+    if (collection.variants.isNotEmpty) {
+      final variant = collection.variants.first;
+      for (var i = 0; i < collection.variables.length; i++) {
+        final variable = collection.variables[i];
+        if (!entry.value.variableNames.contains(variable.name)) {
+          continue;
+        }
+        if (i >= variant.values.length) {
+          continue;
+        }
+        final value = variant.values[i];
+        final resolved =
+            context.variables.collections.resolveValue(value) ?? value;
+        if (resolved.whichType() != Value_Type.color) {
+          continue;
+        }
+        final fieldName = Naming.fieldName(variable.name);
+        final serialized = const FlutterValueExporter().serialize(
+          context,
+          resolved,
+          Value_Type.color,
+        );
+        buffer.writeln('fl.Color get $fieldName => $serialized;');
+      }
+    }
+
+    buffer.unindent();
+    buffer.writeln('}');
+    buffer.writeln();
+  }
+}
+
+class _StyleCollection {
+  const _StyleCollection({
+    required this.collection,
+    required this.variableNames,
+  });
+
+  final VariableCollection collection;
+  final Set<String> variableNames;
 }
 
 void _writeCustomPainter(
@@ -691,6 +874,9 @@ String _solidPaintColor(
   double opacity,
   FlutterExportContext context,
 ) {
+  if (paint.whichColor() == SolidPaint_Color.bound) {
+    return _boundColorReference(paint.bound, opacity);
+  }
   if (!paint.hasValue()) {
     return 'const ui.Color(0x00000000)';
   }
@@ -753,12 +939,21 @@ String _stopColor(
   double opacity,
   FlutterExportContext context,
 ) {
+  if (stop.whichColor() == ColorStop_Color.bound) {
+    return _boundColorReference(stop.bound, opacity);
+  }
   if (!stop.hasValue()) {
     return 'const ui.Color(0x00000000)';
   }
   final color = stop.value;
   final alpha = (color.a * opacity).clamp(0.0, 1.0).toStringAsFixed(6);
-  return 'const ui.Color.from(ref: ${_formatDouble(color.r)}, green: ${_formatDouble(color.g)}, blue: ${_formatDouble(color.b)}, alpha: $alpha)';
+  return 'const ui.Color.from(red: ${_formatDouble(color.r)}, green: ${_formatDouble(color.g)}, blue: ${_formatDouble(color.b)}, alpha: $alpha)';
+}
+
+String _boundColorReference(BoundVariable bound, double opacity) {
+  final collectionField = Naming.fieldName(bound.collectionName);
+  final variableField = Naming.fieldName(bound.variableName);
+  return 'Styles.$collectionField.$variableField.withOpacity(${opacity.toStringAsFixed(6)})';
 }
 
 String _pathFillType(WindingRule rule) {
