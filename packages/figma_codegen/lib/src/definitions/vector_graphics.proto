@@ -38,7 +38,17 @@ message VectorFrame {
   string name = 1;
   double opacity = 2;
   Vector offset = 3;
-  repeated VectorNode children = 4;
+  Vector size = 4;
+  repeated VectorNode children = 5;
+  bool isClipping = 6;
+  CornerRadius cornerRadius = 7;
+}
+
+message CornerRadius {
+  double topLeft = 1;
+  double topRight = 2;
+  double bottomLeft = 3;
+  double bottomRight = 4;
 }
 
 enum StrokeCap {

@@ -2,7 +2,7 @@ library;
 
 export 'src/definitions/library.dart';
 export 'src/definitions/variables.dart';
-export 'src/definitions/vector_graphics.pb.dart';
+export 'src/definitions/vector_graphics.pb.dart' hide CornerRadius;
 
 export 'src/exporter/flutter/vector_graphics/options.dart';
 export 'src/exporter/flutter/variables/options.dart';

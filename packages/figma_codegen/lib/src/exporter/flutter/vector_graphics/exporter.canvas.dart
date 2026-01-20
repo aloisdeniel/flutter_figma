@@ -120,8 +120,11 @@ void _writeNode(
     case VectorNode_Type.frame:
       buffer.writeln('canvas.save();');
       buffer.writeln(
-        'canvas.translate(${node.network.offset.x}, ${node.network.offset.y});',
+        'canvas.translate(${node.frame.offset.x}, ${node.frame.offset.y});',
       );
+      if (node.frame.isClipping) {
+        _writeFrameClip(buffer, node.frame);
+      }
       saveOpacityLayerIfNeeded(node.frame.opacity);
       for (final child in node.frame.children) {
         _writeNode(buffer, child, context);
@@ -130,6 +133,38 @@ void _writeNode(
       buffer.writeln('canvas.restore();');
     case VectorNode_Type.notSet:
   }
+}
+
+void _writeFrameClip(DartBuffer buffer, VectorFrame frame) {
+  buffer.writeln('{');
+  buffer.indent();
+  final width = frame.hasSize() ? frame.size.x : 0.0;
+  final height = frame.hasSize() ? frame.size.y : 0.0;
+  if (width <= 0 || height <= 0) {
+    buffer.unindent();
+    buffer.writeln('}');
+    buffer.writeln();
+    return;
+  }
+  buffer.writeln(
+    'const rect = fl.Rect.fromLTWH(0, 0, ${_formatDouble(width)}, ${_formatDouble(height)});',
+  );
+  if (frame.hasCornerRadius()) {
+    buffer.writeln(
+      'final rrect = fl.RRect.fromRectAndCorners(' //
+      'rect, ' //
+      'topLeft: fl.Radius.circular(${_formatDouble(frame.cornerRadius.topLeft)}), ' //
+      'topRight: fl.Radius.circular(${_formatDouble(frame.cornerRadius.topRight)}), ' //
+      'bottomLeft: fl.Radius.circular(${_formatDouble(frame.cornerRadius.bottomLeft)}), ' //
+      'bottomRight: fl.Radius.circular(${_formatDouble(frame.cornerRadius.bottomRight)}));',
+    );
+    buffer.writeln('canvas.clipRRect(rrect);');
+  } else {
+    buffer.writeln('canvas.clipRect(rect);');
+  }
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.writeln();
 }
 
 void _writeRegion(
@@ -275,7 +310,7 @@ String _solidPaintColor(
 
   final color = paint.value;
   final alpha = (color.a * opacity).clamp(0.0, 1.0).toStringAsFixed(6);
-  return 'ui.Color.from(red: ${_formatDouble(color.r)}, green: ${_formatDouble(color.g)}, blue: ${_formatDouble(color.b)}, alpha: $alpha)';
+  return 'const ui.Color.from(red: ${_formatDouble(color.r)}, green: ${_formatDouble(color.g)}, blue: ${_formatDouble(color.b)}, alpha: $alpha)';
 }
 
 void _writeGradientAssignment(
@@ -298,7 +333,7 @@ void _writeGradientAssignment(
         '[$colors], [$stops])',
       );
       buffer.writeln(
-        '..color = ui.Color.from(red: 1, green: 1, blue: 1, alpha: ${opacity.toStringAsFixed(6)})',
+        '..color = const ui.Color.from(red: 1, green: 1, blue: 1, alpha: ${opacity.toStringAsFixed(6)})',
       );
     case GradientType.RADIAL:
       buffer.writeln(
@@ -308,7 +343,7 @@ void _writeGradientAssignment(
         '[$colors], [$stops])',
       );
       buffer.writeln(
-        '..color = ui.Color.fromRGBO(255, 255, 255, ${opacity.toStringAsFixed(6)})',
+        '..color = const ui.Color.fromRGBO(255, 255, 255, ${opacity.toStringAsFixed(6)})',
       );
     case GradientType.ANGULAR:
       buffer.writeln(
@@ -317,11 +352,11 @@ void _writeGradientAssignment(
         '[$colors], [$stops])',
       );
       buffer.writeln(
-        '..color = ui.Color.fromRGBO(255, 255, 255, ${opacity.toStringAsFixed(6)})',
+        '..color = const ui.Color.fromRGBO(255, 255, 255, ${opacity.toStringAsFixed(6)})',
       );
     case GradientType.DIAMOND:
       buffer.writeln(
-        '..color = ui.Color.fromRGBO(255, 0, 255, ${opacity.toStringAsFixed(6)})',
+        '..color = const ui.Color.fromRGBO(255, 0, 255, ${opacity.toStringAsFixed(6)})',
       );
   }
 }
@@ -336,7 +371,7 @@ String _stopColor(
   }
   final color = stop.value;
   final alpha = (color.a * opacity).clamp(0.0, 1.0).toStringAsFixed(6);
-  return 'ui.Color.from(ref: ${_formatDouble(color.r)}, green: ${_formatDouble(color.g)}, blue: ${_formatDouble(color.b)}, alpha: $alpha)';
+  return 'const ui.Color.from(ref: ${_formatDouble(color.r)}, green: ${_formatDouble(color.g)}, blue: ${_formatDouble(color.b)}, alpha: $alpha)';
 }
 
 String _pathFillType(WindingRule rule) {

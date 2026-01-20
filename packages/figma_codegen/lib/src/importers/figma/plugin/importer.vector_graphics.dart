@@ -94,13 +94,17 @@ Future<VectorNode?> _vectorNode(
         context,
       );
       return VectorNode(network: network);
-    case 'FRAME': // TODO backgrounds, clipping, ...
+    case 'FRAME':
+      final frameNode = node as figma_api.FrameNode;
       final children = await childrenNodes(node, context);
       return VectorNode(
         frame: VectorFrame(
           offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
+          size: Vector(x: node.width.toDouble(), y: node.height.toDouble()),
           name: node.name,
           opacity: nodeOpacity(node),
+          isClipping: frameNode.clipsContent,
+          cornerRadius: _cornerRadiusFromFrame(frameNode),
           children: children,
         ),
       );
@@ -184,6 +188,30 @@ VectorSegment _vectorSegmentFromFigma(figma_api.VectorSegment segment) {
     end: segment.end,
     tangentStart: _vectorFromFigma(segment.tangentStart),
     tangentEnd: _vectorFromFigma(segment.tangentEnd),
+  );
+}
+
+CornerRadius _cornerRadiusFromFrame(figma_api.FrameNode node) {
+  final cornerRadius = node.cornerRadius.toDouble();
+  final topLeft = node.topLeftRadius.toDouble();
+  final topRight = node.topRightRadius.toDouble();
+  final bottomLeft = node.bottomLeftRadius.toDouble();
+  final bottomRight = node.bottomRightRadius.toDouble();
+
+  if (topLeft == 0 && topRight == 0 && bottomLeft == 0 && bottomRight == 0) {
+    return CornerRadius(
+      topLeft: cornerRadius,
+      topRight: cornerRadius,
+      bottomLeft: cornerRadius,
+      bottomRight: cornerRadius,
+    );
+  }
+
+  return CornerRadius(
+    topLeft: topLeft,
+    topRight: topRight,
+    bottomLeft: bottomLeft,
+    bottomRight: bottomRight,
   );
 }
 

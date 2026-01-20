@@ -400,13 +400,19 @@ class VectorFrame extends $pb.GeneratedMessage {
     $core.String? name,
     $core.double? opacity,
     Vector? offset,
+    Vector? size,
     $core.Iterable<VectorNode>? children,
+    $core.bool? isClipping,
+    CornerRadius? cornerRadius,
   }) {
     final result = create();
     if (name != null) result.name = name;
     if (opacity != null) result.opacity = opacity;
     if (offset != null) result.offset = offset;
+    if (size != null) result.size = size;
     if (children != null) result.children.addAll(children);
+    if (isClipping != null) result.isClipping = isClipping;
+    if (cornerRadius != null) result.cornerRadius = cornerRadius;
     return result;
   }
 
@@ -426,8 +432,12 @@ class VectorFrame extends $pb.GeneratedMessage {
     ..aOS(1, _omitFieldNames ? '' : 'name')
     ..aD(2, _omitFieldNames ? '' : 'opacity')
     ..aOM<Vector>(3, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
-    ..pPM<VectorNode>(4, _omitFieldNames ? '' : 'children',
+    ..aOM<Vector>(4, _omitFieldNames ? '' : 'size', subBuilder: Vector.create)
+    ..pPM<VectorNode>(5, _omitFieldNames ? '' : 'children',
         subBuilder: VectorNode.create)
+    ..aOB(6, _omitFieldNames ? '' : 'isClipping', protoName: 'isClipping')
+    ..aOM<CornerRadius>(7, _omitFieldNames ? '' : 'cornerRadius',
+        protoName: 'cornerRadius', subBuilder: CornerRadius.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -479,7 +489,128 @@ class VectorFrame extends $pb.GeneratedMessage {
   Vector ensureOffset() => $_ensure(2);
 
   @$pb.TagNumber(4)
-  $pb.PbList<VectorNode> get children => $_getList(3);
+  Vector get size => $_getN(3);
+  @$pb.TagNumber(4)
+  set size(Vector value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasSize() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearSize() => $_clearField(4);
+  @$pb.TagNumber(4)
+  Vector ensureSize() => $_ensure(3);
+
+  @$pb.TagNumber(5)
+  $pb.PbList<VectorNode> get children => $_getList(4);
+
+  @$pb.TagNumber(6)
+  $core.bool get isClipping => $_getBF(5);
+  @$pb.TagNumber(6)
+  set isClipping($core.bool value) => $_setBool(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasIsClipping() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearIsClipping() => $_clearField(6);
+
+  @$pb.TagNumber(7)
+  CornerRadius get cornerRadius => $_getN(6);
+  @$pb.TagNumber(7)
+  set cornerRadius(CornerRadius value) => $_setField(7, value);
+  @$pb.TagNumber(7)
+  $core.bool hasCornerRadius() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearCornerRadius() => $_clearField(7);
+  @$pb.TagNumber(7)
+  CornerRadius ensureCornerRadius() => $_ensure(6);
+}
+
+class CornerRadius extends $pb.GeneratedMessage {
+  factory CornerRadius({
+    $core.double? topLeft,
+    $core.double? topRight,
+    $core.double? bottomLeft,
+    $core.double? bottomRight,
+  }) {
+    final result = create();
+    if (topLeft != null) result.topLeft = topLeft;
+    if (topRight != null) result.topRight = topRight;
+    if (bottomLeft != null) result.bottomLeft = bottomLeft;
+    if (bottomRight != null) result.bottomRight = bottomRight;
+    return result;
+  }
+
+  CornerRadius._();
+
+  factory CornerRadius.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory CornerRadius.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'CornerRadius',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aD(1, _omitFieldNames ? '' : 'topLeft', protoName: 'topLeft')
+    ..aD(2, _omitFieldNames ? '' : 'topRight', protoName: 'topRight')
+    ..aD(3, _omitFieldNames ? '' : 'bottomLeft', protoName: 'bottomLeft')
+    ..aD(4, _omitFieldNames ? '' : 'bottomRight', protoName: 'bottomRight')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CornerRadius clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  CornerRadius copyWith(void Function(CornerRadius) updates) =>
+      super.copyWith((message) => updates(message as CornerRadius))
+          as CornerRadius;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static CornerRadius create() => CornerRadius._();
+  @$core.override
+  CornerRadius createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static CornerRadius getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<CornerRadius>(create);
+  static CornerRadius? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.double get topLeft => $_getN(0);
+  @$pb.TagNumber(1)
+  set topLeft($core.double value) => $_setDouble(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasTopLeft() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearTopLeft() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.double get topRight => $_getN(1);
+  @$pb.TagNumber(2)
+  set topRight($core.double value) => $_setDouble(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasTopRight() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearTopRight() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.double get bottomLeft => $_getN(2);
+  @$pb.TagNumber(3)
+  set bottomLeft($core.double value) => $_setDouble(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasBottomLeft() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearBottomLeft() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.double get bottomRight => $_getN(3);
+  @$pb.TagNumber(4)
+  set bottomRight($core.double value) => $_setDouble(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasBottomRight() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearBottomRight() => $_clearField(4);
 }
 
 class VectorVertex extends $pb.GeneratedMessage {

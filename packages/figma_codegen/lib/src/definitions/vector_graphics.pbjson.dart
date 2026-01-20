@@ -295,13 +295,30 @@ const VectorFrame$json = {
       '10': 'offset'
     },
     {
-      '1': 'children',
+      '1': 'size',
       '3': 4,
+      '5': 11,
+      '6': '.definitions.Vector',
+      '8': {},
+      '10': 'size'
+    },
+    {
+      '1': 'children',
+      '3': 5,
       '4': 3,
       '5': 11,
       '6': '.definitions.VectorNode',
       '8': {},
       '10': 'children'
+    },
+    {'1': 'isClipping', '3': 6, '5': 8, '8': {}, '10': 'isClipping'},
+    {
+      '1': 'cornerRadius',
+      '3': 7,
+      '5': 11,
+      '6': '.definitions.CornerRadius',
+      '8': {},
+      '10': 'cornerRadius'
     },
   ],
 };
@@ -309,8 +326,28 @@ const VectorFrame$json = {
 /// Descriptor for `VectorFrame`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List vectorFrameDescriptor = $convert.base64Decode(
     'CgtWZWN0b3JGcmFtZRISCgRuYW1lGAEoCUIAUgRuYW1lEhgKB29wYWNpdHkYAigBQgBSB29wYW'
-    'NpdHkSKwoGb2Zmc2V0GAMoCzITLmRlZmluaXRpb25zLlZlY3RvckIAUgZvZmZzZXQSNQoIY2hp'
-    'bGRyZW4YBCADKAsyFy5kZWZpbml0aW9ucy5WZWN0b3JOb2RlQgBSCGNoaWxkcmVu');
+    'NpdHkSKwoGb2Zmc2V0GAMoCzITLmRlZmluaXRpb25zLlZlY3RvckIAUgZvZmZzZXQSJwoEc2l6'
+    'ZRgEKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIEc2l6ZRI1CghjaGlsZHJlbhgFIAMoCzIXLm'
+    'RlZmluaXRpb25zLlZlY3Rvck5vZGVCAFIIY2hpbGRyZW4SHgoKaXNDbGlwcGluZxgGKAhCAFIK'
+    'aXNDbGlwcGluZxI9Cgxjb3JuZXJSYWRpdXMYBygLMhkuZGVmaW5pdGlvbnMuQ29ybmVyUmFkaX'
+    'VzQgBSDGNvcm5lclJhZGl1cw==');
+
+@$core.Deprecated('Use cornerRadiusDescriptor instead')
+const CornerRadius$json = {
+  '1': 'CornerRadius',
+  '2': [
+    {'1': 'topLeft', '3': 1, '5': 1, '8': {}, '10': 'topLeft'},
+    {'1': 'topRight', '3': 2, '5': 1, '8': {}, '10': 'topRight'},
+    {'1': 'bottomLeft', '3': 3, '5': 1, '8': {}, '10': 'bottomLeft'},
+    {'1': 'bottomRight', '3': 4, '5': 1, '8': {}, '10': 'bottomRight'},
+  ],
+};
+
+/// Descriptor for `CornerRadius`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List cornerRadiusDescriptor = $convert.base64Decode(
+    'CgxDb3JuZXJSYWRpdXMSGAoHdG9wTGVmdBgBKAFCAFIHdG9wTGVmdBIaCgh0b3BSaWdodBgCKA'
+    'FCAFIIdG9wUmlnaHQSHgoKYm90dG9tTGVmdBgDKAFCAFIKYm90dG9tTGVmdBIgCgtib3R0b21S'
+    'aWdodBgEKAFCAFILYm90dG9tUmlnaHQ=');
 
 @$core.Deprecated('Use vectorVertexDescriptor instead')
 const VectorVertex$json = {
