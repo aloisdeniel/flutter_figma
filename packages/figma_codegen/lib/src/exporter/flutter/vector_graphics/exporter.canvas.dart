@@ -285,8 +285,11 @@ void _writeCustomPainter(
 
   final methodNames = <VectorNode, String>{};
   var methodIndex = 0;
-  String methodNameFor(VectorNode node) =>
-      methodNames.putIfAbsent(node, () => '_drawNode${methodIndex++}');
+  String methodNameFor(VectorNode node) => methodNames.putIfAbsent(
+    node,
+    () =>
+        '_${Naming.fieldName(node.whichType().name)}_${methodIndex++}_${Naming.fieldName(node.name)}',
+  );
   final rootMethodName = methodNameFor(vectorGraphics.root);
 
   buffer.writeln('@override');
@@ -333,7 +336,6 @@ void _writeNodeMethods(
     'void $methodName(ui.Canvas canvas, fl.Rect bounds, ui.Paint paint) {',
   );
   buffer.indent();
-  buffer.writeln('// ${node.whichType().name.toUpperCase()} "${node.name}"');
   buffer.writeln('canvas.save();');
   _writeNodeTransform(buffer, node);
   _writeNodeOpacity(buffer, node);
@@ -1245,7 +1247,7 @@ String _boundColorReference(
   final collectionField = Naming.fieldName(bound.collectionName);
   final variableField = Naming.fieldName(bound.variableName);
   final styles = stylesReference ?? 'const $stylesClassName()';
-  return '$styles.$collectionField.$variableField.withOpacity(${opacity.toStringAsFixed(6)})';
+  return '$styles.$collectionField.$variableField.withValues(alpha: ${opacity.toStringAsFixed(6)})';
 }
 
 String _pathFillType(WindingRule rule) {
