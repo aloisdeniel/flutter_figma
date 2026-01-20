@@ -283,22 +283,31 @@ void _writeCustomPainter(
   }
   buffer.writeln();
 
+  final methodNames = <VectorNode, String>{};
+  var methodIndex = 0;
+  String methodNameFor(VectorNode node) =>
+      methodNames.putIfAbsent(node, () => '_drawNode${methodIndex++}');
+  final rootMethodName = methodNameFor(vectorGraphics.root);
+
   buffer.writeln('@override');
   buffer.writeln('void paint(ui.Canvas canvas, fl.Size size) {');
   buffer.indent();
   buffer.writeln('final paint = ui.Paint();');
   buffer.writeln('final bounds = fl.Offset.zero & size;');
   buffer.writeln();
-
-  if (stylesClassName != null) {
-    _writeNode(buffer, vectorGraphics.root, context, 'styles', stylesClassName);
-  } else {
-    _writeNode(buffer, vectorGraphics.root, context, null, stylesClassName);
-  }
-
+  buffer.writeln('$rootMethodName(canvas, bounds, paint);');
   buffer.unindent();
   buffer.writeln('}');
   buffer.writeln();
+
+  _writeNodeMethods(
+    buffer,
+    vectorGraphics.root,
+    context,
+    stylesClassName == null ? null : 'styles',
+    stylesClassName,
+    methodNameFor,
+  );
 
   buffer.writeln('@override');
   buffer.writeln(
@@ -310,14 +319,20 @@ void _writeCustomPainter(
   buffer.writeln();
 }
 
-void _writeNode(
+void _writeNodeMethods(
   DartBuffer buffer,
   VectorNode node,
   FlutterExportContext context,
   String? stylesReference,
   String? stylesClassName,
+  String Function(VectorNode) methodNameFor,
 ) {
-  // Transform
+  final methodName = methodNameFor(node);
+  buffer.writeln('@pragma(\'vm:prefer-inline\')');
+  buffer.writeln(
+    'void $methodName(ui.Canvas canvas, fl.Rect bounds, ui.Paint paint) {',
+  );
+  buffer.indent();
   buffer.writeln('// ${node.whichType().name.toUpperCase()} "${node.name}"');
   buffer.writeln('canvas.save();');
   _writeNodeTransform(buffer, node);
@@ -354,14 +369,14 @@ void _writeNode(
       );
     case VectorNode_Type.group:
       for (final child in node.group.children) {
-        _writeNode(buffer, child, context, stylesReference, stylesClassName);
+        buffer.writeln('${methodNameFor(child)}(canvas, bounds, paint);');
       }
     case VectorNode_Type.frame:
       if (node.frame.isClipping) {
         _writeFrameClip(buffer, node.frame);
       }
       for (final child in node.frame.children) {
-        _writeNode(buffer, child, context, stylesReference, stylesClassName);
+        buffer.writeln('${methodNameFor(child)}(canvas, bounds, paint);');
       }
     case VectorNode_Type.rectangle:
       _writeRectangle(
@@ -396,6 +411,40 @@ void _writeNode(
     buffer.writeln();
   }
   buffer.writeln('canvas.restore();');
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.writeln();
+
+  switch (node.whichType()) {
+    case VectorNode_Type.frame:
+      for (final child in node.frame.children) {
+        _writeNodeMethods(
+          buffer,
+          child,
+          context,
+          stylesReference,
+          stylesClassName,
+          methodNameFor,
+        );
+      }
+    case VectorNode_Type.group:
+      for (final child in node.group.children) {
+        _writeNodeMethods(
+          buffer,
+          child,
+          context,
+          stylesReference,
+          stylesClassName,
+          methodNameFor,
+        );
+      }
+    case VectorNode_Type.network:
+    case VectorNode_Type.rectangle:
+    case VectorNode_Type.ellipse:
+    case VectorNode_Type.polygon:
+    case VectorNode_Type.notSet:
+      break;
+  }
 }
 
 void _writeNodeOpacity(DartBuffer buffer, VectorNode node) {
