@@ -18,12 +18,18 @@ class FlutterVectorCanvasExporter {
     final styles = _collectBoundVariableStyles(
       context.vectorGraphics.vectorGraphics,
     );
-    if (styles.isNotEmpty) {
+    final hasStyles = styles.isNotEmpty;
+    if (hasStyles) {
       _writeStylesClass(buffer, context, styles);
     }
 
     for (final vectorGraphics in context.vectorGraphics.vectorGraphics) {
-      _writeCustomPainter(buffer, vectorGraphics, context);
+      _writeCustomPainter(
+        buffer,
+        vectorGraphics,
+        context,
+        hasStyles: hasStyles,
+      );
     }
 
     buffer.writeln();
@@ -144,13 +150,21 @@ void _writeStylesClass(
 
   buffer.writeln('class Styles {');
   buffer.indent();
-  buffer.writeln('const Styles();');
+  buffer.writeln('const Styles({');
+  buffer.indent();
+  for (final entry in resolvedEntries.entries) {
+    final className = '${Naming.typeName(entry.key)}Styles';
+    final fieldName = Naming.fieldName(entry.key);
+    buffer.writeln('this.$fieldName = const $className(),');
+  }
+  buffer.unindent();
+  buffer.writeln('});');
   buffer.writeln();
 
   for (final entry in resolvedEntries.entries) {
     final className = '${Naming.typeName(entry.key)}Styles';
     final fieldName = Naming.fieldName(entry.key);
-    buffer.writeln('static const $className $fieldName = $className();');
+    buffer.writeln('final $className $fieldName;');
   }
 
   buffer.unindent();
@@ -162,8 +176,8 @@ void _writeStylesClass(
     final collection = entry.value.collection;
     buffer.writeln('class $className {');
     buffer.indent();
-    buffer.writeln('const $className();');
 
+    final properties = <({String fieldName, String value})>[];
     if (collection.variants.isNotEmpty) {
       final variant = collection.variants.first;
       for (var i = 0; i < collection.variables.length; i++) {
@@ -186,8 +200,21 @@ void _writeStylesClass(
           resolved,
           Value_Type.color,
         );
-        buffer.writeln('fl.Color get $fieldName => $serialized;');
+        properties.add((fieldName: fieldName, value: serialized));
       }
+    }
+
+    buffer.writeln('const $className({');
+    buffer.indent();
+    for (final property in properties) {
+      buffer.writeln('this.${property.fieldName} = ${property.value},');
+    }
+    buffer.unindent();
+    buffer.writeln('});');
+    buffer.writeln();
+
+    for (final property in properties) {
+      buffer.writeln('final fl.Color ${property.fieldName};');
     }
 
     buffer.unindent();
@@ -209,22 +236,37 @@ class _StyleCollection {
 void _writeCustomPainter(
   DartBuffer buffer,
   VectorGraphics vectorGraphics,
-  FlutterExportContext context,
-) {
+  FlutterExportContext context, {
+  required bool hasStyles,
+}) {
   final widgetName = Naming.typeName(vectorGraphics.name);
   final className = '${widgetName}Painter';
   final size = vectorGraphics.hasSize() ? vectorGraphics.size : Vector();
 
   buffer.writeln('class $widgetName extends fl.StatelessWidget {');
   buffer.indent();
-  buffer.writeln('const $widgetName({super.key});');
+  if (hasStyles) {
+    buffer.writeln(
+      'const $widgetName({super.key, this.styles = const Styles()});',
+    );
+    buffer.writeln();
+    buffer.writeln('final Styles styles;');
+  } else {
+    buffer.writeln('const $widgetName({super.key});');
+  }
   buffer.writeln();
   buffer.writeln('@override');
   buffer.writeln('fl.Widget build(fl.BuildContext context) {');
   buffer.indent();
-  buffer.writeln(
-    'return fl.CustomPaint(size: const fl.Size(${_formatDouble(size.x)}, ${_formatDouble(size.y)}), painter: const $className());',
-  );
+  if (hasStyles) {
+    buffer.writeln(
+      'return fl.CustomPaint(size: const fl.Size(${_formatDouble(size.x)}, ${_formatDouble(size.y)}), painter: $className(styles));',
+    );
+  } else {
+    buffer.writeln(
+      'return fl.CustomPaint(size: const fl.Size(${_formatDouble(size.x)}, ${_formatDouble(size.y)}), painter: const $className());',
+    );
+  }
   buffer.unindent();
   buffer.writeln('}');
   buffer.unindent();
@@ -233,7 +275,12 @@ void _writeCustomPainter(
 
   buffer.writeln('class $className extends fl.CustomPainter {');
   buffer.indent();
-  buffer.writeln('const $className();');
+  if (hasStyles) {
+    buffer.writeln('const $className(this.styles);');
+    buffer.writeln('final Styles styles;');
+  } else {
+    buffer.writeln('const $className();');
+  }
   buffer.writeln();
 
   buffer.writeln('@override');
@@ -243,7 +290,11 @@ void _writeCustomPainter(
   buffer.writeln('final bounds = fl.Offset.zero & size;');
   buffer.writeln();
 
-  _writeNode(buffer, vectorGraphics.root, context);
+  if (hasStyles) {
+    _writeNode(buffer, vectorGraphics.root, context, 'styles');
+  } else {
+    _writeNode(buffer, vectorGraphics.root, context, null);
+  }
 
   buffer.unindent();
   buffer.writeln('}');
@@ -263,6 +314,7 @@ void _writeNode(
   DartBuffer buffer,
   VectorNode node,
   FlutterExportContext context,
+  String? stylesReference,
 ) {
   // Transform
   buffer.writeln('// ${node.whichType().name.toUpperCase()} "${node.name}"');
@@ -273,30 +325,40 @@ void _writeNode(
   switch (node.whichType()) {
     case VectorNode_Type.network:
       if (node.network.regions.isEmpty) {
-        _writeNetworkFillFromSegments(buffer, node.network, context);
+        _writeNetworkFillFromSegments(
+          buffer,
+          node.network,
+          context,
+          stylesReference,
+        );
       } else {
         for (final region in node.network.regions) {
-          _writeRegion(buffer, node.network, region, context);
+          _writeRegion(buffer, node.network, region, context, stylesReference);
         }
       }
-      _writeNetworkStrokesFromSegments(buffer, node.network, context);
+      _writeNetworkStrokesFromSegments(
+        buffer,
+        node.network,
+        context,
+        stylesReference,
+      );
     case VectorNode_Type.group:
       for (final child in node.group.children) {
-        _writeNode(buffer, child, context);
+        _writeNode(buffer, child, context, stylesReference);
       }
     case VectorNode_Type.frame:
       if (node.frame.isClipping) {
         _writeFrameClip(buffer, node.frame);
       }
       for (final child in node.frame.children) {
-        _writeNode(buffer, child, context);
+        _writeNode(buffer, child, context, stylesReference);
       }
     case VectorNode_Type.rectangle:
-      _writeRectangle(buffer, node.rectangle, context);
+      _writeRectangle(buffer, node.rectangle, context, stylesReference);
     case VectorNode_Type.ellipse:
-      _writeEllipse(buffer, node.ellipse, context);
+      _writeEllipse(buffer, node.ellipse, context, stylesReference);
     case VectorNode_Type.polygon:
-      _writePolygon(buffer, node.polygon, context);
+      _writePolygon(buffer, node.polygon, context, stylesReference);
     case VectorNode_Type.notSet:
       buffer.writeln('// Unsupported');
   }
@@ -345,6 +407,7 @@ void _writeRectangle(
   DartBuffer buffer,
   VectorRectangle rectangle,
   FlutterExportContext context,
+  String? stylesReference,
 ) {
   final width = rectangle.hasSize() ? rectangle.size.x : 0.0;
   final height = rectangle.hasSize() ? rectangle.size.y : 0.0;
@@ -360,17 +423,18 @@ void _writeRectangle(
   if (rectangle.geometry.fills.isNotEmpty) {
     buffer.writeln('paint.style = ui.PaintingStyle.fill;');
     for (final fill in rectangle.geometry.fills) {
-      _writePaintAssignment(buffer, fill, context);
+      _writePaintAssignment(buffer, fill, context, stylesReference);
       buffer.writeln('canvas.drawRect(rect, paint);');
     }
   }
-  _writeRectangleStrokes(buffer, rectangle, context);
+  _writeRectangleStrokes(buffer, rectangle, context, stylesReference);
 }
 
 void _writeEllipse(
   DartBuffer buffer,
   VectorEllipse ellipse,
   FlutterExportContext context,
+  String? stylesReference,
 ) {
   final width = ellipse.hasSize() ? ellipse.size.x : 0.0;
   final height = ellipse.hasSize() ? ellipse.size.y : 0.0;
@@ -394,11 +458,11 @@ void _writeEllipse(
     if (ellipse.geometry.fills.isNotEmpty) {
       buffer.writeln('paint.style = ui.PaintingStyle.fill;');
       for (final fill in ellipse.geometry.fills) {
-        _writePaintAssignment(buffer, fill, context);
+        _writePaintAssignment(buffer, fill, context, stylesReference);
         buffer.writeln('canvas.drawOval(rect, paint);');
       }
     }
-    _writeEllipseStrokes(buffer, ellipse, context, 'rect');
+    _writeEllipseStrokes(buffer, ellipse, context, stylesReference, 'rect');
     return;
   }
 
@@ -406,7 +470,7 @@ void _writeEllipse(
     if (ellipse.geometry.fills.isNotEmpty) {
       buffer.writeln('paint.style = ui.PaintingStyle.fill;');
       for (final fill in ellipse.geometry.fills) {
-        _writePaintAssignment(buffer, fill, context);
+        _writePaintAssignment(buffer, fill, context, stylesReference);
         buffer.writeln(
           'canvas.drawArc(rect, ${_formatDouble(arcStart)}, ${_formatDouble(sweep)}, true, paint);',
         );
@@ -416,6 +480,7 @@ void _writeEllipse(
       buffer,
       ellipse,
       context,
+      stylesReference,
       'rect',
       arcStart: arcStart,
       sweep: sweep,
@@ -452,17 +517,18 @@ void _writeEllipse(
   if (ellipse.geometry.fills.isNotEmpty) {
     buffer.writeln('paint.style = ui.PaintingStyle.fill;');
     for (final fill in ellipse.geometry.fills) {
-      _writePaintAssignment(buffer, fill, context);
+      _writePaintAssignment(buffer, fill, context, stylesReference);
       buffer.writeln('canvas.drawPath(path, paint);');
     }
   }
-  _writePathStrokes(buffer, ellipse.geometry, context, 'path');
+  _writePathStrokes(buffer, ellipse.geometry, context, stylesReference, 'path');
 }
 
 void _writePolygon(
   DartBuffer buffer,
   VectorPolygon polygon,
   FlutterExportContext context,
+  String? stylesReference,
 ) {
   final width = polygon.hasSize() ? polygon.size.x : 0.0;
   final height = polygon.hasSize() ? polygon.size.y : 0.0;
@@ -498,11 +564,11 @@ void _writePolygon(
   if (polygon.geometry.fills.isNotEmpty) {
     buffer.writeln('paint.style = ui.PaintingStyle.fill;');
     for (final fill in polygon.geometry.fills) {
-      _writePaintAssignment(buffer, fill, context);
+      _writePaintAssignment(buffer, fill, context, stylesReference);
       buffer.writeln('canvas.drawPath(path, paint);');
     }
   }
-  _writePathStrokes(buffer, polygon.geometry, context, 'path');
+  _writePathStrokes(buffer, polygon.geometry, context, stylesReference, 'path');
 }
 
 void _writeFrameClip(DartBuffer buffer, VectorFrame frame) {
@@ -542,6 +608,7 @@ void _writeRegion(
   VectorNetwork network,
   VectorRegion region,
   FlutterExportContext context,
+  String? stylesReference,
 ) {
   if (region.loops.isEmpty || region.fills.isEmpty) {
     return;
@@ -558,7 +625,7 @@ void _writeRegion(
 
   buffer.writeln('paint.style = ui.PaintingStyle.fill;');
   for (final fill in region.fills) {
-    _writePaintAssignment(buffer, fill, context);
+    _writePaintAssignment(buffer, fill, context, stylesReference);
     buffer.writeln('canvas.drawPath(path, paint);');
   }
 
@@ -570,6 +637,7 @@ void _writeNetworkFillFromSegments(
   DartBuffer buffer,
   VectorNetwork network,
   FlutterExportContext context,
+  String? stylesReference,
 ) {
   if (network.segments.isEmpty || network.geometry.fills.isEmpty) {
     return;
@@ -588,7 +656,7 @@ void _writeNetworkFillFromSegments(
   }
   buffer.writeln('paint.style = ui.PaintingStyle.fill;');
   for (final fill in network.geometry.fills) {
-    _writePaintAssignment(buffer, fill, context);
+    _writePaintAssignment(buffer, fill, context, stylesReference);
     buffer.writeln('canvas.drawPath(path, paint);');
   }
   buffer.unindent();
@@ -599,6 +667,7 @@ void _writeNetworkStrokesFromSegments(
   DartBuffer buffer,
   VectorNetwork network,
   FlutterExportContext context,
+  String? stylesReference,
 ) {
   if (network.segments.isEmpty || network.geometry.strokes.isEmpty) {
     return;
@@ -608,7 +677,7 @@ void _writeNetworkStrokesFromSegments(
   buffer.indent();
   buffer.writeln('final path = ui.Path();');
   _writeNetworkStrokePath(buffer, network);
-  _writePathStrokes(buffer, network.geometry, context, 'path');
+  _writePathStrokes(buffer, network.geometry, context, stylesReference, 'path');
   buffer.unindent();
   buffer.writeln('}');
 }
@@ -653,6 +722,7 @@ void _writeRectangleStrokes(
   DartBuffer buffer,
   VectorRectangle rectangle,
   FlutterExportContext context,
+  String? stylesReference,
 ) {
   if (rectangle.geometry.strokes.isEmpty ||
       rectangle.geometry.strokeWeight <= 0) {
@@ -664,7 +734,7 @@ void _writeRectangleStrokes(
     'paint.strokeWidth = ${_formatDouble(rectangle.geometry.strokeWeight)};',
   );
   for (final stroke in rectangle.geometry.strokes) {
-    _writePaintAssignment(buffer, stroke, context);
+    _writePaintAssignment(buffer, stroke, context, stylesReference);
     buffer.writeln('canvas.drawRect(rect, paint);');
   }
 }
@@ -673,6 +743,7 @@ void _writeEllipseStrokes(
   DartBuffer buffer,
   VectorEllipse ellipse,
   FlutterExportContext context,
+  String? stylesReference,
   String rectName, {
   double? arcStart,
   double? sweep,
@@ -686,7 +757,7 @@ void _writeEllipseStrokes(
     'paint.strokeWidth = ${_formatDouble(ellipse.geometry.strokeWeight)};',
   );
   for (final stroke in ellipse.geometry.strokes) {
-    _writePaintAssignment(buffer, stroke, context);
+    _writePaintAssignment(buffer, stroke, context, stylesReference);
     if (arcStart == null || sweep == null) {
       buffer.writeln('canvas.drawOval($rectName, paint);');
     } else {
@@ -701,6 +772,7 @@ void _writePathStrokes(
   DartBuffer buffer,
   GeometryProperty geometry,
   FlutterExportContext context,
+  String? stylesReference,
   String pathName,
 ) {
   if (geometry.strokes.isEmpty || geometry.strokeWeight <= 0) {
@@ -712,7 +784,7 @@ void _writePathStrokes(
     'paint.strokeWidth = ${_formatDouble(geometry.strokeWeight)};',
   );
   for (final stroke in geometry.strokes) {
-    _writePaintAssignment(buffer, stroke, context);
+    _writePaintAssignment(buffer, stroke, context, stylesReference);
     buffer.writeln('canvas.drawPath($pathName, paint);');
   }
 }
@@ -821,6 +893,7 @@ void _writePaintAssignment(
   DartBuffer buffer,
   Paint paint,
   FlutterExportContext context,
+  String? stylesReference,
 ) {
   buffer.writeln('paint');
   buffer.indent();
@@ -829,10 +902,16 @@ void _writePaintAssignment(
   switch (paint.whichType()) {
     case Paint_Type.solid:
       buffer.writeln(
-        '..color = ${_solidPaintColor(paint.solid, paint.opacity, context)}',
+        '..color = ${_solidPaintColor(paint.solid, paint.opacity, context, stylesReference)}',
       );
     case Paint_Type.gradient:
-      _writeGradientAssignment(buffer, paint.gradient, paint.opacity, context);
+      _writeGradientAssignment(
+        buffer,
+        paint.gradient,
+        paint.opacity,
+        context,
+        stylesReference,
+      );
     case Paint_Type.notSet:
       buffer.writeln('..color = const ui.Color(0x00000000)');
   }
@@ -873,9 +952,10 @@ String _solidPaintColor(
   SolidPaint paint,
   double opacity,
   FlutterExportContext context,
+  String? stylesReference,
 ) {
   if (paint.whichColor() == SolidPaint_Color.bound) {
-    return _boundColorReference(paint.bound, opacity);
+    return _boundColorReference(paint.bound, opacity, stylesReference);
   }
   if (!paint.hasValue()) {
     return 'const ui.Color(0x00000000)';
@@ -891,10 +971,11 @@ void _writeGradientAssignment(
   GradientPaint gradient,
   double opacity,
   FlutterExportContext context,
+  String? stylesReference,
 ) {
   final colorStops = gradient.gradientStops;
   final colors = colorStops
-      .map((stop) => _stopColor(stop, opacity, context))
+      .map((stop) => _stopColor(stop, opacity, context, stylesReference))
       .join(', ');
   final stops = colorStops.map((stop) => stop.position).join(', ');
 
@@ -938,9 +1019,10 @@ String _stopColor(
   ColorStop stop,
   double opacity,
   FlutterExportContext context,
+  String? stylesReference,
 ) {
   if (stop.whichColor() == ColorStop_Color.bound) {
-    return _boundColorReference(stop.bound, opacity);
+    return _boundColorReference(stop.bound, opacity, stylesReference);
   }
   if (!stop.hasValue()) {
     return 'const ui.Color(0x00000000)';
@@ -950,10 +1032,15 @@ String _stopColor(
   return 'const ui.Color.from(red: ${_formatDouble(color.r)}, green: ${_formatDouble(color.g)}, blue: ${_formatDouble(color.b)}, alpha: $alpha)';
 }
 
-String _boundColorReference(BoundVariable bound, double opacity) {
+String _boundColorReference(
+  BoundVariable bound,
+  double opacity,
+  String? stylesReference,
+) {
   final collectionField = Naming.fieldName(bound.collectionName);
   final variableField = Naming.fieldName(bound.variableName);
-  return 'Styles.$collectionField.$variableField.withOpacity(${opacity.toStringAsFixed(6)})';
+  final styles = stylesReference ?? 'const Styles()';
+  return '$styles.$collectionField.$variableField.withOpacity(${opacity.toStringAsFixed(6)})';
 }
 
 String _pathFillType(WindingRule rule) {
