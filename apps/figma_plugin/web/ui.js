@@ -58,10 +58,6 @@ function updateTabUI() {
     vectorFormatSelect.value = exportOptions.vector.format || 'canvas';
   }
 
-  const formatLabel = currentFormat === 'json'
-    ? 'JSON'
-    : 'Dart';
-  document.getElementById('current-format').textContent = formatLabel;
 }
 
 tabButtons.forEach((button) => {
@@ -174,10 +170,12 @@ document.querySelectorAll('input[name="format"]').forEach(radio => {
 });
 
 function updateExportOptions() {
+  const optionsPanel = document.querySelector('.options-panel');
   const optionsContainer = document.getElementById('export-options');
   const optionsSection = document.getElementById('export-options-section');
 
   optionsContainer.innerHTML = '';
+  optionsSection.style.display = 'none';
 
   if (currentMode === 'variables') {
     optionsSection.style.display = 'block';
@@ -264,6 +262,15 @@ function updateExportOptions() {
         regenerateCode();
       });
     }
+  }
+
+  if (!optionsContainer.childElementCount) {
+    optionsSection.style.display = 'none';
+    if (optionsPanel) {
+      optionsPanel.style.display = 'none';
+    }
+  } else if (optionsPanel) {
+    optionsPanel.style.display = 'flex';
   }
 }
 
