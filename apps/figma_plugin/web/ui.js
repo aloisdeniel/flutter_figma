@@ -77,6 +77,8 @@ window.onmessage = (event) => {
     document.getElementById('code_container').innerHTML =
       '<pre>' + escapeHtml(currentCode) + '</pre>';
     document.getElementById('copy-btn').style.display = 'block';
+  } else if (msg.type === 'loading') {
+    showLoadingState(msg.message || 'Generating code...');
   } else if (msg.type === 'no-selection') {
     currentCode = '';
     document.getElementById('code_container').innerHTML =

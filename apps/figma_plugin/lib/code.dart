@@ -114,6 +114,12 @@ void main() {
 Future<void> _generateCode() async {
   print('Generating code...');
 
+  final loadingMessage = {
+    'type': 'loading',
+    'message': 'Generating code...'
+  }.jsify()!;
+  figma.ui.postMessage(loadingMessage);
+
   final stylesCollectionName = _normalizeOption(
     _currentVariablesOptions['stylesCollectionName'] as String?,
   );
@@ -128,6 +134,16 @@ Future<void> _generateCode() async {
   final library = await importer.import(
     ImportContext(importOptions),
   );
+
+  if (_currentMode == OutputMode.vector && library.vectorGraphics.isEmpty) {
+    final message = {
+      'type': 'no-selection',
+      'message':
+          'Select one or more elements to generate vector graphics.',
+    }.jsify()!;
+    figma.ui.postMessage(message);
+    return;
+  }
 
   String generatedCode;
   if (_currentMode == OutputMode.vector) {
