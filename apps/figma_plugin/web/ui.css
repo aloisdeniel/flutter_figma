@@ -59,6 +59,12 @@ body {
   font-weight: 600;
 }
 
+#variable-format-toggle .tab-button.active {
+  background: var(--figma-color-bg-secondary);
+  color: var(--figma-color-text-secondary);
+  font-weight: 500;
+}
+
 .main-content {
   flex: 1;
   display: flex;

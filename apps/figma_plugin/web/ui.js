@@ -28,10 +28,11 @@ window.addEventListener('load', () => {
   }, '*');
 });
 
-const tabButtons = document.querySelectorAll('.tab-button');
+const modeTabButtons = document.querySelectorAll('.tab-button[data-mode]');
+const formatTabButtons = document.querySelectorAll('.tab-button[data-format]');
 
 function updateTabUI() {
-  tabButtons.forEach((button) => {
+  modeTabButtons.forEach((button) => {
     button.classList.toggle('active', button.dataset.mode === currentMode);
   });
 
@@ -44,14 +45,9 @@ function updateTabUI() {
     vectorFormatToggle.style.display = currentMode === 'vector' ? 'flex' : 'none';
   }
 
-  const formatDart = document.getElementById('format-dart');
-  if (formatDart) {
-    formatDart.checked = currentFormat === 'dart';
-  }
-  const formatJson = document.getElementById('format-json');
-  if (formatJson) {
-    formatJson.checked = currentFormat === 'json';
-  }
+  formatTabButtons.forEach((button) => {
+    button.classList.toggle('active', button.dataset.format === currentFormat);
+  });
 
   const vectorFormatSelect = document.getElementById('vector-format-select');
   if (vectorFormatSelect) {
@@ -60,7 +56,7 @@ function updateTabUI() {
 
 }
 
-tabButtons.forEach((button) => {
+modeTabButtons.forEach((button) => {
   button.addEventListener('click', () => {
     const mode = button.dataset.mode;
     if (!mode || mode === currentMode) {
@@ -160,9 +156,13 @@ function escapeHtml(text) {
 }
 
 // Format change handling
-document.querySelectorAll('input[name="format"]').forEach(radio => {
-  radio.addEventListener('change', () => {
-    currentFormat = radio.value;
+formatTabButtons.forEach((button) => {
+  button.addEventListener('click', () => {
+    const format = button.dataset.format;
+    if (!format || format === currentFormat) {
+      return;
+    }
+    currentFormat = format;
     updateTabUI();
     updateExportOptions();
     regenerateCode();
