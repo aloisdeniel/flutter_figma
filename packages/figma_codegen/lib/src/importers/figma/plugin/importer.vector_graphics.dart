@@ -92,6 +92,16 @@ Future<List<VectorNode>> childrenNodes(
   return result;
 }
 
+GeometryProperty _geometryNode(
+  figma_api.SceneNode node,
+  ImportContext<FigmaImportOptions> context,
+) {
+  final fills = _convertNodeFills('fills', node, context);
+  final strokes = _convertNodeFills('strokes', node, context);
+  // TODO stroke weight support
+  return GeometryProperty(fills: fills, strokes: strokes);
+}
+
 Future<VectorNode?> _vectorNode(
   figma_api.SceneNode node,
   ImportContext<FigmaImportOptions> context,
@@ -153,6 +163,7 @@ Future<VectorNode?> _vectorNode(
           opacity: nodeOpacity(node),
           isClipping: frameNode.clipsContent,
           cornerRadius: _cornerRadiusFromFrame(frameNode),
+          geometry: _geometryNode(node, context),
           children: children,
         ),
       );
@@ -219,6 +230,7 @@ Future<VectorNetwork?> _vectorNetworkFromVectorNode(
   print('Vector network offset: ($x, $y)');
   return VectorNetwork(
     offset: Vector(x: x, y: y),
+    geometry: _geometryNode(node, context),
     vertices: vertices,
     segments: segments,
     regions: regions,
@@ -269,7 +281,7 @@ VectorRectangle _vectorRectangleFromNode(
   return VectorRectangle(
     offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
     size: Vector(x: node.width.toDouble(), y: node.height.toDouble()),
-    fills: _convertNodeFills(node, context),
+    geometry: _geometryNode(node, context),
   );
 }
 
@@ -281,7 +293,7 @@ VectorEllipse _vectorEllipseFromNode(
     offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
     size: Vector(x: node.width.toDouble(), y: node.height.toDouble()),
     arcData: _arcDataFromEllipse(node),
-    fills: _convertNodeFills(node, context),
+    geometry: _geometryNode(node, context),
   );
 }
 
@@ -303,8 +315,8 @@ VectorPolygon _vectorPolygonFromNode(
   return VectorPolygon(
     offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
     size: Vector(x: node.width.toDouble(), y: node.height.toDouble()),
+    geometry: _geometryNode(node, context),
     pointCount: node.pointCount,
-    fills: _convertNodeFills(node, context),
   );
 }
 
@@ -389,15 +401,16 @@ VectorRegion? _vectorRegionFromFigma(
     loops: loops
         .map((loop) => VectorRegionLoop(segments: loop))
         .toList(growable: false),
-    fills: _convertNodeFills(node, context),
+    fills: _convertNodeFills('fills', node, context),
   );
 }
 
 List<Paint> _convertNodeFills(
+  String property,
   figma_api.SceneNode node,
   ImportContext<FigmaImportOptions> context,
 ) {
-  final fills = node.getProperty('fills'.jsify()!);
+  final fills = node.getProperty(property.jsify()!);
   if (fills is! JSArray) {
     return const [];
   }

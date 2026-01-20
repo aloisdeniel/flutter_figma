@@ -26,16 +26,16 @@ message VectorNode {
 }
 
 message VectorPolygon {
-  Vector offset = 3;
-  Vector size = 4;
-  int32 pointCount = 5;
-  repeated Paint fills = 6;
+  Vector offset = 1;
+  Vector size = 2;
+  int32 pointCount = 3;
+  GeometryProperty geometry = 4;
 }
 
 message VectorRectangle {
-  Vector offset = 3;
-  Vector size = 4;
-  repeated Paint fills = 5;
+  Vector offset = 1;
+  Vector size = 2;
+  GeometryProperty geometry = 3;
 }
 
 message ArcData {
@@ -48,14 +48,15 @@ message VectorEllipse {
   Vector offset = 3;
   Vector size = 4;
   ArcData arcData = 5;
-  repeated Paint fills = 6;
+  GeometryProperty geometry = 6;
 }
 
 message VectorNetwork {
-  Vector offset = 3;
-  repeated VectorVertex vertices = 4;
-  repeated VectorSegment segments = 5;
-  repeated VectorRegion regions = 6;
+  Vector offset = 1;
+  GeometryProperty geometry = 2;
+  repeated VectorVertex vertices = 3;
+  repeated VectorSegment segments = 4;
+  repeated VectorRegion regions = 5;
 }
 
 message VectorGroup {
@@ -69,9 +70,20 @@ message VectorFrame {
   double opacity = 2;
   Vector offset = 3;
   Vector size = 4;
-  repeated VectorNode children = 5;
-  bool isClipping = 6;
-  CornerRadius cornerRadius = 7;
+  GeometryProperty geometry = 5;
+  repeated VectorNode children = 6;
+  bool isClipping = 7;
+  CornerRadius cornerRadius = 8;
+}
+
+message GeometryProperty {
+  repeated Paint fills = 1;
+  repeated Paint strokes = 2;
+  double strokeWeight = 3;
+  double strokeTopWeight = 4;
+  double strokeRightWeight = 5;
+  double strokeBottomWeight = 6;
+  double strokeLeftWeight = 7;
 }
 
 message CornerRadius {

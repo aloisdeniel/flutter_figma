@@ -327,13 +327,13 @@ class VectorPolygon extends $pb.GeneratedMessage {
     Vector? offset,
     Vector? size,
     $core.int? pointCount,
-    $core.Iterable<Paint>? fills,
+    GeometryProperty? geometry,
   }) {
     final result = create();
     if (offset != null) result.offset = offset;
     if (size != null) result.size = size;
     if (pointCount != null) result.pointCount = pointCount;
-    if (fills != null) result.fills.addAll(fills);
+    if (geometry != null) result.geometry = geometry;
     return result;
   }
 
@@ -350,10 +350,11 @@ class VectorPolygon extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'VectorPolygon',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..aOM<Vector>(3, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
-    ..aOM<Vector>(4, _omitFieldNames ? '' : 'size', subBuilder: Vector.create)
-    ..aI(5, _omitFieldNames ? '' : 'pointCount', protoName: 'pointCount')
-    ..pPM<Paint>(6, _omitFieldNames ? '' : 'fills', subBuilder: Paint.create)
+    ..aOM<Vector>(1, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
+    ..aOM<Vector>(2, _omitFieldNames ? '' : 'size', subBuilder: Vector.create)
+    ..aI(3, _omitFieldNames ? '' : 'pointCount', protoName: 'pointCount')
+    ..aOM<GeometryProperty>(4, _omitFieldNames ? '' : 'geometry',
+        subBuilder: GeometryProperty.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -375,51 +376,59 @@ class VectorPolygon extends $pb.GeneratedMessage {
       $pb.GeneratedMessage.$_defaultFor<VectorPolygon>(create);
   static VectorPolygon? _defaultInstance;
 
-  @$pb.TagNumber(3)
+  @$pb.TagNumber(1)
   Vector get offset => $_getN(0);
-  @$pb.TagNumber(3)
-  set offset(Vector value) => $_setField(3, value);
-  @$pb.TagNumber(3)
+  @$pb.TagNumber(1)
+  set offset(Vector value) => $_setField(1, value);
+  @$pb.TagNumber(1)
   $core.bool hasOffset() => $_has(0);
-  @$pb.TagNumber(3)
-  void clearOffset() => $_clearField(3);
-  @$pb.TagNumber(3)
+  @$pb.TagNumber(1)
+  void clearOffset() => $_clearField(1);
+  @$pb.TagNumber(1)
   Vector ensureOffset() => $_ensure(0);
 
-  @$pb.TagNumber(4)
+  @$pb.TagNumber(2)
   Vector get size => $_getN(1);
-  @$pb.TagNumber(4)
-  set size(Vector value) => $_setField(4, value);
-  @$pb.TagNumber(4)
+  @$pb.TagNumber(2)
+  set size(Vector value) => $_setField(2, value);
+  @$pb.TagNumber(2)
   $core.bool hasSize() => $_has(1);
-  @$pb.TagNumber(4)
-  void clearSize() => $_clearField(4);
-  @$pb.TagNumber(4)
+  @$pb.TagNumber(2)
+  void clearSize() => $_clearField(2);
+  @$pb.TagNumber(2)
   Vector ensureSize() => $_ensure(1);
 
-  @$pb.TagNumber(5)
+  @$pb.TagNumber(3)
   $core.int get pointCount => $_getIZ(2);
-  @$pb.TagNumber(5)
+  @$pb.TagNumber(3)
   set pointCount($core.int value) => $_setSignedInt32(2, value);
-  @$pb.TagNumber(5)
+  @$pb.TagNumber(3)
   $core.bool hasPointCount() => $_has(2);
-  @$pb.TagNumber(5)
-  void clearPointCount() => $_clearField(5);
+  @$pb.TagNumber(3)
+  void clearPointCount() => $_clearField(3);
 
-  @$pb.TagNumber(6)
-  $pb.PbList<Paint> get fills => $_getList(3);
+  @$pb.TagNumber(4)
+  GeometryProperty get geometry => $_getN(3);
+  @$pb.TagNumber(4)
+  set geometry(GeometryProperty value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasGeometry() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearGeometry() => $_clearField(4);
+  @$pb.TagNumber(4)
+  GeometryProperty ensureGeometry() => $_ensure(3);
 }
 
 class VectorRectangle extends $pb.GeneratedMessage {
   factory VectorRectangle({
     Vector? offset,
     Vector? size,
-    $core.Iterable<Paint>? fills,
+    GeometryProperty? geometry,
   }) {
     final result = create();
     if (offset != null) result.offset = offset;
     if (size != null) result.size = size;
-    if (fills != null) result.fills.addAll(fills);
+    if (geometry != null) result.geometry = geometry;
     return result;
   }
 
@@ -436,9 +445,10 @@ class VectorRectangle extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'VectorRectangle',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..aOM<Vector>(3, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
-    ..aOM<Vector>(4, _omitFieldNames ? '' : 'size', subBuilder: Vector.create)
-    ..pPM<Paint>(5, _omitFieldNames ? '' : 'fills', subBuilder: Paint.create)
+    ..aOM<Vector>(1, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
+    ..aOM<Vector>(2, _omitFieldNames ? '' : 'size', subBuilder: Vector.create)
+    ..aOM<GeometryProperty>(3, _omitFieldNames ? '' : 'geometry',
+        subBuilder: GeometryProperty.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -460,30 +470,38 @@ class VectorRectangle extends $pb.GeneratedMessage {
       $pb.GeneratedMessage.$_defaultFor<VectorRectangle>(create);
   static VectorRectangle? _defaultInstance;
 
-  @$pb.TagNumber(3)
+  @$pb.TagNumber(1)
   Vector get offset => $_getN(0);
-  @$pb.TagNumber(3)
-  set offset(Vector value) => $_setField(3, value);
-  @$pb.TagNumber(3)
+  @$pb.TagNumber(1)
+  set offset(Vector value) => $_setField(1, value);
+  @$pb.TagNumber(1)
   $core.bool hasOffset() => $_has(0);
-  @$pb.TagNumber(3)
-  void clearOffset() => $_clearField(3);
-  @$pb.TagNumber(3)
+  @$pb.TagNumber(1)
+  void clearOffset() => $_clearField(1);
+  @$pb.TagNumber(1)
   Vector ensureOffset() => $_ensure(0);
 
-  @$pb.TagNumber(4)
+  @$pb.TagNumber(2)
   Vector get size => $_getN(1);
-  @$pb.TagNumber(4)
-  set size(Vector value) => $_setField(4, value);
-  @$pb.TagNumber(4)
+  @$pb.TagNumber(2)
+  set size(Vector value) => $_setField(2, value);
+  @$pb.TagNumber(2)
   $core.bool hasSize() => $_has(1);
-  @$pb.TagNumber(4)
-  void clearSize() => $_clearField(4);
-  @$pb.TagNumber(4)
+  @$pb.TagNumber(2)
+  void clearSize() => $_clearField(2);
+  @$pb.TagNumber(2)
   Vector ensureSize() => $_ensure(1);
 
-  @$pb.TagNumber(5)
-  $pb.PbList<Paint> get fills => $_getList(2);
+  @$pb.TagNumber(3)
+  GeometryProperty get geometry => $_getN(2);
+  @$pb.TagNumber(3)
+  set geometry(GeometryProperty value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasGeometry() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearGeometry() => $_clearField(3);
+  @$pb.TagNumber(3)
+  GeometryProperty ensureGeometry() => $_ensure(2);
 }
 
 class ArcData extends $pb.GeneratedMessage {
@@ -568,13 +586,13 @@ class VectorEllipse extends $pb.GeneratedMessage {
     Vector? offset,
     Vector? size,
     ArcData? arcData,
-    $core.Iterable<Paint>? fills,
+    GeometryProperty? geometry,
   }) {
     final result = create();
     if (offset != null) result.offset = offset;
     if (size != null) result.size = size;
     if (arcData != null) result.arcData = arcData;
-    if (fills != null) result.fills.addAll(fills);
+    if (geometry != null) result.geometry = geometry;
     return result;
   }
 
@@ -595,7 +613,8 @@ class VectorEllipse extends $pb.GeneratedMessage {
     ..aOM<Vector>(4, _omitFieldNames ? '' : 'size', subBuilder: Vector.create)
     ..aOM<ArcData>(5, _omitFieldNames ? '' : 'arcData',
         protoName: 'arcData', subBuilder: ArcData.create)
-    ..pPM<Paint>(6, _omitFieldNames ? '' : 'fills', subBuilder: Paint.create)
+    ..aOM<GeometryProperty>(6, _omitFieldNames ? '' : 'geometry',
+        subBuilder: GeometryProperty.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -651,18 +670,28 @@ class VectorEllipse extends $pb.GeneratedMessage {
   ArcData ensureArcData() => $_ensure(2);
 
   @$pb.TagNumber(6)
-  $pb.PbList<Paint> get fills => $_getList(3);
+  GeometryProperty get geometry => $_getN(3);
+  @$pb.TagNumber(6)
+  set geometry(GeometryProperty value) => $_setField(6, value);
+  @$pb.TagNumber(6)
+  $core.bool hasGeometry() => $_has(3);
+  @$pb.TagNumber(6)
+  void clearGeometry() => $_clearField(6);
+  @$pb.TagNumber(6)
+  GeometryProperty ensureGeometry() => $_ensure(3);
 }
 
 class VectorNetwork extends $pb.GeneratedMessage {
   factory VectorNetwork({
     Vector? offset,
+    GeometryProperty? geometry,
     $core.Iterable<VectorVertex>? vertices,
     $core.Iterable<VectorSegment>? segments,
     $core.Iterable<VectorRegion>? regions,
   }) {
     final result = create();
     if (offset != null) result.offset = offset;
+    if (geometry != null) result.geometry = geometry;
     if (vertices != null) result.vertices.addAll(vertices);
     if (segments != null) result.segments.addAll(segments);
     if (regions != null) result.regions.addAll(regions);
@@ -682,12 +711,14 @@ class VectorNetwork extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'VectorNetwork',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..aOM<Vector>(3, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
-    ..pPM<VectorVertex>(4, _omitFieldNames ? '' : 'vertices',
+    ..aOM<Vector>(1, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
+    ..aOM<GeometryProperty>(2, _omitFieldNames ? '' : 'geometry',
+        subBuilder: GeometryProperty.create)
+    ..pPM<VectorVertex>(3, _omitFieldNames ? '' : 'vertices',
         subBuilder: VectorVertex.create)
-    ..pPM<VectorSegment>(5, _omitFieldNames ? '' : 'segments',
+    ..pPM<VectorSegment>(4, _omitFieldNames ? '' : 'segments',
         subBuilder: VectorSegment.create)
-    ..pPM<VectorRegion>(6, _omitFieldNames ? '' : 'regions',
+    ..pPM<VectorRegion>(5, _omitFieldNames ? '' : 'regions',
         subBuilder: VectorRegion.create)
     ..hasRequiredFields = false;
 
@@ -710,25 +741,36 @@ class VectorNetwork extends $pb.GeneratedMessage {
       $pb.GeneratedMessage.$_defaultFor<VectorNetwork>(create);
   static VectorNetwork? _defaultInstance;
 
-  @$pb.TagNumber(3)
+  @$pb.TagNumber(1)
   Vector get offset => $_getN(0);
-  @$pb.TagNumber(3)
-  set offset(Vector value) => $_setField(3, value);
-  @$pb.TagNumber(3)
+  @$pb.TagNumber(1)
+  set offset(Vector value) => $_setField(1, value);
+  @$pb.TagNumber(1)
   $core.bool hasOffset() => $_has(0);
-  @$pb.TagNumber(3)
-  void clearOffset() => $_clearField(3);
-  @$pb.TagNumber(3)
+  @$pb.TagNumber(1)
+  void clearOffset() => $_clearField(1);
+  @$pb.TagNumber(1)
   Vector ensureOffset() => $_ensure(0);
 
+  @$pb.TagNumber(2)
+  GeometryProperty get geometry => $_getN(1);
+  @$pb.TagNumber(2)
+  set geometry(GeometryProperty value) => $_setField(2, value);
+  @$pb.TagNumber(2)
+  $core.bool hasGeometry() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearGeometry() => $_clearField(2);
+  @$pb.TagNumber(2)
+  GeometryProperty ensureGeometry() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  $pb.PbList<VectorVertex> get vertices => $_getList(2);
+
   @$pb.TagNumber(4)
-  $pb.PbList<VectorVertex> get vertices => $_getList(1);
+  $pb.PbList<VectorSegment> get segments => $_getList(3);
 
   @$pb.TagNumber(5)
-  $pb.PbList<VectorSegment> get segments => $_getList(2);
-
-  @$pb.TagNumber(6)
-  $pb.PbList<VectorRegion> get regions => $_getList(3);
+  $pb.PbList<VectorRegion> get regions => $_getList(4);
 }
 
 class VectorGroup extends $pb.GeneratedMessage {
@@ -810,6 +852,7 @@ class VectorFrame extends $pb.GeneratedMessage {
     $core.double? opacity,
     Vector? offset,
     Vector? size,
+    GeometryProperty? geometry,
     $core.Iterable<VectorNode>? children,
     $core.bool? isClipping,
     CornerRadius? cornerRadius,
@@ -819,6 +862,7 @@ class VectorFrame extends $pb.GeneratedMessage {
     if (opacity != null) result.opacity = opacity;
     if (offset != null) result.offset = offset;
     if (size != null) result.size = size;
+    if (geometry != null) result.geometry = geometry;
     if (children != null) result.children.addAll(children);
     if (isClipping != null) result.isClipping = isClipping;
     if (cornerRadius != null) result.cornerRadius = cornerRadius;
@@ -842,10 +886,12 @@ class VectorFrame extends $pb.GeneratedMessage {
     ..aD(2, _omitFieldNames ? '' : 'opacity')
     ..aOM<Vector>(3, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
     ..aOM<Vector>(4, _omitFieldNames ? '' : 'size', subBuilder: Vector.create)
-    ..pPM<VectorNode>(5, _omitFieldNames ? '' : 'children',
+    ..aOM<GeometryProperty>(5, _omitFieldNames ? '' : 'geometry',
+        subBuilder: GeometryProperty.create)
+    ..pPM<VectorNode>(6, _omitFieldNames ? '' : 'children',
         subBuilder: VectorNode.create)
-    ..aOB(6, _omitFieldNames ? '' : 'isClipping', protoName: 'isClipping')
-    ..aOM<CornerRadius>(7, _omitFieldNames ? '' : 'cornerRadius',
+    ..aOB(7, _omitFieldNames ? '' : 'isClipping', protoName: 'isClipping')
+    ..aOM<CornerRadius>(8, _omitFieldNames ? '' : 'cornerRadius',
         protoName: 'cornerRadius', subBuilder: CornerRadius.create)
     ..hasRequiredFields = false;
 
@@ -909,27 +955,157 @@ class VectorFrame extends $pb.GeneratedMessage {
   Vector ensureSize() => $_ensure(3);
 
   @$pb.TagNumber(5)
-  $pb.PbList<VectorNode> get children => $_getList(4);
+  GeometryProperty get geometry => $_getN(4);
+  @$pb.TagNumber(5)
+  set geometry(GeometryProperty value) => $_setField(5, value);
+  @$pb.TagNumber(5)
+  $core.bool hasGeometry() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearGeometry() => $_clearField(5);
+  @$pb.TagNumber(5)
+  GeometryProperty ensureGeometry() => $_ensure(4);
 
   @$pb.TagNumber(6)
-  $core.bool get isClipping => $_getBF(5);
-  @$pb.TagNumber(6)
-  set isClipping($core.bool value) => $_setBool(5, value);
-  @$pb.TagNumber(6)
-  $core.bool hasIsClipping() => $_has(5);
-  @$pb.TagNumber(6)
-  void clearIsClipping() => $_clearField(6);
+  $pb.PbList<VectorNode> get children => $_getList(5);
 
   @$pb.TagNumber(7)
-  CornerRadius get cornerRadius => $_getN(6);
+  $core.bool get isClipping => $_getBF(6);
   @$pb.TagNumber(7)
-  set cornerRadius(CornerRadius value) => $_setField(7, value);
+  set isClipping($core.bool value) => $_setBool(6, value);
   @$pb.TagNumber(7)
-  $core.bool hasCornerRadius() => $_has(6);
+  $core.bool hasIsClipping() => $_has(6);
   @$pb.TagNumber(7)
-  void clearCornerRadius() => $_clearField(7);
+  void clearIsClipping() => $_clearField(7);
+
+  @$pb.TagNumber(8)
+  CornerRadius get cornerRadius => $_getN(7);
+  @$pb.TagNumber(8)
+  set cornerRadius(CornerRadius value) => $_setField(8, value);
+  @$pb.TagNumber(8)
+  $core.bool hasCornerRadius() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearCornerRadius() => $_clearField(8);
+  @$pb.TagNumber(8)
+  CornerRadius ensureCornerRadius() => $_ensure(7);
+}
+
+class GeometryProperty extends $pb.GeneratedMessage {
+  factory GeometryProperty({
+    $core.Iterable<Paint>? fills,
+    $core.Iterable<Paint>? strokes,
+    $core.double? strokeWeight,
+    $core.double? strokeTopWeight,
+    $core.double? strokeRightWeight,
+    $core.double? strokeBottomWeight,
+    $core.double? strokeLeftWeight,
+  }) {
+    final result = create();
+    if (fills != null) result.fills.addAll(fills);
+    if (strokes != null) result.strokes.addAll(strokes);
+    if (strokeWeight != null) result.strokeWeight = strokeWeight;
+    if (strokeTopWeight != null) result.strokeTopWeight = strokeTopWeight;
+    if (strokeRightWeight != null) result.strokeRightWeight = strokeRightWeight;
+    if (strokeBottomWeight != null)
+      result.strokeBottomWeight = strokeBottomWeight;
+    if (strokeLeftWeight != null) result.strokeLeftWeight = strokeLeftWeight;
+    return result;
+  }
+
+  GeometryProperty._();
+
+  factory GeometryProperty.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory GeometryProperty.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'GeometryProperty',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..pPM<Paint>(1, _omitFieldNames ? '' : 'fills', subBuilder: Paint.create)
+    ..pPM<Paint>(2, _omitFieldNames ? '' : 'strokes', subBuilder: Paint.create)
+    ..aD(3, _omitFieldNames ? '' : 'strokeWeight', protoName: 'strokeWeight')
+    ..aD(4, _omitFieldNames ? '' : 'strokeTopWeight',
+        protoName: 'strokeTopWeight')
+    ..aD(5, _omitFieldNames ? '' : 'strokeRightWeight',
+        protoName: 'strokeRightWeight')
+    ..aD(6, _omitFieldNames ? '' : 'strokeBottomWeight',
+        protoName: 'strokeBottomWeight')
+    ..aD(7, _omitFieldNames ? '' : 'strokeLeftWeight',
+        protoName: 'strokeLeftWeight')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GeometryProperty clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  GeometryProperty copyWith(void Function(GeometryProperty) updates) =>
+      super.copyWith((message) => updates(message as GeometryProperty))
+          as GeometryProperty;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static GeometryProperty create() => GeometryProperty._();
+  @$core.override
+  GeometryProperty createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static GeometryProperty getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<GeometryProperty>(create);
+  static GeometryProperty? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $pb.PbList<Paint> get fills => $_getList(0);
+
+  @$pb.TagNumber(2)
+  $pb.PbList<Paint> get strokes => $_getList(1);
+
+  @$pb.TagNumber(3)
+  $core.double get strokeWeight => $_getN(2);
+  @$pb.TagNumber(3)
+  set strokeWeight($core.double value) => $_setDouble(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasStrokeWeight() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearStrokeWeight() => $_clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.double get strokeTopWeight => $_getN(3);
+  @$pb.TagNumber(4)
+  set strokeTopWeight($core.double value) => $_setDouble(3, value);
+  @$pb.TagNumber(4)
+  $core.bool hasStrokeTopWeight() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearStrokeTopWeight() => $_clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.double get strokeRightWeight => $_getN(4);
+  @$pb.TagNumber(5)
+  set strokeRightWeight($core.double value) => $_setDouble(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasStrokeRightWeight() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearStrokeRightWeight() => $_clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.double get strokeBottomWeight => $_getN(5);
+  @$pb.TagNumber(6)
+  set strokeBottomWeight($core.double value) => $_setDouble(5, value);
+  @$pb.TagNumber(6)
+  $core.bool hasStrokeBottomWeight() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearStrokeBottomWeight() => $_clearField(6);
+
   @$pb.TagNumber(7)
-  CornerRadius ensureCornerRadius() => $_ensure(6);
+  $core.double get strokeLeftWeight => $_getN(6);
+  @$pb.TagNumber(7)
+  set strokeLeftWeight($core.double value) => $_setDouble(6, value);
+  @$pb.TagNumber(7)
+  $core.bool hasStrokeLeftWeight() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearStrokeLeftWeight() => $_clearField(7);
 }
 
 class CornerRadius extends $pb.GeneratedMessage {

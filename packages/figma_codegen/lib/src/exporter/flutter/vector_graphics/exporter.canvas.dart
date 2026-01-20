@@ -89,8 +89,12 @@ void _writeNode(
 
   switch (node.whichType()) {
     case VectorNode_Type.network:
-      for (final region in node.network.regions) {
-        _writeRegion(buffer, node.network, region, context);
+      if (node.network.regions.isEmpty) {
+        _writeNetworkFillFromSegments(buffer, node.network, context);
+      } else {
+        for (final region in node.network.regions) {
+          _writeRegion(buffer, node.network, region, context);
+        }
       }
     case VectorNode_Type.group:
       for (final child in node.group.children) {
@@ -160,14 +164,17 @@ void _writeRectangle(
 ) {
   final width = rectangle.hasSize() ? rectangle.size.x : 0.0;
   final height = rectangle.hasSize() ? rectangle.size.y : 0.0;
-  if (width <= 0 || height <= 0 || rectangle.fills.isEmpty) {
+  if (width <= 0 ||
+      height <= 0 ||
+      (rectangle.geometry.fills.isEmpty &&
+          rectangle.geometry.strokes.isEmpty)) {
     return;
   }
   buffer.writeln(
     'final rect = fl.Rect.fromLTWH(0, 0, ${_formatDouble(width)}, ${_formatDouble(height)});',
   );
   buffer.writeln('paint.style = ui.PaintingStyle.fill;');
-  for (final fill in rectangle.fills) {
+  for (final fill in rectangle.geometry.fills) {
     _writePaintAssignment(buffer, fill, context);
     buffer.writeln('canvas.drawRect(rect, paint);');
   }
@@ -180,7 +187,9 @@ void _writeEllipse(
 ) {
   final width = ellipse.hasSize() ? ellipse.size.x : 0.0;
   final height = ellipse.hasSize() ? ellipse.size.y : 0.0;
-  if (width <= 0 || height <= 0 || ellipse.fills.isEmpty) {
+  if (width <= 0 ||
+      height <= 0 ||
+      (ellipse.geometry.fills.isEmpty && ellipse.geometry.strokes.isEmpty)) {
     return;
   }
   buffer.writeln(
@@ -196,7 +205,7 @@ void _writeEllipse(
 
   if (isFullCircle && !hasInnerRadius) {
     buffer.writeln('paint.style = ui.PaintingStyle.fill;');
-    for (final fill in ellipse.fills) {
+    for (final fill in ellipse.geometry.fills) {
       _writePaintAssignment(buffer, fill, context);
       buffer.writeln('canvas.drawOval(rect, paint);');
     }
@@ -205,7 +214,7 @@ void _writeEllipse(
 
   if (!hasInnerRadius) {
     buffer.writeln('paint.style = ui.PaintingStyle.fill;');
-    for (final fill in ellipse.fills) {
+    for (final fill in ellipse.geometry.fills) {
       _writePaintAssignment(buffer, fill, context);
       buffer.writeln(
         'canvas.drawArc(rect, ${_formatDouble(arcStart)}, ${_formatDouble(sweep)}, true, paint);',
@@ -241,7 +250,7 @@ void _writeEllipse(
     buffer.writeln('path.close();');
   }
   buffer.writeln('paint.style = ui.PaintingStyle.fill;');
-  for (final fill in ellipse.fills) {
+  for (final fill in ellipse.geometry.fills) {
     _writePaintAssignment(buffer, fill, context);
     buffer.writeln('canvas.drawPath(path, paint);');
   }
@@ -283,13 +292,12 @@ void _writePolygon(
   buffer.unindent();
   buffer.writeln('}');
   buffer.writeln('path.close();');
-  if (polygon.fills.isEmpty) {
-    return;
-  }
-  buffer.writeln('paint.style = ui.PaintingStyle.fill;');
-  for (final fill in polygon.fills) {
-    _writePaintAssignment(buffer, fill, context);
-    buffer.writeln('canvas.drawPath(path, paint);');
+  if (polygon.geometry.fills.isNotEmpty) {
+    buffer.writeln('paint.style = ui.PaintingStyle.fill;');
+    for (final fill in polygon.geometry.fills) {
+      _writePaintAssignment(buffer, fill, context);
+      buffer.writeln('canvas.drawPath(path, paint);');
+    }
   }
 }
 
@@ -352,6 +360,84 @@ void _writeRegion(
 
   buffer.unindent();
   buffer.writeln('}');
+}
+
+void _writeNetworkFillFromSegments(
+  DartBuffer buffer,
+  VectorNetwork network,
+  FlutterExportContext context,
+) {
+  if (network.segments.isEmpty || network.geometry.fills.isEmpty) {
+    return;
+  }
+
+  final loops = _networkLoops(network);
+  if (loops.isEmpty) {
+    return;
+  }
+
+  buffer.writeln('{');
+  buffer.indent();
+  buffer.writeln('final path = ui.Path();');
+  for (final loop in loops) {
+    _writeLoop(buffer, network, loop);
+  }
+  buffer.writeln('paint.style = ui.PaintingStyle.fill;');
+  for (final fill in network.geometry.fills) {
+    _writePaintAssignment(buffer, fill, context);
+    buffer.writeln('canvas.drawPath(path, paint);');
+  }
+  buffer.unindent();
+  buffer.writeln('}');
+}
+
+List<VectorRegionLoop> _networkLoops(VectorNetwork network) {
+  final loops = <VectorRegionLoop>[];
+  final segmentCount = network.segments.length;
+  if (segmentCount == 0) {
+    return loops;
+  }
+
+  final unusedSegments = <int>{for (var i = 0; i < segmentCount; i++) i};
+  final startIndexMap = <int, List<int>>{};
+  for (var i = 0; i < segmentCount; i++) {
+    final start = network.segments[i].start;
+    startIndexMap.putIfAbsent(start, () => <int>[]).add(i);
+  }
+
+  while (unusedSegments.isNotEmpty) {
+    final firstIndex = unusedSegments.first;
+    final firstSegment = network.segments[firstIndex];
+    final loopSegments = <int>[firstIndex];
+    unusedSegments.remove(firstIndex);
+    var startVertex = firstSegment.start;
+    var currentEnd = firstSegment.end;
+    var safetyCounter = 0;
+
+    while (currentEnd != startVertex && safetyCounter < segmentCount) {
+      final candidates = startIndexMap[currentEnd];
+      if (candidates == null) {
+        break;
+      }
+      final nextIndex = candidates.firstWhere(
+        unusedSegments.contains,
+        orElse: () => -1,
+      );
+      if (nextIndex == -1) {
+        break;
+      }
+      loopSegments.add(nextIndex);
+      unusedSegments.remove(nextIndex);
+      currentEnd = network.segments[nextIndex].end;
+      safetyCounter++;
+    }
+
+    if (currentEnd == startVertex) {
+      loops.add(VectorRegionLoop(segments: loopSegments));
+    }
+  }
+
+  return loops;
 }
 
 void _writeLoop(

@@ -252,7 +252,7 @@ const VectorPolygon$json = {
   '2': [
     {
       '1': 'offset',
-      '3': 3,
+      '3': 1,
       '5': 11,
       '6': '.definitions.Vector',
       '8': {},
@@ -260,31 +260,30 @@ const VectorPolygon$json = {
     },
     {
       '1': 'size',
-      '3': 4,
+      '3': 2,
       '5': 11,
       '6': '.definitions.Vector',
       '8': {},
       '10': 'size'
     },
-    {'1': 'pointCount', '3': 5, '5': 5, '8': {}, '10': 'pointCount'},
+    {'1': 'pointCount', '3': 3, '5': 5, '8': {}, '10': 'pointCount'},
     {
-      '1': 'fills',
-      '3': 6,
-      '4': 3,
+      '1': 'geometry',
+      '3': 4,
       '5': 11,
-      '6': '.definitions.Paint',
+      '6': '.definitions.GeometryProperty',
       '8': {},
-      '10': 'fills'
+      '10': 'geometry'
     },
   ],
 };
 
 /// Descriptor for `VectorPolygon`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List vectorPolygonDescriptor = $convert.base64Decode(
-    'Cg1WZWN0b3JQb2x5Z29uEisKBm9mZnNldBgDKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIGb2'
-    'Zmc2V0EicKBHNpemUYBCgLMhMuZGVmaW5pdGlvbnMuVmVjdG9yQgBSBHNpemUSHgoKcG9pbnRD'
-    'b3VudBgFKAVCAFIKcG9pbnRDb3VudBIqCgVmaWxscxgGIAMoCzISLmRlZmluaXRpb25zLlBhaW'
-    '50QgBSBWZpbGxz');
+    'Cg1WZWN0b3JQb2x5Z29uEisKBm9mZnNldBgBKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIGb2'
+    'Zmc2V0EicKBHNpemUYAigLMhMuZGVmaW5pdGlvbnMuVmVjdG9yQgBSBHNpemUSHgoKcG9pbnRD'
+    'b3VudBgDKAVCAFIKcG9pbnRDb3VudBI5CghnZW9tZXRyeRgEKAsyHS5kZWZpbml0aW9ucy5HZW'
+    '9tZXRyeVByb3BlcnR5QgBSCGdlb21ldHJ5');
 
 @$core.Deprecated('Use vectorRectangleDescriptor instead')
 const VectorRectangle$json = {
@@ -292,7 +291,7 @@ const VectorRectangle$json = {
   '2': [
     {
       '1': 'offset',
-      '3': 3,
+      '3': 1,
       '5': 11,
       '6': '.definitions.Vector',
       '8': {},
@@ -300,29 +299,28 @@ const VectorRectangle$json = {
     },
     {
       '1': 'size',
-      '3': 4,
+      '3': 2,
       '5': 11,
       '6': '.definitions.Vector',
       '8': {},
       '10': 'size'
     },
     {
-      '1': 'fills',
-      '3': 5,
-      '4': 3,
+      '1': 'geometry',
+      '3': 3,
       '5': 11,
-      '6': '.definitions.Paint',
+      '6': '.definitions.GeometryProperty',
       '8': {},
-      '10': 'fills'
+      '10': 'geometry'
     },
   ],
 };
 
 /// Descriptor for `VectorRectangle`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List vectorRectangleDescriptor = $convert.base64Decode(
-    'Cg9WZWN0b3JSZWN0YW5nbGUSKwoGb2Zmc2V0GAMoCzITLmRlZmluaXRpb25zLlZlY3RvckIAUg'
-    'ZvZmZzZXQSJwoEc2l6ZRgEKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIEc2l6ZRIqCgVmaWxs'
-    'cxgFIAMoCzISLmRlZmluaXRpb25zLlBhaW50QgBSBWZpbGxz');
+    'Cg9WZWN0b3JSZWN0YW5nbGUSKwoGb2Zmc2V0GAEoCzITLmRlZmluaXRpb25zLlZlY3RvckIAUg'
+    'ZvZmZzZXQSJwoEc2l6ZRgCKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIEc2l6ZRI5CghnZW9t'
+    'ZXRyeRgDKAsyHS5kZWZpbml0aW9ucy5HZW9tZXRyeVByb3BlcnR5QgBSCGdlb21ldHJ5');
 
 @$core.Deprecated('Use arcDataDescriptor instead')
 const ArcData$json = {
@@ -369,13 +367,12 @@ const VectorEllipse$json = {
       '10': 'arcData'
     },
     {
-      '1': 'fills',
+      '1': 'geometry',
       '3': 6,
-      '4': 3,
       '5': 11,
-      '6': '.definitions.Paint',
+      '6': '.definitions.GeometryProperty',
       '8': {},
-      '10': 'fills'
+      '10': 'geometry'
     },
   ],
 };
@@ -384,8 +381,8 @@ const VectorEllipse$json = {
 final $typed_data.Uint8List vectorEllipseDescriptor = $convert.base64Decode(
     'Cg1WZWN0b3JFbGxpcHNlEisKBm9mZnNldBgDKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIGb2'
     'Zmc2V0EicKBHNpemUYBCgLMhMuZGVmaW5pdGlvbnMuVmVjdG9yQgBSBHNpemUSLgoHYXJjRGF0'
-    'YRgFKAsyFC5kZWZpbml0aW9ucy5BcmNEYXRhQgBSB2FyY0RhdGESKgoFZmlsbHMYBiADKAsyEi'
-    '5kZWZpbml0aW9ucy5QYWludEIAUgVmaWxscw==');
+    'YRgFKAsyFC5kZWZpbml0aW9ucy5BcmNEYXRhQgBSB2FyY0RhdGESOQoIZ2VvbWV0cnkYBigLMh'
+    '0uZGVmaW5pdGlvbnMuR2VvbWV0cnlQcm9wZXJ0eUIAUghnZW9tZXRyeQ==');
 
 @$core.Deprecated('Use vectorNetworkDescriptor instead')
 const VectorNetwork$json = {
@@ -393,15 +390,23 @@ const VectorNetwork$json = {
   '2': [
     {
       '1': 'offset',
-      '3': 3,
+      '3': 1,
       '5': 11,
       '6': '.definitions.Vector',
       '8': {},
       '10': 'offset'
     },
     {
+      '1': 'geometry',
+      '3': 2,
+      '5': 11,
+      '6': '.definitions.GeometryProperty',
+      '8': {},
+      '10': 'geometry'
+    },
+    {
       '1': 'vertices',
-      '3': 4,
+      '3': 3,
       '4': 3,
       '5': 11,
       '6': '.definitions.VectorVertex',
@@ -410,7 +415,7 @@ const VectorNetwork$json = {
     },
     {
       '1': 'segments',
-      '3': 5,
+      '3': 4,
       '4': 3,
       '5': 11,
       '6': '.definitions.VectorSegment',
@@ -419,7 +424,7 @@ const VectorNetwork$json = {
     },
     {
       '1': 'regions',
-      '3': 6,
+      '3': 5,
       '4': 3,
       '5': 11,
       '6': '.definitions.VectorRegion',
@@ -431,11 +436,12 @@ const VectorNetwork$json = {
 
 /// Descriptor for `VectorNetwork`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List vectorNetworkDescriptor = $convert.base64Decode(
-    'Cg1WZWN0b3JOZXR3b3JrEisKBm9mZnNldBgDKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIGb2'
-    'Zmc2V0EjcKCHZlcnRpY2VzGAQgAygLMhkuZGVmaW5pdGlvbnMuVmVjdG9yVmVydGV4QgBSCHZl'
-    'cnRpY2VzEjgKCHNlZ21lbnRzGAUgAygLMhouZGVmaW5pdGlvbnMuVmVjdG9yU2VnbWVudEIAUg'
-    'hzZWdtZW50cxI1CgdyZWdpb25zGAYgAygLMhkuZGVmaW5pdGlvbnMuVmVjdG9yUmVnaW9uQgBS'
-    'B3JlZ2lvbnM=');
+    'Cg1WZWN0b3JOZXR3b3JrEisKBm9mZnNldBgBKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIGb2'
+    'Zmc2V0EjkKCGdlb21ldHJ5GAIoCzIdLmRlZmluaXRpb25zLkdlb21ldHJ5UHJvcGVydHlCAFII'
+    'Z2VvbWV0cnkSNwoIdmVydGljZXMYAyADKAsyGS5kZWZpbml0aW9ucy5WZWN0b3JWZXJ0ZXhCAF'
+    'IIdmVydGljZXMSOAoIc2VnbWVudHMYBCADKAsyGi5kZWZpbml0aW9ucy5WZWN0b3JTZWdtZW50'
+    'QgBSCHNlZ21lbnRzEjUKB3JlZ2lvbnMYBSADKAsyGS5kZWZpbml0aW9ucy5WZWN0b3JSZWdpb2'
+    '5CAFIHcmVnaW9ucw==');
 
 @$core.Deprecated('Use vectorGroupDescriptor instead')
 const VectorGroup$json = {
@@ -484,18 +490,26 @@ const VectorFrame$json = {
       '10': 'size'
     },
     {
-      '1': 'children',
+      '1': 'geometry',
       '3': 5,
+      '5': 11,
+      '6': '.definitions.GeometryProperty',
+      '8': {},
+      '10': 'geometry'
+    },
+    {
+      '1': 'children',
+      '3': 6,
       '4': 3,
       '5': 11,
       '6': '.definitions.VectorNode',
       '8': {},
       '10': 'children'
     },
-    {'1': 'isClipping', '3': 6, '5': 8, '8': {}, '10': 'isClipping'},
+    {'1': 'isClipping', '3': 7, '5': 8, '8': {}, '10': 'isClipping'},
     {
       '1': 'cornerRadius',
-      '3': 7,
+      '3': 8,
       '5': 11,
       '6': '.definitions.CornerRadius',
       '8': {},
@@ -508,10 +522,68 @@ const VectorFrame$json = {
 final $typed_data.Uint8List vectorFrameDescriptor = $convert.base64Decode(
     'CgtWZWN0b3JGcmFtZRISCgRuYW1lGAEoCUIAUgRuYW1lEhgKB29wYWNpdHkYAigBQgBSB29wYW'
     'NpdHkSKwoGb2Zmc2V0GAMoCzITLmRlZmluaXRpb25zLlZlY3RvckIAUgZvZmZzZXQSJwoEc2l6'
-    'ZRgEKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIEc2l6ZRI1CghjaGlsZHJlbhgFIAMoCzIXLm'
-    'RlZmluaXRpb25zLlZlY3Rvck5vZGVCAFIIY2hpbGRyZW4SHgoKaXNDbGlwcGluZxgGKAhCAFIK'
-    'aXNDbGlwcGluZxI9Cgxjb3JuZXJSYWRpdXMYBygLMhkuZGVmaW5pdGlvbnMuQ29ybmVyUmFkaX'
-    'VzQgBSDGNvcm5lclJhZGl1cw==');
+    'ZRgEKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIEc2l6ZRI5CghnZW9tZXRyeRgFKAsyHS5kZW'
+    'Zpbml0aW9ucy5HZW9tZXRyeVByb3BlcnR5QgBSCGdlb21ldHJ5EjUKCGNoaWxkcmVuGAYgAygL'
+    'MhcuZGVmaW5pdGlvbnMuVmVjdG9yTm9kZUIAUghjaGlsZHJlbhIeCgppc0NsaXBwaW5nGAcoCE'
+    'IAUgppc0NsaXBwaW5nEj0KDGNvcm5lclJhZGl1cxgIKAsyGS5kZWZpbml0aW9ucy5Db3JuZXJS'
+    'YWRpdXNCAFIMY29ybmVyUmFkaXVz');
+
+@$core.Deprecated('Use geometryPropertyDescriptor instead')
+const GeometryProperty$json = {
+  '1': 'GeometryProperty',
+  '2': [
+    {
+      '1': 'fills',
+      '3': 1,
+      '4': 3,
+      '5': 11,
+      '6': '.definitions.Paint',
+      '8': {},
+      '10': 'fills'
+    },
+    {
+      '1': 'strokes',
+      '3': 2,
+      '4': 3,
+      '5': 11,
+      '6': '.definitions.Paint',
+      '8': {},
+      '10': 'strokes'
+    },
+    {'1': 'strokeWeight', '3': 3, '5': 1, '8': {}, '10': 'strokeWeight'},
+    {'1': 'strokeTopWeight', '3': 4, '5': 1, '8': {}, '10': 'strokeTopWeight'},
+    {
+      '1': 'strokeRightWeight',
+      '3': 5,
+      '5': 1,
+      '8': {},
+      '10': 'strokeRightWeight'
+    },
+    {
+      '1': 'strokeBottomWeight',
+      '3': 6,
+      '5': 1,
+      '8': {},
+      '10': 'strokeBottomWeight'
+    },
+    {
+      '1': 'strokeLeftWeight',
+      '3': 7,
+      '5': 1,
+      '8': {},
+      '10': 'strokeLeftWeight'
+    },
+  ],
+};
+
+/// Descriptor for `GeometryProperty`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List geometryPropertyDescriptor = $convert.base64Decode(
+    'ChBHZW9tZXRyeVByb3BlcnR5EioKBWZpbGxzGAEgAygLMhIuZGVmaW5pdGlvbnMuUGFpbnRCAF'
+    'IFZmlsbHMSLgoHc3Ryb2tlcxgCIAMoCzISLmRlZmluaXRpb25zLlBhaW50QgBSB3N0cm9rZXMS'
+    'IgoMc3Ryb2tlV2VpZ2h0GAMoAUIAUgxzdHJva2VXZWlnaHQSKAoPc3Ryb2tlVG9wV2VpZ2h0GA'
+    'QoAUIAUg9zdHJva2VUb3BXZWlnaHQSLAoRc3Ryb2tlUmlnaHRXZWlnaHQYBSgBQgBSEXN0cm9r'
+    'ZVJpZ2h0V2VpZ2h0Ei4KEnN0cm9rZUJvdHRvbVdlaWdodBgGKAFCAFISc3Ryb2tlQm90dG9tV2'
+    'VpZ2h0EioKEHN0cm9rZUxlZnRXZWlnaHQYBygBQgBSEHN0cm9rZUxlZnRXZWlnaHQ=');
 
 @$core.Deprecated('Use cornerRadiusDescriptor instead')
 const CornerRadius$json = {
