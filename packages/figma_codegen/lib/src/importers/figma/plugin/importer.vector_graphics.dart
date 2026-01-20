@@ -30,11 +30,19 @@ class FigmaVectorNetworksImporter {
     for (final node in targets) {
       final root = await _vectorNode(node, context);
       if (root != null) {
+        print('Imported vector graphics for node: ${node.name}');
+        final offset = Vector(x: node.x.toDouble(), y: node.y.toDouble());
+        print('Node offset: ($offset)');
+        final size = Vector(
+          x: node.width.toDouble(),
+          y: node.height.toDouble(),
+        );
+        print('Node size: ($size)');
         result.add(
           VectorGraphics(
             name: node.name,
-            offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
-            size: Vector(x: node.width.toDouble(), y: node.height.toDouble()),
+            offset: offset,
+            size: size,
             root: root,
           ),
         );
@@ -58,7 +66,9 @@ double nodeOpacity(figma_api.SceneNode node) {
   if (!hasOpacity) {
     return 1.0;
   }
-  return node.getProperty('opacity'.jsify()!).dartify() as double;
+  final opacity = node.getProperty('opacity'.jsify()!);
+  print('Node opacity: $opacity');
+  return opacity.dartify() as double;
 }
 
 Future<List<VectorNode>> childrenNodes(
@@ -88,19 +98,31 @@ Future<VectorNode?> _vectorNode(
 ) async {
   switch (nodeType(node)) {
     case 'VECTOR':
+      print('Parsing vector node: ${node.name}');
       final network = await _vectorNetworkFromVectorNode(
         node as figma_api.VectorNode,
         node.name,
         context,
       );
-      return VectorNode(network: network, transform: _nodeTransform(node));
-    case 'ELLIPSE':
       return VectorNode(
-        ellipse: _vectorEllipseFromNode(node as figma_api.EllipseNode, context),
+        name: node.name,
+        opacity: nodeOpacity(node),
         transform: _nodeTransform(node),
+        network: network,
+      );
+    case 'ELLIPSE':
+      print('Parsing ellipse node: ${node.name}');
+      return VectorNode(
+        name: node.name,
+        opacity: nodeOpacity(node),
+        transform: _nodeTransform(node),
+        ellipse: _vectorEllipseFromNode(node as figma_api.EllipseNode, context),
       );
     case 'RECTANGLE':
+      print('Parsing rectangle node: ${node.name}');
       return VectorNode(
+        name: node.name,
+        opacity: nodeOpacity(node),
         rectangle: _vectorRectangleFromNode(
           node as figma_api.RectangleNode,
           context,
@@ -108,15 +130,22 @@ Future<VectorNode?> _vectorNode(
         transform: _nodeTransform(node),
       );
     case 'POLYGON':
+      print('Parsing polygon node: ${node.name}');
       return VectorNode(
-        polygon: _vectorPolygonFromNode(node as figma_api.PolygonNode, context),
+        name: node.name,
+        opacity: nodeOpacity(node),
         transform: _nodeTransform(node),
+        polygon: _vectorPolygonFromNode(node as figma_api.PolygonNode, context),
       );
 
     case 'FRAME':
+      print('Parsing frame node: ${node.name}');
       final frameNode = node as figma_api.FrameNode;
       final children = await childrenNodes(node, context);
       return VectorNode(
+        name: node.name,
+        opacity: nodeOpacity(node),
+        transform: _nodeTransform(node),
         frame: VectorFrame(
           offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
           size: Vector(x: node.width.toDouble(), y: node.height.toDouble()),
@@ -126,18 +155,20 @@ Future<VectorNode?> _vectorNode(
           cornerRadius: _cornerRadiusFromFrame(frameNode),
           children: children,
         ),
-        transform: _nodeTransform(node),
       );
     case 'GROUP':
     default:
+      print('Parsing group node: ${node.name}');
       final children = await childrenNodes(node, context);
       return VectorNode(
+        name: node.name,
+        opacity: nodeOpacity(node),
+        transform: _nodeTransform(node),
         group: VectorGroup(
           name: node.name,
           opacity: nodeOpacity(node),
           children: children,
         ),
-        transform: _nodeTransform(node),
       );
   }
 }
@@ -147,6 +178,7 @@ Future<VectorNetwork?> _vectorNetworkFromVectorNode(
   String name,
   ImportContext<FigmaImportOptions> context,
 ) async {
+  print('Parsing vector network for node: ${node.name}');
   final vectorNetwork = node.vectorNetwork;
   final vertices = vectorNetwork.vertices.toDart
       .map((vertex) => _vectorVertexFromFigma(vertex, node))
@@ -166,10 +198,15 @@ Future<VectorNetwork?> _vectorNetworkFromVectorNode(
     }
   }
 
+  print(
+    'Parsed vector network with ${vertices.length} vertices, '
+    '${segments.length} segments, and ${regions.length} regions.',
+  );
+  final x = node.x.toDouble();
+  final y = node.y.toDouble();
+  print('Vector network offset: ($x, $y)');
   return VectorNetwork(
-    name: name,
-    offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
-    opacity: nodeOpacity(node),
+    offset: Vector(x: x, y: y),
     vertices: vertices,
     segments: segments,
     regions: regions,
@@ -216,9 +253,8 @@ VectorRectangle _vectorRectangleFromNode(
   figma_api.RectangleNode node,
   ImportContext<FigmaImportOptions> context,
 ) {
+  print('Parsing rectangle node: ${node.name}');
   return VectorRectangle(
-    name: node.name,
-    opacity: nodeOpacity(node),
     offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
     size: Vector(x: node.width.toDouble(), y: node.height.toDouble()),
     fills: _convertNodeFills(node, context),
@@ -230,11 +266,20 @@ VectorEllipse _vectorEllipseFromNode(
   ImportContext<FigmaImportOptions> context,
 ) {
   return VectorEllipse(
-    name: node.name,
-    opacity: nodeOpacity(node),
     offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
     size: Vector(x: node.width.toDouble(), y: node.height.toDouble()),
+    arcData: _arcDataFromEllipse(node),
     fills: _convertNodeFills(node, context),
+  );
+}
+
+ArcData _arcDataFromEllipse(figma_api.EllipseNode node) {
+  print('Parsing arc data for ellipse: ${node.name}');
+  final arcData = node.arcData;
+  return ArcData(
+    startingAngle: arcData.startingAngle.toDouble(),
+    endingAngle: arcData.endingAngle.toDouble(),
+    innerRadius: arcData.innerRadius.toDouble(),
   );
 }
 
@@ -242,9 +287,8 @@ VectorPolygon _vectorPolygonFromNode(
   figma_api.PolygonNode node,
   ImportContext<FigmaImportOptions> context,
 ) {
+  print('Parsing polygon node: ${node.name}');
   return VectorPolygon(
-    name: node.name,
-    opacity: nodeOpacity(node),
     offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
     size: Vector(x: node.width.toDouble(), y: node.height.toDouble()),
     pointCount: node.pointCount,
@@ -253,11 +297,15 @@ VectorPolygon _vectorPolygonFromNode(
 }
 
 CornerRadius _cornerRadiusFromFrame(figma_api.FrameNode node) {
+  print('Parsing corner radius for frame: ${node.name}');
   final cornerRadius = node.cornerRadius.toDouble();
   final topLeft = node.topLeftRadius.toDouble();
   final topRight = node.topRightRadius.toDouble();
   final bottomLeft = node.bottomLeftRadius.toDouble();
   final bottomRight = node.bottomRightRadius.toDouble();
+  print(
+    'Corner radii: $cornerRadius, $topLeft, $topRight, $bottomLeft, $bottomRight',
+  );
 
   if (topLeft == 0 && topRight == 0 && bottomLeft == 0 && bottomRight == 0) {
     return CornerRadius(
@@ -277,22 +325,26 @@ CornerRadius _cornerRadiusFromFrame(figma_api.FrameNode node) {
 }
 
 Transform _nodeTransform(figma_api.SceneNode node) {
+  print('Parsing transform for node: ${node.name} : ${node.relativeTransform}');
   final transform = node.relativeTransform.toDart;
   if (transform.length < 2) {
+    print('Invalid transform length: ${transform.length}');
     return Transform();
   }
-  final row0 = transform[0].dartify();
-  final row1 = transform[1].dartify();
-  if (row0 is! List || row1 is! List || row0.length < 3 || row1.length < 3) {
+  print('transform: $transform');
+  final row0 = transform[0];
+  final row1 = transform[1];
+  if (row0.length < 3 || row1.length < 3) {
     return Transform();
   }
+  print('row0: ${row0[0]}');
   return Transform(
-    m00: (row0[0] as num).toDouble(),
-    m01: (row0[1] as num).toDouble(),
-    m10: (row1[0] as num).toDouble(),
-    m11: (row1[1] as num).toDouble(),
-    m02: (row0[2] as num).toDouble(),
-    m12: (row1[2] as num).toDouble(),
+    m00: (row0[0].dartify() as num).toDouble(),
+    m01: (row0[1].dartify() as num).toDouble(),
+    m10: (row1[0].dartify() as num).toDouble(),
+    m11: (row1[1].dartify() as num).toDouble(),
+    m02: (row0[2].dartify() as num).toDouble(),
+    m12: (row1[2].dartify() as num).toDouble(),
   );
 }
 
@@ -352,6 +404,7 @@ Paint? _paintFromFigma(
     return null;
   }
 
+  print('Parsing paint of type: ${paint.type}');
   final opacity = (paint.opacity ?? 1.0).toDouble();
   final blendMode = _parseBlendMode(paint.blendMode);
   final type = paint.type;
@@ -630,10 +683,13 @@ StrokeJoin? _parseStrokeJoin(String value) {
 }
 
 List<double>? _parseCornerRadii(figma_api.VectorNode node) {
+  print('Parsing corner radii for vector node: ${node.name}');
   final value = node.getProperty('cornerRadii'.jsify()!);
   if (value is! JSArray) {
     return null;
   }
+
+  print('Corner radii value: $value');
 
   return value.toDart
       .map((entry) => (entry as JSNumber?)?.toDartDouble ?? 0.0)

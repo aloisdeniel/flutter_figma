@@ -81,82 +81,55 @@ void _writeNode(
   VectorNode node,
   FlutterExportContext context,
 ) {
-  void saveOpacityLayerIfNeeded(double opacity) {
-    if (opacity < 1.0) {
-      buffer.writeln(
-        'canvas.saveLayer(bounds, ui.Paint()..color = ui.Color.fromRGBO(255, 255, 255, ${opacity.toStringAsFixed(6)}));',
-      );
-      buffer.writeln();
-    }
-  }
-
-  void restoreOpacityLayerIfNeeded(double opacity) {
-    if (opacity < 1.0) {
-      buffer.writeln('canvas.restore();');
-      buffer.writeln();
-    }
-  }
+  // Transform
+  buffer.writeln('// ${node.whichType()} "${node.name}"');
+  buffer.writeln('canvas.save();');
+  _writeNodeTransform(buffer, node);
+  _writeNodeOpacity(buffer, node);
 
   switch (node.whichType()) {
     case VectorNode_Type.network:
-      buffer.writeln('canvas.save();');
-      _writeNodeTransform(buffer, node);
-      buffer.writeln(
-        'canvas.translate(${node.network.offset.x}, ${node.network.offset.y});',
-      );
-      saveOpacityLayerIfNeeded(node.network.opacity);
       for (final region in node.network.regions) {
         _writeRegion(buffer, node.network, region, context);
       }
-      restoreOpacityLayerIfNeeded(node.network.opacity);
-      buffer.writeln('canvas.restore();');
     case VectorNode_Type.group:
-      // TODO only if opacity != 1.0
-      buffer.writeln('canvas.save();');
-      _writeNodeTransform(buffer, node);
-      saveOpacityLayerIfNeeded(node.group.opacity);
       for (final child in node.group.children) {
         _writeNode(buffer, child, context);
       }
-      restoreOpacityLayerIfNeeded(node.group.opacity);
-      buffer.writeln('canvas.restore();');
     case VectorNode_Type.frame:
-      buffer.writeln('canvas.save();');
-      _writeNodeTransform(buffer, node);
-      buffer.writeln(
-        'canvas.translate(${node.frame.offset.x}, ${node.frame.offset.y});',
-      );
       if (node.frame.isClipping) {
         _writeFrameClip(buffer, node.frame);
       }
-      saveOpacityLayerIfNeeded(node.frame.opacity);
       for (final child in node.frame.children) {
         _writeNode(buffer, child, context);
       }
-      restoreOpacityLayerIfNeeded(node.frame.opacity);
-      buffer.writeln('canvas.restore();');
     case VectorNode_Type.rectangle:
-      buffer.writeln('canvas.save();');
-      _writeNodeTransform(buffer, node);
-      saveOpacityLayerIfNeeded(node.rectangle.opacity);
       _writeRectangle(buffer, node.rectangle, context);
-      restoreOpacityLayerIfNeeded(node.rectangle.opacity);
-      buffer.writeln('canvas.restore();');
     case VectorNode_Type.ellipse:
-      buffer.writeln('canvas.save();');
-      _writeNodeTransform(buffer, node);
-      saveOpacityLayerIfNeeded(node.ellipse.opacity);
       _writeEllipse(buffer, node.ellipse, context);
-      restoreOpacityLayerIfNeeded(node.ellipse.opacity);
-      buffer.writeln('canvas.restore();');
     case VectorNode_Type.polygon:
-      buffer.writeln('canvas.save();');
-      _writeNodeTransform(buffer, node);
-      saveOpacityLayerIfNeeded(node.polygon.opacity);
       _writePolygon(buffer, node.polygon, context);
-      restoreOpacityLayerIfNeeded(node.polygon.opacity);
-      buffer.writeln('canvas.restore();');
     case VectorNode_Type.notSet:
+      buffer.writeln('// Unsupported');
+  }
+
+  if (node.hasOpacity() && node.opacity < 1.0) {
+    buffer.writeln('canvas.restore();');
+    buffer.writeln();
+  }
+  buffer.writeln('canvas.restore();');
+}
+
+void _writeNodeOpacity(DartBuffer buffer, VectorNode node) {
+  if (!node.hasOpacity()) {
+    return;
+  }
+  final opacity = node.opacity;
+  if (opacity < 1.0) {
+    buffer.writeln(
+      'canvas.saveLayer(bounds, ui.Paint()..color = ui.Color.fromRGBO(255, 255, 255, ${opacity.toStringAsFixed(6)}));',
+    );
+    buffer.writeln();
   }
 }
 
@@ -164,13 +137,19 @@ void _writeNodeTransform(DartBuffer buffer, VectorNode node) {
   if (!node.hasTransform()) {
     return;
   }
+  // We ignore group transforms
+  if (node.whichType() == VectorNode_Type.group) {
+    return;
+  }
   final transform = node.transform;
+  // TODO generate  binary data
   buffer.writeln(
-    'canvas.transform(<double>['
+    'canvas.transform(Float64List.fromList(const <double>['
     '${_formatDouble(transform.m00)}, ${_formatDouble(transform.m10)}, 0, 0, '
     '${_formatDouble(transform.m01)}, ${_formatDouble(transform.m11)}, 0, 0, '
     '0, 0, 1, 0, '
-    '${_formatDouble(transform.m02)}, ${_formatDouble(transform.m12)}, 0, 1]);',
+    '${_formatDouble(transform.m02)}, ${_formatDouble(transform.m12)}, 0, 1'
+    ']));',
   );
 }
 
@@ -184,9 +163,6 @@ void _writeRectangle(
   if (width <= 0 || height <= 0 || rectangle.fills.isEmpty) {
     return;
   }
-  buffer.writeln(
-    'canvas.translate(${_formatDouble(rectangle.offset.x)}, ${_formatDouble(rectangle.offset.y)});',
-  );
   buffer.writeln(
     'final rect = fl.Rect.fromLTWH(0, 0, ${_formatDouble(width)}, ${_formatDouble(height)});',
   );
@@ -208,15 +184,66 @@ void _writeEllipse(
     return;
   }
   buffer.writeln(
-    'canvas.translate(${_formatDouble(ellipse.offset.x)}, ${_formatDouble(ellipse.offset.y)});',
-  );
-  buffer.writeln(
     'final rect = fl.Rect.fromLTWH(0, 0, ${_formatDouble(width)}, ${_formatDouble(height)});',
   );
+  const twoPi = 6.283185307179586;
+  final arcStart = ellipse.hasArcData() ? ellipse.arcData.startingAngle : 0.0;
+  final arcEnd = ellipse.hasArcData() ? ellipse.arcData.endingAngle : twoPi;
+  final innerRadius = ellipse.hasArcData() ? ellipse.arcData.innerRadius : 0.0;
+  final sweep = arcEnd - arcStart;
+  final isFullCircle = (sweep - twoPi).abs() < 0.0001;
+  final hasInnerRadius = innerRadius > 0.0;
+
+  if (isFullCircle && !hasInnerRadius) {
+    buffer.writeln('paint.style = ui.PaintingStyle.fill;');
+    for (final fill in ellipse.fills) {
+      _writePaintAssignment(buffer, fill, context);
+      buffer.writeln('canvas.drawOval(rect, paint);');
+    }
+    return;
+  }
+
+  if (!hasInnerRadius) {
+    buffer.writeln('paint.style = ui.PaintingStyle.fill;');
+    for (final fill in ellipse.fills) {
+      _writePaintAssignment(buffer, fill, context);
+      buffer.writeln(
+        'canvas.drawArc(rect, ${_formatDouble(arcStart)}, ${_formatDouble(sweep)}, true, paint);',
+      );
+    }
+    return;
+  }
+
+  buffer.writeln('final path = ui.Path();');
+  buffer.writeln(
+    'final center = fl.Offset(${_formatDouble(width)} / 2, ${_formatDouble(height)} / 2);',
+  );
+  buffer.writeln(
+    'final radius = fl.Size(${_formatDouble(width)} / 2, ${_formatDouble(height)} / 2);',
+  );
+  if (isFullCircle) {
+    buffer.writeln('path.fillType = ui.PathFillType.evenOdd;');
+    buffer.writeln('path.addOval(rect);');
+    buffer.writeln(
+      'final innerRect = fl.Rect.fromCenter(center: center, width: radius.width * ${_formatDouble(innerRadius)} * 2, height: radius.height * ${_formatDouble(innerRadius)} * 2);',
+    );
+    buffer.writeln('path.addOval(innerRect);');
+  } else {
+    buffer.writeln(
+      'path.addArc(rect, ${_formatDouble(arcStart)}, ${_formatDouble(sweep)});',
+    );
+    buffer.writeln(
+      'final innerRect = fl.Rect.fromCenter(center: center, width: radius.width * ${_formatDouble(innerRadius)} * 2, height: radius.height * ${_formatDouble(innerRadius)} * 2);',
+    );
+    buffer.writeln(
+      'path.arcTo(innerRect, ${_formatDouble(arcStart + sweep)}, ${_formatDouble(-sweep)}, false);',
+    );
+    buffer.writeln('path.close();');
+  }
   buffer.writeln('paint.style = ui.PaintingStyle.fill;');
   for (final fill in ellipse.fills) {
     _writePaintAssignment(buffer, fill, context);
-    buffer.writeln('canvas.drawOval(rect, paint);');
+    buffer.writeln('canvas.drawPath(path, paint);');
   }
 }
 
@@ -230,9 +257,6 @@ void _writePolygon(
   if (width <= 0 || height <= 0 || polygon.pointCount < 3) {
     return;
   }
-  buffer.writeln(
-    'canvas.translate(${_formatDouble(polygon.offset.x)}, ${_formatDouble(polygon.offset.y)});',
-  );
   buffer.writeln('final path = ui.Path();');
   buffer.writeln(
     'final center = fl.Offset(${_formatDouble(width)} / 2, ${_formatDouble(height)} / 2);',

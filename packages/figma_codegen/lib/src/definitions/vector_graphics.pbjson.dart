@@ -164,9 +164,19 @@ final $typed_data.Uint8List vectorGraphicsDescriptor = $convert.base64Decode(
 const VectorNode$json = {
   '1': 'VectorNode',
   '2': [
+    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
+    {'1': 'opacity', '3': 2, '5': 1, '8': {}, '10': 'opacity'},
+    {
+      '1': 'transform',
+      '3': 3,
+      '5': 11,
+      '6': '.definitions.Transform',
+      '8': {},
+      '10': 'transform'
+    },
     {
       '1': 'network',
-      '3': 1,
+      '3': 4,
       '5': 11,
       '6': '.definitions.VectorNetwork',
       '8': {},
@@ -175,7 +185,7 @@ const VectorNode$json = {
     },
     {
       '1': 'group',
-      '3': 2,
+      '3': 5,
       '5': 11,
       '6': '.definitions.VectorGroup',
       '8': {},
@@ -184,7 +194,7 @@ const VectorNode$json = {
     },
     {
       '1': 'frame',
-      '3': 3,
+      '3': 6,
       '5': 11,
       '6': '.definitions.VectorFrame',
       '8': {},
@@ -193,7 +203,7 @@ const VectorNode$json = {
     },
     {
       '1': 'rectangle',
-      '3': 4,
+      '3': 7,
       '5': 11,
       '6': '.definitions.VectorRectangle',
       '8': {},
@@ -202,7 +212,7 @@ const VectorNode$json = {
     },
     {
       '1': 'ellipse',
-      '3': 5,
+      '3': 8,
       '5': 11,
       '6': '.definitions.VectorEllipse',
       '8': {},
@@ -211,20 +221,12 @@ const VectorNode$json = {
     },
     {
       '1': 'polygon',
-      '3': 6,
+      '3': 9,
       '5': 11,
       '6': '.definitions.VectorPolygon',
       '8': {},
       '9': 0,
       '10': 'polygon'
-    },
-    {
-      '1': 'transform',
-      '3': 7,
-      '5': 11,
-      '6': '.definitions.Transform',
-      '8': {},
-      '10': 'transform'
     },
   ],
   '8': [
@@ -234,21 +236,20 @@ const VectorNode$json = {
 
 /// Descriptor for `VectorNode`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List vectorNodeDescriptor = $convert.base64Decode(
-    'CgpWZWN0b3JOb2RlEjYKB25ldHdvcmsYASgLMhouZGVmaW5pdGlvbnMuVmVjdG9yTmV0d29ya0'
-    'IASABSB25ldHdvcmsSMAoFZ3JvdXAYAigLMhguZGVmaW5pdGlvbnMuVmVjdG9yR3JvdXBCAEgA'
-    'UgVncm91cBIwCgVmcmFtZRgDKAsyGC5kZWZpbml0aW9ucy5WZWN0b3JGcmFtZUIASABSBWZyYW'
-    '1lEjwKCXJlY3RhbmdsZRgEKAsyHC5kZWZpbml0aW9ucy5WZWN0b3JSZWN0YW5nbGVCAEgAUgly'
-    'ZWN0YW5nbGUSNgoHZWxsaXBzZRgFKAsyGi5kZWZpbml0aW9ucy5WZWN0b3JFbGxpcHNlQgBIAF'
-    'IHZWxsaXBzZRI2Cgdwb2x5Z29uGAYoCzIaLmRlZmluaXRpb25zLlZlY3RvclBvbHlnb25CAEgA'
-    'Ugdwb2x5Z29uEjQKCXRyYW5zZm9ybRgHKAsyFi5kZWZpbml0aW9ucy5UcmFuc2Zvcm1CAFIJdH'
-    'JhbnNmb3JtQgYKBHR5cGU=');
+    'CgpWZWN0b3JOb2RlEhIKBG5hbWUYASgJQgBSBG5hbWUSGAoHb3BhY2l0eRgCKAFCAFIHb3BhY2'
+    'l0eRI0Cgl0cmFuc2Zvcm0YAygLMhYuZGVmaW5pdGlvbnMuVHJhbnNmb3JtQgBSCXRyYW5zZm9y'
+    'bRI2CgduZXR3b3JrGAQoCzIaLmRlZmluaXRpb25zLlZlY3Rvck5ldHdvcmtCAEgAUgduZXR3b3'
+    'JrEjAKBWdyb3VwGAUoCzIYLmRlZmluaXRpb25zLlZlY3Rvckdyb3VwQgBIAFIFZ3JvdXASMAoF'
+    'ZnJhbWUYBigLMhguZGVmaW5pdGlvbnMuVmVjdG9yRnJhbWVCAEgAUgVmcmFtZRI8CglyZWN0YW'
+    '5nbGUYBygLMhwuZGVmaW5pdGlvbnMuVmVjdG9yUmVjdGFuZ2xlQgBIAFIJcmVjdGFuZ2xlEjYK'
+    'B2VsbGlwc2UYCCgLMhouZGVmaW5pdGlvbnMuVmVjdG9yRWxsaXBzZUIASABSB2VsbGlwc2USNg'
+    'oHcG9seWdvbhgJKAsyGi5kZWZpbml0aW9ucy5WZWN0b3JQb2x5Z29uQgBIAFIHcG9seWdvbkIG'
+    'CgR0eXBl');
 
 @$core.Deprecated('Use vectorPolygonDescriptor instead')
 const VectorPolygon$json = {
   '1': 'VectorPolygon',
   '2': [
-    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
-    {'1': 'opacity', '3': 2, '5': 1, '8': {}, '10': 'opacity'},
     {
       '1': 'offset',
       '3': 3,
@@ -280,18 +281,15 @@ const VectorPolygon$json = {
 
 /// Descriptor for `VectorPolygon`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List vectorPolygonDescriptor = $convert.base64Decode(
-    'Cg1WZWN0b3JQb2x5Z29uEhIKBG5hbWUYASgJQgBSBG5hbWUSGAoHb3BhY2l0eRgCKAFCAFIHb3'
-    'BhY2l0eRIrCgZvZmZzZXQYAygLMhMuZGVmaW5pdGlvbnMuVmVjdG9yQgBSBm9mZnNldBInCgRz'
-    'aXplGAQoCzITLmRlZmluaXRpb25zLlZlY3RvckIAUgRzaXplEh4KCnBvaW50Q291bnQYBSgFQg'
-    'BSCnBvaW50Q291bnQSKgoFZmlsbHMYBiADKAsyEi5kZWZpbml0aW9ucy5QYWludEIAUgVmaWxs'
-    'cw==');
+    'Cg1WZWN0b3JQb2x5Z29uEisKBm9mZnNldBgDKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIGb2'
+    'Zmc2V0EicKBHNpemUYBCgLMhMuZGVmaW5pdGlvbnMuVmVjdG9yQgBSBHNpemUSHgoKcG9pbnRD'
+    'b3VudBgFKAVCAFIKcG9pbnRDb3VudBIqCgVmaWxscxgGIAMoCzISLmRlZmluaXRpb25zLlBhaW'
+    '50QgBSBWZpbGxz');
 
 @$core.Deprecated('Use vectorRectangleDescriptor instead')
 const VectorRectangle$json = {
   '1': 'VectorRectangle',
   '2': [
-    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
-    {'1': 'opacity', '3': 2, '5': 1, '8': {}, '10': 'opacity'},
     {
       '1': 'offset',
       '3': 3,
@@ -322,10 +320,9 @@ const VectorRectangle$json = {
 
 /// Descriptor for `VectorRectangle`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List vectorRectangleDescriptor = $convert.base64Decode(
-    'Cg9WZWN0b3JSZWN0YW5nbGUSEgoEbmFtZRgBKAlCAFIEbmFtZRIYCgdvcGFjaXR5GAIoAUIAUg'
-    'dvcGFjaXR5EisKBm9mZnNldBgDKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIGb2Zmc2V0EicK'
-    'BHNpemUYBCgLMhMuZGVmaW5pdGlvbnMuVmVjdG9yQgBSBHNpemUSKgoFZmlsbHMYBSADKAsyEi'
-    '5kZWZpbml0aW9ucy5QYWludEIAUgVmaWxscw==');
+    'Cg9WZWN0b3JSZWN0YW5nbGUSKwoGb2Zmc2V0GAMoCzITLmRlZmluaXRpb25zLlZlY3RvckIAUg'
+    'ZvZmZzZXQSJwoEc2l6ZRgEKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIEc2l6ZRIqCgVmaWxs'
+    'cxgFIAMoCzISLmRlZmluaXRpb25zLlBhaW50QgBSBWZpbGxz');
 
 @$core.Deprecated('Use arcDataDescriptor instead')
 const ArcData$json = {
@@ -347,11 +344,25 @@ final $typed_data.Uint8List arcDataDescriptor = $convert.base64Decode(
 const VectorEllipse$json = {
   '1': 'VectorEllipse',
   '2': [
-    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
-    {'1': 'opacity', '3': 2, '5': 1, '8': {}, '10': 'opacity'},
+    {
+      '1': 'offset',
+      '3': 3,
+      '5': 11,
+      '6': '.definitions.Vector',
+      '8': {},
+      '10': 'offset'
+    },
+    {
+      '1': 'size',
+      '3': 4,
+      '5': 11,
+      '6': '.definitions.Vector',
+      '8': {},
+      '10': 'size'
+    },
     {
       '1': 'arcData',
-      '3': 3,
+      '3': 5,
       '5': 11,
       '6': '.definitions.ArcData',
       '8': {},
@@ -359,7 +370,7 @@ const VectorEllipse$json = {
     },
     {
       '1': 'fills',
-      '3': 5,
+      '3': 6,
       '4': 3,
       '5': 11,
       '6': '.definitions.Paint',
@@ -371,16 +382,15 @@ const VectorEllipse$json = {
 
 /// Descriptor for `VectorEllipse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List vectorEllipseDescriptor = $convert.base64Decode(
-    'Cg1WZWN0b3JFbGxpcHNlEhIKBG5hbWUYASgJQgBSBG5hbWUSGAoHb3BhY2l0eRgCKAFCAFIHb3'
-    'BhY2l0eRIuCgdhcmNEYXRhGAMoCzIULmRlZmluaXRpb25zLkFyY0RhdGFCAFIHYXJjRGF0YRIq'
-    'CgVmaWxscxgFIAMoCzISLmRlZmluaXRpb25zLlBhaW50QgBSBWZpbGxz');
+    'Cg1WZWN0b3JFbGxpcHNlEisKBm9mZnNldBgDKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIGb2'
+    'Zmc2V0EicKBHNpemUYBCgLMhMuZGVmaW5pdGlvbnMuVmVjdG9yQgBSBHNpemUSLgoHYXJjRGF0'
+    'YRgFKAsyFC5kZWZpbml0aW9ucy5BcmNEYXRhQgBSB2FyY0RhdGESKgoFZmlsbHMYBiADKAsyEi'
+    '5kZWZpbml0aW9ucy5QYWludEIAUgVmaWxscw==');
 
 @$core.Deprecated('Use vectorNetworkDescriptor instead')
 const VectorNetwork$json = {
   '1': 'VectorNetwork',
   '2': [
-    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
-    {'1': 'opacity', '3': 2, '5': 1, '8': {}, '10': 'opacity'},
     {
       '1': 'offset',
       '3': 3,
@@ -421,11 +431,11 @@ const VectorNetwork$json = {
 
 /// Descriptor for `VectorNetwork`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List vectorNetworkDescriptor = $convert.base64Decode(
-    'Cg1WZWN0b3JOZXR3b3JrEhIKBG5hbWUYASgJQgBSBG5hbWUSGAoHb3BhY2l0eRgCKAFCAFIHb3'
-    'BhY2l0eRIrCgZvZmZzZXQYAygLMhMuZGVmaW5pdGlvbnMuVmVjdG9yQgBSBm9mZnNldBI3Cgh2'
-    'ZXJ0aWNlcxgEIAMoCzIZLmRlZmluaXRpb25zLlZlY3RvclZlcnRleEIAUgh2ZXJ0aWNlcxI4Cg'
-    'hzZWdtZW50cxgFIAMoCzIaLmRlZmluaXRpb25zLlZlY3RvclNlZ21lbnRCAFIIc2VnbWVudHMS'
-    'NQoHcmVnaW9ucxgGIAMoCzIZLmRlZmluaXRpb25zLlZlY3RvclJlZ2lvbkIAUgdyZWdpb25z');
+    'Cg1WZWN0b3JOZXR3b3JrEisKBm9mZnNldBgDKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIGb2'
+    'Zmc2V0EjcKCHZlcnRpY2VzGAQgAygLMhkuZGVmaW5pdGlvbnMuVmVjdG9yVmVydGV4QgBSCHZl'
+    'cnRpY2VzEjgKCHNlZ21lbnRzGAUgAygLMhouZGVmaW5pdGlvbnMuVmVjdG9yU2VnbWVudEIAUg'
+    'hzZWdtZW50cxI1CgdyZWdpb25zGAYgAygLMhkuZGVmaW5pdGlvbnMuVmVjdG9yUmVnaW9uQgBS'
+    'B3JlZ2lvbnM=');
 
 @$core.Deprecated('Use vectorGroupDescriptor instead')
 const VectorGroup$json = {

@@ -537,8 +537,7 @@ extension type SceneNode._(JSObject _) implements BaseNode {
   external set minHeight(num? value);
   external num? get maxHeight;
   external set maxHeight(num? value);
-  external JSArray<JSNumber> get relativeTransform;
-  external set relativeTransform(JSArray<JSNumber> value);
+  external JSArray<JSArray<JSNumber>> get relativeTransform;
   external JSArray<JSNumber> get absoluteTransform;
   external Rect? get absoluteBoundingBox;
   external Rect? get absoluteRenderBounds;

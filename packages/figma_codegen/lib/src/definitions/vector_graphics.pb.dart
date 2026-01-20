@@ -129,22 +129,26 @@ enum VectorNode_Type {
 
 class VectorNode extends $pb.GeneratedMessage {
   factory VectorNode({
+    $core.String? name,
+    $core.double? opacity,
+    Transform? transform,
     VectorNetwork? network,
     VectorGroup? group,
     VectorFrame? frame,
     VectorRectangle? rectangle,
     VectorEllipse? ellipse,
     VectorPolygon? polygon,
-    Transform? transform,
   }) {
     final result = create();
+    if (name != null) result.name = name;
+    if (opacity != null) result.opacity = opacity;
+    if (transform != null) result.transform = transform;
     if (network != null) result.network = network;
     if (group != null) result.group = group;
     if (frame != null) result.frame = frame;
     if (rectangle != null) result.rectangle = rectangle;
     if (ellipse != null) result.ellipse = ellipse;
     if (polygon != null) result.polygon = polygon;
-    if (transform != null) result.transform = transform;
     return result;
   }
 
@@ -158,33 +162,35 @@ class VectorNode extends $pb.GeneratedMessage {
       create()..mergeFromJson(json, registry);
 
   static const $core.Map<$core.int, VectorNode_Type> _VectorNode_TypeByTag = {
-    1: VectorNode_Type.network,
-    2: VectorNode_Type.group,
-    3: VectorNode_Type.frame,
-    4: VectorNode_Type.rectangle,
-    5: VectorNode_Type.ellipse,
-    6: VectorNode_Type.polygon,
+    4: VectorNode_Type.network,
+    5: VectorNode_Type.group,
+    6: VectorNode_Type.frame,
+    7: VectorNode_Type.rectangle,
+    8: VectorNode_Type.ellipse,
+    9: VectorNode_Type.polygon,
     0: VectorNode_Type.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
       _omitMessageNames ? '' : 'VectorNode',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..oo(0, [1, 2, 3, 4, 5, 6])
-    ..aOM<VectorNetwork>(1, _omitFieldNames ? '' : 'network',
-        subBuilder: VectorNetwork.create)
-    ..aOM<VectorGroup>(2, _omitFieldNames ? '' : 'group',
-        subBuilder: VectorGroup.create)
-    ..aOM<VectorFrame>(3, _omitFieldNames ? '' : 'frame',
-        subBuilder: VectorFrame.create)
-    ..aOM<VectorRectangle>(4, _omitFieldNames ? '' : 'rectangle',
-        subBuilder: VectorRectangle.create)
-    ..aOM<VectorEllipse>(5, _omitFieldNames ? '' : 'ellipse',
-        subBuilder: VectorEllipse.create)
-    ..aOM<VectorPolygon>(6, _omitFieldNames ? '' : 'polygon',
-        subBuilder: VectorPolygon.create)
-    ..aOM<Transform>(7, _omitFieldNames ? '' : 'transform',
+    ..oo(0, [4, 5, 6, 7, 8, 9])
+    ..aOS(1, _omitFieldNames ? '' : 'name')
+    ..aD(2, _omitFieldNames ? '' : 'opacity')
+    ..aOM<Transform>(3, _omitFieldNames ? '' : 'transform',
         subBuilder: Transform.create)
+    ..aOM<VectorNetwork>(4, _omitFieldNames ? '' : 'network',
+        subBuilder: VectorNetwork.create)
+    ..aOM<VectorGroup>(5, _omitFieldNames ? '' : 'group',
+        subBuilder: VectorGroup.create)
+    ..aOM<VectorFrame>(6, _omitFieldNames ? '' : 'frame',
+        subBuilder: VectorFrame.create)
+    ..aOM<VectorRectangle>(7, _omitFieldNames ? '' : 'rectangle',
+        subBuilder: VectorRectangle.create)
+    ..aOM<VectorEllipse>(8, _omitFieldNames ? '' : 'ellipse',
+        subBuilder: VectorEllipse.create)
+    ..aOM<VectorPolygon>(9, _omitFieldNames ? '' : 'polygon',
+        subBuilder: VectorPolygon.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -205,111 +211,125 @@ class VectorNode extends $pb.GeneratedMessage {
       $pb.GeneratedMessage.$_defaultFor<VectorNode>(create);
   static VectorNode? _defaultInstance;
 
-  @$pb.TagNumber(1)
-  @$pb.TagNumber(2)
-  @$pb.TagNumber(3)
   @$pb.TagNumber(4)
   @$pb.TagNumber(5)
   @$pb.TagNumber(6)
+  @$pb.TagNumber(7)
+  @$pb.TagNumber(8)
+  @$pb.TagNumber(9)
   VectorNode_Type whichType() => _VectorNode_TypeByTag[$_whichOneof(0)]!;
-  @$pb.TagNumber(1)
-  @$pb.TagNumber(2)
-  @$pb.TagNumber(3)
   @$pb.TagNumber(4)
   @$pb.TagNumber(5)
   @$pb.TagNumber(6)
+  @$pb.TagNumber(7)
+  @$pb.TagNumber(8)
+  @$pb.TagNumber(9)
   void clearType() => $_clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
-  VectorNetwork get network => $_getN(0);
+  $core.String get name => $_getSZ(0);
   @$pb.TagNumber(1)
-  set network(VectorNetwork value) => $_setField(1, value);
+  set name($core.String value) => $_setString(0, value);
   @$pb.TagNumber(1)
-  $core.bool hasNetwork() => $_has(0);
+  $core.bool hasName() => $_has(0);
   @$pb.TagNumber(1)
-  void clearNetwork() => $_clearField(1);
-  @$pb.TagNumber(1)
-  VectorNetwork ensureNetwork() => $_ensure(0);
+  void clearName() => $_clearField(1);
 
   @$pb.TagNumber(2)
-  VectorGroup get group => $_getN(1);
+  $core.double get opacity => $_getN(1);
   @$pb.TagNumber(2)
-  set group(VectorGroup value) => $_setField(2, value);
+  set opacity($core.double value) => $_setDouble(1, value);
   @$pb.TagNumber(2)
-  $core.bool hasGroup() => $_has(1);
+  $core.bool hasOpacity() => $_has(1);
   @$pb.TagNumber(2)
-  void clearGroup() => $_clearField(2);
-  @$pb.TagNumber(2)
-  VectorGroup ensureGroup() => $_ensure(1);
+  void clearOpacity() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  VectorFrame get frame => $_getN(2);
+  Transform get transform => $_getN(2);
   @$pb.TagNumber(3)
-  set frame(VectorFrame value) => $_setField(3, value);
+  set transform(Transform value) => $_setField(3, value);
   @$pb.TagNumber(3)
-  $core.bool hasFrame() => $_has(2);
+  $core.bool hasTransform() => $_has(2);
   @$pb.TagNumber(3)
-  void clearFrame() => $_clearField(3);
+  void clearTransform() => $_clearField(3);
   @$pb.TagNumber(3)
-  VectorFrame ensureFrame() => $_ensure(2);
+  Transform ensureTransform() => $_ensure(2);
 
   @$pb.TagNumber(4)
-  VectorRectangle get rectangle => $_getN(3);
+  VectorNetwork get network => $_getN(3);
   @$pb.TagNumber(4)
-  set rectangle(VectorRectangle value) => $_setField(4, value);
+  set network(VectorNetwork value) => $_setField(4, value);
   @$pb.TagNumber(4)
-  $core.bool hasRectangle() => $_has(3);
+  $core.bool hasNetwork() => $_has(3);
   @$pb.TagNumber(4)
-  void clearRectangle() => $_clearField(4);
+  void clearNetwork() => $_clearField(4);
   @$pb.TagNumber(4)
-  VectorRectangle ensureRectangle() => $_ensure(3);
+  VectorNetwork ensureNetwork() => $_ensure(3);
 
   @$pb.TagNumber(5)
-  VectorEllipse get ellipse => $_getN(4);
+  VectorGroup get group => $_getN(4);
   @$pb.TagNumber(5)
-  set ellipse(VectorEllipse value) => $_setField(5, value);
+  set group(VectorGroup value) => $_setField(5, value);
   @$pb.TagNumber(5)
-  $core.bool hasEllipse() => $_has(4);
+  $core.bool hasGroup() => $_has(4);
   @$pb.TagNumber(5)
-  void clearEllipse() => $_clearField(5);
+  void clearGroup() => $_clearField(5);
   @$pb.TagNumber(5)
-  VectorEllipse ensureEllipse() => $_ensure(4);
+  VectorGroup ensureGroup() => $_ensure(4);
 
   @$pb.TagNumber(6)
-  VectorPolygon get polygon => $_getN(5);
+  VectorFrame get frame => $_getN(5);
   @$pb.TagNumber(6)
-  set polygon(VectorPolygon value) => $_setField(6, value);
+  set frame(VectorFrame value) => $_setField(6, value);
   @$pb.TagNumber(6)
-  $core.bool hasPolygon() => $_has(5);
+  $core.bool hasFrame() => $_has(5);
   @$pb.TagNumber(6)
-  void clearPolygon() => $_clearField(6);
+  void clearFrame() => $_clearField(6);
   @$pb.TagNumber(6)
-  VectorPolygon ensurePolygon() => $_ensure(5);
+  VectorFrame ensureFrame() => $_ensure(5);
 
   @$pb.TagNumber(7)
-  Transform get transform => $_getN(6);
+  VectorRectangle get rectangle => $_getN(6);
   @$pb.TagNumber(7)
-  set transform(Transform value) => $_setField(7, value);
+  set rectangle(VectorRectangle value) => $_setField(7, value);
   @$pb.TagNumber(7)
-  $core.bool hasTransform() => $_has(6);
+  $core.bool hasRectangle() => $_has(6);
   @$pb.TagNumber(7)
-  void clearTransform() => $_clearField(7);
+  void clearRectangle() => $_clearField(7);
   @$pb.TagNumber(7)
-  Transform ensureTransform() => $_ensure(6);
+  VectorRectangle ensureRectangle() => $_ensure(6);
+
+  @$pb.TagNumber(8)
+  VectorEllipse get ellipse => $_getN(7);
+  @$pb.TagNumber(8)
+  set ellipse(VectorEllipse value) => $_setField(8, value);
+  @$pb.TagNumber(8)
+  $core.bool hasEllipse() => $_has(7);
+  @$pb.TagNumber(8)
+  void clearEllipse() => $_clearField(8);
+  @$pb.TagNumber(8)
+  VectorEllipse ensureEllipse() => $_ensure(7);
+
+  @$pb.TagNumber(9)
+  VectorPolygon get polygon => $_getN(8);
+  @$pb.TagNumber(9)
+  set polygon(VectorPolygon value) => $_setField(9, value);
+  @$pb.TagNumber(9)
+  $core.bool hasPolygon() => $_has(8);
+  @$pb.TagNumber(9)
+  void clearPolygon() => $_clearField(9);
+  @$pb.TagNumber(9)
+  VectorPolygon ensurePolygon() => $_ensure(8);
 }
 
 class VectorPolygon extends $pb.GeneratedMessage {
   factory VectorPolygon({
-    $core.String? name,
-    $core.double? opacity,
     Vector? offset,
     Vector? size,
     $core.int? pointCount,
     $core.Iterable<Paint>? fills,
   }) {
     final result = create();
-    if (name != null) result.name = name;
-    if (opacity != null) result.opacity = opacity;
     if (offset != null) result.offset = offset;
     if (size != null) result.size = size;
     if (pointCount != null) result.pointCount = pointCount;
@@ -330,8 +350,6 @@ class VectorPolygon extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'VectorPolygon',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'name')
-    ..aD(2, _omitFieldNames ? '' : 'opacity')
     ..aOM<Vector>(3, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
     ..aOM<Vector>(4, _omitFieldNames ? '' : 'size', subBuilder: Vector.create)
     ..aI(5, _omitFieldNames ? '' : 'pointCount', protoName: 'pointCount')
@@ -357,70 +375,48 @@ class VectorPolygon extends $pb.GeneratedMessage {
       $pb.GeneratedMessage.$_defaultFor<VectorPolygon>(create);
   static VectorPolygon? _defaultInstance;
 
-  @$pb.TagNumber(1)
-  $core.String get name => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set name($core.String value) => $_setString(0, value);
-  @$pb.TagNumber(1)
-  $core.bool hasName() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearName() => $_clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.double get opacity => $_getN(1);
-  @$pb.TagNumber(2)
-  set opacity($core.double value) => $_setDouble(1, value);
-  @$pb.TagNumber(2)
-  $core.bool hasOpacity() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearOpacity() => $_clearField(2);
-
   @$pb.TagNumber(3)
-  Vector get offset => $_getN(2);
+  Vector get offset => $_getN(0);
   @$pb.TagNumber(3)
   set offset(Vector value) => $_setField(3, value);
   @$pb.TagNumber(3)
-  $core.bool hasOffset() => $_has(2);
+  $core.bool hasOffset() => $_has(0);
   @$pb.TagNumber(3)
   void clearOffset() => $_clearField(3);
   @$pb.TagNumber(3)
-  Vector ensureOffset() => $_ensure(2);
+  Vector ensureOffset() => $_ensure(0);
 
   @$pb.TagNumber(4)
-  Vector get size => $_getN(3);
+  Vector get size => $_getN(1);
   @$pb.TagNumber(4)
   set size(Vector value) => $_setField(4, value);
   @$pb.TagNumber(4)
-  $core.bool hasSize() => $_has(3);
+  $core.bool hasSize() => $_has(1);
   @$pb.TagNumber(4)
   void clearSize() => $_clearField(4);
   @$pb.TagNumber(4)
-  Vector ensureSize() => $_ensure(3);
+  Vector ensureSize() => $_ensure(1);
 
   @$pb.TagNumber(5)
-  $core.int get pointCount => $_getIZ(4);
+  $core.int get pointCount => $_getIZ(2);
   @$pb.TagNumber(5)
-  set pointCount($core.int value) => $_setSignedInt32(4, value);
+  set pointCount($core.int value) => $_setSignedInt32(2, value);
   @$pb.TagNumber(5)
-  $core.bool hasPointCount() => $_has(4);
+  $core.bool hasPointCount() => $_has(2);
   @$pb.TagNumber(5)
   void clearPointCount() => $_clearField(5);
 
   @$pb.TagNumber(6)
-  $pb.PbList<Paint> get fills => $_getList(5);
+  $pb.PbList<Paint> get fills => $_getList(3);
 }
 
 class VectorRectangle extends $pb.GeneratedMessage {
   factory VectorRectangle({
-    $core.String? name,
-    $core.double? opacity,
     Vector? offset,
     Vector? size,
     $core.Iterable<Paint>? fills,
   }) {
     final result = create();
-    if (name != null) result.name = name;
-    if (opacity != null) result.opacity = opacity;
     if (offset != null) result.offset = offset;
     if (size != null) result.size = size;
     if (fills != null) result.fills.addAll(fills);
@@ -440,8 +436,6 @@ class VectorRectangle extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'VectorRectangle',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'name')
-    ..aD(2, _omitFieldNames ? '' : 'opacity')
     ..aOM<Vector>(3, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
     ..aOM<Vector>(4, _omitFieldNames ? '' : 'size', subBuilder: Vector.create)
     ..pPM<Paint>(5, _omitFieldNames ? '' : 'fills', subBuilder: Paint.create)
@@ -466,48 +460,30 @@ class VectorRectangle extends $pb.GeneratedMessage {
       $pb.GeneratedMessage.$_defaultFor<VectorRectangle>(create);
   static VectorRectangle? _defaultInstance;
 
-  @$pb.TagNumber(1)
-  $core.String get name => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set name($core.String value) => $_setString(0, value);
-  @$pb.TagNumber(1)
-  $core.bool hasName() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearName() => $_clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.double get opacity => $_getN(1);
-  @$pb.TagNumber(2)
-  set opacity($core.double value) => $_setDouble(1, value);
-  @$pb.TagNumber(2)
-  $core.bool hasOpacity() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearOpacity() => $_clearField(2);
-
   @$pb.TagNumber(3)
-  Vector get offset => $_getN(2);
+  Vector get offset => $_getN(0);
   @$pb.TagNumber(3)
   set offset(Vector value) => $_setField(3, value);
   @$pb.TagNumber(3)
-  $core.bool hasOffset() => $_has(2);
+  $core.bool hasOffset() => $_has(0);
   @$pb.TagNumber(3)
   void clearOffset() => $_clearField(3);
   @$pb.TagNumber(3)
-  Vector ensureOffset() => $_ensure(2);
+  Vector ensureOffset() => $_ensure(0);
 
   @$pb.TagNumber(4)
-  Vector get size => $_getN(3);
+  Vector get size => $_getN(1);
   @$pb.TagNumber(4)
   set size(Vector value) => $_setField(4, value);
   @$pb.TagNumber(4)
-  $core.bool hasSize() => $_has(3);
+  $core.bool hasSize() => $_has(1);
   @$pb.TagNumber(4)
   void clearSize() => $_clearField(4);
   @$pb.TagNumber(4)
-  Vector ensureSize() => $_ensure(3);
+  Vector ensureSize() => $_ensure(1);
 
   @$pb.TagNumber(5)
-  $pb.PbList<Paint> get fills => $_getList(4);
+  $pb.PbList<Paint> get fills => $_getList(2);
 }
 
 class ArcData extends $pb.GeneratedMessage {
@@ -589,14 +565,14 @@ class ArcData extends $pb.GeneratedMessage {
 
 class VectorEllipse extends $pb.GeneratedMessage {
   factory VectorEllipse({
-    $core.String? name,
-    $core.double? opacity,
+    Vector? offset,
+    Vector? size,
     ArcData? arcData,
     $core.Iterable<Paint>? fills,
   }) {
     final result = create();
-    if (name != null) result.name = name;
-    if (opacity != null) result.opacity = opacity;
+    if (offset != null) result.offset = offset;
+    if (size != null) result.size = size;
     if (arcData != null) result.arcData = arcData;
     if (fills != null) result.fills.addAll(fills);
     return result;
@@ -615,11 +591,11 @@ class VectorEllipse extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'VectorEllipse',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'name')
-    ..aD(2, _omitFieldNames ? '' : 'opacity')
-    ..aOM<ArcData>(3, _omitFieldNames ? '' : 'arcData',
+    ..aOM<Vector>(3, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
+    ..aOM<Vector>(4, _omitFieldNames ? '' : 'size', subBuilder: Vector.create)
+    ..aOM<ArcData>(5, _omitFieldNames ? '' : 'arcData',
         protoName: 'arcData', subBuilder: ArcData.create)
-    ..pPM<Paint>(5, _omitFieldNames ? '' : 'fills', subBuilder: Paint.create)
+    ..pPM<Paint>(6, _omitFieldNames ? '' : 'fills', subBuilder: Paint.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -641,51 +617,51 @@ class VectorEllipse extends $pb.GeneratedMessage {
       $pb.GeneratedMessage.$_defaultFor<VectorEllipse>(create);
   static VectorEllipse? _defaultInstance;
 
-  @$pb.TagNumber(1)
-  $core.String get name => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set name($core.String value) => $_setString(0, value);
-  @$pb.TagNumber(1)
-  $core.bool hasName() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearName() => $_clearField(1);
+  @$pb.TagNumber(3)
+  Vector get offset => $_getN(0);
+  @$pb.TagNumber(3)
+  set offset(Vector value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasOffset() => $_has(0);
+  @$pb.TagNumber(3)
+  void clearOffset() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Vector ensureOffset() => $_ensure(0);
 
-  @$pb.TagNumber(2)
-  $core.double get opacity => $_getN(1);
-  @$pb.TagNumber(2)
-  set opacity($core.double value) => $_setDouble(1, value);
-  @$pb.TagNumber(2)
-  $core.bool hasOpacity() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearOpacity() => $_clearField(2);
-
-  @$pb.TagNumber(3)
-  ArcData get arcData => $_getN(2);
-  @$pb.TagNumber(3)
-  set arcData(ArcData value) => $_setField(3, value);
-  @$pb.TagNumber(3)
-  $core.bool hasArcData() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearArcData() => $_clearField(3);
-  @$pb.TagNumber(3)
-  ArcData ensureArcData() => $_ensure(2);
+  @$pb.TagNumber(4)
+  Vector get size => $_getN(1);
+  @$pb.TagNumber(4)
+  set size(Vector value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasSize() => $_has(1);
+  @$pb.TagNumber(4)
+  void clearSize() => $_clearField(4);
+  @$pb.TagNumber(4)
+  Vector ensureSize() => $_ensure(1);
 
   @$pb.TagNumber(5)
+  ArcData get arcData => $_getN(2);
+  @$pb.TagNumber(5)
+  set arcData(ArcData value) => $_setField(5, value);
+  @$pb.TagNumber(5)
+  $core.bool hasArcData() => $_has(2);
+  @$pb.TagNumber(5)
+  void clearArcData() => $_clearField(5);
+  @$pb.TagNumber(5)
+  ArcData ensureArcData() => $_ensure(2);
+
+  @$pb.TagNumber(6)
   $pb.PbList<Paint> get fills => $_getList(3);
 }
 
 class VectorNetwork extends $pb.GeneratedMessage {
   factory VectorNetwork({
-    $core.String? name,
-    $core.double? opacity,
     Vector? offset,
     $core.Iterable<VectorVertex>? vertices,
     $core.Iterable<VectorSegment>? segments,
     $core.Iterable<VectorRegion>? regions,
   }) {
     final result = create();
-    if (name != null) result.name = name;
-    if (opacity != null) result.opacity = opacity;
     if (offset != null) result.offset = offset;
     if (vertices != null) result.vertices.addAll(vertices);
     if (segments != null) result.segments.addAll(segments);
@@ -706,8 +682,6 @@ class VectorNetwork extends $pb.GeneratedMessage {
       _omitMessageNames ? '' : 'VectorNetwork',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..aOS(1, _omitFieldNames ? '' : 'name')
-    ..aD(2, _omitFieldNames ? '' : 'opacity')
     ..aOM<Vector>(3, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
     ..pPM<VectorVertex>(4, _omitFieldNames ? '' : 'vertices',
         subBuilder: VectorVertex.create)
@@ -736,43 +710,25 @@ class VectorNetwork extends $pb.GeneratedMessage {
       $pb.GeneratedMessage.$_defaultFor<VectorNetwork>(create);
   static VectorNetwork? _defaultInstance;
 
-  @$pb.TagNumber(1)
-  $core.String get name => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set name($core.String value) => $_setString(0, value);
-  @$pb.TagNumber(1)
-  $core.bool hasName() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearName() => $_clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.double get opacity => $_getN(1);
-  @$pb.TagNumber(2)
-  set opacity($core.double value) => $_setDouble(1, value);
-  @$pb.TagNumber(2)
-  $core.bool hasOpacity() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearOpacity() => $_clearField(2);
-
   @$pb.TagNumber(3)
-  Vector get offset => $_getN(2);
+  Vector get offset => $_getN(0);
   @$pb.TagNumber(3)
   set offset(Vector value) => $_setField(3, value);
   @$pb.TagNumber(3)
-  $core.bool hasOffset() => $_has(2);
+  $core.bool hasOffset() => $_has(0);
   @$pb.TagNumber(3)
   void clearOffset() => $_clearField(3);
   @$pb.TagNumber(3)
-  Vector ensureOffset() => $_ensure(2);
+  Vector ensureOffset() => $_ensure(0);
 
   @$pb.TagNumber(4)
-  $pb.PbList<VectorVertex> get vertices => $_getList(3);
+  $pb.PbList<VectorVertex> get vertices => $_getList(1);
 
   @$pb.TagNumber(5)
-  $pb.PbList<VectorSegment> get segments => $_getList(4);
+  $pb.PbList<VectorSegment> get segments => $_getList(2);
 
   @$pb.TagNumber(6)
-  $pb.PbList<VectorRegion> get regions => $_getList(5);
+  $pb.PbList<VectorRegion> get regions => $_getList(3);
 }
 
 class VectorGroup extends $pb.GeneratedMessage {
