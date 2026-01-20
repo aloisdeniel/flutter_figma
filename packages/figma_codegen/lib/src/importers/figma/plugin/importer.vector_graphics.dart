@@ -157,8 +157,20 @@ Future<VectorNode?> _vectorNode(
         ),
       );
     case 'GROUP':
-    default:
       print('Parsing group node: ${node.name}');
+      final children = await childrenNodes(node, context);
+      return VectorNode(
+        name: node.name,
+        opacity: nodeOpacity(node),
+        transform: _nodeTransform(node),
+        group: VectorGroup(
+          name: node.name,
+          opacity: nodeOpacity(node),
+          children: children,
+        ),
+      );
+    default:
+      print('Parsing other node as group: ${node.name}');
       final children = await childrenNodes(node, context);
       return VectorNode(
         name: node.name,
