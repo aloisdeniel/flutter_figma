@@ -16,7 +16,41 @@ message VectorNode {
     VectorNetwork network = 1;
     VectorGroup group = 2;
     VectorFrame frame = 3;
+    VectorRectangle rectangle = 4;
+    VectorEllipse ellipse = 5;
+    VectorPolygon polygon = 6;
   }
+  Transform transform = 7;
+}
+
+message VectorPolygon {
+  string name = 1;
+  double opacity = 2;
+  Vector offset = 3;
+  Vector size = 4;
+  int32 pointCount = 5;
+  repeated Paint fills = 6;
+}
+
+message VectorRectangle {
+  string name = 1;
+  double opacity = 2;
+  Vector offset = 3;
+  Vector size = 4;
+  repeated Paint fills = 5;
+}
+
+message ArcData {
+  double startingAngle = 1;
+  double endingAngle = 2;
+  double innerRadius = 3;
+}
+
+message VectorEllipse {
+  string name = 1;
+  double opacity = 2;
+  ArcData arcData = 3;
+  repeated Paint fills = 5;
 }
 
 message VectorNetwork {

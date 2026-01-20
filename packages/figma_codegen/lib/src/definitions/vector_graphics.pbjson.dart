@@ -191,6 +191,41 @@ const VectorNode$json = {
       '9': 0,
       '10': 'frame'
     },
+    {
+      '1': 'rectangle',
+      '3': 4,
+      '5': 11,
+      '6': '.definitions.VectorRectangle',
+      '8': {},
+      '9': 0,
+      '10': 'rectangle'
+    },
+    {
+      '1': 'ellipse',
+      '3': 5,
+      '5': 11,
+      '6': '.definitions.VectorEllipse',
+      '8': {},
+      '9': 0,
+      '10': 'ellipse'
+    },
+    {
+      '1': 'polygon',
+      '3': 6,
+      '5': 11,
+      '6': '.definitions.VectorPolygon',
+      '8': {},
+      '9': 0,
+      '10': 'polygon'
+    },
+    {
+      '1': 'transform',
+      '3': 7,
+      '5': 11,
+      '6': '.definitions.Transform',
+      '8': {},
+      '10': 'transform'
+    },
   ],
   '8': [
     {'1': 'type'},
@@ -202,7 +237,143 @@ final $typed_data.Uint8List vectorNodeDescriptor = $convert.base64Decode(
     'CgpWZWN0b3JOb2RlEjYKB25ldHdvcmsYASgLMhouZGVmaW5pdGlvbnMuVmVjdG9yTmV0d29ya0'
     'IASABSB25ldHdvcmsSMAoFZ3JvdXAYAigLMhguZGVmaW5pdGlvbnMuVmVjdG9yR3JvdXBCAEgA'
     'UgVncm91cBIwCgVmcmFtZRgDKAsyGC5kZWZpbml0aW9ucy5WZWN0b3JGcmFtZUIASABSBWZyYW'
-    '1lQgYKBHR5cGU=');
+    '1lEjwKCXJlY3RhbmdsZRgEKAsyHC5kZWZpbml0aW9ucy5WZWN0b3JSZWN0YW5nbGVCAEgAUgly'
+    'ZWN0YW5nbGUSNgoHZWxsaXBzZRgFKAsyGi5kZWZpbml0aW9ucy5WZWN0b3JFbGxpcHNlQgBIAF'
+    'IHZWxsaXBzZRI2Cgdwb2x5Z29uGAYoCzIaLmRlZmluaXRpb25zLlZlY3RvclBvbHlnb25CAEgA'
+    'Ugdwb2x5Z29uEjQKCXRyYW5zZm9ybRgHKAsyFi5kZWZpbml0aW9ucy5UcmFuc2Zvcm1CAFIJdH'
+    'JhbnNmb3JtQgYKBHR5cGU=');
+
+@$core.Deprecated('Use vectorPolygonDescriptor instead')
+const VectorPolygon$json = {
+  '1': 'VectorPolygon',
+  '2': [
+    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
+    {'1': 'opacity', '3': 2, '5': 1, '8': {}, '10': 'opacity'},
+    {
+      '1': 'offset',
+      '3': 3,
+      '5': 11,
+      '6': '.definitions.Vector',
+      '8': {},
+      '10': 'offset'
+    },
+    {
+      '1': 'size',
+      '3': 4,
+      '5': 11,
+      '6': '.definitions.Vector',
+      '8': {},
+      '10': 'size'
+    },
+    {'1': 'pointCount', '3': 5, '5': 5, '8': {}, '10': 'pointCount'},
+    {
+      '1': 'fills',
+      '3': 6,
+      '4': 3,
+      '5': 11,
+      '6': '.definitions.Paint',
+      '8': {},
+      '10': 'fills'
+    },
+  ],
+};
+
+/// Descriptor for `VectorPolygon`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List vectorPolygonDescriptor = $convert.base64Decode(
+    'Cg1WZWN0b3JQb2x5Z29uEhIKBG5hbWUYASgJQgBSBG5hbWUSGAoHb3BhY2l0eRgCKAFCAFIHb3'
+    'BhY2l0eRIrCgZvZmZzZXQYAygLMhMuZGVmaW5pdGlvbnMuVmVjdG9yQgBSBm9mZnNldBInCgRz'
+    'aXplGAQoCzITLmRlZmluaXRpb25zLlZlY3RvckIAUgRzaXplEh4KCnBvaW50Q291bnQYBSgFQg'
+    'BSCnBvaW50Q291bnQSKgoFZmlsbHMYBiADKAsyEi5kZWZpbml0aW9ucy5QYWludEIAUgVmaWxs'
+    'cw==');
+
+@$core.Deprecated('Use vectorRectangleDescriptor instead')
+const VectorRectangle$json = {
+  '1': 'VectorRectangle',
+  '2': [
+    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
+    {'1': 'opacity', '3': 2, '5': 1, '8': {}, '10': 'opacity'},
+    {
+      '1': 'offset',
+      '3': 3,
+      '5': 11,
+      '6': '.definitions.Vector',
+      '8': {},
+      '10': 'offset'
+    },
+    {
+      '1': 'size',
+      '3': 4,
+      '5': 11,
+      '6': '.definitions.Vector',
+      '8': {},
+      '10': 'size'
+    },
+    {
+      '1': 'fills',
+      '3': 5,
+      '4': 3,
+      '5': 11,
+      '6': '.definitions.Paint',
+      '8': {},
+      '10': 'fills'
+    },
+  ],
+};
+
+/// Descriptor for `VectorRectangle`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List vectorRectangleDescriptor = $convert.base64Decode(
+    'Cg9WZWN0b3JSZWN0YW5nbGUSEgoEbmFtZRgBKAlCAFIEbmFtZRIYCgdvcGFjaXR5GAIoAUIAUg'
+    'dvcGFjaXR5EisKBm9mZnNldBgDKAsyEy5kZWZpbml0aW9ucy5WZWN0b3JCAFIGb2Zmc2V0EicK'
+    'BHNpemUYBCgLMhMuZGVmaW5pdGlvbnMuVmVjdG9yQgBSBHNpemUSKgoFZmlsbHMYBSADKAsyEi'
+    '5kZWZpbml0aW9ucy5QYWludEIAUgVmaWxscw==');
+
+@$core.Deprecated('Use arcDataDescriptor instead')
+const ArcData$json = {
+  '1': 'ArcData',
+  '2': [
+    {'1': 'startingAngle', '3': 1, '5': 1, '8': {}, '10': 'startingAngle'},
+    {'1': 'endingAngle', '3': 2, '5': 1, '8': {}, '10': 'endingAngle'},
+    {'1': 'innerRadius', '3': 3, '5': 1, '8': {}, '10': 'innerRadius'},
+  ],
+};
+
+/// Descriptor for `ArcData`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List arcDataDescriptor = $convert.base64Decode(
+    'CgdBcmNEYXRhEiQKDXN0YXJ0aW5nQW5nbGUYASgBQgBSDXN0YXJ0aW5nQW5nbGUSIAoLZW5kaW'
+    '5nQW5nbGUYAigBQgBSC2VuZGluZ0FuZ2xlEiAKC2lubmVyUmFkaXVzGAMoAUIAUgtpbm5lclJh'
+    'ZGl1cw==');
+
+@$core.Deprecated('Use vectorEllipseDescriptor instead')
+const VectorEllipse$json = {
+  '1': 'VectorEllipse',
+  '2': [
+    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
+    {'1': 'opacity', '3': 2, '5': 1, '8': {}, '10': 'opacity'},
+    {
+      '1': 'arcData',
+      '3': 3,
+      '5': 11,
+      '6': '.definitions.ArcData',
+      '8': {},
+      '10': 'arcData'
+    },
+    {
+      '1': 'fills',
+      '3': 5,
+      '4': 3,
+      '5': 11,
+      '6': '.definitions.Paint',
+      '8': {},
+      '10': 'fills'
+    },
+  ],
+};
+
+/// Descriptor for `VectorEllipse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List vectorEllipseDescriptor = $convert.base64Decode(
+    'Cg1WZWN0b3JFbGxpcHNlEhIKBG5hbWUYASgJQgBSBG5hbWUSGAoHb3BhY2l0eRgCKAFCAFIHb3'
+    'BhY2l0eRIuCgdhcmNEYXRhGAMoCzIULmRlZmluaXRpb25zLkFyY0RhdGFCAFIHYXJjRGF0YRIq'
+    'CgVmaWxscxgFIAMoCzISLmRlZmluaXRpb25zLlBhaW50QgBSBWZpbGxz');
 
 @$core.Deprecated('Use vectorNetworkDescriptor instead')
 const VectorNetwork$json = {

@@ -93,7 +93,26 @@ Future<VectorNode?> _vectorNode(
         node.name,
         context,
       );
-      return VectorNode(network: network);
+      return VectorNode(network: network, transform: _nodeTransform(node));
+    case 'ELLIPSE':
+      return VectorNode(
+        ellipse: _vectorEllipseFromNode(node as figma_api.EllipseNode, context),
+        transform: _nodeTransform(node),
+      );
+    case 'RECTANGLE':
+      return VectorNode(
+        rectangle: _vectorRectangleFromNode(
+          node as figma_api.RectangleNode,
+          context,
+        ),
+        transform: _nodeTransform(node),
+      );
+    case 'POLYGON':
+      return VectorNode(
+        polygon: _vectorPolygonFromNode(node as figma_api.PolygonNode, context),
+        transform: _nodeTransform(node),
+      );
+
     case 'FRAME':
       final frameNode = node as figma_api.FrameNode;
       final children = await childrenNodes(node, context);
@@ -107,6 +126,7 @@ Future<VectorNode?> _vectorNode(
           cornerRadius: _cornerRadiusFromFrame(frameNode),
           children: children,
         ),
+        transform: _nodeTransform(node),
       );
     case 'GROUP':
     default:
@@ -117,6 +137,7 @@ Future<VectorNode?> _vectorNode(
           opacity: nodeOpacity(node),
           children: children,
         ),
+        transform: _nodeTransform(node),
       );
   }
 }
@@ -191,6 +212,46 @@ VectorSegment _vectorSegmentFromFigma(figma_api.VectorSegment segment) {
   );
 }
 
+VectorRectangle _vectorRectangleFromNode(
+  figma_api.RectangleNode node,
+  ImportContext<FigmaImportOptions> context,
+) {
+  return VectorRectangle(
+    name: node.name,
+    opacity: nodeOpacity(node),
+    offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
+    size: Vector(x: node.width.toDouble(), y: node.height.toDouble()),
+    fills: _convertNodeFills(node, context),
+  );
+}
+
+VectorEllipse _vectorEllipseFromNode(
+  figma_api.EllipseNode node,
+  ImportContext<FigmaImportOptions> context,
+) {
+  return VectorEllipse(
+    name: node.name,
+    opacity: nodeOpacity(node),
+    offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
+    size: Vector(x: node.width.toDouble(), y: node.height.toDouble()),
+    fills: _convertNodeFills(node, context),
+  );
+}
+
+VectorPolygon _vectorPolygonFromNode(
+  figma_api.PolygonNode node,
+  ImportContext<FigmaImportOptions> context,
+) {
+  return VectorPolygon(
+    name: node.name,
+    opacity: nodeOpacity(node),
+    offset: Vector(x: node.x.toDouble(), y: node.y.toDouble()),
+    size: Vector(x: node.width.toDouble(), y: node.height.toDouble()),
+    pointCount: node.pointCount,
+    fills: _convertNodeFills(node, context),
+  );
+}
+
 CornerRadius _cornerRadiusFromFrame(figma_api.FrameNode node) {
   final cornerRadius = node.cornerRadius.toDouble();
   final topLeft = node.topLeftRadius.toDouble();
@@ -212,6 +273,26 @@ CornerRadius _cornerRadiusFromFrame(figma_api.FrameNode node) {
     topRight: topRight,
     bottomLeft: bottomLeft,
     bottomRight: bottomRight,
+  );
+}
+
+Transform _nodeTransform(figma_api.SceneNode node) {
+  final transform = node.relativeTransform.toDart;
+  if (transform.length < 2) {
+    return Transform();
+  }
+  final row0 = transform[0].dartify();
+  final row1 = transform[1].dartify();
+  if (row0 is! List || row1 is! List || row0.length < 3 || row1.length < 3) {
+    return Transform();
+  }
+  return Transform(
+    m00: (row0[0] as num).toDouble(),
+    m01: (row0[1] as num).toDouble(),
+    m10: (row1[0] as num).toDouble(),
+    m11: (row1[1] as num).toDouble(),
+    m02: (row0[2] as num).toDouble(),
+    m12: (row1[2] as num).toDouble(),
   );
 }
 
@@ -249,7 +330,7 @@ VectorRegion? _vectorRegionFromFigma(
 }
 
 List<Paint> _convertNodeFills(
-  figma_api.VectorNode node,
+  figma_api.SceneNode node,
   ImportContext<FigmaImportOptions> context,
 ) {
   final fills = node.getProperty('fills'.jsify()!);

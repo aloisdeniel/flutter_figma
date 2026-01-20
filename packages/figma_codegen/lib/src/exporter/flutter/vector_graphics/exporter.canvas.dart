@@ -8,6 +8,7 @@ class FlutterVectorCanvasExporter {
   String export(FlutterExportContext context) {
     final buffer = DartBuffer();
 
+    buffer.writeln("import 'dart:math' as math;");
     buffer.writeln("import 'dart:ui' as ui;");
     buffer.writeln("import 'package:flutter/widgets.dart' as fl;");
     buffer.writeln();
@@ -99,6 +100,7 @@ void _writeNode(
   switch (node.whichType()) {
     case VectorNode_Type.network:
       buffer.writeln('canvas.save();');
+      _writeNodeTransform(buffer, node);
       buffer.writeln(
         'canvas.translate(${node.network.offset.x}, ${node.network.offset.y});',
       );
@@ -111,6 +113,7 @@ void _writeNode(
     case VectorNode_Type.group:
       // TODO only if opacity != 1.0
       buffer.writeln('canvas.save();');
+      _writeNodeTransform(buffer, node);
       saveOpacityLayerIfNeeded(node.group.opacity);
       for (final child in node.group.children) {
         _writeNode(buffer, child, context);
@@ -119,6 +122,7 @@ void _writeNode(
       buffer.writeln('canvas.restore();');
     case VectorNode_Type.frame:
       buffer.writeln('canvas.save();');
+      _writeNodeTransform(buffer, node);
       buffer.writeln(
         'canvas.translate(${node.frame.offset.x}, ${node.frame.offset.y});',
       );
@@ -131,7 +135,137 @@ void _writeNode(
       }
       restoreOpacityLayerIfNeeded(node.frame.opacity);
       buffer.writeln('canvas.restore();');
+    case VectorNode_Type.rectangle:
+      buffer.writeln('canvas.save();');
+      _writeNodeTransform(buffer, node);
+      saveOpacityLayerIfNeeded(node.rectangle.opacity);
+      _writeRectangle(buffer, node.rectangle, context);
+      restoreOpacityLayerIfNeeded(node.rectangle.opacity);
+      buffer.writeln('canvas.restore();');
+    case VectorNode_Type.ellipse:
+      buffer.writeln('canvas.save();');
+      _writeNodeTransform(buffer, node);
+      saveOpacityLayerIfNeeded(node.ellipse.opacity);
+      _writeEllipse(buffer, node.ellipse, context);
+      restoreOpacityLayerIfNeeded(node.ellipse.opacity);
+      buffer.writeln('canvas.restore();');
+    case VectorNode_Type.polygon:
+      buffer.writeln('canvas.save();');
+      _writeNodeTransform(buffer, node);
+      saveOpacityLayerIfNeeded(node.polygon.opacity);
+      _writePolygon(buffer, node.polygon, context);
+      restoreOpacityLayerIfNeeded(node.polygon.opacity);
+      buffer.writeln('canvas.restore();');
     case VectorNode_Type.notSet:
+  }
+}
+
+void _writeNodeTransform(DartBuffer buffer, VectorNode node) {
+  if (!node.hasTransform()) {
+    return;
+  }
+  final transform = node.transform;
+  buffer.writeln(
+    'canvas.transform(<double>['
+    '${_formatDouble(transform.m00)}, ${_formatDouble(transform.m10)}, 0, 0, '
+    '${_formatDouble(transform.m01)}, ${_formatDouble(transform.m11)}, 0, 0, '
+    '0, 0, 1, 0, '
+    '${_formatDouble(transform.m02)}, ${_formatDouble(transform.m12)}, 0, 1]);',
+  );
+}
+
+void _writeRectangle(
+  DartBuffer buffer,
+  VectorRectangle rectangle,
+  FlutterExportContext context,
+) {
+  final width = rectangle.hasSize() ? rectangle.size.x : 0.0;
+  final height = rectangle.hasSize() ? rectangle.size.y : 0.0;
+  if (width <= 0 || height <= 0 || rectangle.fills.isEmpty) {
+    return;
+  }
+  buffer.writeln(
+    'canvas.translate(${_formatDouble(rectangle.offset.x)}, ${_formatDouble(rectangle.offset.y)});',
+  );
+  buffer.writeln(
+    'final rect = fl.Rect.fromLTWH(0, 0, ${_formatDouble(width)}, ${_formatDouble(height)});',
+  );
+  buffer.writeln('paint.style = ui.PaintingStyle.fill;');
+  for (final fill in rectangle.fills) {
+    _writePaintAssignment(buffer, fill, context);
+    buffer.writeln('canvas.drawRect(rect, paint);');
+  }
+}
+
+void _writeEllipse(
+  DartBuffer buffer,
+  VectorEllipse ellipse,
+  FlutterExportContext context,
+) {
+  final width = ellipse.hasSize() ? ellipse.size.x : 0.0;
+  final height = ellipse.hasSize() ? ellipse.size.y : 0.0;
+  if (width <= 0 || height <= 0 || ellipse.fills.isEmpty) {
+    return;
+  }
+  buffer.writeln(
+    'canvas.translate(${_formatDouble(ellipse.offset.x)}, ${_formatDouble(ellipse.offset.y)});',
+  );
+  buffer.writeln(
+    'final rect = fl.Rect.fromLTWH(0, 0, ${_formatDouble(width)}, ${_formatDouble(height)});',
+  );
+  buffer.writeln('paint.style = ui.PaintingStyle.fill;');
+  for (final fill in ellipse.fills) {
+    _writePaintAssignment(buffer, fill, context);
+    buffer.writeln('canvas.drawOval(rect, paint);');
+  }
+}
+
+void _writePolygon(
+  DartBuffer buffer,
+  VectorPolygon polygon,
+  FlutterExportContext context,
+) {
+  final width = polygon.hasSize() ? polygon.size.x : 0.0;
+  final height = polygon.hasSize() ? polygon.size.y : 0.0;
+  if (width <= 0 || height <= 0 || polygon.pointCount < 3) {
+    return;
+  }
+  buffer.writeln(
+    'canvas.translate(${_formatDouble(polygon.offset.x)}, ${_formatDouble(polygon.offset.y)});',
+  );
+  buffer.writeln('final path = ui.Path();');
+  buffer.writeln(
+    'final center = fl.Offset(${_formatDouble(width)} / 2, ${_formatDouble(height)} / 2);',
+  );
+  buffer.writeln(
+    'final radius = fl.Offset(${_formatDouble(width)} / 2, ${_formatDouble(height)} / 2);',
+  );
+  buffer.writeln('final pointCount = ${polygon.pointCount};');
+  buffer.writeln('for (var i = 0; i < pointCount; i++) {');
+  buffer.indent();
+  buffer.writeln('final angle = (i * 2 * math.pi) / pointCount;');
+  buffer.writeln(
+    'final point = fl.Offset(center.dx + radius.dx * math.cos(angle), center.dy + radius.dy * math.sin(angle));',
+  );
+  buffer.writeln('if (i == 0) {');
+  buffer.indent();
+  buffer.writeln('path.moveTo(point.dx, point.dy);');
+  buffer.unindent();
+  buffer.writeln('} else {');
+  buffer.indent();
+  buffer.writeln('path.lineTo(point.dx, point.dy);');
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.writeln('path.close();');
+  if (polygon.fills.isEmpty) {
+    return;
+  }
+  buffer.writeln('paint.style = ui.PaintingStyle.fill;');
+  for (final fill in polygon.fills) {
+    _writePaintAssignment(buffer, fill, context);
+    buffer.writeln('canvas.drawPath(path, paint);');
   }
 }
 
@@ -147,7 +281,7 @@ void _writeFrameClip(DartBuffer buffer, VectorFrame frame) {
     return;
   }
   buffer.writeln(
-    'const rect = fl.Rect.fromLTWH(0, 0, ${_formatDouble(width)}, ${_formatDouble(height)});',
+    'final rect = fl.Rect.fromLTWH(0, 0, ${_formatDouble(width)}, ${_formatDouble(height)});',
   );
   if (frame.hasCornerRadius()) {
     buffer.writeln(

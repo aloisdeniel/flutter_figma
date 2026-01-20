@@ -117,18 +117,34 @@ class VectorGraphics extends $pb.GeneratedMessage {
   VectorNode ensureRoot() => $_ensure(3);
 }
 
-enum VectorNode_Type { network, group, frame, notSet }
+enum VectorNode_Type {
+  network,
+  group,
+  frame,
+  rectangle,
+  ellipse,
+  polygon,
+  notSet
+}
 
 class VectorNode extends $pb.GeneratedMessage {
   factory VectorNode({
     VectorNetwork? network,
     VectorGroup? group,
     VectorFrame? frame,
+    VectorRectangle? rectangle,
+    VectorEllipse? ellipse,
+    VectorPolygon? polygon,
+    Transform? transform,
   }) {
     final result = create();
     if (network != null) result.network = network;
     if (group != null) result.group = group;
     if (frame != null) result.frame = frame;
+    if (rectangle != null) result.rectangle = rectangle;
+    if (ellipse != null) result.ellipse = ellipse;
+    if (polygon != null) result.polygon = polygon;
+    if (transform != null) result.transform = transform;
     return result;
   }
 
@@ -145,19 +161,30 @@ class VectorNode extends $pb.GeneratedMessage {
     1: VectorNode_Type.network,
     2: VectorNode_Type.group,
     3: VectorNode_Type.frame,
+    4: VectorNode_Type.rectangle,
+    5: VectorNode_Type.ellipse,
+    6: VectorNode_Type.polygon,
     0: VectorNode_Type.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
       _omitMessageNames ? '' : 'VectorNode',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..oo(0, [1, 2, 3])
+    ..oo(0, [1, 2, 3, 4, 5, 6])
     ..aOM<VectorNetwork>(1, _omitFieldNames ? '' : 'network',
         subBuilder: VectorNetwork.create)
     ..aOM<VectorGroup>(2, _omitFieldNames ? '' : 'group',
         subBuilder: VectorGroup.create)
     ..aOM<VectorFrame>(3, _omitFieldNames ? '' : 'frame',
         subBuilder: VectorFrame.create)
+    ..aOM<VectorRectangle>(4, _omitFieldNames ? '' : 'rectangle',
+        subBuilder: VectorRectangle.create)
+    ..aOM<VectorEllipse>(5, _omitFieldNames ? '' : 'ellipse',
+        subBuilder: VectorEllipse.create)
+    ..aOM<VectorPolygon>(6, _omitFieldNames ? '' : 'polygon',
+        subBuilder: VectorPolygon.create)
+    ..aOM<Transform>(7, _omitFieldNames ? '' : 'transform',
+        subBuilder: Transform.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -181,10 +208,16 @@ class VectorNode extends $pb.GeneratedMessage {
   @$pb.TagNumber(1)
   @$pb.TagNumber(2)
   @$pb.TagNumber(3)
+  @$pb.TagNumber(4)
+  @$pb.TagNumber(5)
+  @$pb.TagNumber(6)
   VectorNode_Type whichType() => _VectorNode_TypeByTag[$_whichOneof(0)]!;
   @$pb.TagNumber(1)
   @$pb.TagNumber(2)
   @$pb.TagNumber(3)
+  @$pb.TagNumber(4)
+  @$pb.TagNumber(5)
+  @$pb.TagNumber(6)
   void clearType() => $_clearField($_whichOneof(0));
 
   @$pb.TagNumber(1)
@@ -219,6 +252,426 @@ class VectorNode extends $pb.GeneratedMessage {
   void clearFrame() => $_clearField(3);
   @$pb.TagNumber(3)
   VectorFrame ensureFrame() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  VectorRectangle get rectangle => $_getN(3);
+  @$pb.TagNumber(4)
+  set rectangle(VectorRectangle value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasRectangle() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearRectangle() => $_clearField(4);
+  @$pb.TagNumber(4)
+  VectorRectangle ensureRectangle() => $_ensure(3);
+
+  @$pb.TagNumber(5)
+  VectorEllipse get ellipse => $_getN(4);
+  @$pb.TagNumber(5)
+  set ellipse(VectorEllipse value) => $_setField(5, value);
+  @$pb.TagNumber(5)
+  $core.bool hasEllipse() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearEllipse() => $_clearField(5);
+  @$pb.TagNumber(5)
+  VectorEllipse ensureEllipse() => $_ensure(4);
+
+  @$pb.TagNumber(6)
+  VectorPolygon get polygon => $_getN(5);
+  @$pb.TagNumber(6)
+  set polygon(VectorPolygon value) => $_setField(6, value);
+  @$pb.TagNumber(6)
+  $core.bool hasPolygon() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearPolygon() => $_clearField(6);
+  @$pb.TagNumber(6)
+  VectorPolygon ensurePolygon() => $_ensure(5);
+
+  @$pb.TagNumber(7)
+  Transform get transform => $_getN(6);
+  @$pb.TagNumber(7)
+  set transform(Transform value) => $_setField(7, value);
+  @$pb.TagNumber(7)
+  $core.bool hasTransform() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearTransform() => $_clearField(7);
+  @$pb.TagNumber(7)
+  Transform ensureTransform() => $_ensure(6);
+}
+
+class VectorPolygon extends $pb.GeneratedMessage {
+  factory VectorPolygon({
+    $core.String? name,
+    $core.double? opacity,
+    Vector? offset,
+    Vector? size,
+    $core.int? pointCount,
+    $core.Iterable<Paint>? fills,
+  }) {
+    final result = create();
+    if (name != null) result.name = name;
+    if (opacity != null) result.opacity = opacity;
+    if (offset != null) result.offset = offset;
+    if (size != null) result.size = size;
+    if (pointCount != null) result.pointCount = pointCount;
+    if (fills != null) result.fills.addAll(fills);
+    return result;
+  }
+
+  VectorPolygon._();
+
+  factory VectorPolygon.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory VectorPolygon.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'VectorPolygon',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'name')
+    ..aD(2, _omitFieldNames ? '' : 'opacity')
+    ..aOM<Vector>(3, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
+    ..aOM<Vector>(4, _omitFieldNames ? '' : 'size', subBuilder: Vector.create)
+    ..aI(5, _omitFieldNames ? '' : 'pointCount', protoName: 'pointCount')
+    ..pPM<Paint>(6, _omitFieldNames ? '' : 'fills', subBuilder: Paint.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorPolygon clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorPolygon copyWith(void Function(VectorPolygon) updates) =>
+      super.copyWith((message) => updates(message as VectorPolygon))
+          as VectorPolygon;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static VectorPolygon create() => VectorPolygon._();
+  @$core.override
+  VectorPolygon createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static VectorPolygon getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<VectorPolygon>(create);
+  static VectorPolygon? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get name => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set name($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasName() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearName() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.double get opacity => $_getN(1);
+  @$pb.TagNumber(2)
+  set opacity($core.double value) => $_setDouble(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasOpacity() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearOpacity() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  Vector get offset => $_getN(2);
+  @$pb.TagNumber(3)
+  set offset(Vector value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasOffset() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearOffset() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Vector ensureOffset() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  Vector get size => $_getN(3);
+  @$pb.TagNumber(4)
+  set size(Vector value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasSize() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearSize() => $_clearField(4);
+  @$pb.TagNumber(4)
+  Vector ensureSize() => $_ensure(3);
+
+  @$pb.TagNumber(5)
+  $core.int get pointCount => $_getIZ(4);
+  @$pb.TagNumber(5)
+  set pointCount($core.int value) => $_setSignedInt32(4, value);
+  @$pb.TagNumber(5)
+  $core.bool hasPointCount() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearPointCount() => $_clearField(5);
+
+  @$pb.TagNumber(6)
+  $pb.PbList<Paint> get fills => $_getList(5);
+}
+
+class VectorRectangle extends $pb.GeneratedMessage {
+  factory VectorRectangle({
+    $core.String? name,
+    $core.double? opacity,
+    Vector? offset,
+    Vector? size,
+    $core.Iterable<Paint>? fills,
+  }) {
+    final result = create();
+    if (name != null) result.name = name;
+    if (opacity != null) result.opacity = opacity;
+    if (offset != null) result.offset = offset;
+    if (size != null) result.size = size;
+    if (fills != null) result.fills.addAll(fills);
+    return result;
+  }
+
+  VectorRectangle._();
+
+  factory VectorRectangle.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory VectorRectangle.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'VectorRectangle',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'name')
+    ..aD(2, _omitFieldNames ? '' : 'opacity')
+    ..aOM<Vector>(3, _omitFieldNames ? '' : 'offset', subBuilder: Vector.create)
+    ..aOM<Vector>(4, _omitFieldNames ? '' : 'size', subBuilder: Vector.create)
+    ..pPM<Paint>(5, _omitFieldNames ? '' : 'fills', subBuilder: Paint.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorRectangle clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorRectangle copyWith(void Function(VectorRectangle) updates) =>
+      super.copyWith((message) => updates(message as VectorRectangle))
+          as VectorRectangle;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static VectorRectangle create() => VectorRectangle._();
+  @$core.override
+  VectorRectangle createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static VectorRectangle getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<VectorRectangle>(create);
+  static VectorRectangle? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get name => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set name($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasName() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearName() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.double get opacity => $_getN(1);
+  @$pb.TagNumber(2)
+  set opacity($core.double value) => $_setDouble(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasOpacity() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearOpacity() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  Vector get offset => $_getN(2);
+  @$pb.TagNumber(3)
+  set offset(Vector value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasOffset() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearOffset() => $_clearField(3);
+  @$pb.TagNumber(3)
+  Vector ensureOffset() => $_ensure(2);
+
+  @$pb.TagNumber(4)
+  Vector get size => $_getN(3);
+  @$pb.TagNumber(4)
+  set size(Vector value) => $_setField(4, value);
+  @$pb.TagNumber(4)
+  $core.bool hasSize() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearSize() => $_clearField(4);
+  @$pb.TagNumber(4)
+  Vector ensureSize() => $_ensure(3);
+
+  @$pb.TagNumber(5)
+  $pb.PbList<Paint> get fills => $_getList(4);
+}
+
+class ArcData extends $pb.GeneratedMessage {
+  factory ArcData({
+    $core.double? startingAngle,
+    $core.double? endingAngle,
+    $core.double? innerRadius,
+  }) {
+    final result = create();
+    if (startingAngle != null) result.startingAngle = startingAngle;
+    if (endingAngle != null) result.endingAngle = endingAngle;
+    if (innerRadius != null) result.innerRadius = innerRadius;
+    return result;
+  }
+
+  ArcData._();
+
+  factory ArcData.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory ArcData.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'ArcData',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aD(1, _omitFieldNames ? '' : 'startingAngle', protoName: 'startingAngle')
+    ..aD(2, _omitFieldNames ? '' : 'endingAngle', protoName: 'endingAngle')
+    ..aD(3, _omitFieldNames ? '' : 'innerRadius', protoName: 'innerRadius')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ArcData clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ArcData copyWith(void Function(ArcData) updates) =>
+      super.copyWith((message) => updates(message as ArcData)) as ArcData;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ArcData create() => ArcData._();
+  @$core.override
+  ArcData createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static ArcData getDefault() =>
+      _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ArcData>(create);
+  static ArcData? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.double get startingAngle => $_getN(0);
+  @$pb.TagNumber(1)
+  set startingAngle($core.double value) => $_setDouble(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasStartingAngle() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearStartingAngle() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.double get endingAngle => $_getN(1);
+  @$pb.TagNumber(2)
+  set endingAngle($core.double value) => $_setDouble(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasEndingAngle() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearEndingAngle() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.double get innerRadius => $_getN(2);
+  @$pb.TagNumber(3)
+  set innerRadius($core.double value) => $_setDouble(2, value);
+  @$pb.TagNumber(3)
+  $core.bool hasInnerRadius() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearInnerRadius() => $_clearField(3);
+}
+
+class VectorEllipse extends $pb.GeneratedMessage {
+  factory VectorEllipse({
+    $core.String? name,
+    $core.double? opacity,
+    ArcData? arcData,
+    $core.Iterable<Paint>? fills,
+  }) {
+    final result = create();
+    if (name != null) result.name = name;
+    if (opacity != null) result.opacity = opacity;
+    if (arcData != null) result.arcData = arcData;
+    if (fills != null) result.fills.addAll(fills);
+    return result;
+  }
+
+  VectorEllipse._();
+
+  factory VectorEllipse.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory VectorEllipse.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'VectorEllipse',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'name')
+    ..aD(2, _omitFieldNames ? '' : 'opacity')
+    ..aOM<ArcData>(3, _omitFieldNames ? '' : 'arcData',
+        protoName: 'arcData', subBuilder: ArcData.create)
+    ..pPM<Paint>(5, _omitFieldNames ? '' : 'fills', subBuilder: Paint.create)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorEllipse clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorEllipse copyWith(void Function(VectorEllipse) updates) =>
+      super.copyWith((message) => updates(message as VectorEllipse))
+          as VectorEllipse;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static VectorEllipse create() => VectorEllipse._();
+  @$core.override
+  VectorEllipse createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static VectorEllipse getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<VectorEllipse>(create);
+  static VectorEllipse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get name => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set name($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasName() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearName() => $_clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.double get opacity => $_getN(1);
+  @$pb.TagNumber(2)
+  set opacity($core.double value) => $_setDouble(1, value);
+  @$pb.TagNumber(2)
+  $core.bool hasOpacity() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearOpacity() => $_clearField(2);
+
+  @$pb.TagNumber(3)
+  ArcData get arcData => $_getN(2);
+  @$pb.TagNumber(3)
+  set arcData(ArcData value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasArcData() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearArcData() => $_clearField(3);
+  @$pb.TagNumber(3)
+  ArcData ensureArcData() => $_ensure(2);
+
+  @$pb.TagNumber(5)
+  $pb.PbList<Paint> get fills => $_getList(3);
 }
 
 class VectorNetwork extends $pb.GeneratedMessage {
