@@ -421,21 +421,49 @@ void _writeNetworkStrokesFromSegments(
     return;
   }
 
-  final loops = _networkLoops(network);
-  if (loops.isEmpty) {
-    print('No loops found for strokes in network');
-    return;
-  }
-
   buffer.writeln('{');
   buffer.indent();
   buffer.writeln('final path = ui.Path();');
-  for (final loop in loops) {
-    _writeLoop(buffer, network, loop);
-  }
+  _writeNetworkStrokePath(buffer, network);
   _writePathStrokes(buffer, network.geometry, context, 'path');
   buffer.unindent();
   buffer.writeln('}');
+}
+
+void _writeNetworkStrokePath(DartBuffer buffer, VectorNetwork network) {
+  var currentVertexIndex = -1;
+  for (final segment in network.segments) {
+    if (currentVertexIndex != segment.start) {
+      final startVertex = network.vertices[segment.start];
+      buffer.writeln(
+        'path.moveTo(${_formatDouble(startVertex.x)}, ${_formatDouble(startVertex.y)});',
+      );
+    }
+    final startVertex = network.vertices[segment.start];
+    final endVertex = network.vertices[segment.end];
+    if (segment.hasTangentStart() || segment.hasTangentEnd()) {
+      final tangentStart = segment.hasTangentStart()
+          ? Vector(
+              x: startVertex.x + segment.tangentStart.x,
+              y: startVertex.y + segment.tangentStart.y,
+            )
+          : Vector(x: startVertex.x, y: startVertex.y);
+      final tangentEnd = segment.hasTangentEnd()
+          ? Vector(
+              x: endVertex.x + segment.tangentEnd.x,
+              y: endVertex.y + segment.tangentEnd.y,
+            )
+          : Vector(x: endVertex.x, y: endVertex.y);
+      buffer.writeln(
+        'path.cubicTo(${_formatDouble(tangentStart.x)}, ${_formatDouble(tangentStart.y)}, ${_formatDouble(tangentEnd.x)}, ${_formatDouble(tangentEnd.y)}, ${_formatDouble(endVertex.x)}, ${_formatDouble(endVertex.y)});',
+      );
+    } else {
+      buffer.writeln(
+        'path.lineTo(${_formatDouble(endVertex.x)}, ${_formatDouble(endVertex.y)});',
+      );
+    }
+    currentVertexIndex = segment.end;
+  }
 }
 
 void _writeRectangleStrokes(
