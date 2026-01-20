@@ -141,8 +141,7 @@ Future<void> _generateCode() async {
         final format = formatValue == 'vectorGraphicsBase64'
             ? FlutterVectorGraphicsFormat.vectorGraphicsBase64
             : FlutterVectorGraphicsFormat.canvas;
-        final stylesClass =
-            _currentVectorOptions['stylesClass'] as bool? ?? false;
+        final stylesClass = true;
         generatedCode = generator.exportVectorGraphics(
           FlutterExportContext(
             vectorGraphics: FlutterVectorGraphicsExportOptions(

@@ -20,8 +20,8 @@ class FlutterVectorCanvasExporter {
       final styles = _collectBoundVariableStyles([vectorGraphics]);
       final stylesClassName =
           context.vectorGraphics.stylesClass && styles.isNotEmpty
-              ? '${widgetName}Styles'
-              : null;
+          ? '${widgetName}Styles'
+          : null;
       if (stylesClassName != null) {
         _writeStylesClass(buffer, context, styles, stylesClassName);
       }
@@ -473,6 +473,17 @@ void _writeNodeTransform(DartBuffer buffer, VectorNode node) {
   if (node.whichType() == VectorNode_Type.group) {
     return;
   }
+
+  // Identity
+  if (node.transform.m02 == 0 &&
+      node.transform.m12 == 0 &&
+      node.transform.m00 == 1 &&
+      node.transform.m11 == 1 &&
+      node.transform.m01 == 0 &&
+      node.transform.m10 == 0) {
+    return;
+  }
+
   final transform = node.transform;
   // TODO generate  binary data
   buffer.writeln(

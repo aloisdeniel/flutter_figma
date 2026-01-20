@@ -30,9 +30,11 @@ class FigmaVectorNetworksImporter {
     for (final node in targets) {
       final root = await _vectorNode(node, context);
       if (root != null) {
-        print('Imported vector graphics for node: ${node.name}');
+        // Ignore transform for root node
+        root.transform.m02 = 0;
+        root.transform.m12 = 0;
+
         final offset = Vector(x: node.x.toDouble(), y: node.y.toDouble());
-        print('Node offset: ($offset)');
         final size = Vector(
           x: node.width.toDouble(),
           y: node.height.toDouble(),
