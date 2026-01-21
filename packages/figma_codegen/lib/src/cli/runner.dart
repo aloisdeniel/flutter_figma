@@ -69,7 +69,7 @@ class CliRunner {
             library: library,
             prettyPrint: prettyPrint,
           );
-          output = exporter.exportVariableCollections(context);
+          output = exporter.export(context);
           break;
 
         case OutputFormat.dart:

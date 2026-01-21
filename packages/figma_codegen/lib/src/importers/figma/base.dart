@@ -7,6 +7,7 @@ class FigmaImportOptions {
     this.fileKey,
     this.personalAccessToken,
     this.naming = const (stylesCollection: 'Styles'),
+    this.componentIds,
   });
 
   /// Whether to import styles from the Figma file as a "Styles" collection.
@@ -24,6 +25,11 @@ class FigmaImportOptions {
   ///
   /// Only required when importing from the Figma API.
   final String? personalAccessToken;
+
+  /// The list of component IDs to import.
+  ///
+  /// If null, all local components will be imported.
+  final List<String>? componentIds;
 }
 
 abstract class FigmaImporterBase {

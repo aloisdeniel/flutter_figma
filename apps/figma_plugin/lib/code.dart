@@ -114,10 +114,8 @@ void main() {
 Future<void> _generateCode() async {
   print('Generating code...');
 
-  final loadingMessage = {
-    'type': 'loading',
-    'message': 'Generating code...'
-  }.jsify()!;
+  final loadingMessage =
+      {'type': 'loading', 'message': 'Generating code...'}.jsify()!;
   figma.ui.postMessage(loadingMessage);
 
   final stylesCollectionName = _normalizeOption(
@@ -138,8 +136,7 @@ Future<void> _generateCode() async {
   if (_currentMode == OutputMode.vector && library.vectorGraphics.isEmpty) {
     final message = {
       'type': 'no-selection',
-      'message':
-          'Select one or more elements to generate vector graphics.',
+      'message': 'Select one or more elements to generate vector graphics.',
     }.jsify()!;
     figma.ui.postMessage(message);
     return;
@@ -174,8 +171,14 @@ Future<void> _generateCode() async {
         final generator = JsonExporter();
         final prettyPrint =
             _currentVariablesOptions['prettyPrint'] as bool? ?? true;
-        generatedCode = generator.exportVectorGraphics(
-          JsonExportContext(library: library, prettyPrint: prettyPrint),
+        generatedCode = generator.export(
+          JsonExportContext(
+              library: Library(
+                variables: [],
+                vectorGraphics: library.vectorGraphics,
+                components: [],
+              ),
+              prettyPrint: prettyPrint),
         );
     }
   } else {
@@ -212,9 +215,13 @@ Future<void> _generateCode() async {
         final generator = JsonExporter();
         final prettyPrint =
             _currentVariablesOptions['prettyPrint'] as bool? ?? true;
-        generatedCode = generator.exportVariableCollections(
+        generatedCode = generator.export(
           JsonExportContext(
-            library: library,
+            library: Library(
+              variables: library.variables,
+              vectorGraphics: [],
+              components: [],
+            ),
             prettyPrint: prettyPrint,
           ),
         );

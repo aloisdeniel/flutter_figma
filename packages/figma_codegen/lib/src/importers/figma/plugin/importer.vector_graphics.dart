@@ -7,8 +7,8 @@ import 'package:figma_codegen/src/importers/figma/base.dart';
 import 'package:figma_codegen/src/importers/figma/plugin/figma.dart'
     as figma_api;
 
-class FigmaVectorNetworksImporter {
-  const FigmaVectorNetworksImporter();
+class FigmaVectorGraphicsImporter {
+  const FigmaVectorGraphicsImporter();
 
   Future<List<VectorGraphics>> import(
     ImportContext<FigmaImportOptions> context,

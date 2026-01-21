@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package definitions;
+
+message Component {
+  string name = 1;
+  string description = 2;
+  repeated ComponentProperty properties = 3;
+}
+
+message ComponentProperty {
+  string name = 1;
+  ComponentPropertyValue defaultValue = 2;
+}
+
+message ComponentPropertyValue {
+  oneof value {
+    bool booleanValue = 1;
+    string stringValue = 2;
+    double numberValue = 3;
+    ComponentVariantValue variantValue = 4;
+    ComponentInstance instanceSwapValue = 5;
+  }
+}
+
+message ComponentVariantValue {
+  string variantName = 1;
+  string value = 2;
+  string description = 3;
+}
+
+message ComponentInstance {
+  string componentName = 1;
+  repeated ComponentProperty properties = 2;
+}
+

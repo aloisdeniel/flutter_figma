@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:figma_codegen/src/definitions/components.pb.dart';
 import 'package:figma_codegen/src/definitions/library.dart';
 import 'package:figma_codegen/src/definitions/variables.pb.dart';
 import 'package:figma_codegen/src/definitions/vector_graphics.pb.dart';
@@ -32,7 +33,7 @@ class JsonImporter {
         .whereType<VariableCollection>()
         .toList();
 
-    final decodedVertexNetworks = decoded['vertexNetworks'];
+    final decodedVertexNetworks = decoded['vectorGraphics'];
 
     if (decodedVertexNetworks is! List) {
       throw FormatException('Expected a JSON array of VertexNetworks.');
@@ -50,6 +51,28 @@ class JsonImporter {
         .whereType<VectorGraphics>()
         .toList();
 
-    return Library(vectorGraphics: vectorGraphics, variables: collecions);
+    final decodedComponents = decoded['components'];
+
+    if (decodedComponents is! List) {
+      throw FormatException('Expected a JSON array of Components.');
+    }
+
+    final components = decodedComponents
+        .map((item) {
+          if (item is! Map<String, dynamic>) {
+            throw FormatException(
+              'Expected each item to be a JSON object representing a Component.',
+            );
+          }
+          return Component()..mergeFromProto3Json(item);
+        })
+        .whereType<Component>()
+        .toList();
+
+    return Library(
+      vectorGraphics: vectorGraphics,
+      variables: collecions,
+      components: components,
+    );
   }
 }
