@@ -64,9 +64,7 @@ void _writeComponent(DartBuffer buffer, Component component) {
   }
 
   _writeDataClass(buffer, componentName, properties);
-  _writeInheritedWidget(buffer, componentName);
-  _writeBuilderWidget(buffer, componentName, properties, variants);
-  _writeWidgetImplementation(buffer, componentName, properties, variants);
+  _writeInheritedWidget(buffer, componentName, properties);
 }
 
 Map<String, _VariantInfo> _resolveVariants(
@@ -215,7 +213,11 @@ void _writeDataClass(
   buffer.writeClass(dataClass);
 }
 
-void _writeInheritedWidget(DartBuffer buffer, String componentName) {
+void _writeInheritedWidget(
+  DartBuffer buffer,
+  String componentName,
+  List<_ResolvedProperty> properties,
+) {
   final className = '${componentName}Properties';
   final dataType = '${componentName}Data';
   buffer.writeln('class $className extends InheritedWidget {');
@@ -223,6 +225,40 @@ void _writeInheritedWidget(DartBuffer buffer, String componentName) {
   buffer.writeln(
     'const $className({super.key, required this.data, required super.child});',
   );
+  buffer.writeln();
+  buffer.writeln('factory $className.merge(');
+  buffer.indent();
+  buffer.writeln('BuildContext context, {');
+  buffer.indent();
+  buffer.writeln('Key? key,');
+  buffer.writeln('required Widget child,');
+  for (final prop in properties) {
+    final nullableType = prop.type.endsWith('?') ? prop.type : '${prop.type}?';
+    buffer.writeln('$nullableType ${prop.fieldName},');
+  }
+  buffer.unindent();
+  buffer.writeln('}) {');
+  buffer.indent();
+  buffer.writeln(
+    'var properties = $className.maybeOf(context) ?? const $dataType();',
+  );
+  buffer.writeln('return $className(');
+  buffer.indent();
+  buffer.writeln('key: key,');
+  buffer.writeln('data: $dataType(');
+  buffer.indent();
+  for (final prop in properties) {
+    buffer.writeln(
+      '${prop.fieldName}: ${prop.fieldName} ?? properties.${prop.fieldName},',
+    );
+  }
+  buffer.unindent();
+  buffer.writeln('),');
+  buffer.writeln('child: child,');
+  buffer.unindent();
+  buffer.writeln(');');
+  buffer.unindent();
+  buffer.writeln('}');
   buffer.writeln();
   buffer.writeln('final $dataType data;');
   buffer.writeln();
@@ -247,118 +283,6 @@ void _writeInheritedWidget(DartBuffer buffer, String componentName) {
   buffer.writeln(
     'bool updateShouldNotify($className oldWidget) => data != oldWidget.data;',
   );
-  buffer.unindent();
-  buffer.writeln('}');
-  buffer.writeln();
-}
-
-void _writeBuilderWidget(
-  DartBuffer buffer,
-  String componentName,
-  List<_ResolvedProperty> properties,
-  Map<String, _VariantInfo> variants,
-) {
-  final widgetName = '${componentName}Builder';
-  final dataType = '${componentName}Data';
-  final propertiesClass = '${componentName}Properties';
-
-  buffer.writeln('class $widgetName extends StatelessWidget {');
-  buffer.indent();
-  buffer.writeln('const $widgetName({');
-  buffer.indent();
-  buffer.writeln('super.key,');
-  buffer.writeln('required this.builder,');
-  for (final prop in properties) {
-    buffer.writeln('this.${prop.fieldName},');
-  }
-  buffer.unindent();
-  buffer.writeln('});');
-  buffer.writeln();
-
-  for (final prop in properties) {
-    buffer.writeln('final ${prop.type}? ${prop.fieldName};');
-  }
-
-  buffer.writeln();
-  buffer.writeln(
-    'final Widget Function(BuildContext context, $dataType properties) builder;',
-  );
-  buffer.writeln();
-  buffer.writeln('@override');
-  buffer.writeln('Widget build(BuildContext context) {');
-  buffer.indent();
-  buffer.writeln(
-    'var properties = $propertiesClass.maybeOf(context) ?? const $dataType();',
-  );
-  if (properties.isNotEmpty) {
-    buffer.write('if (');
-    for (var i = 0; i < properties.length; i++) {
-      final prop = properties[i];
-      buffer.write('${prop.fieldName} != null');
-      if (i < properties.length - 1) {
-        buffer.write(' || ');
-      }
-    }
-    buffer.writeln(') {');
-    buffer.indent();
-    buffer.writeln('properties = properties.copyWith(');
-    buffer.indent();
-    for (final prop in properties) {
-      buffer.writeln('${prop.fieldName}: ${prop.fieldName},');
-    }
-    buffer.unindent();
-    buffer.writeln(');');
-    buffer.unindent();
-    buffer.writeln('}');
-  }
-  buffer.writeln('return $propertiesClass(');
-  buffer.indent();
-  buffer.writeln('data: properties,');
-  buffer.writeln(
-    'child: Builder(builder: (context) => builder(context,properties),),',
-  );
-  buffer.unindent();
-  buffer.writeln(');');
-  buffer.unindent();
-  buffer.writeln('}');
-  buffer.unindent();
-  buffer.writeln('}');
-  buffer.writeln();
-}
-
-void _writeWidgetImplementation(
-  DartBuffer buffer,
-  String componentName,
-  List<_ResolvedProperty> properties,
-  Map<String, _VariantInfo> variants,
-) {
-  final builderName = '${componentName}Builder';
-  final widgetName = componentName;
-  final dataType = '${componentName}Data';
-
-  buffer.writeln('class $widgetName extends $builderName {');
-  buffer.indent();
-  buffer.writeln('const $widgetName({');
-  buffer.indent();
-  buffer.writeln('super.key,');
-  for (final prop in properties) {
-    buffer.writeln('super.${prop.fieldName},');
-  }
-  buffer.unindent();
-  buffer.writeln('})');
-  buffer.indent();
-  buffer.writeln(': super(builder: _builder);');
-  buffer.unindent();
-  buffer.writeln();
-
-  buffer.writeln(
-    'static Widget _builder(BuildContext context, $dataType properties) {',
-  );
-  buffer.indent();
-  buffer.writeln('// TODO: Implement rendering based on properties');
-  buffer.unindent();
-  buffer.writeln('}');
-
   buffer.unindent();
   buffer.writeln('}');
   buffer.writeln();
