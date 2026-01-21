@@ -257,7 +257,7 @@ void _writeWidget(
   List<_ResolvedProperty> properties,
   Map<String, _VariantInfo> variants,
 ) {
-  final widgetName = '${componentName}Base';
+  final widgetName = '${componentName}Builder';
   final dataType = '${componentName}Data';
   final propertiesClass = '${componentName}Properties';
 
@@ -266,6 +266,7 @@ void _writeWidget(
   buffer.writeln('const $widgetName({');
   buffer.indent();
   buffer.writeln('super.key,');
+  buffer.writeln('required this.builder,');
   for (final prop in properties) {
     buffer.writeln('this.${prop.fieldName},');
   }
@@ -278,7 +279,7 @@ void _writeWidget(
 
   buffer.writeln();
   buffer.writeln(
-    'Widget buildContent(BuildContext context, $dataType properties);',
+    'final Widget Function(BuildContext context, $dataType properties) builder;',
   );
   buffer.writeln();
   buffer.writeln('@override');
@@ -312,7 +313,7 @@ void _writeWidget(
   buffer.indent();
   buffer.writeln('data: properties,');
   buffer.writeln(
-    'child: Builder(builder: (context) => buildContent(context,properties),),',
+    'child: Builder(builder: (context) => builder(context,properties),),',
   );
   buffer.unindent();
   buffer.writeln(');');
