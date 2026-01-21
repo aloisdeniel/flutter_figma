@@ -65,7 +65,8 @@ void _writeComponent(DartBuffer buffer, Component component) {
 
   _writeDataClass(buffer, componentName, properties);
   _writeInheritedWidget(buffer, componentName);
-  _writeWidget(buffer, componentName, properties, variants);
+  _writeBuilderWidget(buffer, componentName, properties, variants);
+  _writeWidgetImplementation(buffer, componentName, properties, variants);
 }
 
 Map<String, _VariantInfo> _resolveVariants(
@@ -251,7 +252,7 @@ void _writeInheritedWidget(DartBuffer buffer, String componentName) {
   buffer.writeln();
 }
 
-void _writeWidget(
+void _writeBuilderWidget(
   DartBuffer buffer,
   String componentName,
   List<_ResolvedProperty> properties,
@@ -261,7 +262,7 @@ void _writeWidget(
   final dataType = '${componentName}Data';
   final propertiesClass = '${componentName}Properties';
 
-  buffer.writeln('abstract class $widgetName extends StatelessWidget {');
+  buffer.writeln('class $widgetName extends StatelessWidget {');
   buffer.indent();
   buffer.writeln('const $widgetName({');
   buffer.indent();
@@ -273,6 +274,7 @@ void _writeWidget(
   buffer.unindent();
   buffer.writeln('});');
   buffer.writeln();
+
   for (final prop in properties) {
     buffer.writeln('final ${prop.type}? ${prop.fieldName};');
   }
@@ -319,6 +321,44 @@ void _writeWidget(
   buffer.writeln(');');
   buffer.unindent();
   buffer.writeln('}');
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.writeln();
+}
+
+void _writeWidgetImplementation(
+  DartBuffer buffer,
+  String componentName,
+  List<_ResolvedProperty> properties,
+  Map<String, _VariantInfo> variants,
+) {
+  final builderName = '${componentName}Builder';
+  final widgetName = componentName;
+  final dataType = '${componentName}Data';
+
+  buffer.writeln('class $widgetName extends $builderName {');
+  buffer.indent();
+  buffer.writeln('const $widgetName({');
+  buffer.indent();
+  buffer.writeln('super.key,');
+  for (final prop in properties) {
+    buffer.writeln('super.${prop.fieldName},');
+  }
+  buffer.unindent();
+  buffer.writeln('})');
+  buffer.indent();
+  buffer.writeln(': super(builder: _builder);');
+  buffer.unindent();
+  buffer.writeln();
+
+  buffer.writeln(
+    'static Widget _builder(BuildContext context, $dataType properties) {',
+  );
+  buffer.indent();
+  buffer.writeln('// TODO: Implement rendering based on properties');
+  buffer.unindent();
+  buffer.writeln('}');
+
   buffer.unindent();
   buffer.writeln('}');
   buffer.writeln();
