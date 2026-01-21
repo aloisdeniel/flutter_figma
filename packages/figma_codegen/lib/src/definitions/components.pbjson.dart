@@ -22,8 +22,17 @@ const Component$json = {
     {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
     {'1': 'description', '3': 2, '5': 9, '8': {}, '10': 'description'},
     {
-      '1': 'properties',
+      '1': 'variants',
       '3': 3,
+      '4': 3,
+      '5': 11,
+      '6': '.definitions.ComponentVariant',
+      '8': {},
+      '10': 'variants'
+    },
+    {
+      '1': 'properties',
+      '3': 4,
       '4': 3,
       '5': 11,
       '6': '.definitions.ComponentProperty',
@@ -36,8 +45,23 @@ const Component$json = {
 /// Descriptor for `Component`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List componentDescriptor = $convert.base64Decode(
     'CglDb21wb25lbnQSEgoEbmFtZRgBKAlCAFIEbmFtZRIgCgtkZXNjcmlwdGlvbhgCKAlCAFILZG'
-    'VzY3JpcHRpb24SQAoKcHJvcGVydGllcxgDIAMoCzIeLmRlZmluaXRpb25zLkNvbXBvbmVudFBy'
-    'b3BlcnR5QgBSCnByb3BlcnRpZXM=');
+    'VzY3JpcHRpb24SOwoIdmFyaWFudHMYAyADKAsyHS5kZWZpbml0aW9ucy5Db21wb25lbnRWYXJp'
+    'YW50QgBSCHZhcmlhbnRzEkAKCnByb3BlcnRpZXMYBCADKAsyHi5kZWZpbml0aW9ucy5Db21wb2'
+    '5lbnRQcm9wZXJ0eUIAUgpwcm9wZXJ0aWVz');
+
+@$core.Deprecated('Use componentVariantDescriptor instead')
+const ComponentVariant$json = {
+  '1': 'ComponentVariant',
+  '2': [
+    {'1': 'name', '3': 1, '5': 9, '8': {}, '10': 'name'},
+    {'1': 'options', '3': 3, '4': 3, '5': 9, '8': {}, '10': 'options'},
+  ],
+};
+
+/// Descriptor for `ComponentVariant`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List componentVariantDescriptor = $convert.base64Decode(
+    'ChBDb21wb25lbnRWYXJpYW50EhIKBG5hbWUYASgJQgBSBG5hbWUSGgoHb3B0aW9ucxgDIAMoCU'
+    'IAUgdvcHRpb25z');
 
 @$core.Deprecated('Use componentPropertyDescriptor instead')
 const ComponentProperty$json = {

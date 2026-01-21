@@ -5,7 +5,13 @@ package definitions;
 message Component {
   string name = 1;
   string description = 2;
-  repeated ComponentProperty properties = 3;
+  repeated ComponentVariant variants = 3;
+  repeated ComponentProperty properties = 4;
+}
+
+message ComponentVariant {
+  string name = 1;
+  repeated string options = 3;
 }
 
 message ComponentProperty {

@@ -20,11 +20,13 @@ class Component extends $pb.GeneratedMessage {
   factory Component({
     $core.String? name,
     $core.String? description,
+    $core.Iterable<ComponentVariant>? variants,
     $core.Iterable<ComponentProperty>? properties,
   }) {
     final result = create();
     if (name != null) result.name = name;
     if (description != null) result.description = description;
+    if (variants != null) result.variants.addAll(variants);
     if (properties != null) result.properties.addAll(properties);
     return result;
   }
@@ -44,7 +46,9 @@ class Component extends $pb.GeneratedMessage {
       createEmptyInstance: create)
     ..aOS(1, _omitFieldNames ? '' : 'name')
     ..aOS(2, _omitFieldNames ? '' : 'description')
-    ..pPM<ComponentProperty>(3, _omitFieldNames ? '' : 'properties',
+    ..pPM<ComponentVariant>(3, _omitFieldNames ? '' : 'variants',
+        subBuilder: ComponentVariant.create)
+    ..pPM<ComponentProperty>(4, _omitFieldNames ? '' : 'properties',
         subBuilder: ComponentProperty.create)
     ..hasRequiredFields = false;
 
@@ -85,7 +89,70 @@ class Component extends $pb.GeneratedMessage {
   void clearDescription() => $_clearField(2);
 
   @$pb.TagNumber(3)
-  $pb.PbList<ComponentProperty> get properties => $_getList(2);
+  $pb.PbList<ComponentVariant> get variants => $_getList(2);
+
+  @$pb.TagNumber(4)
+  $pb.PbList<ComponentProperty> get properties => $_getList(3);
+}
+
+class ComponentVariant extends $pb.GeneratedMessage {
+  factory ComponentVariant({
+    $core.String? name,
+    $core.Iterable<$core.String>? options,
+  }) {
+    final result = create();
+    if (name != null) result.name = name;
+    if (options != null) result.options.addAll(options);
+    return result;
+  }
+
+  ComponentVariant._();
+
+  factory ComponentVariant.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory ComponentVariant.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'ComponentVariant',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aOS(1, _omitFieldNames ? '' : 'name')
+    ..pPS(3, _omitFieldNames ? '' : 'options')
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ComponentVariant clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  ComponentVariant copyWith(void Function(ComponentVariant) updates) =>
+      super.copyWith((message) => updates(message as ComponentVariant))
+          as ComponentVariant;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static ComponentVariant create() => ComponentVariant._();
+  @$core.override
+  ComponentVariant createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static ComponentVariant getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<ComponentVariant>(create);
+  static ComponentVariant? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get name => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set name($core.String value) => $_setString(0, value);
+  @$pb.TagNumber(1)
+  $core.bool hasName() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearName() => $_clearField(1);
+
+  @$pb.TagNumber(3)
+  $pb.PbList<$core.String> get options => $_getList(1);
 }
 
 class ComponentProperty extends $pb.GeneratedMessage {
