@@ -257,11 +257,11 @@ void _writeWidget(
   List<_ResolvedProperty> properties,
   Map<String, _VariantInfo> variants,
 ) {
-  final widgetName = componentName;
+  final widgetName = '${componentName}Base';
   final dataType = '${componentName}Data';
   final propertiesClass = '${componentName}Properties';
 
-  buffer.writeln('class $widgetName extends StatelessWidget {');
+  buffer.writeln('abstract class $widgetName extends StatelessWidget {');
   buffer.indent();
   buffer.writeln('const $widgetName({');
   buffer.indent();
@@ -269,20 +269,16 @@ void _writeWidget(
   for (final prop in properties) {
     buffer.writeln('this.${prop.fieldName},');
   }
-  buffer.writeln('this.child,');
-  buffer.writeln('this.builder,');
   buffer.unindent();
-  buffer.writeln(
-    '}) : assert(child != null || builder != null, \''
-    'Either child or builder must be provided.\');',
-  );
+  buffer.writeln('});');
   buffer.writeln();
   for (final prop in properties) {
     buffer.writeln('final ${prop.type}? ${prop.fieldName};');
   }
-  buffer.writeln('final Widget? child;');
+
+  buffer.writeln();
   buffer.writeln(
-    'final Widget Function(BuildContext context, $dataType properties)? builder;',
+    'Widget buildContent(BuildContext context, $dataType properties);',
   );
   buffer.writeln();
   buffer.writeln('@override');
@@ -316,7 +312,7 @@ void _writeWidget(
   buffer.indent();
   buffer.writeln('data: properties,');
   buffer.writeln(
-    'child: builder != null ? builder!(context, properties) : child!,',
+    'child: Builder(builder: (context) => buildContent(context,properties),),',
   );
   buffer.unindent();
   buffer.writeln(');');
