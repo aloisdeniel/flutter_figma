@@ -1,6 +1,7 @@
 import 'dart:js_interop';
 
 import 'package:figma_codegen/figma_codegen.dart';
+import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
 import 'package:figma_codegen/src/importers/figma/plugin/figma.dart';
 
 @JS('__html__')
@@ -27,12 +28,13 @@ extension type ExportOptions._(JSObject _) implements JSObject {
 
 enum OutputFormat { dart, json }
 
-enum OutputMode { variables, vector }
+enum OutputMode { variables, vector, components }
 
 OutputMode _currentMode = OutputMode.variables;
 OutputFormat _currentFormat = OutputFormat.dart;
 Map<String, dynamic> _currentVariablesOptions = {};
 Map<String, dynamic> _currentVectorOptions = {};
+Map<String, dynamic> _currentComponentOptions = {};
 
 String? _normalizeOption(String? value) {
   final trimmed = value?.trim();
@@ -62,10 +64,12 @@ void main() {
     if (msg.type == 'format-changed') {
       _currentMode = switch (msg.mode) {
         'vector' => OutputMode.vector,
+        'components' => OutputMode.components,
         _ => OutputMode.variables,
       };
-      _currentFormat = switch (msg.format) {
-        'json' => OutputFormat.json,
+      _currentFormat = switch ((_currentMode, msg.format)) {
+        (OutputMode.components, _) => OutputFormat.dart,
+        (_, 'json') => OutputFormat.json,
         _ => OutputFormat.dart,
       };
 
@@ -97,6 +101,9 @@ void main() {
         }
         if (opts.useGoogleFonts != null) {
           _currentVariablesOptions['useGoogleFonts'] = opts.useGoogleFonts;
+        }
+        if (_currentMode == OutputMode.components) {
+          _currentComponentOptions = {};
         }
       }
 
@@ -142,6 +149,15 @@ Future<void> _generateCode() async {
     return;
   }
 
+  if (_currentMode == OutputMode.components && library.components.isEmpty) {
+    final message = {
+      'type': 'no-selection',
+      'message': 'Select one or more components to generate component code.',
+    }.jsify()!;
+    figma.ui.postMessage(message);
+    return;
+  }
+
   String generatedCode;
   if (_currentMode == OutputMode.vector) {
     switch (_currentFormat) {
@@ -181,6 +197,23 @@ Future<void> _generateCode() async {
               prettyPrint: prettyPrint),
         );
     }
+  } else if (_currentMode == OutputMode.components) {
+    final generator = FlutterExporter();
+    generatedCode = generator.exportComponents(
+      FlutterExportContext(
+        variables: FlutterVariablesExportOptions(
+          collections: library.variables,
+          naming: (root: 'Variables'),
+          collectionStructure: VariableCollectionDataStructure.flat,
+          useGoogleFonts: false,
+        ),
+        vectorGraphics: FlutterVectorGraphicsExportOptions(
+          format: FlutterVectorGraphicsFormat.canvas,
+          vectorGraphics: library.vectorGraphics,
+        ),
+        components: FlutterComponentsExportOptions(components: library.components),
+      ),
+    );
   } else {
     switch (_currentFormat) {
       case OutputFormat.dart:

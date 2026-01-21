@@ -16,6 +16,7 @@ let exportOptions = {
   vector: {
     format: 'canvas',
   },
+  components: {},
 };
 
 // Auto-generate code on load
@@ -38,20 +39,29 @@ function updateTabUI() {
 
   const variableFormatToggle = document.getElementById('variable-format-toggle');
   const vectorFormatToggle = document.getElementById('vector-format-toggle');
+  const componentFormatToggle = document.getElementById('component-format-toggle');
   if (variableFormatToggle) {
-    variableFormatToggle.style.display = 'flex';
+    variableFormatToggle.style.display = currentMode === 'variables' ? 'flex' : 'none';
   }
   if (vectorFormatToggle) {
     vectorFormatToggle.style.display = currentMode === 'vector' ? 'flex' : 'none';
   }
+  if (componentFormatToggle) {
+    componentFormatToggle.style.display = currentMode === 'components' ? 'flex' : 'none';
+  }
 
   formatTabButtons.forEach((button) => {
     button.classList.toggle('active', button.dataset.format === currentFormat);
+    button.disabled = currentMode === 'components' && button.dataset.format !== 'dart';
   });
 
   const vectorFormatSelect = document.getElementById('vector-format-select');
   if (vectorFormatSelect) {
     vectorFormatSelect.value = exportOptions.vector.format || 'canvas';
+  }
+
+  if (currentMode === 'components') {
+    currentFormat = 'dart';
   }
 
 }
@@ -63,6 +73,9 @@ modeTabButtons.forEach((button) => {
       return;
     }
     currentMode = mode;
+    if (currentMode === 'components') {
+      currentFormat = 'dart';
+    }
     updateTabUI();
     updateExportOptions();
     regenerateCode();
@@ -265,6 +278,9 @@ function updateExportOptions() {
       });
     }
   }
+  else if (currentMode === 'components') {
+    // No component-specific options yet.
+  }
 
   if (!optionsContainer.childElementCount) {
     optionsSection.style.display = 'none';
@@ -282,7 +298,9 @@ function regenerateCode() {
     ? exportOptions[currentFormat]
     : currentFormat === 'json'
       ? exportOptions.json
-      : exportOptions.vector;
+      : currentMode === 'components'
+        ? exportOptions.components
+        : exportOptions.vector;
   parent.postMessage({
     pluginMessage: {
       type: 'format-changed',
