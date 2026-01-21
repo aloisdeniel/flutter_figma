@@ -188,8 +188,9 @@ void _writeDataClass(
         .map(
           (prop) => DartArgument(
             name: prop.fieldName,
-            type: prop.type,
             isNamed: true,
+            isRequired: false,
+            isThis: true,
             defaultValue: prop.defaultLiteral == 'null'
                 ? null
                 : prop.defaultLiteral,
@@ -224,15 +225,20 @@ void _writeInheritedWidget(DartBuffer buffer, String componentName) {
   buffer.writeln();
   buffer.writeln('final $dataType data;');
   buffer.writeln();
-  buffer.writeln('static $dataType of(BuildContext context) {');
+  buffer.writeln('static $dataType? maybeOf(BuildContext context) {');
   buffer.indent();
   buffer.writeln(
     'final result = context.dependOnInheritedWidgetOfExactType<$className>();',
   );
-  buffer.writeln(
-    "assert(result != null, 'No $className found in the widget tree');",
-  );
-  buffer.writeln('return result!.data;');
+  buffer.writeln('return result?.data;');
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.writeln();
+  buffer.writeln('static $dataType of(BuildContext context) {');
+  buffer.indent();
+  buffer.writeln('final result = maybeOf(context);');
+  buffer.writeln("assert(result != null, 'No $className found in context');");
+  buffer.writeln('return result!;');
   buffer.unindent();
   buffer.writeln('}');
   buffer.writeln();
@@ -254,83 +260,64 @@ void _writeWidget(
   final widgetName = componentName;
   final dataType = '${componentName}Data';
   final propertiesClass = '${componentName}Properties';
-  final singleVariant = variants.length == 1 ? variants.values.first : null;
-  final variantField = properties.firstWhere(
-    (prop) => prop.variant == singleVariant,
-    orElse: () =>
-        _ResolvedProperty(fieldName: '', type: '', defaultLiteral: ''),
-  );
 
   buffer.writeln('class $widgetName extends StatelessWidget {');
   buffer.indent();
   buffer.writeln('const $widgetName({');
   buffer.indent();
   buffer.writeln('super.key,');
-  buffer.writeln('required this.child,');
-  buffer.writeln('$dataType? data,');
   for (final prop in properties) {
-    final defaultLiteral = prop.defaultLiteral;
-    final defaultPart = defaultLiteral == 'null' ? '' : ' = $defaultLiteral';
-    buffer.writeln('${prop.type} ${prop.fieldName}$defaultPart,');
+    buffer.writeln('this.${prop.fieldName},');
   }
+  buffer.writeln('this.child,');
+  buffer.writeln('this.builder,');
   buffer.unindent();
-  buffer.writeln('}) : data = data ?? $dataType(');
-  buffer.indent();
-  for (final prop in properties) {
-    buffer.writeln('${prop.fieldName}: ${prop.fieldName},');
-  }
-  buffer.unindent();
-  buffer.writeln(');');
+  buffer.writeln(
+    '}) : assert(child != null || builder != null, \''
+    'Either child or builder must be provided.\');',
+  );
   buffer.writeln();
-  buffer.writeln('final Widget child;');
-  buffer.writeln('final $dataType data;');
-
-  if (singleVariant != null && variantField.fieldName.isNotEmpty) {
-    for (final option in singleVariant.options.entries) {
-      final constructorName = option.value;
-      final variantLiteral = '${singleVariant.enumName}.${option.value}';
-      buffer.writeln();
-      buffer.writeln('const $widgetName.$constructorName({');
-      buffer.indent();
-      buffer.writeln('super.key,');
-      buffer.writeln('required Widget child,');
-      buffer.writeln('$dataType? data,');
-      for (final prop in properties) {
-        if (prop.variant == singleVariant) {
-          continue;
-        }
-        final defaultLiteral = prop.defaultLiteral;
-        final defaultPart = defaultLiteral == 'null'
-            ? ''
-            : ' = $defaultLiteral';
-        buffer.writeln('${prop.type} ${prop.fieldName}$defaultPart,');
-      }
-      buffer.unindent();
-      buffer.writeln('}) : this(');
-      buffer.indent();
-      buffer.writeln('key: key,');
-      buffer.writeln('child: child,');
-      buffer.writeln('data: data,');
-      buffer.writeln('${variantField.fieldName}: $variantLiteral,');
-      for (final prop in properties) {
-        if (prop.variant == singleVariant) {
-          continue;
-        }
-        buffer.writeln('${prop.fieldName}: ${prop.fieldName},');
-      }
-      buffer.unindent();
-      buffer.writeln(');');
-    }
+  for (final prop in properties) {
+    buffer.writeln('final ${prop.type}? ${prop.fieldName};');
   }
-
+  buffer.writeln('final Widget? child;');
+  buffer.writeln(
+    'final Widget Function(BuildContext context, $dataType properties)? builder;',
+  );
   buffer.writeln();
   buffer.writeln('@override');
   buffer.writeln('Widget build(BuildContext context) {');
   buffer.indent();
+  buffer.writeln(
+    'var properties = $propertiesClass.maybeOf(context) ?? const $dataType();',
+  );
+  if (properties.isNotEmpty) {
+    buffer.write('if (');
+    for (var i = 0; i < properties.length; i++) {
+      final prop = properties[i];
+      buffer.write('${prop.fieldName} != null');
+      if (i < properties.length - 1) {
+        buffer.write(' || ');
+      }
+    }
+    buffer.writeln(') {');
+    buffer.indent();
+    buffer.writeln('properties = properties.copyWith(');
+    buffer.indent();
+    for (final prop in properties) {
+      buffer.writeln('${prop.fieldName}: ${prop.fieldName},');
+    }
+    buffer.unindent();
+    buffer.writeln(');');
+    buffer.unindent();
+    buffer.writeln('}');
+  }
   buffer.writeln('return $propertiesClass(');
   buffer.indent();
-  buffer.writeln('data: data,');
-  buffer.writeln('child: child,');
+  buffer.writeln('data: properties,');
+  buffer.writeln(
+    'child: builder != null ? builder!(context, properties) : child!,',
+  );
   buffer.unindent();
   buffer.writeln(');');
   buffer.unindent();

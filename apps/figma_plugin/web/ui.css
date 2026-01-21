@@ -15,7 +15,7 @@ body {
 }
 
 .top-bar {
-  padding: 10px 12px;
+  padding: 4px 8px;
   border-bottom: 1px solid var(--figma-color-border);
   background: var(--figma-color-bg);
   display: flex;
