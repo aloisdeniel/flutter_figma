@@ -1,5 +1,4 @@
 import 'package:figma_codegen/src/definitions/components.pb.dart';
-import 'package:figma_codegen/src/definitions/components.pb.dart';
 import 'package:figma_codegen/src/exporter/flutter/exporter.dart';
 import 'package:figma_codegen/src/utils/dart/buffer.dart';
 import 'package:figma_codegen/src/utils/dart/dart.dart';
@@ -33,10 +32,7 @@ class ComponentsDartExporter {
 }
 
 class _VariantInfo {
-  _VariantInfo({
-    required this.enumName,
-    required this.options,
-  });
+  _VariantInfo({required this.enumName, required this.options});
 
   final String enumName;
   final Map<String, String> options;
@@ -63,10 +59,7 @@ void _writeComponent(DartBuffer buffer, Component component) {
 
   for (final variant in variants.values) {
     buffer.writeEnum(
-      DartEnum(
-        name: variant.enumName,
-        values: variant.options.values.toList(),
-      ),
+      DartEnum(name: variant.enumName, values: variant.options.values.toList()),
     );
   }
 
@@ -82,15 +75,12 @@ Map<String, _VariantInfo> _resolveVariants(
   final result = <String, _VariantInfo>{};
   for (final variant in variants) {
     final variantName = variant.name.isNotEmpty ? variant.name : 'Variant';
-    final enumName = '${componentName}${Naming.typeName(variantName)}Variant';
+    final enumName = '$componentName${Naming.typeName(variantName)}Variant';
     final options = <String, String>{};
     for (final option in variant.options) {
       options[option] = Naming.fieldName(option);
     }
-    result[variantName] = _VariantInfo(
-      enumName: enumName,
-      options: options,
-    );
+    result[variantName] = _VariantInfo(enumName: enumName, options: options);
   }
   return result;
 }
@@ -132,13 +122,15 @@ List<_ResolvedProperty> _resolveProperties(
         );
       case ComponentPropertyValue_Value.variantValue:
         final variantValue = defaultValue.variantValue;
-        final variantName =
-            variantValue.variantName.isNotEmpty ? variantValue.variantName : property.name;
+        final variantName = variantValue.variantName.isNotEmpty
+            ? variantValue.variantName
+            : property.name;
         final variant = variants[variantName];
 
         if (variant != null && variant.options.isNotEmpty) {
           final optionKey = variantValue.value;
-          final optionName = variant.options[optionKey] ?? variant.options.values.first;
+          final optionName =
+              variant.options[optionKey] ?? variant.options.values.first;
           final defaultLiteral = '${variant.enumName}.$optionName';
           properties.add(
             _ResolvedProperty(
@@ -187,12 +179,7 @@ void _writeDataClass(
 ) {
   final className = '${componentName}Data';
   final fields = properties
-      .map(
-        (prop) => DartField(
-          name: prop.fieldName,
-          type: prop.type,
-        ),
-      )
+      .map((prop) => DartField(name: prop.fieldName, type: prop.type))
       .toList();
 
   final constructor = DartConstructor(
@@ -203,7 +190,9 @@ void _writeDataClass(
             name: prop.fieldName,
             type: prop.type,
             isNamed: true,
-            defaultValue: prop.defaultLiteral == 'null' ? null : prop.defaultLiteral,
+            defaultValue: prop.defaultLiteral == 'null'
+                ? null
+                : prop.defaultLiteral,
           ),
         )
         .toList(),
@@ -268,11 +257,8 @@ void _writeWidget(
   final singleVariant = variants.length == 1 ? variants.values.first : null;
   final variantField = properties.firstWhere(
     (prop) => prop.variant == singleVariant,
-    orElse: () => _ResolvedProperty(
-      fieldName: '',
-      type: '',
-      defaultLiteral: '',
-    ),
+    orElse: () =>
+        _ResolvedProperty(fieldName: '', type: '', defaultLiteral: ''),
   );
 
   buffer.writeln('class $widgetName extends StatelessWidget {');
@@ -314,7 +300,9 @@ void _writeWidget(
           continue;
         }
         final defaultLiteral = prop.defaultLiteral;
-        final defaultPart = defaultLiteral == 'null' ? '' : ' = $defaultLiteral';
+        final defaultPart = defaultLiteral == 'null'
+            ? ''
+            : ' = $defaultLiteral';
         buffer.writeln('${prop.type} ${prop.fieldName}$defaultPart,');
       }
       buffer.unindent();
