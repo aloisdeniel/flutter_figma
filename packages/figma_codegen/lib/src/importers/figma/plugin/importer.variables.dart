@@ -160,6 +160,17 @@ Future<Alias> _convertVariableAlias(
   );
 }
 
+ColorSpace _convertColorSpace() {
+  switch (figma_api.figma.root.documentColorProfile) {
+    case 'SRGB':
+      return ColorSpace.COLOR_SPACE_SRGB;
+    case 'DISPLAY_P3':
+      return ColorSpace.COLOR_SPACE_DISPLAY_P3;
+    default:
+      return ColorSpace.COLOR_SPACE_SRGB;
+  }
+}
+
 Future<Value> _convertVariableValue(
   dynamic value,
   String resolvedType,
@@ -188,7 +199,7 @@ Future<Value> _convertVariableValue(
               green: (value['g'] as num).toDouble(),
               blue: (value['b'] as num).toDouble(),
               alpha: (value['a'] as num).toDouble(),
-              colorSpace: ColorSpace.COLOR_SPACE_EXTENDED_SRGB,
+              colorSpace: _convertColorSpace(),
             ),
           ),
         );
@@ -372,7 +383,7 @@ ColorValue? _colorValueFromComponents({
       green: green.toDouble(),
       blue: blue.toDouble(),
       alpha: alpha.toDouble(),
-      colorSpace: ColorSpace.COLOR_SPACE_SRGB,
+      colorSpace: _convertColorSpace(),
     ),
   );
 }
