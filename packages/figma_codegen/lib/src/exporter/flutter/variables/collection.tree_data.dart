@@ -94,7 +94,7 @@ void writeTreeCollectionDataClasse(
       return dataClassName;
     }
     final segmentType = Naming.typeName(pathSegments.join(' '));
-    return '${dataClassName}$segmentType';
+    return '$dataClassName$segmentType';
   }
 
   String nodeFieldName(String segment) {
@@ -111,7 +111,7 @@ void writeTreeCollectionDataClasse(
       aliasFields.add('$typeName $fieldName');
     }
     final modifier = isLate ? 'late ' : 'final ';
-    buffer.writeln('${modifier}({${aliasFields.join(', ')}}) alias;');
+    buffer.writeln('$modifier({${aliasFields.join(', ')}}) alias;');
     if (isLate) {
       buffer.writeln();
     }
@@ -157,6 +157,9 @@ void writeTreeCollectionDataClasse(
       if (targetVariable == null) return null;
       final collectionFieldName = Naming.fieldName(targetCollection.name);
       final variableFieldName = Naming.fieldName(targetVariable.name);
+      if (targetCollection.id == definition.id) {
+        return variableFieldName;
+      }
       return 'alias.$collectionFieldName.$variableFieldName';
     }
     return null;

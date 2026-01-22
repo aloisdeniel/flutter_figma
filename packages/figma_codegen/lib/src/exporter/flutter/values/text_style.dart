@@ -29,6 +29,7 @@ class TextStyleDartExporter {
         hasArguments = true;
       }
     }
+
     final fontSize = const FlutterValueExporter().serialize(
       context,
       Value(doubleValue: value.fontSize),
@@ -92,6 +93,8 @@ class TextStyleDartExporter {
           buffer.write(', height: ${lineHeight.percent / 100}');
         }
       }
+      buffer.write(", decoration: fl.TextDecoration.none,");
+
       buffer.write(')');
     }
     return buffer.toString();

@@ -185,11 +185,17 @@ void _writeMultiModeClasses(
             varAlias.variableId,
           );
           if (targetVariable != null) {
-            final collectionFieldName = Naming.fieldName(targetCollection.name);
             final variableFieldName = Naming.fieldName(targetVariable.name);
-            buffer.writeln(
-              'get $name => alias.$collectionFieldName.$variableFieldName;',
-            );
+            if (targetCollection.id == definition.id) {
+              buffer.writeln('get $name => $variableFieldName;');
+            } else {
+              final collectionFieldName = Naming.fieldName(
+                targetCollection.name,
+              );
+              buffer.writeln(
+                'get $name => alias.$collectionFieldName.$variableFieldName;',
+              );
+            }
           }
         }
       } else {
