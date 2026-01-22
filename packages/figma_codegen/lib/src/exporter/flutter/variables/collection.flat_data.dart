@@ -118,7 +118,7 @@ void _writeMultiModeClasses(
   buffer.indent();
   for (final variant in definition.variants) {
     final variantEnumValue = Naming.fieldName(variant.name);
-    final variantClassName = '_${Naming.typeName(variant.name)}';
+    final variantClassName = '_$dataClassName${Naming.typeName(variant.name)}';
     buffer.writeln('case ${baseTypeName}Mode.$variantEnumValue:');
     buffer.indent();
     buffer.writeln('return $variantClassName();');
@@ -158,7 +158,7 @@ void _writeMultiModeClasses(
 
   // Private variant classes
   for (final variant in definition.variants) {
-    final variantClassName = '_${Naming.typeName(variant.name)}';
+    final variantClassName = '_$dataClassName${Naming.typeName(variant.name)}';
     buffer.writeln('class $variantClassName extends $dataClassName {');
     buffer.indent();
 
