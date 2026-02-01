@@ -72,6 +72,20 @@ const WindingRule$json = {
 final $typed_data.Uint8List windingRuleDescriptor = $convert
     .base64Decode('CgtXaW5kaW5nUnVsZRILCgdOT05aRVJPEAASCwoHRVZFTk9ERBAB');
 
+@$core.Deprecated('Use maskTypeDescriptor instead')
+const MaskType$json = {
+  '1': 'MaskType',
+  '2': [
+    {'1': 'ALPHA', '2': 0},
+    {'1': 'VECTOR', '2': 1},
+    {'1': 'LUMINANCE', '2': 2},
+  ],
+};
+
+/// Descriptor for `MaskType`. Decode as a `google.protobuf.EnumDescriptorProto`.
+final $typed_data.Uint8List maskTypeDescriptor = $convert.base64Decode(
+    'CghNYXNrVHlwZRIJCgVBTFBIQRAAEgoKBlZFQ1RPUhABEg0KCUxVTUlOQU5DRRAC');
+
 @$core.Deprecated('Use blendModeDescriptor instead')
 const BlendMode$json = {
   '1': 'BlendMode',
@@ -228,6 +242,15 @@ const VectorNode$json = {
       '9': 0,
       '10': 'polygon'
     },
+    {
+      '1': 'mask',
+      '3': 10,
+      '5': 11,
+      '6': '.definitions.VectorMask',
+      '8': {},
+      '9': 0,
+      '10': 'mask'
+    },
   ],
   '8': [
     {'1': 'type'},
@@ -236,15 +259,7 @@ const VectorNode$json = {
 
 /// Descriptor for `VectorNode`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List vectorNodeDescriptor = $convert.base64Decode(
-    'CgpWZWN0b3JOb2RlEhIKBG5hbWUYASgJQgBSBG5hbWUSGAoHb3BhY2l0eRgCKAFCAFIHb3BhY2'
-    'l0eRI0Cgl0cmFuc2Zvcm0YAygLMhYuZGVmaW5pdGlvbnMuVHJhbnNmb3JtQgBSCXRyYW5zZm9y'
-    'bRI2CgduZXR3b3JrGAQoCzIaLmRlZmluaXRpb25zLlZlY3Rvck5ldHdvcmtCAEgAUgduZXR3b3'
-    'JrEjAKBWdyb3VwGAUoCzIYLmRlZmluaXRpb25zLlZlY3Rvckdyb3VwQgBIAFIFZ3JvdXASMAoF'
-    'ZnJhbWUYBigLMhguZGVmaW5pdGlvbnMuVmVjdG9yRnJhbWVCAEgAUgVmcmFtZRI8CglyZWN0YW'
-    '5nbGUYBygLMhwuZGVmaW5pdGlvbnMuVmVjdG9yUmVjdGFuZ2xlQgBIAFIJcmVjdGFuZ2xlEjYK'
-    'B2VsbGlwc2UYCCgLMhouZGVmaW5pdGlvbnMuVmVjdG9yRWxsaXBzZUIASABSB2VsbGlwc2USNg'
-    'oHcG9seWdvbhgJKAsyGi5kZWZpbml0aW9ucy5WZWN0b3JQb2x5Z29uQgBIAFIHcG9seWdvbkIG'
-    'CgR0eXBl');
+    'CgpWZWN0b3JOb2RlEhIKBG5hbWUYASgJQgBSBG5hbWUSGAoHb3BhY2l0eRgCKAFCAFIHb3BhY2l0eRI0Cgl0cmFuc2Zvcm0YAygLMhYuZGVmaW5pdGlvbnMuVHJhbnNmb3JtQgBSCXRyYW5zZm9ybRI2CgduZXR3b3JrGAQoCzIaLmRlZmluaXRpb25zLlZlY3Rvck5ldHdvcmtCAEgAUgduZXR3b3JrEjAKBWdyb3VwGAUoCzIYLmRlZmluaXRpb25zLlZlY3Rvckdyb3VwQgBIAFIFZ3JvdXASMAoFZnJhbWUYBigLMhguZGVmaW5pdGlvbnMuVmVjdG9yRnJhbWVCAEgAUgVmcmFtZRI8CglyZWN0YW5nbGUYBygLMhwuZGVmaW5pdGlvbnMuVmVjdG9yUmVjdGFuZ2xlQgBIAFIJcmVjdGFuZ2xlEjYKB2VsbGlwc2UYCCgLMhouZGVmaW5pdGlvbnMuVmVjdG9yRWxsaXBzZUIASABSB2VsbGlwc2USNgoHcG9seWdvbhgJKAsyGi5kZWZpbml0aW9ucy5WZWN0b3JQb2x5Z29uQgBIAFIHcG9seWdvbhItCgRtYXNrGAooCzIXLmRlZmluaXRpb25zLlZlY3Rvck1hc2tCAEgAUgRtYXNrQgYKBHR5cGU=');
 
 @$core.Deprecated('Use vectorPolygonDescriptor instead')
 const VectorPolygon$json = {
@@ -527,6 +542,42 @@ final $typed_data.Uint8List vectorFrameDescriptor = $convert.base64Decode(
     'MhcuZGVmaW5pdGlvbnMuVmVjdG9yTm9kZUIAUghjaGlsZHJlbhIeCgppc0NsaXBwaW5nGAcoCE'
     'IAUgppc0NsaXBwaW5nEj0KDGNvcm5lclJhZGl1cxgIKAsyGS5kZWZpbml0aW9ucy5Db3JuZXJS'
     'YWRpdXNCAFIMY29ybmVyUmFkaXVz');
+
+@$core.Deprecated('Use vectorMaskDescriptor instead')
+const VectorMask$json = {
+  '1': 'VectorMask',
+  '2': [
+    {
+      '1': 'mask',
+      '3': 1,
+      '5': 11,
+      '6': '.definitions.VectorNode',
+      '8': {},
+      '10': 'mask'
+    },
+    {
+      '1': 'children',
+      '3': 2,
+      '4': 3,
+      '5': 11,
+      '6': '.definitions.VectorNode',
+      '8': {},
+      '10': 'children'
+    },
+    {
+      '1': 'maskType',
+      '3': 3,
+      '5': 14,
+      '6': '.definitions.MaskType',
+      '8': {},
+      '10': 'maskType'
+    },
+  ],
+};
+
+/// Descriptor for `VectorMask`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List vectorMaskDescriptor = $convert.base64Decode(
+    'CgpWZWN0b3JNYXNrEi0KBG1hc2sYASABKAsyFy5kZWZpbml0aW9ucy5WZWN0b3JOb2RlQgBSBG1hc2sSNQoIY2hpbGRyZW4YAiADKAsyFy5kZWZpbml0aW9ucy5WZWN0b3JOb2RlQgBSCGNoaWxkcmVuEjMKCG1hc2tUeXBlGAMgASgOMhUuZGVmaW5pdGlvbnMuTWFza1R5cGVCAFIIbWFza1R5cGU=');
 
 @$core.Deprecated('Use geometryPropertyDescriptor instead')
 const GeometryProperty$json = {

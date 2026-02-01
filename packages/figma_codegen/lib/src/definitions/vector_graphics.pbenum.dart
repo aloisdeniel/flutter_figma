@@ -100,6 +100,26 @@ class WindingRule extends $pb.ProtobufEnum {
   const WindingRule._(super.value, super.name);
 }
 
+class MaskType extends $pb.ProtobufEnum {
+  static const MaskType ALPHA = MaskType._(0, _omitEnumNames ? '' : 'ALPHA');
+  static const MaskType VECTOR = MaskType._(1, _omitEnumNames ? '' : 'VECTOR');
+  static const MaskType LUMINANCE =
+      MaskType._(2, _omitEnumNames ? '' : 'LUMINANCE');
+
+  static const $core.List<MaskType> values = <MaskType>[
+    ALPHA,
+    VECTOR,
+    LUMINANCE,
+  ];
+
+  static final $core.List<MaskType?> _byValue =
+      $pb.ProtobufEnum.$_initByValueList(values, 2);
+  static MaskType? valueOf($core.int value) =>
+      value < 0 || value >= _byValue.length ? null : _byValue[value];
+
+  const MaskType._(super.value, super.name);
+}
+
 class BlendMode extends $pb.ProtobufEnum {
   static const BlendMode NORMAL =
       BlendMode._(0, _omitEnumNames ? '' : 'NORMAL');

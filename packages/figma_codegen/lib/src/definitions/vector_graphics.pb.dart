@@ -124,6 +124,7 @@ enum VectorNode_Type {
   rectangle,
   ellipse,
   polygon,
+  mask,
   notSet
 }
 
@@ -138,6 +139,7 @@ class VectorNode extends $pb.GeneratedMessage {
     VectorRectangle? rectangle,
     VectorEllipse? ellipse,
     VectorPolygon? polygon,
+    VectorMask? mask,
   }) {
     final result = create();
     if (name != null) result.name = name;
@@ -149,6 +151,7 @@ class VectorNode extends $pb.GeneratedMessage {
     if (rectangle != null) result.rectangle = rectangle;
     if (ellipse != null) result.ellipse = ellipse;
     if (polygon != null) result.polygon = polygon;
+    if (mask != null) result.mask = mask;
     return result;
   }
 
@@ -168,13 +171,14 @@ class VectorNode extends $pb.GeneratedMessage {
     7: VectorNode_Type.rectangle,
     8: VectorNode_Type.ellipse,
     9: VectorNode_Type.polygon,
+    10: VectorNode_Type.mask,
     0: VectorNode_Type.notSet
   };
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(
       _omitMessageNames ? '' : 'VectorNode',
       package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
       createEmptyInstance: create)
-    ..oo(0, [4, 5, 6, 7, 8, 9])
+    ..oo(0, [4, 5, 6, 7, 8, 9, 10])
     ..aOS(1, _omitFieldNames ? '' : 'name')
     ..aD(2, _omitFieldNames ? '' : 'opacity')
     ..aOM<Transform>(3, _omitFieldNames ? '' : 'transform',
@@ -191,6 +195,8 @@ class VectorNode extends $pb.GeneratedMessage {
         subBuilder: VectorEllipse.create)
     ..aOM<VectorPolygon>(9, _omitFieldNames ? '' : 'polygon',
         subBuilder: VectorPolygon.create)
+    ..aOM<VectorMask>(10, _omitFieldNames ? '' : 'mask',
+        subBuilder: VectorMask.create)
     ..hasRequiredFields = false;
 
   @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
@@ -320,6 +326,17 @@ class VectorNode extends $pb.GeneratedMessage {
   void clearPolygon() => $_clearField(9);
   @$pb.TagNumber(9)
   VectorPolygon ensurePolygon() => $_ensure(8);
+
+  @$pb.TagNumber(10)
+  VectorMask get mask => $_getN(9);
+  @$pb.TagNumber(10)
+  set mask(VectorMask value) => $_setField(10, value);
+  @$pb.TagNumber(10)
+  $core.bool hasMask() => $_has(9);
+  @$pb.TagNumber(10)
+  void clearMask() => $_clearField(10);
+  @$pb.TagNumber(10)
+  VectorMask ensureMask() => $_ensure(9);
 }
 
 class VectorPolygon extends $pb.GeneratedMessage {
@@ -987,6 +1004,84 @@ class VectorFrame extends $pb.GeneratedMessage {
   void clearCornerRadius() => $_clearField(8);
   @$pb.TagNumber(8)
   CornerRadius ensureCornerRadius() => $_ensure(7);
+}
+
+class VectorMask extends $pb.GeneratedMessage {
+  factory VectorMask({
+    VectorNode? mask,
+    $core.Iterable<VectorNode>? children,
+    MaskType? maskType,
+  }) {
+    final result = create();
+    if (mask != null) result.mask = mask;
+    if (children != null) result.children.addAll(children);
+    if (maskType != null) result.maskType = maskType;
+    return result;
+  }
+
+  VectorMask._();
+
+  factory VectorMask.fromBuffer($core.List<$core.int> data,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromBuffer(data, registry);
+  factory VectorMask.fromJson($core.String json,
+          [$pb.ExtensionRegistry registry = $pb.ExtensionRegistry.EMPTY]) =>
+      create()..mergeFromJson(json, registry);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(
+      _omitMessageNames ? '' : 'VectorMask',
+      package: const $pb.PackageName(_omitMessageNames ? '' : 'definitions'),
+      createEmptyInstance: create)
+    ..aOM<VectorNode>(1, _omitFieldNames ? '' : 'mask',
+        subBuilder: VectorNode.create)
+    ..pPM<VectorNode>(2, _omitFieldNames ? '' : 'children',
+        subBuilder: VectorNode.create)
+    ..e<MaskType>(3, _omitFieldNames ? '' : 'maskType', $pb.PbFieldType.OE,
+        defaultOrMaker: MaskType.ALPHA,
+        valueOf: MaskType.valueOf,
+        enumValues: MaskType.values)
+    ..hasRequiredFields = false;
+
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorMask clone() => deepCopy();
+  @$core.Deprecated('See https://github.com/google/protobuf.dart/issues/998.')
+  VectorMask copyWith(void Function(VectorMask) updates) =>
+      super.copyWith((message) => updates(message as VectorMask)) as VectorMask;
+
+  @$core.override
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static VectorMask create() => VectorMask._();
+  @$core.override
+  VectorMask createEmptyInstance() => create();
+  @$core.pragma('dart2js:noInline')
+  static VectorMask getDefault() => _defaultInstance ??=
+      $pb.GeneratedMessage.$_defaultFor<VectorMask>(create);
+  static VectorMask? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  VectorNode get mask => $_getN(0);
+  @$pb.TagNumber(1)
+  set mask(VectorNode value) => $_setField(1, value);
+  @$pb.TagNumber(1)
+  $core.bool hasMask() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearMask() => $_clearField(1);
+  @$pb.TagNumber(1)
+  VectorNode ensureMask() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $pb.PbList<VectorNode> get children => $_getList(1);
+
+  @$pb.TagNumber(3)
+  MaskType get maskType => $_getN(2);
+  @$pb.TagNumber(3)
+  set maskType(MaskType value) => $_setField(3, value);
+  @$pb.TagNumber(3)
+  $core.bool hasMaskType() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearMaskType() => $_clearField(3);
 }
 
 class GeometryProperty extends $pb.GeneratedMessage {

@@ -63,6 +63,31 @@ bool isGroup(figma_api.SceneNode node) {
   return nodeType(node) == 'GROUP';
 }
 
+bool isMask(figma_api.SceneNode node) {
+  final hasMask = node.hasProperty('isMask'.jsify()!).dartify() as bool;
+  if (!hasMask) {
+    return false;
+  }
+  final value = node.getProperty('isMask'.jsify()!);
+  return value.dartify() == true;
+}
+
+MaskType _maskTypeFromNode(figma_api.SceneNode node) {
+  final hasMaskType = node.hasProperty('maskType'.jsify()!).dartify() as bool;
+  if (!hasMaskType) {
+    return MaskType.ALPHA;
+  }
+  final value = node.getProperty('maskType'.jsify()!).dartify();
+  if (value is! String) {
+    return MaskType.ALPHA;
+  }
+  return switch (value) {
+    'LUMINANCE' => MaskType.LUMINANCE,
+    'VECTOR' => MaskType.VECTOR,
+    _ => MaskType.ALPHA,
+  };
+}
+
 double nodeOpacity(figma_api.SceneNode node) {
   final hasOpacity = node.hasProperty('opacity'.jsify()!).dartify() as bool;
   if (!hasOpacity) {
@@ -84,12 +109,51 @@ Future<List<VectorNode>> childrenNodes(
 
   final dartChildren = children.toDart;
   final result = <VectorNode>[];
-  for (final child in dartChildren) {
-    final node = await _vectorNode(child as figma_api.SceneNode, context);
+  var index = 0;
 
+  while (index < dartChildren.length) {
+    final child = dartChildren[index] as figma_api.SceneNode;
+    if (isMask(child)) {
+      final maskNode = await _vectorNode(child, context);
+      if (maskNode == null) {
+        index++;
+        continue;
+      }
+      final maskedChildren = <VectorNode>[];
+      index++;
+      while (index < dartChildren.length) {
+        final nextChild = dartChildren[index] as figma_api.SceneNode;
+        if (isMask(nextChild)) {
+          break;
+        }
+        final vectorChild = await _vectorNode(nextChild, context);
+        if (vectorChild != null) {
+          maskedChildren.add(vectorChild);
+        }
+        index++;
+      }
+      if (maskedChildren.isEmpty) {
+        result.add(maskNode);
+      } else {
+        result.add(
+          VectorNode(
+            name: maskNode.name,
+            mask: VectorMask(
+              mask: maskNode,
+              children: maskedChildren,
+              maskType: _maskTypeFromNode(child),
+            ),
+          ),
+        );
+      }
+      continue;
+    }
+
+    final node = await _vectorNode(child, context);
     if (node != null) {
       result.add(node);
     }
+    index++;
   }
   return result;
 }

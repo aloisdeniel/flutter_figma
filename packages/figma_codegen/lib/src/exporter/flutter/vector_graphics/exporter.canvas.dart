@@ -72,6 +72,14 @@ void _collectNodeBoundVariables(
       for (final child in node.frame.children) {
         _collectNodeBoundVariables(styles, child);
       }
+    case VectorNode_Type.mask:
+      final mask = node.mask;
+      if (mask.hasMask()) {
+        _collectNodeBoundVariables(styles, mask.mask);
+      }
+      for (final child in mask.children) {
+        _collectNodeBoundVariables(styles, child);
+      }
     case VectorNode_Type.group:
       for (final child in node.group.children) {
         _collectNodeBoundVariables(styles, child);
@@ -383,6 +391,8 @@ void _writeNodeMethods(
       for (final child in node.frame.children) {
         buffer.writeln('${methodNameFor(child)}(canvas, bounds, paint);');
       }
+    case VectorNode_Type.mask:
+      _writeMask(buffer, node.mask, methodNameFor);
     case VectorNode_Type.rectangle:
       _writeRectangle(
         buffer,
@@ -443,6 +453,17 @@ void _writeNodeMethods(
           methodNameFor,
         );
       }
+    case VectorNode_Type.mask:
+      for (final child in node.mask.children) {
+        _writeNodeMethods(
+          buffer,
+          child,
+          context,
+          stylesReference,
+          stylesClassName,
+          methodNameFor,
+        );
+      }
     case VectorNode_Type.network:
     case VectorNode_Type.rectangle:
     case VectorNode_Type.ellipse:
@@ -474,26 +495,30 @@ void _writeNodeTransform(DartBuffer buffer, VectorNode node) {
     return;
   }
 
-  // Identity
-  if (node.transform.m02 == 0 &&
-      node.transform.m12 == 0 &&
-      node.transform.m00 == 1 &&
-      node.transform.m11 == 1 &&
-      node.transform.m01 == 0 &&
-      node.transform.m10 == 0) {
+  final transform = node.transform;
+  if (_isIdentityTransform(transform)) {
     return;
   }
 
-  final transform = node.transform;
-  // TODO generate  binary data
-  buffer.writeln(
-    'canvas.transform(Float64List.fromList(const <double>['
-    '${_formatDouble(transform.m00)}, ${_formatDouble(transform.m10)}, 0, 0, '
-    '${_formatDouble(transform.m01)}, ${_formatDouble(transform.m11)}, 0, 0, '
-    '0, 0, 1, 0, '
-    '${_formatDouble(transform.m02)}, ${_formatDouble(transform.m12)}, 0, 1'
-    ']));',
-  );
+  buffer.writeln('canvas.transform(${_transformMatrixLiteral(transform)});');
+}
+
+bool _isIdentityTransform(Transform transform) {
+  return transform.m02 == 0 &&
+      transform.m12 == 0 &&
+      transform.m00 == 1 &&
+      transform.m11 == 1 &&
+      transform.m01 == 0 &&
+      transform.m10 == 0;
+}
+
+String _transformMatrixLiteral(Transform transform) {
+  return 'Float64List.fromList(const <double>['
+      '${_formatDouble(transform.m00)}, ${_formatDouble(transform.m10)}, 0, 0, '
+      '${_formatDouble(transform.m01)}, ${_formatDouble(transform.m11)}, 0, 0, '
+      '0, 0, 1, 0, '
+      '${_formatDouble(transform.m02)}, ${_formatDouble(transform.m12)}, 0, 1'
+      '])';
 }
 
 void _writeRectangle(
@@ -757,6 +782,235 @@ void _writeFrameClip(DartBuffer buffer, VectorFrame frame) {
   buffer.writeln();
 }
 
+void _writeMask(
+  DartBuffer buffer,
+  VectorMask mask,
+  String Function(VectorNode) methodNameFor,
+) {
+  if (!mask.hasMask() || mask.children.isEmpty) {
+    return;
+  }
+
+  buffer.writeln('{');
+  buffer.indent();
+  buffer.writeln('final maskPath = ui.Path();');
+  _writeMaskPath(buffer, mask.mask, 'maskPath');
+
+  final maskNode = mask.mask;
+  if (maskNode.hasTransform() && !_isIdentityTransform(maskNode.transform)) {
+    buffer.writeln(
+      'final maskTransform = ${_transformMatrixLiteral(maskNode.transform)};',
+    );
+    buffer.writeln('final clipPath = maskPath.transform(maskTransform);');
+    buffer.writeln('canvas.clipPath(clipPath);');
+  } else {
+    buffer.writeln('canvas.clipPath(maskPath);');
+  }
+
+  for (final child in mask.children) {
+    buffer.writeln('${methodNameFor(child)}(canvas, bounds, paint);');
+  }
+
+  buffer.unindent();
+  buffer.writeln('}');
+}
+
+void _writeMaskPath(DartBuffer buffer, VectorNode node, String pathName) {
+  switch (node.whichType()) {
+    case VectorNode_Type.network:
+      _writeMaskNetworkPath(buffer, node.network, pathName);
+    case VectorNode_Type.rectangle:
+      _writeRectanglePath(buffer, node.rectangle, pathName);
+    case VectorNode_Type.ellipse:
+      _writeEllipsePath(buffer, node.ellipse, pathName);
+    case VectorNode_Type.polygon:
+      _writePolygonPath(buffer, node.polygon, pathName);
+    case VectorNode_Type.frame:
+      _writeFramePath(buffer, node.frame, pathName);
+    case VectorNode_Type.mask:
+      if (node.mask.hasMask()) {
+        _writeMaskPath(buffer, node.mask.mask, pathName);
+      }
+    case VectorNode_Type.group:
+      for (final child in node.group.children) {
+        _writeMaskPath(buffer, child, pathName);
+      }
+    case VectorNode_Type.notSet:
+      break;
+  }
+}
+
+void _writeMaskNetworkPath(
+  DartBuffer buffer,
+  VectorNetwork network,
+  String pathName,
+) {
+  if (network.segments.isEmpty) {
+    return;
+  }
+
+  if (network.regions.isNotEmpty) {
+    final fillType =
+        network.regions.any(
+          (region) => region.windingRule == WindingRule.EVENODD,
+        )
+        ? 'ui.PathFillType.evenOdd'
+        : 'ui.PathFillType.nonZero';
+    buffer.writeln('$pathName.fillType = $fillType;');
+    for (final region in network.regions) {
+      for (final loop in region.loops) {
+        _writeLoop(buffer, network, loop, pathName);
+      }
+    }
+    return;
+  }
+
+  final loops = _networkLoops(network);
+  for (final loop in loops) {
+    _writeLoop(buffer, network, loop, pathName);
+  }
+}
+
+void _writeRectanglePath(
+  DartBuffer buffer,
+  VectorRectangle rectangle,
+  String pathName,
+) {
+  final width = rectangle.hasSize() ? rectangle.size.x : 0.0;
+  final height = rectangle.hasSize() ? rectangle.size.y : 0.0;
+  if (width <= 0 || height <= 0) {
+    return;
+  }
+  buffer.writeln(
+    '$pathName.addRect(fl.Rect.fromLTWH(0, 0, ${_formatDouble(width)}, ${_formatDouble(height)}));',
+  );
+}
+
+void _writeFramePath(DartBuffer buffer, VectorFrame frame, String pathName) {
+  final width = frame.hasSize() ? frame.size.x : 0.0;
+  final height = frame.hasSize() ? frame.size.y : 0.0;
+  if (width <= 0 || height <= 0) {
+    return;
+  }
+  buffer.writeln(
+    'final rect = fl.Rect.fromLTWH(0, 0, ${_formatDouble(width)}, ${_formatDouble(height)});',
+  );
+  if (frame.hasCornerRadius()) {
+    buffer.writeln(
+      'final rrect = fl.RRect.fromRectAndCorners(' //
+      'rect, ' //
+      'topLeft: fl.Radius.circular(${_formatDouble(frame.cornerRadius.topLeft)}), ' //
+      'topRight: fl.Radius.circular(${_formatDouble(frame.cornerRadius.topRight)}), ' //
+      'bottomLeft: fl.Radius.circular(${_formatDouble(frame.cornerRadius.bottomLeft)}), ' //
+      'bottomRight: fl.Radius.circular(${_formatDouble(frame.cornerRadius.bottomRight)}));',
+    );
+    buffer.writeln('$pathName.addRRect(rrect);');
+  } else {
+    buffer.writeln('$pathName.addRect(rect);');
+  }
+}
+
+void _writeEllipsePath(
+  DartBuffer buffer,
+  VectorEllipse ellipse,
+  String pathName,
+) {
+  final width = ellipse.hasSize() ? ellipse.size.x : 0.0;
+  final height = ellipse.hasSize() ? ellipse.size.y : 0.0;
+  if (width <= 0 || height <= 0) {
+    return;
+  }
+  buffer.writeln(
+    'final rect = fl.Rect.fromLTWH(0, 0, ${_formatDouble(width)}, ${_formatDouble(height)});',
+  );
+  const twoPi = 6.283185307179586;
+  final arcStart = ellipse.hasArcData() ? ellipse.arcData.startingAngle : 0.0;
+  final arcEnd = ellipse.hasArcData() ? ellipse.arcData.endingAngle : twoPi;
+  final innerRadius = ellipse.hasArcData() ? ellipse.arcData.innerRadius : 0.0;
+  final sweep = arcEnd - arcStart;
+  final isFullCircle = (sweep - twoPi).abs() < 0.0001;
+  final hasInnerRadius = innerRadius > 0.0;
+
+  if (isFullCircle && !hasInnerRadius) {
+    buffer.writeln('$pathName.addOval(rect);');
+    return;
+  }
+
+  buffer.writeln(
+    'final center = fl.Offset(${_formatDouble(width)} / 2, ${_formatDouble(height)} / 2);',
+  );
+  buffer.writeln(
+    'final radius = fl.Size(${_formatDouble(width)} / 2, ${_formatDouble(height)} / 2);',
+  );
+
+  if (!hasInnerRadius) {
+    buffer.writeln('$pathName.moveTo(center.dx, center.dy);');
+    buffer.writeln(
+      '$pathName.arcTo(rect, ${_formatDouble(arcStart)}, ${_formatDouble(sweep)}, false);',
+    );
+    buffer.writeln('$pathName.close();');
+    return;
+  }
+
+  if (isFullCircle) {
+    buffer.writeln('$pathName.fillType = ui.PathFillType.evenOdd;');
+    buffer.writeln('$pathName.addOval(rect);');
+    buffer.writeln(
+      'final innerRect = fl.Rect.fromCenter(center: center, width: radius.width * ${_formatDouble(innerRadius)} * 2, height: radius.height * ${_formatDouble(innerRadius)} * 2);',
+    );
+    buffer.writeln('$pathName.addOval(innerRect);');
+    return;
+  }
+
+  buffer.writeln(
+    '$pathName.addArc(rect, ${_formatDouble(arcStart)}, ${_formatDouble(sweep)});',
+  );
+  buffer.writeln(
+    'final innerRect = fl.Rect.fromCenter(center: center, width: radius.width * ${_formatDouble(innerRadius)} * 2, height: radius.height * ${_formatDouble(innerRadius)} * 2);',
+  );
+  buffer.writeln(
+    '$pathName.arcTo(innerRect, ${_formatDouble(arcStart + sweep)}, ${_formatDouble(-sweep)}, false);',
+  );
+  buffer.writeln('$pathName.close();');
+}
+
+void _writePolygonPath(
+  DartBuffer buffer,
+  VectorPolygon polygon,
+  String pathName,
+) {
+  final width = polygon.hasSize() ? polygon.size.x : 0.0;
+  final height = polygon.hasSize() ? polygon.size.y : 0.0;
+  if (width <= 0 || height <= 0 || polygon.pointCount < 3) {
+    return;
+  }
+  buffer.writeln(
+    'final center = fl.Offset(${_formatDouble(width)} / 2, ${_formatDouble(height)} / 2);',
+  );
+  buffer.writeln(
+    'final radius = fl.Offset(${_formatDouble(width)} / 2, ${_formatDouble(height)} / 2);',
+  );
+  buffer.writeln('final pointCount = ${polygon.pointCount};');
+  buffer.writeln('for (var i = 0; i < pointCount; i++) {');
+  buffer.indent();
+  buffer.writeln('final angle = (i * 2 * math.pi) / pointCount;');
+  buffer.writeln(
+    'final point = fl.Offset(center.dx + radius.dx * math.cos(angle), center.dy + radius.dy * math.sin(angle));',
+  );
+  buffer.writeln('if (i == 0) {');
+  buffer.indent();
+  buffer.writeln('$pathName.moveTo(point.dx, point.dy);');
+  buffer.unindent();
+  buffer.writeln('} else {');
+  buffer.indent();
+  buffer.writeln('$pathName.lineTo(point.dx, point.dy);');
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.unindent();
+  buffer.writeln('}');
+  buffer.writeln('$pathName.close();');
+}
+
 void _writeRegion(
   DartBuffer buffer,
   VectorNetwork network,
@@ -775,7 +1029,7 @@ void _writeRegion(
   buffer.writeln('path.fillType = ${_pathFillType(region.windingRule)};');
 
   for (final loop in region.loops) {
-    _writeLoop(buffer, network, loop);
+    _writeLoop(buffer, network, loop, 'path');
   }
 
   buffer.writeln('paint.style = ui.PaintingStyle.fill;');
@@ -814,7 +1068,7 @@ void _writeNetworkFillFromSegments(
   buffer.indent();
   buffer.writeln('final path = ui.Path();');
   for (final loop in loops) {
-    _writeLoop(buffer, network, loop);
+    _writeLoop(buffer, network, loop, 'path');
   }
   buffer.writeln('paint.style = ui.PaintingStyle.fill;');
   for (final fill in network.geometry.fills) {
@@ -1039,6 +1293,7 @@ void _writeLoop(
   DartBuffer buffer,
   VectorNetwork network,
   VectorRegionLoop loop,
+  String pathName,
 ) {
   if (loop.segments.isEmpty) {
     return;
@@ -1050,7 +1305,7 @@ void _writeLoop(
   final firstSegment = network.segments[loop.segments.first];
   final firstVertex = network.vertices[firstSegment.start];
   buffer.writeln(
-    'path.moveTo(${_formatDouble(firstVertex.x)}, ${_formatDouble(firstVertex.y)});',
+    '$pathName.moveTo(${_formatDouble(firstVertex.x)}, ${_formatDouble(firstVertex.y)});',
   );
 
   for (final segmentIndex in loop.segments) {
@@ -1071,16 +1326,16 @@ void _writeLoop(
             )
           : Vector(x: endVertex.x, y: endVertex.y);
       buffer.writeln(
-        'path.cubicTo(${_formatDouble(tangentStart.x)}, ${_formatDouble(tangentStart.y)}, ${_formatDouble(tangentEnd.x)}, ${_formatDouble(tangentEnd.y)}, ${_formatDouble(endVertex.x)}, ${_formatDouble(endVertex.y)});',
+        '$pathName.cubicTo(${_formatDouble(tangentStart.x)}, ${_formatDouble(tangentStart.y)}, ${_formatDouble(tangentEnd.x)}, ${_formatDouble(tangentEnd.y)}, ${_formatDouble(endVertex.x)}, ${_formatDouble(endVertex.y)});',
       );
     } else {
       buffer.writeln(
-        'path.lineTo(${_formatDouble(endVertex.x)}, ${_formatDouble(endVertex.y)});',
+        '$pathName.lineTo(${_formatDouble(endVertex.x)}, ${_formatDouble(endVertex.y)});',
       );
     }
   }
 
-  buffer.writeln('path.close();');
+  buffer.writeln('$pathName.close();');
 
   buffer.unindent();
   buffer.writeln('}');
